@@ -31,7 +31,7 @@ fd = ''
 read_is_open = True
 
 def debug(in_str):
-    if False:
+    if True:
         print(in_str)
 
 def _wait_for_read():
@@ -55,6 +55,8 @@ def _release_read():
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     def __init__(self):
         super(EasyGoPiGo3, self).__init__()
+        self.sensor_1 = None
+        self.sensor_2 = None
 
     def volt(self):
         _wait_for_read()
@@ -66,6 +68,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def stop(self):
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
+    def set_light_sensor(self,port):
+        sensor = LightSensor(self,port)
+        print(sensor)
+        if port == "AD1":
+            self.sensor_1 = sensor
+        elif port == "AD2":
+            self.sensor_2 = sensor
+        return sensor
 
 my_gpg = EasyGoPiGo3()
 # these functions are here because we need direct access to these
@@ -100,7 +110,8 @@ def right():
 # on the date of gopigo.py
 #############################################################
 try:
-    PORTS = {"A1": gopigo.analogPort, "D11": gopigo.digitalPort,
+    # TBD: these shouldn't be hardcoded
+    PORTS = {"AD1": 0x03, "AD2": 0x0C,
              "SERIAL": -1, "I2C": -2}
 except:
     PORTS = {"A1": 15, "D11": 10, "SERIAL": -1, "I2C": -2}
@@ -114,7 +125,7 @@ I2C = -2
 ##########################
 
 
-class Sensor():
+class Sensor(object):
     '''
     Base class for all sensors
     Class Attributes:
@@ -129,7 +140,7 @@ class Sensor():
         isAnalog
         isDigital
     '''
-    def __init__(self, port, pinmode):
+    def __init__(self, gpg, port, pinmode):
         '''
         port = one of PORTS keys
         pinmode = "INPUT", "OUTPUT", "SERIAL" (which gets ignored)
@@ -138,11 +149,31 @@ class Sensor():
         debug(pinmode)
         self.setPort(port)
         self.setPinMode(pinmode)
-        if pinmode == "INPUT" or pinmode == "OUTPUT":
-            gopigo.pinMode(self.getPortID(), self.getPinMode())
+        self.gpg = gpg
+        if pinmode == "INPUT":
+            self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_INPUT_ANALOG)
+        #or pinmode == "OUTPUT":
+        #     gopigo.pinMode(self.getPortID(), self.getPinMode())
 
     def __str__(self):
-        return ("{} on port {}".format(self.descriptor, self.getPort()))
+        return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
+                     self.getPort(), self.getPinMode(), self.portID))
+
+    def setPin(self,pin):
+        if self.port == "AD1":
+            if pin == 1:
+                self.pin = self.gpg.GROVE_1_1
+            else:
+                self.pin = self.gpg.GROVE_1_2
+        else:
+            if pin == 2:
+                self.pin = self.gpg.GROVE_2_1
+            else:
+                self.pin = self.gpg.GROVE_2_2
+
+    def getPin(self):
+        return self.pin
 
     def setPort(self, port):
         self.port = port
@@ -215,18 +246,18 @@ class AnalogSensor(Sensor):
     '''
     implements read and write methods
     '''
-    def __init__(self, port, pinmode):
+    def __init__(self, gpg, port, pinmode):
         debug("AnalogSensor init")
         self.value = 0
         self.pin = ANALOG
-        Sensor.__init__(self, port, pinmode)
+        Sensor.__init__(self, gpg, port, pinmode)
 
     def read(self):
         _wait_for_read()
 
         if _is_read_open():
             _grab_read()
-            self.value = gopigo.analogRead(self.getPortID())
+            self.value = self.gpg.get_grove_analog(self.getPin())
         _release_read()
         return self.value
 
@@ -243,9 +274,10 @@ class LightSensor(AnalogSensor):
     self.pin takes a value of 0 when on analog pin (default value)
         takes a value of 1 when on digital pin
     """
-    def __init__(self, port="A1"):
+    def __init__(self, gpg,port="A1"):
         debug("LightSensor init")
-        AnalogSensor.__init__(self, port, "INPUT")
+        AnalogSensor.__init__(self, gpg, port,"INPUT")
+        self.setPin(2)
         self.set_descriptor("Light sensor")
 ##########################
 
