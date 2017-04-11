@@ -1,6 +1,17 @@
+License Information
+===================
+
+Software License
+----------------
+
+**All code (including all scripts, firmware, drivers, examples, and any other
+software) is released under the [MIT License].**
+
+[MIT License]: http://choosealicense.com/licenses/mit/
+
 MIT License
 
-Copyright (c) 2017 Nicole Parrot
+Copyright (c) 2017 Dexter Industries
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +30,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+Hardware License
+----------------
+
+**The hardware schematics are released under the [Creative Commons Attribution
+NonCommercial ShareAlike 4.0 License][CC4].**
+
+[CC4]: https://creativecommons.org/licenses/by-nc-sa/4.0/
