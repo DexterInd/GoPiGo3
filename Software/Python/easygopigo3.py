@@ -97,8 +97,8 @@ def left():
     my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,0)
 
 def right():
-    my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,50)
     my_gpg.set_motor_power(my_gpg.MOTOR_LEFT,0)
+    my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,50)
 
 
 #############################################################
