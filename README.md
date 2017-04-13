@@ -7,7 +7,7 @@ Installation
 
 1. Clone this repository onto the Raspberry Pi:
 
-        sudo git clone http://www.github.com/DexterInd/GoPiGo3Dev.git /home/pi/Dexter/GoPiGo3
+        sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
 
 2. Run the install script:
 

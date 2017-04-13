@@ -14,7 +14,7 @@ from __future__ import division
 import subprocess # for executing system calls
 import spidev
 
-FIRMWARE_VERSION_REQUIRED = "0.1.x" # Make sure the top 2 of 3 numbers match
+FIRMWARE_VERSION_REQUIRED = "0.2.x" # Make sure the top 2 of 3 numbers match
 
 GPG_SPI = spidev.SpiDev()
 GPG_SPI.open(0, 1)
@@ -83,10 +83,13 @@ class GoPiGo3(object):
         
         SET_MOTOR_LIMITS,
         
+        OFFSET_MOTOR_ENCODER,
+        
         GET_MOTOR_ENCODER_LEFT,
         GET_MOTOR_ENCODER_RIGHT,
         
-        OFFSET_MOTOR_ENCODER,
+        GET_MOTOR_STATUS_LEFT,
+        GET_MOTOR_STATUS_RIGHT,
         
         SET_GROVE_TYPE,
         SET_GROVE_MODE,
@@ -130,7 +133,7 @@ class GoPiGo3(object):
     
     MOTOR_FLOAT = -128
     
-    MOTOR_TICKS_PER_DEGREE = (1920.0 / 360.0)
+    MOTOR_TICKS_PER_DEGREE = ((120.0 * 16.0) / 360.0) # encoder ticks per output shaft rotation degree
     
     GROVE_1_1 = 0x01
     GROVE_1_2 = 0x02
@@ -451,6 +454,48 @@ class GoPiGo3(object):
         print(outArray)
         self.spi_transfer_array(outArray)
     
+    def get_motor_status(self, port):
+        """
+        Read a motor status
+        
+        Keyword arguments:
+        port -- The motor port (one at a time). MOTOR_LEFT or MOTOR_RIGHT.
+        
+        Returns a list:
+            flags -- 8-bits of bit-flags that indicate motor status:
+                bit 0 -- LOW_VOLTAGE_FLOAT - The motors are automatically disabled because the battery voltage is too low
+                bit 1 -- OVERLOADED - The motors aren't close to the target (applies to position control and dps speed control).
+            power -- the raw PWM power in percent (-100 to 100)
+            encoder -- The encoder position
+            dps -- The current speed in Degrees Per Second
+        """
+        if port == self.MOTOR_LEFT:
+            message_type = self.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_LEFT
+        elif port == self.MOTOR_RIGHT:
+            message_type = self.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_RIGHT
+        else:
+            raise IOError("get_motor_status error. Must be one motor port at a time. MOTOR_LEFT or MOTOR_RIGHT.")
+            return
+        
+        outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        reply = self.spi_transfer_array(outArray)
+        if(reply[3] == 0xA5):
+            speed = int(reply[5])
+            if speed & 0x80:
+                speed = speed - 0x100
+            
+            encoder = int((reply[6] << 24) | (reply[7] << 16) | (reply[8] << 8) | reply[9])
+            if encoder & 0x80000000:
+                encoder = int(encoder - 0x100000000)
+            
+            dps = int((reply[10] << 8) | reply[11])
+            if dps & 0x8000:
+                dps = dps - 0x10000
+            
+            return [reply[4], speed, int(encoder / self.MOTOR_TICKS_PER_DEGREE), int(dps / self.MOTOR_TICKS_PER_DEGREE)]
+        raise IOError("No SPI response")
+        return
+    
     def get_motor_encoder(self, port):
         """
         Read a motor encoder in degrees
@@ -675,6 +720,9 @@ class GoPiGo3(object):
         
         # Turn off the motors
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, self.MOTOR_FLOAT)
+        
+        # Reset the motor limits
+        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0, 0)
         
         # Turn off the servos
         self.set_servo(self.SERVO_1 + self.SERVO_2, 0)

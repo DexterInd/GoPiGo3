@@ -44,8 +44,6 @@ echo "                                       "
 echo ""
 echo "Welcome to GoPiGo3 Installer."
 
-
-
 # Make sure the gopigo3_power.py program will run at boot
 # Add 'sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &' to /etc/rc.local
 echo ""
