@@ -13,6 +13,6 @@ setuptools.setup(
     description="Drivers and examples for using the GoPiGo3 in Python",
     author="Dexter Industries",
     url="http://www.dexterindustries.com/GoPiGo/",
-    py_modules=['gopigo3'],
+    py_modules=['gopigo3','easygopigo3'],
     #install_requires=open('requirements.txt').readlines(),
 )
