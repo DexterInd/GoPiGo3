@@ -8,7 +8,6 @@ import tty
 import select
 
 import gopigo3
-GPG3 = gopigo3.GoPiGo3()
 
 try:
     sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
@@ -57,7 +56,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         super(EasyGoPiGo3, self).__init__()
         self.sensor_1 = None
         self.sensor_2 = None
-        self.speed = 50
+        self.set_speed(60)
 
     def volt(self):
         _wait_for_read()
@@ -70,7 +69,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         try:
             self.speed = int(in_speed)
         except:
-            self.speed = 50
+            self.speed = 60
 
     def get_speed(self):
         return int(self.speed)
@@ -96,7 +95,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def set_light_sensor(self,port):
         sensor = LightSensor(self,port)
-        print(sensor)
         if port == "AD1":
             self.sensor_1 = sensor
         elif port == "AD2":
@@ -126,22 +124,20 @@ def stop():
     return my_gpg.stop()
 
 def forward():
-    my_gpg.set_motor_power(my_gpg.MOTOR_LEFT + my_gpg.MOTOR_RIGHT,50)
+    my_gpg.forward()
 
 def backward():
-    my_gpg.set_motor_power(my_gpg.MOTOR_LEFT + my_gpg.MOTOR_RIGHT,-50)
+    my_gpg.backward()
 
 def left():
-    my_gpg.set_motor_power(my_gpg.MOTOR_LEFT,50)
-    my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,0)
+    my_gpg.left()
 
 def right():
-    my_gpg.set_motor_power(my_gpg.MOTOR_LEFT,0)
-    my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,50)
+    my_gpg.right()
 
 
 #############################################################
-# NOTHING BELOW HAS BEEN PORTED TO GPG3
+# LIGHT SENSOR ONLY BELOW HAS BEEN PORTED TO GPG3
 #############################################################
 
 #############################################################
