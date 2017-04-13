@@ -57,6 +57,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         super(EasyGoPiGo3, self).__init__()
         self.sensor_1 = None
         self.sensor_2 = None
+        self.speed = 50
 
     def volt(self):
         _wait_for_read()
@@ -65,8 +66,33 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         _release_read()
         return voltage
 
+    def set_speed(self,in_speed):
+        try:
+            self.speed = int(in_speed)
+        except:
+            self.speed = 50
+
+    def get_speed(self):
+        return int(self.speed)
+
     def stop(self):
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+
+    def forward(self):
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                             self.get_speed())
+    def backward(self):
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                             self.get_speed()* -1)
+
+    def left(self):
+        self.set_motor_power(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_power(self.MOTOR_RIGHT, 0)
+
+    def right(self):
+        self.set_motor_power(self.MOTOR_LEFT, 0)
+        self.set_motor_power(self.MOTOR_RIGHT, self.get_speed())
+
 
     def set_light_sensor(self,port):
         sensor = LightSensor(self,port)
@@ -76,6 +102,19 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         elif port == "AD2":
             self.sensor_2 = sensor
         return sensor
+
+    def led_on(self,id):
+        if id == 1:
+            self.set_led(self.LED_LEFT,255)
+        if id == 0:
+            self.set_led(self.LED_RIGHT,255)
+
+    def led_off(self,id):
+        if id == 1:
+            self.set_led(self.LED_LEFT,0)
+        if id == 0:
+            self.set_led(self.LED_RIGHT,0)
+
 
 my_gpg = EasyGoPiGo3()
 # these functions are here because we need direct access to these
@@ -97,8 +136,8 @@ def left():
     my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,0)
 
 def right():
-    my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,50)
     my_gpg.set_motor_power(my_gpg.MOTOR_LEFT,0)
+    my_gpg.set_motor_power(my_gpg.MOTOR_RIGHT,50)
 
 
 #############################################################
