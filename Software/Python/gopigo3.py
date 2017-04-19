@@ -133,7 +133,6 @@ class GoPiGo3(object):
 
     MOTOR_FLOAT = -128
 
-
     #MOTOR_TICKS_PER_DEGREE = ((120.0 * 16.0) / 360.0) # encoder ticks per output shaft rotation degree
     MOTOR_TICKS_PER_DEGREE = ((220.0 * 16.0) / 360.0) # encoder ticks per output shaft rotation degree
 
@@ -460,10 +459,8 @@ class GoPiGo3(object):
         """
         Read a motor status
 
-
         Keyword arguments:
         port -- The motor port (one at a time). MOTOR_LEFT or MOTOR_RIGHT.
-
 
         Returns a list:
             flags -- 8-bits of bit-flags that indicate motor status:
@@ -481,14 +478,12 @@ class GoPiGo3(object):
             raise IOError("get_motor_status error. Must be one motor port at a time. MOTOR_LEFT or MOTOR_RIGHT.")
             return
 
-
         outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         reply = self.spi_transfer_array(outArray)
         if(reply[3] == 0xA5):
             speed = int(reply[5])
             if speed & 0x80:
                 speed = speed - 0x100
-
 
             encoder = int((reply[6] << 24) | (reply[7] << 16) | (reply[8] << 8) | reply[9])
             if encoder & 0x80000000:
@@ -501,7 +496,6 @@ class GoPiGo3(object):
             return [reply[4], speed, int(encoder / self.MOTOR_TICKS_PER_DEGREE), int(dps / self.MOTOR_TICKS_PER_DEGREE)]
         raise IOError("No SPI response")
         return
-
 
     def get_motor_encoder(self, port):
         """
