@@ -175,7 +175,7 @@ class Sensor(object):
         isAnalog
         isDigital
     '''
-    def __init__(self, gpg, port, pinmode):
+    def __init__(self, port, pinmode, gpg):
         '''
         port = one of PORTS keys
         pinmode = "INPUT", "OUTPUT", "SERIAL" (which gets ignored)
@@ -527,11 +527,12 @@ class LineFollower(Sensor):
         You will have to handle the calibration yourself
     '''
 
-    def __init__(self, port="I2C"):
+    def __init__(self, port="I2C", gpg=None):
         try:
-            Sensor.__init__(self, port, "INPUT")
+            Sensor.__init__(self, port, "INPUT", gpg)
             self.set_descriptor("Line Follower")
-        except:
+        except Exception as e:
+            print (e)
             raise ValueError("Line Follower Library not found")
 
     def read_raw_sensors(self):
@@ -550,6 +551,12 @@ class LineFollower(Sensor):
             return five_vals
         else:
             return [-1, -1, -1, -1, -1]
+
+    def get_white_calibration(self):
+        return line_sensor.get_white_line()
+
+    def get_black_calibration(self):
+        return line_sensor.get_black_line()
 
     def read(self):
         '''
