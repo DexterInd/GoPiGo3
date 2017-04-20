@@ -56,7 +56,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         super(EasyGoPiGo3, self).__init__()
         self.sensor_1 = None
         self.sensor_2 = None
-        self.set_speed(60)
+        self.set_speed(300)
 
     def volt(self):
         _wait_for_read()
@@ -69,28 +69,28 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         try:
             self.speed = int(in_speed)
         except:
-            self.speed = 60
+            self.speed = 300
 
     def get_speed(self):
         return int(self.speed)
 
     def stop(self):
-        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
     def forward(self):
-        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                              self.get_speed())
     def backward(self):
-        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                              self.get_speed()* -1)
 
     def left(self):
-        self.set_motor_power(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_power(self.MOTOR_RIGHT, 0)
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
     def right(self):
-        self.set_motor_power(self.MOTOR_LEFT, 0)
-        self.set_motor_power(self.MOTOR_RIGHT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_LEFT, 0)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
 
 
     def set_light_sensor(self,port):
