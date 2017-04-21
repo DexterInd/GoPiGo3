@@ -129,6 +129,10 @@ class GoPiGo3(object):
     LED_RIGHT_EYE     = 0x01
     LED_LEFT_BLINKER  = 0x04
     LED_RIGHT_BLINKER = 0x08
+    LED_EYE_LEFT = LED_LEFT_EYE
+    LED_EYE_RIGHT = LED_RIGHT_EYE
+    LED_BLINKER_LEFT = LED_LEFT_BLINKER
+    LED_BLINKER_RIGHT = LED_RIGHT_BLINKER
     LED_WIFI  = 0x80 # Used to indicate WiFi status. Should not be controlled by the user.
 
     SERVO_1 = 0x01
