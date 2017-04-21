@@ -62,7 +62,7 @@ class GoPiGo3(object):
     WHEEL_DIAMETER           = 66.5 # wheel diameter in mm
     WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # The circumference of the circle the wheels will trace while turning
     WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # The circumference of the wheels
-    
+
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
 
@@ -125,10 +125,10 @@ class GoPiGo3(object):
         IR_EV3,
     """)
 
-    LED_1     = 0x02
-    LED_2     = 0x01
-    LED_LEFT  = 0x04
-    LED_RIGHT = 0x08
+    LED_LEFT_EYE     = 0x02
+    LED_RIGHT_EYE     = 0x01
+    LED_LEFT_BLINKER  = 0x04
+    LED_RIGHT_BLINKER = 0x08
     LED_WIFI  = 0x80 # Used to indicate WiFi status. Should not be controlled by the user.
 
     SERVO_1 = 0x01
@@ -346,7 +346,7 @@ class GoPiGo3(object):
         Set an LED
 
         Keyword arguments:
-        led -- The LED(s). LED_1, LED_2, LED_LEFT, LED_RIGHT, and/or LED_WIFI.
+        led -- The LED(s). LED_LEFT_EYE, LED_RIGHT_EYE, LED_LEFT_BLINKER, LED_RIGHT_BLINKER, and/or LED_WIFI.
         red -- The LED's Red color component (0-255)
         green -- The LED's Green color component (0-255)
         blue -- The LED's Blue color component (0-255)
@@ -734,4 +734,4 @@ class GoPiGo3(object):
         self.set_servo(self.SERVO_1 + self.SERVO_2, 0)
 
         # Turn off the LEDs
-        self.set_led(self.LED_1 + self.LED_2 + self.LED_LEFT + self.LED_RIGHT, 0, 0, 0)
+        self.set_led(self.LED_LEFT_EYE + self.LED_RIGHT_EYE + self.LED_LEFT_BLINKER + self.LED_RIGHT_BLINKER, 0, 0, 0)

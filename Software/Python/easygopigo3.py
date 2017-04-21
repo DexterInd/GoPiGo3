@@ -57,6 +57,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.sensor_1 = None
         self.sensor_2 = None
         self.set_speed(300)
+        self.left_eye_color = (0,255,255)
+        self.right_eye_color = (0,255,255)
 
     def volt(self):
         _wait_for_read()
@@ -101,17 +103,89 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             self.sensor_2 = sensor
         return sensor
 
-    def led_on(self,id):
+    def blinker_on(self,id):
+        if id == 1 or id == "left":
+            self.set_led(self.LED_LEFT_BLINKER,255)
+        if id == 0 or id == "right":
+            self.set_led(self.LED_RIGHT_BLINKER,255)
+
+    def blinker_off(self,id):
         if id == 1:
-            self.set_led(self.LED_LEFT,255)
+            self.set_led(self.LED_LEFT_BLINKER,0)
         if id == 0:
-            self.set_led(self.LED_RIGHT,255)
+            self.set_led(self.LED_RIGHT_BLINKER,0)
+
+    def led_on(self,id):
+        self.blinker_on(id)
+
 
     def led_off(self,id):
-        if id == 1:
-            self.set_led(self.LED_LEFT,0)
-        if id == 0:
-            self.set_led(self.LED_RIGHT,0)
+        blinker_off(id)
+
+
+    def set_left_eye_color(self,color):
+        if isinstance(color,tuple) and len(color)==3:
+            self.left_eye_color = color
+        else:
+            raise TypeError
+
+    def set_right_eye_color(self,color):
+        if isinstance(color,tuple) and len(color)==3:
+            self.right_eye_color = color
+        else:
+            raise TypeError
+
+    def set_eye_color(self,color):
+        self.set_left_eye_color(color)
+        self.set_right_eye_color(color)
+
+    def open_left_eye(self):
+        self.set_led(self.LED_LEFT_EYE,
+                     self.left_eye_color[0],
+                     self.left_eye_color[1],
+                     self.left_eye_color[2],
+                     )
+
+    def open_right_eye(self):
+        self.set_led(self.LED_RIGHT_EYE,
+                     self.left_eye_color[0],
+                     self.left_eye_color[1],
+                     self.left_eye_color[2],
+                     )
+
+    def open_eyes(self):
+        self.open_left_eye()
+        self.open_right_eye()
+
+    def close_left_eye(self):
+        self.set_led(self.LED_LEFT_EYE, 0,0,0)
+
+    def close_right_eye(self):
+        self.set_led(self.LED_RIGHT_EYE, 0,0,0)
+
+    def close_eyes(self):
+        self.close_left_eye()
+        self.close_right_eye()
+
+
+
+    def turn_degrees(self,degrees):
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        # the distance in mm that each wheel needs to travel
+        WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
+
+        # the number of degrees each wheel needs to turn
+        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) * 360)
+
+        # Limit the speed
+        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT, dps = self.get_speed())
+
+        # Set each motor target
+        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight - WheelTurnDegrees))
 
 
 my_gpg = EasyGoPiGo3()
