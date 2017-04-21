@@ -9,7 +9,7 @@
 #
 # This code is an example for controlling the GoPiGo3 Motors
 #
-# Results:  When you run this program, the GoPiGo3 the Left Motor will control the speed of the right motor.
+# Results:  When you run this program, manually rotate the left motor to control the speed of the right motor.
 
 from __future__ import print_function # use python 3 syntax but make it compatible with python 2
 from __future__ import division       #                           ''
