@@ -13,6 +13,7 @@ from __future__ import division
 
 import subprocess # for executing system calls
 import spidev
+import math       # import math for math.pi constant
 
 FIRMWARE_VERSION_REQUIRED = "0.2.x" # Make sure the top 2 of 3 numbers match
 
@@ -57,6 +58,11 @@ class SensorError(Exception):
 
 
 class GoPiGo3(object):
+    WHEEL_BASE_WIDTH         = 128  # distance in mm from left wheel to right wheel
+    WHEEL_DIAMETER           = 66.5 # wheel diameter in mm
+    WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # The circumference of the circle the wheels will trace while turning
+    WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # The circumference of the wheels
+    
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
 
@@ -452,7 +458,6 @@ class GoPiGo3(object):
         dps = int(dps * self.MOTOR_TICKS_PER_DEGREE)
         outArray = [self.SPI_Address, self.SPI_MESSAGE_TYPE.SET_MOTOR_LIMITS, int(port), int(power),\
                     ((dps >> 8) & 0xFF), (dps & 0xFF)]
-        print(outArray)
         self.spi_transfer_array(outArray)
 
     def get_motor_status(self, port):
