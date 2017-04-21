@@ -62,7 +62,7 @@ class GoPiGo3(object):
     WHEEL_DIAMETER           = 66.5 # wheel diameter in mm
     WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # The circumference of the circle the wheels will trace while turning
     WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # The circumference of the wheels
-    
+
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
 
@@ -88,15 +88,15 @@ class GoPiGo3(object):
         SET_MOTOR_DPS,
 
         SET_MOTOR_LIMITS,
-        
+
         OFFSET_MOTOR_ENCODER,
-        
+
         GET_MOTOR_ENCODER_LEFT,
         GET_MOTOR_ENCODER_RIGHT,
-        
+
         GET_MOTOR_STATUS_LEFT,
         GET_MOTOR_STATUS_RIGHT,
-        
+
         SET_GROVE_TYPE,
         SET_GROVE_MODE,
         SET_GROVE_STATE,
@@ -125,10 +125,14 @@ class GoPiGo3(object):
         IR_EV3,
     """)
 
-    LED_1     = 0x02
-    LED_2     = 0x01
-    LED_LEFT  = 0x04
-    LED_RIGHT = 0x08
+    LED_LEFT_EYE     = 0x02
+    LED_RIGHT_EYE     = 0x01
+    LED_LEFT_BLINKER  = 0x04
+    LED_RIGHT_BLINKER = 0x08
+    LED_EYE_LEFT = LED_LEFT_EYE
+    LED_EYE_RIGHT = LED_RIGHT_EYE
+    LED_BLINKER_LEFT = LED_LEFT_BLINKER
+    LED_BLINKER_RIGHT = LED_RIGHT_BLINKER
     LED_WIFI  = 0x80 # Used to indicate WiFi status. Should not be controlled by the user.
 
     SERVO_1 = 0x01
@@ -138,7 +142,7 @@ class GoPiGo3(object):
     MOTOR_RIGHT = 0x02
 
     MOTOR_FLOAT = -128
-    
+
     #MOTOR_TICKS_PER_DEGREE = ((120.0 * 16.0) / 360.0) # encoder ticks per output shaft rotation degree
     MOTOR_TICKS_PER_DEGREE = ((220.0 * 16.0) / 360.0) # encoder ticks per output shaft rotation degree
 
@@ -346,7 +350,7 @@ class GoPiGo3(object):
         Set an LED
 
         Keyword arguments:
-        led -- The LED(s). LED_1, LED_2, LED_LEFT, LED_RIGHT, and/or LED_WIFI.
+        led -- The LED(s). LED_LEFT_EYE, LED_RIGHT_EYE, LED_LEFT_BLINKER, LED_RIGHT_BLINKER, and/or LED_WIFI.
         red -- The LED's Red color component (0-255)
         green -- The LED's Green color component (0-255)
         blue -- The LED's Blue color component (0-255)
@@ -463,10 +467,10 @@ class GoPiGo3(object):
     def get_motor_status(self, port):
         """
         Read a motor status
-        
+
         Keyword arguments:
         port -- The motor port (one at a time). MOTOR_LEFT or MOTOR_RIGHT.
-        
+
         Returns a list:
             flags -- 8-bits of bit-flags that indicate motor status:
                 bit 0 -- LOW_VOLTAGE_FLOAT - The motors are automatically disabled because the battery voltage is too low
@@ -482,26 +486,26 @@ class GoPiGo3(object):
         else:
             raise IOError("get_motor_status error. Must be one motor port at a time. MOTOR_LEFT or MOTOR_RIGHT.")
             return
-        
+
         outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         reply = self.spi_transfer_array(outArray)
         if(reply[3] == 0xA5):
             speed = int(reply[5])
             if speed & 0x80:
                 speed = speed - 0x100
-            
+
             encoder = int((reply[6] << 24) | (reply[7] << 16) | (reply[8] << 8) | reply[9])
             if encoder & 0x80000000:
                 encoder = int(encoder - 0x100000000)
-            
+
             dps = int((reply[10] << 8) | reply[11])
             if dps & 0x8000:
                 dps = dps - 0x10000
-            
+
             return [reply[4], speed, int(encoder / self.MOTOR_TICKS_PER_DEGREE), int(dps / self.MOTOR_TICKS_PER_DEGREE)]
         raise IOError("No SPI response")
         return
-    
+
     def get_motor_encoder(self, port):
         """
         Read a motor encoder in degrees
@@ -734,4 +738,4 @@ class GoPiGo3(object):
         self.set_servo(self.SERVO_1 + self.SERVO_2, 0)
 
         # Turn off the LEDs
-        self.set_led(self.LED_1 + self.LED_2 + self.LED_LEFT + self.LED_RIGHT, 0, 0, 0)
+        self.set_led(self.LED_LEFT_EYE + self.LED_RIGHT_EYE + self.LED_LEFT_BLINKER + self.LED_RIGHT_BLINKER, 0, 0, 0)
