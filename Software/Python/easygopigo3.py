@@ -30,7 +30,7 @@ fd = ''
 read_is_open = True
 
 def debug(in_str):
-    if True:
+    if False:
         print(in_str)
 
 def _wait_for_read():
@@ -211,19 +211,8 @@ def right():
 
 
 #############################################################
-# LIGHT SENSOR ONLY BELOW HAS BEEN PORTED TO GPG3
+#
 #############################################################
-
-#############################################################
-# the following is in a try/except structure because it depends
-# on the date of gopigo.py
-#############################################################
-try:
-    # TBD: these shouldn't be hardcoded
-    PORTS = {"AD1": 0x03, "AD2": 0x0C,
-             "SERIAL": -1, "I2C": -2}
-except:
-    PORTS = {"A1": 15, "D11": 10, "SERIAL": -1, "I2C": -2}
 
 
 ANALOG = 1
@@ -249,21 +238,26 @@ class Sensor(object):
         isAnalog
         isDigital
     '''
-    def __init__(self, port, pinmode, gpg):
+    PORTS = {}
+
+    def __init__(self, port, pinmode,gpg):
         '''
         port = one of PORTS keys
         pinmode = "INPUT", "OUTPUT", "SERIAL" (which gets ignored)
         '''
         debug("Sensor init")
+        self.gpg = gpg
         debug(pinmode)
         self.setPort(port)
         self.setPinMode(pinmode)
-        self.gpg = gpg
+
+
         if pinmode == "INPUT":
             self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
             self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_INPUT_ANALOG)
-        #or pinmode == "OUTPUT":
-        #     gopigo.pinMode(self.getPortID(), self.getPinMode())
+        if pinmode == "OUTPUT":
+            self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_OUTPUT_PWM)
 
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
@@ -285,8 +279,23 @@ class Sensor(object):
         return self.pin
 
     def setPort(self, port):
+        debug(port)
         self.port = port
-        self.portID = PORTS[self.port]
+        debug(self.port)
+        debug("self.gpg is {}".format(self.gpg))
+
+        if port == "AD1":
+            self.portID = self.gpg.GROVE_1
+        elif port == "AD1":
+            self.portID = self.gpg.GROVE_2
+        elif port == "SERIAL":
+            self.portID = -1
+        elif port == "I2C":
+            self.portID = -2
+        else:
+            self.portID = -3
+
+        debug(self.portID)
 
     def getPort(self):
         return (self.port)
@@ -315,10 +324,10 @@ class DigitalSensor(Sensor):
     '''
     Implements read and write methods
     '''
-    def __init__(self, port, pinmode):
+    def __init__(self, port, pinmode, gpg):
         debug("DigitalSensor init")
         self.pin = DIGITAL
-        Sensor.__init__(self, port, pinmode)
+        Sensor.__init__(self, port, pinmode,gpg)
 
     def read(self):
         '''
@@ -355,11 +364,10 @@ class AnalogSensor(Sensor):
     '''
     implements read and write methods
     '''
-    def __init__(self, gpg, port, pinmode):
+    def __init__(self, port, pinmode,gpg):
         debug("AnalogSensor init")
         self.value = 0
-        self.pin = ANALOG
-        Sensor.__init__(self, gpg, port, pinmode)
+        Sensor.__init__(self, port, pinmode,gpg)
 
     def read(self):
         _wait_for_read()
@@ -370,9 +378,16 @@ class AnalogSensor(Sensor):
         _release_read()
         return self.value
 
+    def percent_read(self):
+        '''
+        brings the sensor read to a percent scale
+        '''
+        reading_percent = self.read() * 100 // 4096
+        return reading_percent
+
     def write(self, power):
         self.value = power
-        return gopigo.analogWrite(self.getPortID(), power)
+        return self.gpg.set_grove_pwm_duty(self.getPortID(), power)
 ##########################
 
 
@@ -383,9 +398,9 @@ class LightSensor(AnalogSensor):
     self.pin takes a value of 0 when on analog pin (default value)
         takes a value of 1 when on digital pin
     """
-    def __init__(self, gpg,port="A1"):
+    def __init__(self, port="AD1",gpg=None):
         debug("LightSensor init")
-        AnalogSensor.__init__(self, gpg, port,"INPUT")
+        AnalogSensor.__init__(self, port, "INPUT", gpg)
         self.setPin(2)
         self.set_descriptor("Light sensor")
 ##########################
@@ -395,9 +410,10 @@ class SoundSensor(AnalogSensor):
     """
     Creates a sound sensor
     """
-    def __init__(self, port="A1"):
+    def __init__(self, port="A1",gpg=None):
         debug("Sound Sensor on port "+port)
-        AnalogSensor.__init__(self, port, "INPUT")
+        AnalogSensor.__init__(self, port, "INPUT",gpg)
+        self.setPin(2)
         self.set_descriptor("Sound sensor")
 
 ##########################
@@ -405,18 +421,22 @@ class SoundSensor(AnalogSensor):
 
 class UltraSonicSensor(AnalogSensor):
 
-    def __init__(self, port="A1"):
-        debug("Ultrasonic Sensor on port "+port)
-        AnalogSensor.__init__(self, port, "INPUT")
-        self.safe_distance = 500
-        self.set_descriptor("Ultrasonic sensor")
+    def __init__(self, port="AD1", gpg=None):
+        try:
+            debug("Ultrasonic Sensor on port "+port)
+            AnalogSensor.__init__(self, port, "INPUT",gpg)
+            self.pin = gpg.GROVE_2_2
+            self.safe_distance = 500
+            self.set_descriptor("Ultrasonic sensor")
+        except:
+            raise AttributeError
 
     def is_too_close(self):
         _wait_for_read()
 
         if _is_read_open():
             _grab_read()
-            if gopigo.us_dist(PORTS[self.port]) < self.get_safe_distance():
+            if gpg.us_dist(PORTS[self.port]) < self.get_safe_distance():
                 _release_read()
                 return True
         _release_read()
@@ -442,7 +462,8 @@ class UltraSonicSensor(AnalogSensor):
             _wait_for_read()
 
             _grab_read()
-            value = gopigo.corrected_us_dist(PORTS[self.port])
+            # currently not supported with GPG3
+            value = -1
             _release_read()
             if value < 501 and value > 0:
                 readings.append(value)
@@ -460,6 +481,12 @@ class UltraSonicSensor(AnalogSensor):
         return_reading = int(return_reading // len(readings))
 
         return (return_reading)
+
+    def read_inches(self):
+        value = self.read()
+        if value == 501:
+            return 501
+        return (value / 2.54)
 ##########################
 
 
@@ -473,10 +500,14 @@ class Buzzer(AnalogSensor):
     soundoff() -> which is the same as sound(0)
     soundon() -> which is the same as sound(254), max value
     '''
-    def __init__(self, port="D11"):
-        AnalogSensor.__init__(self, port, "OUTPUT")
-        self.set_descriptor("Buzzer")
-        self.power = 254
+    def __init__(self, port="AD1",gpg=None):
+        try:
+            AnalogSensor.__init__(self, port, "OUTPUT",gpg)
+            self.pin = gpg.GROVE_2_2
+            self.set_descriptor("Buzzer")
+            self.power = 254
+        except:
+            raise AttributeError
 
     def sound(self, power):
         '''
@@ -511,13 +542,21 @@ class Buzzer(AnalogSensor):
 
 
 class Led(AnalogSensor):
-    def __init__(self, port="D11"):
-        AnalogSensor.__init__(self, port, "OUTPUT")
-        self.set_descriptor("LED")
+    def __init__(self, port="AD1",gpg=None):
+        try:
+            AnalogSensor.__init__(self, port, "OUTPUT",gpg)
+            self.setPin(2)
+            self.set_descriptor("LED")
+        except Exception as e:
+            print(e)
+            raise ValueError
 
     def light_on(self, power):
         AnalogSensor.write(self, power)
-        self.value = power
+
+    def light_max(self):
+        max_power = 100
+        self.light_on(max_power)
 
     def light_off(self):
         AnalogSensor.write(self, 0)
@@ -531,23 +570,23 @@ class Led(AnalogSensor):
 
 
 class MotionSensor(DigitalSensor):
-    def __init__(self, port="D11"):
-        DigitalSensor.__init__(self, port, "INPUT")
+    def __init__(self, port="D11",gpg=None):
+        DigitalSensor.__init__(self, port, "INPUT",gpg)
         self.set_descriptor("Motion Sensor")
 ##########################
 
 
 class ButtonSensor(DigitalSensor):
 
-    def __init__(self, port="D11"):
-        DigitalSensor.__init__(self, port, "INPUT")
+    def __init__(self, port="D11",gpg=None):
+        DigitalSensor.__init__(self, port, "INPUT",gpg)
         self.set_descriptor("Button sensor")
 ##########################
 
 
 class Remote(Sensor):
 
-    def __init__(self, port="SERIAL"):
+    def __init__(self, port="SERIAL",gpg=None):
         global IR_RECEIVER_ENABLED
         # IR Receiver
         try:
@@ -562,7 +601,7 @@ class Remote(Sensor):
             print("Please enable the IR Receiver in the Advanced Comms tool")
             IR_RECEIVER_ENABLED = False
         else:
-            Sensor.__init__(self, port, "SERIAL")
+            Sensor.__init__(self, port, "SERIAL",gpg=None)
             self.set_descriptor("Remote Control")
 
     def is_enabled(self):
