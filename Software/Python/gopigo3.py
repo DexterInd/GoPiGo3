@@ -58,10 +58,10 @@ class SensorError(Exception):
 
 
 class GoPiGo3(object):
-    WHEEL_BASE_WIDTH         = 117  # distance in mm from left wheel to right wheel. This works with the initial GPG3 prototype. Will need to be adjusted.
-    WHEEL_DIAMETER           = 66.5 # wheel diameter in mm
-    WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # The circumference of the circle the wheels will trace while turning
-    WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # The circumference of the wheels
+    WHEEL_BASE_WIDTH         = 117  # distance (mm) from left wheel to right wheel. This works with the initial GPG3 prototype. Will need to be adjusted.
+    WHEEL_DIAMETER           = 66.5 # wheel diameter (mm)
+    WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # The circumference of the circle the wheels will trace while turning (mm)
+    WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # The circumference of the wheels (mm)
     
     MOTOR_GEAR_RATIO           = 120 # Motor gear ratio # 220 for Nicole's prototype
     ENCODER_TICKS_PER_ROTATION = 6   # Encoder ticks per motor rotation (number of magnet positions) # 16 for early prototypes
@@ -127,6 +127,7 @@ class GoPiGo3(object):
         CUSTOM,
         IR_GO_BOX,
         IR_EV3,
+        US,
     """)
     
     LED_EYE_LEFT      = 0x02
@@ -647,6 +648,17 @@ class GoPiGo3(object):
             if(reply[3] == 0xA5):
                 if(reply[4] == self.GroveType[port_index]):
                     return reply[5]
+                else:
+                    raise SensorError("get_grove_value error: Invalid value")
+            else:
+                raise IOError("get_grove_value error: No SPI response")
+            
+        elif self.GroveType[port_index] == self.GROVE_TYPE.US:
+            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
+            reply = self.spi_transfer_array(outArray)
+            if(reply[3] == 0xA5):
+                if(reply[4] == self.GroveType[port_index]):
+                    return (((reply[5] << 8) & 0xFF00) | (reply[6] & 0xFF))
                 else:
                     raise SensorError("get_grove_value error: Invalid value")
             else:
