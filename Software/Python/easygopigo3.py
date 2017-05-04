@@ -105,18 +105,17 @@ def _get_mount_points(devices=None):
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     def __init__(self):
-        super(EasyGoPiGo3, self).__init__()
+        super(self.__class__, self).__init__()
         self.sensor_1 = None
         self.sensor_2 = None
         self.set_speed(300)
         self.left_eye_color = (0,255,255)
         self.right_eye_color = (0,255,255)
+        # Limit the speed
+        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT, dps = self.get_speed())
 
     def volt(self):
-        _wait_for_read()
-        _grab_read()
         voltage = self.get_voltage_battery()
-        _release_read()
         return voltage
 
     def set_speed(self,in_speed):
@@ -135,7 +134,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                              self.get_speed())
 
-    def forward_dist(self,dist):
+    def drive_cm(self, dist, blocking=False):
         # dist is in cm
         # if dist is negative, this becomes a backward move
 
@@ -144,24 +143,25 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
         StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-        # the distance in mm that each wheel needs to travel
-        WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * dist_mm) / 360)
-
         # the number of degrees each wheel needs to turn
-        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) * 360)
+        WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
 
         self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + WheelTurnDegrees))
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + WheelTurnDegrees))
 
-    def forward_rotation(self,rotation):
-        # if rotation is negative, this becomes a backward move
+    def drive_inches(self, dist, blocking=False):
+        self.drive_cm(dist*2.54, blocking)
+
+    def drive_degrees(self, degrees, blocking=False):
+        # degrees is in degrees, not radians
+        # if degrees is negative, this becomes a backward move
 
         # get the starting position of each motor
         StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
         StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + rotation))
-        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + rotation))
+        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + degrees))
+        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + degrees))
 
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
