@@ -6,8 +6,12 @@ from builtins import input
 import sys
 import tty
 import select
-
 import gopigo3
+import picamera
+from glob import glob  # for USB checking
+from subprocess import check_output, CalledProcessError
+import os
+from multiprocessing import Process, Lock
 
 try:
     sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
@@ -50,6 +54,48 @@ def _release_read():
     # print("release")
     read_is_open = True
 
+#####################################################################
+#
+# USB SUPPORT
+#
+#####################################################################
+
+def check_usb():
+    '''
+    will return the path to the USB key if there's one that's mounted
+    will return false otherwise
+    '''
+    if len(_get_mount_points()) == 1:
+        return _get_mount_points()[0][1]
+    return False
+
+def create_folder_on_usb(foldername):
+    usb_path = check_usb()
+    if usb_path is not False:
+        try:
+            os.mkdir( usb_path+"/"+foldername, 0755 );
+            return True
+        except:
+            return False
+
+def _get_usb_devices():
+    '''
+    gets a list of devices that could be a usb
+    '''
+    sdb_devices = map(os.path.realpath, glob('/sys/block/sd*'))
+    usb_devices = (dev for dev in sdb_devices
+        if 'usb' in dev.split('/')[5])
+    return dict((os.path.basename(dev), dev) for dev in usb_devices)
+
+def _get_mount_points(devices=None):
+    '''
+    returns a list of all mounted USBs
+    '''
+    devices = devices or _get_usb_devices() # if devices are None: get_usb_devices
+    output = check_output(['mount']).splitlines()
+    is_usb = lambda path: any(dev in path for dev in devices)
+    usb_info = (line for line in output if is_usb(line.split()[0]))
+    return [(info.split()[0], info.split()[2]) for info in usb_info]
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     def __init__(self):
@@ -724,6 +770,37 @@ class LineFollower(Sensor):
            five_vals == [0, 1, 1, 1, 1]:
             return "Right"
         return "Unknown"
+
+class EasyCamera(picamera.PiCamera):
+    '''
+    Wrapper around the PiCamera driver
+    you can set the resolution if you want to.
+    And take_photo() will take care of the delay that's required
+        to initialize the camera properly
+    '''
+    def __init__(self, resolution=(1920, 1080), gpg=None):
+        picamera.PiCamera.__init__(self)
+        self.resolution = resolution
+        self.start_time = time.time()  #timestamp on creation
+
+    def take_photo(self,filename):
+        # 2 seconds must have passed since the start of the program
+        # in order to be able to take a photo
+        # known as "camera warm-up time"
+
+        # check for the presence of a properly mounted USB key
+        path=check_usb()
+        if path is False:
+            return False
+
+        # ensure we have waited long enough for camera
+        # to be properly initialised
+        while time.time() - self.start_time < 2:
+            time.sleep(0.1)
+
+        # now we can take a photo. Smile!
+        self.capture(path+ "/"+filename)
+        return True
 
 
 if __name__ == '__main__':
