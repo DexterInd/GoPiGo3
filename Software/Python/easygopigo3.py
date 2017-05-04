@@ -97,6 +97,12 @@ def _get_mount_points(devices=None):
     usb_info = (line for line in output if is_usb(line.split()[0]))
     return [(info.split()[0], info.split()[2]) for info in usb_info]
 
+#####################################################################
+#
+# EASYGOPIGO3
+#
+#####################################################################
+
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     def __init__(self):
         super(EasyGoPiGo3, self).__init__()
@@ -128,6 +134,35 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def forward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                              self.get_speed())
+
+    def forward_dist(self,dist):
+        # dist is in cm
+        # if dist is negative, this becomes a backward move
+
+        dist_mm = dist * 10
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        # the distance in mm that each wheel needs to travel
+        WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * dist_mm) / 360)
+
+        # the number of degrees each wheel needs to turn
+        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) * 360)
+
+        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + WheelTurnDegrees))
+
+    def forward_rotation(self,rotation):
+        # if rotation is negative, this becomes a backward move
+
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + rotation))
+        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + rotation))
+
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                              self.get_speed()* -1)
