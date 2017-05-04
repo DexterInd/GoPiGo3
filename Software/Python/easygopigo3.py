@@ -4,8 +4,9 @@ from __future__ import division
 from builtins import input
 
 import sys
-import tty
-import select
+# import tty
+# import select
+import time
 import gopigo3
 import picamera
 from glob import glob  # for USB checking
@@ -149,6 +150,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + WheelTurnDegrees))
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + WheelTurnDegrees))
 
+        if blocking:
+            while self.reach_target(StartPositionLeft + WheelTurnDegrees) is False:
+                  time.sleep(0.1)
+
     def drive_inches(self, dist, blocking=False):
         self.drive_cm(dist*2.54, blocking)
 
@@ -162,6 +167,22 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + degrees))
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + degrees))
+
+        if blocking:
+            while self.reach_target(StartPositionLeft + degrees) is False:
+                  time.sleep(0.1)
+
+    def reach_target(self,target_degrees):
+        tolerance = 5
+        min_target = target_degrees - tolerance
+        max_target = target_degrees + tolerance
+
+        current_post = self.get_motor_encoder(self.MOTOR_LEFT)
+
+        if current_post > min_target and current_post < max_target:
+            return True
+        else:
+            return False
 
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -250,7 +271,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
 
 
-    def turn_degrees(self,degrees):
+    def turn_degrees(self, degrees):
         # get the starting position of each motor
         StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
         StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
