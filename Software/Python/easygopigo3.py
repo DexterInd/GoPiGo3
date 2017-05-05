@@ -626,8 +626,8 @@ class Buzzer(AnalogSensor):
     Default port is AD1
     It has three methods:
     _sound(power) -> will change incoming power to 0 or 100
-    sound_off() -> which is the same as sound(0)
-    sound_on() -> which is the same as sound(100), max value
+    sound_off() -> which is the same as _sound(0)
+    sound_on() -> which is the same as _sound(98), max value
     '''
     def __init__(self, port="AD1", gpg=None):
         try:
