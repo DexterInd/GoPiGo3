@@ -500,7 +500,7 @@ class LightSensor(AnalogSensor):
     self.pin takes a value of 0 when on analog pin (default value)
         takes a value of 1 when on digital pin
     """
-    def __init__(self, port="AD1",gpg=None):
+    def __init__(self, port="AD1", gpg=None):
         debug("LightSensor init")
         AnalogSensor.__init__(self, port, "INPUT", gpg)
         self.set_pin(1)
@@ -512,7 +512,7 @@ class SoundSensor(AnalogSensor):
     """
     Creates a sound sensor
     """
-    def __init__(self, port="A1",gpg=None):
+    def __init__(self, port="AD1",gpg=None):
         debug("Sound Sensor on port "+port)
         AnalogSensor.__init__(self, port, "INPUT",gpg)
         self.set_pin(1)
