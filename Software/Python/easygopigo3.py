@@ -227,14 +227,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT, 0)
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
 
-    def set_light_sensor(self, port):
-        sensor = LightSensor(self, port)
-        if port == "AD1":
-            self.sensor_1 = sensor
-        elif port == "AD2":
-            self.sensor_2 = sensor
-        return sensor
-
     def blinker_on(self, id):
         if id == 1 or id == "left":
             self.set_led(self.LED_LEFT_BLINKER, 255)
@@ -641,17 +633,15 @@ class Buzzer(AnalogSensor):
     def __init__(self, port="AD1", gpg=None):
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
-            self.pin = gpg.GROVE_2_2
+            self.set_pin(1)
             self.set_descriptor("Buzzer")
             self.power = 254
         except:
             raise AttributeError
 
-    def sound(self, power):
+    def _sound(self, power):
         '''
-        sound takes a power argument (from 0 to 254)
-        the power argument will accept either a string or a numeric value
-        if power can't be cast to an int, then turn buzzer off
+        on GPG3, the buzzer is either full on or quiet, no volume control
         '''
         try:
             power = int(power)
@@ -661,21 +651,20 @@ class Buzzer(AnalogSensor):
         if power < 0:
             power = 0
         self.power = power
-        AnalogSensor.write(self, power)
+        self.write(self.power)
 
     def sound_off(self):
         '''
         Makes buzzer silent
         '''
-        self.power = 0
-        AnalogSensor.write(self, 0)
+        self._sound(0)
+
 
     def sound_on(self):
         '''
         Maximum buzzer sound
         '''
-        self.power = 254
-        AnalogSensor.write(self, 254)
+        self._sound(100)
 ##########################
 
 
