@@ -8,7 +8,7 @@ import easygopigo3 as easy
 # GPG will be the GoPiGo3 object.
 GPG = easy.EasyGoPiGo3()
 
-# Create an instance of the Light sensor
+# Create an instance of the Buzzer
 my_buzzer = easy.Buzzer("AD1", GPG)
 
 my_buzzer.sound_on()
