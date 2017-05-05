@@ -413,7 +413,7 @@ class Sensor(object):
 
         if port == "AD1":
             self.portID = self.gpg.GROVE_1
-        elif port == "AD1":
+        elif port == "AD2":
             self.portID = self.gpg.GROVE_2
         elif port == "SERIAL":
             self.portID = -1
@@ -518,6 +518,7 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         self.value = power
+        print ("Analog Write on {} at {}".format(self.get_port_ID(),power))
         return self.gpg.set_grove_pwm_duty(self.get_port_ID(), power)
 ##########################
 
@@ -679,14 +680,14 @@ class Led(AnalogSensor):
             raise ValueError
 
     def light_on(self, power):
-        AnalogSensor.write(self, power)
+        self.write(power)
 
     def light_max(self):
         max_power = 100
         self.light_on(max_power)
 
     def light_off(self):
-        AnalogSensor.write(self, 0)
+        self.write(0)
 
     def is_on(self):
         return (self.value > 0)
