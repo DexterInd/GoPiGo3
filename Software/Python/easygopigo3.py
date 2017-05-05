@@ -566,6 +566,7 @@ class UltraSonicSensor(AnalogSensor):
                     break
 
         if skip > 5:
+            # no special meaning to the number 501
             return(5010)
 
         for reading in readings:
