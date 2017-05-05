@@ -609,16 +609,17 @@ class UltraSonicSensor(AnalogSensor):
         return (return_reading)
 
     def read(self):
+        # returns value in cm
         value = self.read_mm()
         if value > 15 and value < 5010:
             return value // 10
         return value
 
     def read_inches(self):
-        value = self.read()   # mm reading
+        value = self.read()   # cm reading
         if value == 501:
             return 501
-        return (value * 10 / 2.54)
+        return (value / 2.54)
 ##########################
 
 
