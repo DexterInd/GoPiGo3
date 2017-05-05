@@ -151,7 +151,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + WheelTurnDegrees))
 
         if blocking:
-            while self.reach_target(StartPositionLeft + WheelTurnDegrees) is False:
+            while self.target_reached(StartPositionLeft + WheelTurnDegrees, StartPositionRight + WheelTurnDegrees) is False:
                   time.sleep(0.1)
 
     def drive_inches(self, dist, blocking=False):
@@ -169,17 +169,26 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + degrees))
 
         if blocking:
-            while self.reach_target(StartPositionLeft + degrees) is False:
+            while self.target_reached(StartPositionLeft + degrees, StartPositionRight + degrees) is False:
                   time.sleep(0.1)
 
-    def reach_target(self,target_degrees):
+    def target_reached(self, left_target_degrees, right_target_degrees):
+        '''
+        check if both wheels have reached their target
+        '''
         tolerance = 5
-        min_target = target_degrees - tolerance
-        max_target = target_degrees + tolerance
+        min_left_target = left_target_degrees - tolerance
+        max_left_target = left_target_degrees + tolerance
+        min_right_target = right_target_degrees - tolerance
+        max_right_target = right_target_degrees + tolerance
 
-        current_post = self.get_motor_encoder(self.MOTOR_LEFT)
+        current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
+        current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-        if current_post > min_target and current_post < max_target:
+        if current_left_position > min_left_target and \
+           current_left_position < max_left_target and \
+           current_right_position > min_right_target and \
+           current_right_position < max_right_target:
             return True
         else:
             return False
@@ -281,9 +290,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         # the number of degrees each wheel needs to turn
         WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) * 360)
-
-        # Limit the speed
-        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT, dps = self.get_speed())
 
         # Set each motor target
         self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + WheelTurnDegrees))
