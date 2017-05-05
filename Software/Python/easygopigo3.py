@@ -650,10 +650,10 @@ class Buzzer(AnalogSensor):
             power = 0
 
         # limit power values to either 0 or 100
-        if power < 0:
+        if power <= 0:
             power = 0
         else:
-            power = 100
+            power = 98
         self.power = power
         self.write(self.power)
 
