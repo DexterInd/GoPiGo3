@@ -7,7 +7,12 @@ import sys
 import tty
 import select
 
-import gopigo3
+import gopigo3 
+import numpy 
+import math
+import threading
+from datetime import datetime
+import time
 
 try:
     sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
@@ -30,7 +35,7 @@ fd = ''
 read_is_open = True
 
 def debug(in_str):
-    if True:
+    if False:
         print(in_str)
 
 def _wait_for_read():
@@ -211,19 +216,8 @@ def right():
 
 
 #############################################################
-# LIGHT SENSOR ONLY BELOW HAS BEEN PORTED TO GPG3
+#
 #############################################################
-
-#############################################################
-# the following is in a try/except structure because it depends
-# on the date of gopigo.py
-#############################################################
-try:
-    # TBD: these shouldn't be hardcoded
-    PORTS = {"AD1": 0x03, "AD2": 0x0C,
-             "SERIAL": -1, "I2C": -2}
-except:
-    PORTS = {"A1": 15, "D11": 10, "SERIAL": -1, "I2C": -2}
 
 
 ANALOG = 1
@@ -249,21 +243,26 @@ class Sensor(object):
         isAnalog
         isDigital
     '''
-    def __init__(self, port, pinmode, gpg):
+    PORTS = {}
+
+    def __init__(self, port, pinmode,gpg):
         '''
         port = one of PORTS keys
         pinmode = "INPUT", "OUTPUT", "SERIAL" (which gets ignored)
         '''
         debug("Sensor init")
+        self.gpg = gpg
         debug(pinmode)
         self.setPort(port)
         self.setPinMode(pinmode)
-        self.gpg = gpg
+
+
         if pinmode == "INPUT":
             self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
             self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_INPUT_ANALOG)
-        #or pinmode == "OUTPUT":
-        #     gopigo.pinMode(self.getPortID(), self.getPinMode())
+        if pinmode == "OUTPUT":
+            self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_OUTPUT_PWM)
 
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
@@ -285,8 +284,23 @@ class Sensor(object):
         return self.pin
 
     def setPort(self, port):
+        debug(port)
         self.port = port
-        self.portID = PORTS[self.port]
+        debug(self.port)
+        debug("self.gpg is {}".format(self.gpg))
+
+        if port == "AD1":
+            self.portID = self.gpg.GROVE_1
+        elif port == "AD1":
+            self.portID = self.gpg.GROVE_2
+        elif port == "SERIAL":
+            self.portID = -1
+        elif port == "I2C":
+            self.portID = -2
+        else:
+            self.portID = -3
+
+        debug(self.portID)
 
     def getPort(self):
         return (self.port)
@@ -315,10 +329,10 @@ class DigitalSensor(Sensor):
     '''
     Implements read and write methods
     '''
-    def __init__(self, port, pinmode):
+    def __init__(self, port, pinmode, gpg):
         debug("DigitalSensor init")
         self.pin = DIGITAL
-        Sensor.__init__(self, port, pinmode)
+        Sensor.__init__(self, port, pinmode,gpg)
 
     def read(self):
         '''
@@ -355,11 +369,10 @@ class AnalogSensor(Sensor):
     '''
     implements read and write methods
     '''
-    def __init__(self, gpg, port, pinmode):
+    def __init__(self, port, pinmode,gpg):
         debug("AnalogSensor init")
         self.value = 0
-        self.pin = ANALOG
-        Sensor.__init__(self, gpg, port, pinmode)
+        Sensor.__init__(self, port, pinmode,gpg)
 
     def read(self):
         _wait_for_read()
@@ -370,9 +383,16 @@ class AnalogSensor(Sensor):
         _release_read()
         return self.value
 
+    def percent_read(self):
+        '''
+        brings the sensor read to a percent scale
+        '''
+        reading_percent = self.read() * 100 // 4096
+        return reading_percent
+
     def write(self, power):
         self.value = power
-        return gopigo.analogWrite(self.getPortID(), power)
+        return self.gpg.set_grove_pwm_duty(self.getPortID(), power)
 ##########################
 
 
@@ -383,9 +403,9 @@ class LightSensor(AnalogSensor):
     self.pin takes a value of 0 when on analog pin (default value)
         takes a value of 1 when on digital pin
     """
-    def __init__(self, gpg,port="A1"):
+    def __init__(self, port="AD1",gpg=None):
         debug("LightSensor init")
-        AnalogSensor.__init__(self, gpg, port,"INPUT")
+        AnalogSensor.__init__(self, port, "INPUT", gpg)
         self.setPin(2)
         self.set_descriptor("Light sensor")
 ##########################
@@ -395,9 +415,10 @@ class SoundSensor(AnalogSensor):
     """
     Creates a sound sensor
     """
-    def __init__(self, port="A1"):
+    def __init__(self, port="A1",gpg=None):
         debug("Sound Sensor on port "+port)
-        AnalogSensor.__init__(self, port, "INPUT")
+        AnalogSensor.__init__(self, port, "INPUT",gpg)
+        self.setPin(2)
         self.set_descriptor("Sound sensor")
 
 ##########################
@@ -405,18 +426,22 @@ class SoundSensor(AnalogSensor):
 
 class UltraSonicSensor(AnalogSensor):
 
-    def __init__(self, port="A1"):
-        debug("Ultrasonic Sensor on port "+port)
-        AnalogSensor.__init__(self, port, "INPUT")
-        self.safe_distance = 500
-        self.set_descriptor("Ultrasonic sensor")
+    def __init__(self, port="AD1", gpg=None):
+        try:
+            debug("Ultrasonic Sensor on port "+port)
+            AnalogSensor.__init__(self, port, "INPUT",gpg)
+            self.pin = gpg.GROVE_2_2
+            self.safe_distance = 500
+            self.set_descriptor("Ultrasonic sensor")
+        except:
+            raise AttributeError
 
     def is_too_close(self):
         _wait_for_read()
 
         if _is_read_open():
             _grab_read()
-            if gopigo.us_dist(PORTS[self.port]) < self.get_safe_distance():
+            if gpg.us_dist(PORTS[self.port]) < self.get_safe_distance():
                 _release_read()
                 return True
         _release_read()
@@ -442,7 +467,8 @@ class UltraSonicSensor(AnalogSensor):
             _wait_for_read()
 
             _grab_read()
-            value = gopigo.corrected_us_dist(PORTS[self.port])
+            # currently not supported with GPG3
+            value = -1
             _release_read()
             if value < 501 and value > 0:
                 readings.append(value)
@@ -460,6 +486,12 @@ class UltraSonicSensor(AnalogSensor):
         return_reading = int(return_reading // len(readings))
 
         return (return_reading)
+
+    def read_inches(self):
+        value = self.read()
+        if value == 501:
+            return 501
+        return (value / 2.54)
 ##########################
 
 
@@ -473,10 +505,14 @@ class Buzzer(AnalogSensor):
     soundoff() -> which is the same as sound(0)
     soundon() -> which is the same as sound(254), max value
     '''
-    def __init__(self, port="D11"):
-        AnalogSensor.__init__(self, port, "OUTPUT")
-        self.set_descriptor("Buzzer")
-        self.power = 254
+    def __init__(self, port="AD1",gpg=None):
+        try:
+            AnalogSensor.__init__(self, port, "OUTPUT",gpg)
+            self.pin = gpg.GROVE_2_2
+            self.set_descriptor("Buzzer")
+            self.power = 254
+        except:
+            raise AttributeError
 
     def sound(self, power):
         '''
@@ -511,13 +547,21 @@ class Buzzer(AnalogSensor):
 
 
 class Led(AnalogSensor):
-    def __init__(self, port="D11"):
-        AnalogSensor.__init__(self, port, "OUTPUT")
-        self.set_descriptor("LED")
+    def __init__(self, port="AD1",gpg=None):
+        try:
+            AnalogSensor.__init__(self, port, "OUTPUT",gpg)
+            self.setPin(2)
+            self.set_descriptor("LED")
+        except Exception as e:
+            print(e)
+            raise ValueError
 
     def light_on(self, power):
         AnalogSensor.write(self, power)
-        self.value = power
+
+    def light_max(self):
+        max_power = 100
+        self.light_on(max_power)
 
     def light_off(self):
         AnalogSensor.write(self, 0)
@@ -531,23 +575,23 @@ class Led(AnalogSensor):
 
 
 class MotionSensor(DigitalSensor):
-    def __init__(self, port="D11"):
-        DigitalSensor.__init__(self, port, "INPUT")
+    def __init__(self, port="D11",gpg=None):
+        DigitalSensor.__init__(self, port, "INPUT",gpg)
         self.set_descriptor("Motion Sensor")
 ##########################
 
 
 class ButtonSensor(DigitalSensor):
 
-    def __init__(self, port="D11"):
-        DigitalSensor.__init__(self, port, "INPUT")
+    def __init__(self, port="D11",gpg=None):
+        DigitalSensor.__init__(self, port, "INPUT",gpg)
         self.set_descriptor("Button sensor")
 ##########################
 
 
 class Remote(Sensor):
 
-    def __init__(self, port="SERIAL"):
+    def __init__(self, port="SERIAL",gpg=None):
         global IR_RECEIVER_ENABLED
         # IR Receiver
         try:
@@ -562,7 +606,7 @@ class Remote(Sensor):
             print("Please enable the IR Receiver in the Advanced Comms tool")
             IR_RECEIVER_ENABLED = False
         else:
-            Sensor.__init__(self, port, "SERIAL")
+            Sensor.__init__(self, port, "SERIAL",gpg=None)
             self.set_descriptor("Remote Control")
 
     def is_enabled(self):
@@ -685,7 +729,106 @@ class LineFollower(Sensor):
            five_vals == [0, 1, 1, 1, 1]:
             return "Right"
         return "Unknown"
-
+class DHTSensor(Sensor):
+    #import math import numpy import threading from datetime import datetime
+    def __init__(self, port="SERIAL",gpg=None):
+        try:
+     	    #Sensor.__init__(self,port,"INPUT",gpg)
+            self.GPG = gopigo3.GoPiGo3()
+            self.filtered_temperature = [] # here we keep the temperature values after removing outliers
+            self.filtered_humidity = [] # here we keep the filtered humidity values after removing the outliers
+            self.lock = threading.Lock() # we are using locks so we don't have conflicts while accessing the shared variables
+            self.event = threading.Event() # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
+        except:
+            raise ValueError("DHT Sensor not found")
+    def read_temperature(self,sensor_type=0):
+        _grab_read()
+        temp=self.GPG.dht(sensor_type)[0]
+        _release_read()
+        if temp == -2:
+            return "Bad reading, trying again"
+        elif temp == -3:
+            return "Run the program as sudo"
+        else:
+            print("Temperature = %.02fC"%temp)
+            return temp
+    def read_humidity(self,sensor_type=0):
+        _grab_read()
+        humidity=self.GPG.dht(sensor_type)[1]
+        _release_read()
+        if humidity == -2:
+            return "Bad reading, trying again"
+        elif humidity == -3:
+            return "Run the program as sudo"
+        else:
+            print("Humidity = %.02f%%"%humidity)
+            return humidity
+    def read_dht(self,sensor_type=0):
+        _grab_read()
+        [temp , humidity]=self.GPG.dht(sensor_type)
+        _release_read()
+        if temp ==-2.0 or humidity == -2.0:
+            return "Bad reading, trying again"
+        elif temp ==-3.0 or humidity == -3.0:
+            return "Run the program as sudo"
+        else:
+            print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
+            return [temp, humidity]
+  
+    # function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a 
+    # threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the 
+    # extreme values
+    def eliminateNoise(self,values, std_factor = 2):
+        mean = numpy.mean(values)
+        standard_deviation = numpy.std(values)
+        if standard_deviation == 0:
+            return values
+        final_values = [element for element in values if element > mean - std_factor * standard_deviation]
+        final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
+        return final_values
+    # function for processing the data filtering, periods of time, yada yada
+    def readingValues(self,sensor_type=0):
+        seconds_window = 10 # after this many second we make a record
+        values = []
+        while not self.event.is_set():
+            counter = 0
+            while counter < seconds_window and not self.event.is_set():
+                temp = None
+                humidity = None
+                try:
+                    [temp, humidity] = self.GPG.dht(sensor_type)
+                except IOError:
+                    print("we've got IO error")
+                if math.isnan(temp) == False and math.isnan(humidity) == False:
+                    values.append({"temp" : temp, "hum" : humidity})
+                    counter += 1
+                #else:
+                    #print("we've got NaN")
+                time.sleep(1)
+            self.lock.acquire()
+            self.filtered_temperature.append(numpy.mean(self.eliminateNoise([x["temp"] for x in values])))
+            self.filtered_humidity.append(numpy.mean(self.eliminateNoise([x["hum"] for x in values])))
+            self.lock.release()
+            values = []
+    def continuous_read_dht(self):
+        try:
+            # here we start the thread we use a thread in order to gather/process the data separately from the printing proceess
+            data_collector = threading.Thread(target = self.readingValues)
+            data_collector.start()
+            while not self.event.is_set():
+                if len(self.filtered_temperature) > 0: # or we could have used filtered_humidity instead
+                    self.lock.acquire()
+                    # here you can do whatever you want with the variables: print them, file them out, anything
+                    temperature = self.filtered_temperature.pop()
+                    humidity = self.filtered_humidity.pop()
+                    print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
+                    self.lock.release()
+                # wait a second before the next check
+                time.sleep(1)
+            # wait until the thread is finished
+            data_collector.join()
+        except KeyboardInterrupt:
+            self.event.set() 
 
 if __name__ == '__main__':
     import time
@@ -696,3 +839,9 @@ if __name__ == '__main__':
     time.sleep(1)
     print ("buzzer off")
     b.sound_off()
+    c=DHTSensor()
+    c.read_humidity()
+    c.read_temperature()
+    c.read_dht()
+    c.continuous_read_dht()
+
