@@ -396,11 +396,12 @@ class Sensor(object):
                 self.pin = self.gpg.GROVE_1_1
             else:
                 self.pin = self.gpg.GROVE_1_2
-        else:
-            if pin == 2:
+        elif self.port == "AD2":
+            if pin == 1:
                 self.pin = self.gpg.GROVE_2_1
             else:
                 self.pin = self.gpg.GROVE_2_2
+        print("setting pin to {}".format(self.pin))
 
     def get_pin(self):
         return self.pin
@@ -518,8 +519,8 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         self.value = power
-        print ("Analog Write on {} at {}".format(self.get_port_ID(),power))
-        return self.gpg.set_grove_pwm_duty(self.get_port_ID(), power)
+        #print ("Analog Write on {} at {}".format(self.get_pin(), power))
+        return self.gpg.set_grove_pwm_duty(self.get_pin(), power)
 ##########################
 
 
@@ -675,7 +676,7 @@ class Led(AnalogSensor):
     def __init__(self, port="AD1", gpg=None):
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
-            self.set_pin(2)
+            self.set_pin(1)
             self.set_descriptor("LED")
         except Exception as e:
             print(e)
