@@ -625,7 +625,8 @@ class Buzzer(AnalogSensor):
     '''
     Default port is AD1
     It has three methods:
-    _sound(power) -> will change incoming power to 0 or 100
+    _sound(power) -> will change incoming power to 0 or 98
+    note: 98 has been chosen instead of 100. It doesn't affect sound level
     sound_off() -> which is the same as _sound(0)
     sound_on() -> which is the same as _sound(98), max value
     '''
@@ -647,7 +648,7 @@ class Buzzer(AnalogSensor):
         except:
             power = 0
 
-        # limit power values to either 0 or 100
+        # limit power values to either 0 or 98
         if power <= 0:
             power = 0
         else:
