@@ -25,7 +25,7 @@ try:
     while True:
         EncoderLeft = GPG.get_motor_encoder(GPG.MOTOR_LEFT)
         print("Motor Left Encoder: %6d" % EncoderLeft, "  Motor Right status: ", GPG.get_motor_status(GPG.MOTOR_RIGHT))
-
+        
         GPG.set_motor_dps(GPG.MOTOR_RIGHT, EncoderLeft)
         time.sleep(0.02)
 
