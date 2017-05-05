@@ -623,13 +623,11 @@ class UltraSonicSensor(AnalogSensor):
 
 class Buzzer(AnalogSensor):
     '''
-    The Buzzer class is a digital Sensor with power modulation (PWM).
-    Default port is D11
-    Note that it inherits from AnalogSensor in order to support PWM
+    Default port is AD1
     It has three methods:
-    sound(power)
-    soundoff() -> which is the same as sound(0)
-    soundon() -> which is the same as sound(254), max value
+    _sound(power) -> will change incoming power to 0 or 100
+    sound_off() -> which is the same as sound(0)
+    sound_on() -> which is the same as sound(100), max value
     '''
     def __init__(self, port="AD1", gpg=None):
         try:
