@@ -83,7 +83,7 @@ def create_folder_on_usb(foldername):
     usb_path = check_usb()
     if usb_path is not False:
         try:
-            os.mkdir(usb_path+"/"+foldername, 0755)
+            os.mkdir(usb_path + "/" + foldername, 0755)
             return True
         except:
             return False
@@ -144,55 +144,75 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
-        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+            _release_read()
 
     def forward(self):
-        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed())
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                               self.get_speed())
+            _release_read()
 
     def drive_cm(self, dist, blocking=False):
         # dist is in cm
         # if dist is negative, this becomes a backward move
 
         dist_mm = dist * 10
-        # get the starting position of each motor
-        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
         # the number of degrees each wheel needs to turn
         WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
 
-        self.set_motor_position(self.MOTOR_LEFT,
-                                (StartPositionLeft + WheelTurnDegrees))
-        self.set_motor_position(self.MOTOR_RIGHT,
-                                (StartPositionRight + WheelTurnDegrees))
+        # get the starting position of each motor
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-        if blocking:
-            while self.target_reached(StartPositionLeft + WheelTurnDegrees,
-                                      StartPositionRight + WheelTurnDegrees) \
-                    is False:
-                time.sleep(0.1)
+            self.set_motor_position(self.MOTOR_LEFT,
+                                    (StartPositionLeft + WheelTurnDegrees))
+            self.set_motor_position(self.MOTOR_RIGHT,
+                                    (StartPositionRight + WheelTurnDegrees))
+
+            if blocking:
+                while self.target_reached(
+                        StartPositionLeft + WheelTurnDegrees,
+                        StartPositionRight + WheelTurnDegrees) is False:
+                    time.sleep(0.1)
+            _release_read()
 
     def drive_inches(self, dist, blocking=False):
-        self.drive_cm(dist*2.54, blocking)
+        self.drive_cm(dist * 2.54, blocking)
 
     def drive_degrees(self, degrees, blocking=False):
         # degrees is in degrees, not radians
         # if degrees is negative, this becomes a backward move
 
-        # get the starting position of each motor
-        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            # get the starting position of each motor
+            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + degrees))
-        self.set_motor_position(self.MOTOR_RIGHT,
-                                (StartPositionRight + degrees))
+            self.set_motor_position(self.MOTOR_LEFT,
+                                    (StartPositionLeft + degrees))
+            self.set_motor_position(self.MOTOR_RIGHT,
+                                    (StartPositionRight + degrees))
 
-        if blocking:
-            while self.target_reached(StartPositionLeft + degrees,
-                                      StartPositionRight + degrees) \
-                  is False:
-                time.sleep(0.1)
+            _release_read()
+
+            if blocking:
+                while self.target_reached(
+                        StartPositionLeft + degrees,
+                        StartPositionRight + degrees) is False:
+                    time.sleep(0.1)
+        return
 
     def target_reached(self, left_target_degrees, right_target_degrees):
         '''
@@ -204,8 +224,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         min_right_target = right_target_degrees - tolerance
         max_right_target = right_target_degrees + tolerance
 
-        current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
-        current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
+            current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
+            _release_read()
 
         if current_left_position > min_left_target and \
            current_left_position < max_left_target and \
@@ -216,28 +240,48 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             return False
 
     def backward(self):
-        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed() * -1)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                               self.get_speed() * -1)
+            _release_read()
 
     def left(self):
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_dps(self.MOTOR_RIGHT, 0)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+            self.set_motor_dps(self.MOTOR_RIGHT, 0)
+            _release_read()
 
     def right(self):
-        self.set_motor_dps(self.MOTOR_LEFT, 0)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_motor_dps(self.MOTOR_LEFT, 0)
+            self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+            _release_read()
 
     def blinker_on(self, id):
-        if id == 1 or id == "left":
-            self.set_led(self.LED_LEFT_BLINKER, 255)
-        if id == 0 or id == "right":
-            self.set_led(self.LED_RIGHT_BLINKER, 255)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            if id == 1 or id == "left":
+                self.set_led(self.LED_LEFT_BLINKER, 255)
+            if id == 0 or id == "right":
+                self.set_led(self.LED_RIGHT_BLINKER, 255)
+            _release_read()
 
     def blinker_off(self, id):
-        if id == 1:
-            self.set_led(self.LED_LEFT_BLINKER, 0)
-        if id == 0:
-            self.set_led(self.LED_RIGHT_BLINKER, 0)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            if id == 1:
+                self.set_led(self.LED_LEFT_BLINKER, 0)
+            if id == 0:
+                self.set_led(self.LED_RIGHT_BLINKER, 0)
+            _release_read()
 
     def led_on(self, id):
         self.blinker_on(id)
@@ -262,50 +306,70 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_right_eye_color(color)
 
     def open_left_eye(self):
-        self.set_led(self.LED_LEFT_EYE,
-                     self.left_eye_color[0],
-                     self.left_eye_color[1],
-                     self.left_eye_color[2],
-                     )
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_led(self.LED_LEFT_EYE,
+                         self.left_eye_color[0],
+                         self.left_eye_color[1],
+                         self.left_eye_color[2],
+                         )
+            _release_read()
 
     def open_right_eye(self):
-        self.set_led(self.LED_RIGHT_EYE,
-                     self.left_eye_color[0],
-                     self.left_eye_color[1],
-                     self.left_eye_color[2],
-                     )
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_led(self.LED_RIGHT_EYE,
+                         self.left_eye_color[0],
+                         self.left_eye_color[1],
+                         self.left_eye_color[2],
+                         )
+            _release_read()
 
     def open_eyes(self):
         self.open_left_eye()
         self.open_right_eye()
 
     def close_left_eye(self):
-        self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
+            _release_read()
 
     def close_right_eye(self):
-        self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
+            _release_read()
 
     def close_eyes(self):
         self.close_left_eye()
         self.close_right_eye()
 
     def turn_degrees(self, degrees):
-        # get the starting position of each motor
-        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
-
         # the distance in mm that each wheel needs to travel
         WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
 
         # the number of degrees each wheel needs to turn
-        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE)
-                            * 360)
+        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) *
+                            360)
 
-        # Set each motor target
-        self.set_motor_position(self.MOTOR_LEFT,
-                                (StartPositionLeft + WheelTurnDegrees))
-        self.set_motor_position(self.MOTOR_RIGHT,
-                                (StartPositionRight - WheelTurnDegrees))
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            # get the starting position of each motor
+            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+            # Set each motor target
+            self.set_motor_position(self.MOTOR_LEFT,
+                                    (StartPositionLeft + WheelTurnDegrees))
+            self.set_motor_position(self.MOTOR_RIGHT,
+                                    (StartPositionRight - WheelTurnDegrees))
+            _release_read()
 
 
 # the following functions may be redundant
@@ -315,27 +379,52 @@ my_gpg = EasyGoPiGo3()
 # these functions are here because we need direct access to these
 # for the Drive functionality in Sam
 def volt():
-    return my_gpg.volt()
+    _wait_for_read()
+    if _is_read_open():
+        _grab_read()
+        return_value = my_gpg.volt()
+        _release_read()
+    return return_value
 
 
 def stop():
-    return my_gpg.stop()
+    _wait_for_read()
+    if _is_read_open():
+        _grab_read()
+        my_gpg.stop()
+        _release_read()
 
 
 def forward():
-    my_gpg.forward()
+    _wait_for_read()
+    if _is_read_open():
+        _grab_read()
+        my_gpg.forward()
+        _release_read()
 
 
 def backward():
-    my_gpg.backward()
+    _wait_for_read()
+    if _is_read_open():
+        _grab_read()
+        my_gpg.backward()
+        _release_read()
 
 
 def left():
-    my_gpg.left()
+    _wait_for_read()
+    if _is_read_open():
+        _grab_read()
+        my_gpg.left()
+        _release_read()
 
 
 def right():
-    my_gpg.right()
+    _wait_for_read()
+    if _is_read_open():
+        _grab_read()
+        my_gpg.right()
+        _release_read()
 
 
 #############################################################
@@ -377,14 +466,23 @@ class Sensor(object):
         self.set_port(port)
         self.set_pin_mode(pinmode)
 
-        if pinmode == "INPUT":
-            self.gpg.set_grove_type(self.portID, self.gpg.GROVE_TYPE.CUSTOM)
-            self.gpg.set_grove_mode(self.portID, self.gpg.GROVE_INPUT_ANALOG)
-        if pinmode == "OUTPUT":
-            self.gpg.set_grove_type(self.portID, self.gpg.GROVE_TYPE.CUSTOM)
-            self.gpg.set_grove_mode(self.portID, self.gpg.GROVE_OUTPUT_PWM)
-        if pinmode == "US":
-            self.gpg.set_grove_type(self.portID, self.gpg.GROVE_TYPE.US)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            if pinmode == "INPUT":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.CUSTOM)
+                self.gpg.set_grove_mode(self.portID,
+                                        self.gpg.GROVE_INPUT_ANALOG)
+            if pinmode == "OUTPUT":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.CUSTOM)
+                self.gpg.set_grove_mode(self.portID,
+                                        self.gpg.GROVE_OUTPUT_PWM)
+            if pinmode == "US":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.US)
+            _release_read()
 
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
@@ -499,6 +597,7 @@ class AnalogSensor(Sensor):
     def __init__(self, port, pinmode, gpg):
         debug("AnalogSensor init")
         self.value = 0
+        self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
 
     def read(self):
@@ -507,7 +606,7 @@ class AnalogSensor(Sensor):
         if _is_read_open():
             _grab_read()
             self.value = self.gpg.get_grove_analog(self.get_pin())
-        _release_read()
+            _release_read()
         return self.value
 
     def percent_read(self):
@@ -519,8 +618,28 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         self.value = power
-        #print ("Analog Write on {} at {}".format(self.get_pin(), power))
-        return self.gpg.set_grove_pwm_duty(self.get_pin(), power)
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
+                                                       power)
+            # print ("Analog Write on {} at {}".format(self.get_pin(),
+            #                                          power))
+            _release_read()
+        return return_value
+
+    def write_freq(self, freq):
+        self.freq = freq
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+            return_value = self.gpg.set_grove_pwm_frequency(
+                self.get_port_ID(),
+                self.freq)
+            print ("Analog Write on {} at {}".format(self.get_port_ID(),
+                                                     self.freq))
+            _release_read()
+        return return_value
 ##########################
 
 
@@ -544,7 +663,7 @@ class SoundSensor(AnalogSensor):
     Creates a sound sensor
     """
     def __init__(self, port="AD1", gpg=None):
-        debug("Sound Sensor on port "+port)
+        debug("Sound Sensor on port " + port)
         AnalogSensor.__init__(self, port, "INPUT", gpg)
         self.set_pin(1)
         self.set_descriptor("Sound sensor")
@@ -556,7 +675,7 @@ class UltraSonicSensor(AnalogSensor):
 
     def __init__(self, port="AD1", gpg=None):
         try:
-            debug("Ultrasonic Sensor on port "+port)
+            debug("Ultrasonic Sensor on port " + port)
             AnalogSensor.__init__(self, port, "US", gpg)
             self.safe_distance = 500
             self.set_pin(1)
@@ -587,15 +706,26 @@ class UltraSonicSensor(AnalogSensor):
         return_reading = 0
         readings = []
         skip = 0
-        while len(readings) < 3:
-            # currently not supported with GPG3
-            value = self.gpg.get_grove_value(self.get_port_ID())
-            if value < 4300 and value > 14:
-                readings.append(value)
-            else:
-                skip += 1
-                if skip > 5:
-                    break
+
+        # THREAD SAFE
+        _wait_for_read()
+        if _is_read_open():
+            _grab_read()
+
+            while len(readings) < 3:
+                try:
+                    value = self.gpg.get_grove_value(self.get_port_ID())
+                except:
+                    continue
+
+                if value < 4300 and value > 14:
+                    readings.append(value)
+                    # print (readings)
+                else:
+                    skip += 1
+                    if skip > 5:
+                        break
+            _release_read()
 
         if skip > 5:
             # no special meaning to the number 501
@@ -619,7 +749,7 @@ class UltraSonicSensor(AnalogSensor):
         value = self.read()   # cm reading
         if value == 501:
             return 501
-        return (value / 2.54)
+        return (int(value / 2.54))
 ##########################
 
 
@@ -627,7 +757,7 @@ class Buzzer(AnalogSensor):
     '''
     Default port is AD1
     It has three methods:
-    _sound(power) -> will change incoming power to 0 or 98
+    sound(power) -> will change incoming power to 0 or 98
     note: 98 has been chosen instead of 100. It doesn't affect sound level
     sound_off() -> which is the same as _sound(0)
     sound_on() -> which is the same as _sound(98), max value
@@ -638,38 +768,47 @@ class Buzzer(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Buzzer")
             self.power = 254
+            self.sound_off()
         except:
             raise AttributeError
 
-    def _sound(self, power):
+    def sound(self, freq):
         '''
-        on GPG3, the buzzer is either full on or quiet, no volume control
+        freq is from 0 to 100 but maps to 20 through 40000Hz
         '''
         try:
-            power = int(power)
+            freq = int(freq)
         except:
-            power = 0
+            freq = 0
 
         # limit power values to either 0 or 98
-        if power <= 0:
+        if freq <= 0:
             power = 0
+            freq = 0
         else:
             power = 98
-        self.power = power
-        self.write(self.power)
+
+        # if buzzer has to emit a sound then set frequency
+        if power == 98:
+            translation_factor = ((40000 - 20) / 100)
+            freq = (freq * translation_factor) + 20
+            self.write_freq(freq)
+
+        print(freq, power)
+        # set duty cycle, either 0 or 98
+        self.write(power)
 
     def sound_off(self):
         '''
         Makes buzzer silent
         '''
-        self._sound(0)
-
+        self.sound(0)
 
     def sound_on(self):
         '''
-        Maximum buzzer sound
+        Default buzzer sound
         '''
-        self._sound(100)
+        self.sound(100)
 ##########################
 
 
@@ -733,7 +872,7 @@ class Remote(Sensor):
             print("Please enable the IR Receiver in the Advanced Comms tool")
             IR_RECEIVER_ENABLED = False
         else:
-            Sensor.__init__(self, port, "SERIAL",gpg=None)
+            Sensor.__init__(self, port, "SERIAL", gpg=None)
             self.set_descriptor("Remote Control")
 
     def is_enabled(self):
