@@ -53,13 +53,13 @@ def _is_read_open():
 
 def _grab_read():
     global read_is_open
-    # print("grab")
+    # debug("grab")
     read_is_open = False
 
 
 def _release_read():
     global read_is_open
-    # print("release")
+    # debug("release")
     read_is_open = True
 
 #####################################################################
@@ -499,7 +499,7 @@ class Sensor(object):
                 self.pin = self.gpg.GROVE_2_1
             else:
                 self.pin = self.gpg.GROVE_2_2
-        print("setting pin to {}".format(self.pin))
+        debug("setting pin to {}".format(self.pin))
 
     def get_pin(self):
         return self.pin
@@ -623,7 +623,7 @@ class AnalogSensor(Sensor):
             _grab_read()
             return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
                                                        power)
-            # print ("Analog Write on {} at {}".format(self.get_pin(),
+            # debug ("Analog Write on {} at {}".format(self.get_pin(),
             #                                          power))
             _release_read()
         return return_value
@@ -636,7 +636,7 @@ class AnalogSensor(Sensor):
             return_value = self.gpg.set_grove_pwm_frequency(
                 self.get_port_ID(),
                 self.freq)
-            print ("Analog Write on {} at {}".format(self.get_port_ID(),
+            debug ("Analog Write on {} at {}".format(self.get_port_ID(),
                                                      self.freq))
             _release_read()
         return return_value
@@ -720,7 +720,7 @@ class UltraSonicSensor(AnalogSensor):
 
                 if value < 4300 and value > 14:
                     readings.append(value)
-                    # print (readings)
+                    # debug (readings)
                 else:
                     skip += 1
                     if skip > 5:
@@ -794,7 +794,7 @@ class Buzzer(AnalogSensor):
             freq = (freq * translation_factor) + 20
             self.write_freq(freq)
 
-        print(freq, power)
+        # debug(freq, power)
         # set duty cycle, either 0 or 98
         self.write(power)
 

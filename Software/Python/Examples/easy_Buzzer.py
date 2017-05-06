@@ -9,8 +9,19 @@ import easygopigo3 as easy
 GPG = easy.EasyGoPiGo3()
 
 # Create an instance of the Buzzer
-my_buzzer = easy.Buzzer("AD1", GPG)
+# connect a buzzer to port AD2
+my_buzzer = easy.Buzzer("AD2", GPG)
 
+print("Expecting a buzzer on Port AD2")
 my_buzzer.sound_on()
+time.sleep(1)
+print("at 80")
+my_buzzer.sound(80)
+time.sleep(1)
+print("at 50")
+my_buzzer.sound(50)
+time.sleep(1)
+print("at 30")
+my_buzzer.sound(30)
 time.sleep(1)
 my_buzzer.sound_off()
