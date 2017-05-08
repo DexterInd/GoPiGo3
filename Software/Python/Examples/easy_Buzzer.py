@@ -22,4 +22,15 @@ time.sleep(1)
 print("A3")
 my_buzzer.sound(220)
 time.sleep(1)
+
+
+twinkle = ["C4","C4","G4","G4","A4","A4","G4"]
+
+for note in twinkle:
+    print(note)
+    my_buzzer.sound(my_buzzer.scale[note])
+    time.sleep(0.5)
+    my_buzzer.sound_off()
+    time.sleep(0.25)
+
 my_buzzer.sound_off()
