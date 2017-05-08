@@ -43,8 +43,14 @@ def debug(in_str):
 
 
 def _wait_for_read():
-    while read_is_open is False:
+    timeout = 0
+    while read_is_open is False and timeout < 100:
         time.sleep(0.01)
+        timeout += 1
+    if timeout > 99:
+        return False
+    else:
+        return True
 
 
 def _is_read_open():
@@ -53,13 +59,13 @@ def _is_read_open():
 
 def _grab_read():
     global read_is_open
-    # debug("grab")
+    debug("grab")
     read_is_open = False
 
 
 def _release_read():
     global read_is_open
-    # debug("release")
+    debug("release")
     read_is_open = True
 
 #####################################################################
@@ -378,53 +384,30 @@ my_gpg = EasyGoPiGo3()
 
 # these functions are here because we need direct access to these
 # for the Drive functionality in Sam
+# they do not need locking as the fct they call handles that.
 def volt():
-    _wait_for_read()
-    if _is_read_open():
-        _grab_read()
-        return_value = my_gpg.volt()
-        _release_read()
+    return_value = my_gpg.volt()
     return return_value
 
 
 def stop():
-    _wait_for_read()
-    if _is_read_open():
-        _grab_read()
-        my_gpg.stop()
-        _release_read()
+    my_gpg.stop()
 
 
 def forward():
-    _wait_for_read()
-    if _is_read_open():
-        _grab_read()
-        my_gpg.forward()
-        _release_read()
+    my_gpg.forward()
 
 
 def backward():
-    _wait_for_read()
-    if _is_read_open():
-        _grab_read()
-        my_gpg.backward()
-        _release_read()
+    my_gpg.backward()
 
 
 def left():
-    _wait_for_read()
-    if _is_read_open():
-        _grab_read()
-        my_gpg.left()
-        _release_read()
+    my_gpg.left()
 
 
 def right():
-    _wait_for_read()
-    if _is_read_open():
-        _grab_read()
-        my_gpg.right()
-        _release_read()
+    my_gpg.right()
 
 
 #############################################################
@@ -630,6 +613,7 @@ class AnalogSensor(Sensor):
 
     def write_freq(self, freq):
         self.freq = freq
+        # debug("write_freq: {}".format(self.freq))
         _wait_for_read()
         if _is_read_open():
             _grab_read()
@@ -794,6 +778,7 @@ class Buzzer(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Buzzer")
             self.power = 50
+            self.freq = 329
             self.sound_off()
         except:
             raise AttributeError
@@ -831,9 +816,9 @@ class Buzzer(AnalogSensor):
 
     def sound_on(self):
         '''
-        Default buzzer sound
+        Default buzzer sound. It will take the internal frequency as is
         '''
-        self.sound(50)
+        self.sound(self.freq)
 ##########################
 
 
