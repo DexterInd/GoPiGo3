@@ -59,13 +59,13 @@ def _is_read_open():
 
 def _grab_read():
     global read_is_open
-    debug("grab")
+    #debug("grab")
     read_is_open = False
 
 
 def _release_read():
     global read_is_open
-    debug("release")
+    #debug("release")
     read_is_open = True
 
 #####################################################################
