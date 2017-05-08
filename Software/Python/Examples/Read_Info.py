@@ -20,8 +20,6 @@ try:
     GPG = gopigo3.GoPiGo3() # Create an instance of the GoPiGo3 class. GPG will be the GoPiGo3 object.
     
     # Each of the following GPG.get functions return a list of 2 values
-    #     The first item in the list is the value (what we want to display).
-    #     The second item in the list is the error value (should be equal to GPG.SUCCESS if the value was read successfully)
     print("Manufacturer    : ", GPG.get_manufacturer()    ) # read and display the serial number
     print("Board           : ", GPG.get_board()           ) # read and display the serial number
     print("Serial Number   : ", GPG.get_id()              ) # read and display the serial number

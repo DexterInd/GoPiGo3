@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2017 Dexter Industries
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
-# For more information, see https://github.com/DexterInd/BrickPi3/blob/master/LICENSE.md
+# For more information, see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 #
 # This code is for power management on a Raspberry Pi
 
