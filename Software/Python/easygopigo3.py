@@ -757,45 +757,70 @@ class Buzzer(AnalogSensor):
     '''
     Default port is AD1
     It has three methods:
-    sound(power) -> will change incoming power to 0 or 98
-    note: 98 has been chosen instead of 100. It doesn't affect sound level
+    sound(power) -> will change incoming power to 0 or 50
+    note: 50 duty cycle allows for musical tones
     sound_off() -> which is the same as _sound(0)
-    sound_on() -> which is the same as _sound(98), max value
+    sound_on() -> which is the same as _sound(50)
     '''
+
+    scale = {"A3": 220,
+             "A3#": 233,
+             "B3": 247,
+             "C4": 261,
+             "C4#": 277,
+             "D4": 293,
+             "D4#": 311,
+             "E4": 329,
+             "F4": 349,
+             "F4#": 370,
+             "G4": 392,
+             "G4#": 415,
+             "A4": 440,
+             "A4#": 466,
+             "B4": 494,
+             "C5": 523,
+             "C5#": 554,
+             "D5": 587,
+             "D5#": 622,
+             "E5": 659,
+             "F5": 698,
+             "F5#": 740,
+             "G5": 784,
+             "G5#": 831}
+
     def __init__(self, port="AD1", gpg=None):
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
             self.set_pin(1)
             self.set_descriptor("Buzzer")
-            self.power = 254
+            self.power = 50
             self.sound_off()
         except:
             raise AttributeError
 
     def sound(self, freq):
         '''
-        freq is from 0 to 100 but maps to 20 through 40000Hz
         '''
         try:
             freq = int(freq)
         except:
             freq = 0
 
-        # limit power values to either 0 or 98
+        # limit duty cycles (aka power) values to either 0 or 50
         if freq <= 0:
             power = 0
             freq = 0
         else:
-            power = 98
+            power = 50
 
         # if buzzer has to emit a sound then set frequency
-        if power == 98:
-            translation_factor = ((40000 - 20) / 100)
-            freq = (freq * translation_factor) + 20
+        if power == 50:
+            # translation_factor = ((40000 - 20) / 100)
+            # freq = (freq * translation_factor) + 20
             self.write_freq(freq)
 
         # debug(freq, power)
-        # set duty cycle, either 0 or 98
+        # set duty cycle, either 0 or 50
         self.write(power)
 
     def sound_off(self):
@@ -808,7 +833,7 @@ class Buzzer(AnalogSensor):
         '''
         Default buzzer sound
         '''
-        self.sound(100)
+        self.sound(50)
 ##########################
 
 
