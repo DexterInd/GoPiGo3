@@ -10,7 +10,7 @@ GPG = easy.EasyGoPiGo3()
 # create the LED instance, passing the port and GPG
 my_LED = easy.Led("AD1",GPG)
 # or
-# my_LED = easy.Led("AD2")
+# my_LED = easy.Led("AD2", GPG)
 
 # loop 100 times
 for i in range(100):
