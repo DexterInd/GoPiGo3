@@ -7,9 +7,11 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 #
-# This code is an example for controlling the GoPiGo3 Motors
+# This code is an example for using the GoPiGo3 with the IR Receiver and Go Box remote.
 #
-# Results:  When you run this program, the GoPiGo3 Motors will rotate back and forth.
+# Hardware: Connect a grove IR receiver to port AD1.
+#
+# Results: When you run this program, a value will be printed that corresponds to the button being pressed on the remote.
 
 from __future__ import print_function # use python 3 syntax but make it compatible with python 2
 from __future__ import division       #                           ''
