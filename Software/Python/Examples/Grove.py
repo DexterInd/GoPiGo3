@@ -7,9 +7,11 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 #
-# This code is an example for controlling the GoPiGo3 Motors
+# This code is an example for demonstrating grove devices with the GoPiGo3.
 #
-# Results:  When you run this program, the GoPiGo3 Motors will rotate back and forth.
+# Hardware: Connect a grove buzzer to port AD1, and a grove potentiometer to port AD2.
+#
+# Results: When you run this program, the position of the potentiometer will determine the tone of the buzzer.
 
 from __future__ import print_function # use python 3 syntax but make it compatible with python 2
 from __future__ import division       #                           ''
