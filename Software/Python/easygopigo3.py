@@ -185,12 +185,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             self.set_motor_position(self.MOTOR_RIGHT,
                                     (StartPositionRight + WheelTurnDegrees))
 
+            _release_read()
+
             if blocking:
                 while self.target_reached(
                         StartPositionLeft + WheelTurnDegrees,
                         StartPositionRight + WheelTurnDegrees) is False:
                     time.sleep(0.1)
-            _release_read()
 
     def drive_inches(self, dist, blocking=False):
         self.drive_cm(dist * 2.54, blocking)
