@@ -1054,7 +1054,6 @@ class DHTSensor(Sensor):
             Sensor.__init__(self,port,"INPUT",gpg)
             self.filtered_temperature = [] # here we keep the temperature values after removing outliers
             self.filtered_humidity = [] # here we keep the filtered humidity values after removing the outliers
-            self.lock = threading.Lock() # we are using locks so we don't have conflicts while accessing the shared variables
             self.event = threading.Event() # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
         except:
             raise ValueError("DHT Sensor not found")
