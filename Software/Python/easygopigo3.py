@@ -145,6 +145,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             self.speed = int(in_speed)
         except:
             self.speed = 300
+        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                              dps=self.speed)
 
     def get_speed(self):
         return int(self.speed)
