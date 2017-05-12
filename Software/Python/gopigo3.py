@@ -752,3 +752,4 @@ class GoPiGo3(object):
         
         # Turn off the LEDs
         self.set_led(self.LED_EYE_LEFT + self.LED_EYE_RIGHT + self.LED_BLINKER_LEFT + self.LED_BLINKER_RIGHT, 0, 0, 0)
+	
