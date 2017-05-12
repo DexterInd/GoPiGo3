@@ -13,6 +13,7 @@ import math
 import threading
 from datetime import datetime
 import picamera
+import DHT
 import grove_rgb_lcd
 from distance_sensor import DistanceSensor
 from glob import glob  # for USB checking
@@ -1061,7 +1062,7 @@ class DHTSensor(Sensor):
         _wait_for_read()
         if _is_read_open():
             _grab_read()
-            temp=self.gpg.dht(sensor_type)[0]
+            temp=DHT.dht(sensor_type)[0]
             _release_read()
         if temp == -2:
             return "Bad reading, trying again"
@@ -1074,7 +1075,7 @@ class DHTSensor(Sensor):
         _wait_for_read()
         if _is_read_open():
             _grab_read()
-            humidity=self.gpg.dht(sensor_type)[1]
+            humidity=DHT.dht(sensor_type)[1]
             _release_read()
         if humidity == -2:
             return "Bad reading, trying again"
@@ -1087,7 +1088,7 @@ class DHTSensor(Sensor):
         _wait_for_read()
         if _is_read_open():
             _grab_read()
-            [temp , humidity]=self.gpg.dht(sensor_type)
+            [temp , humidity]=DHT.dht(sensor_type)
             _release_read()
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
@@ -1118,7 +1119,7 @@ class DHTSensor(Sensor):
                 temp = None
                 humidity = None
                 try:
-                    [temp, humidity] = self.gpg.dht(sensor_type)
+                    [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
