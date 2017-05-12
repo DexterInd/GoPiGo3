@@ -139,9 +139,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_speed(300)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
-        # Limit the speed
-        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                              dps=self.get_speed())
 
     def volt(self):
         voltage = self.get_voltage_battery()
@@ -206,6 +203,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.drive_cm(dist * 2.54, blocking)
 
     def drive_degrees(self, degrees, blocking=False):
+        # these degrees are meant to be wheel rotations.
+        # 360 degrees would be a full wheel rotation
+        # not the same as turn_degrees() which is a robot rotation
         # degrees is in degrees, not radians
         # if degrees is negative, this becomes a backward move
 
@@ -366,6 +366,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_right_eye()
 
     def turn_degrees(self, degrees):
+        # this is the method to use if you want the robot to turn 90 degrees
+        # or any other amount. This method is based on robot orientation
+        # and not wheel rotation
         # the distance in mm that each wheel needs to travel
         WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
 
@@ -1206,7 +1209,7 @@ class Servo(Sensor):
             self.set_descriptor("GoPiGo3 Servo")
         except:
             raise ValueError("GoPiGo3 Servo not found")
-			
+
     def rotate_servo(self,servo_number,servo_position):
 	'''
         This calculation will vary with servo and is an approximate anglular movement of the servo
@@ -1218,13 +1221,13 @@ class Servo(Sensor):
         '''
         #Pulse width range in us corresponding to 0 to 180 degrees
         PULSE_WIDTH_RANGE=1850
-        
+
         # Servo Position in degrees
         if servo_position > 180:
             servo_position = 180
         elif servo_position < 0:
             servo_position = 0
-        
+
         pulsewidth = round((1500-(PULSE_WIDTH_RANGE/2)) + ((PULSE_WIDTH_RANGE/180)*servo_position))
         # Selecting the Servo Number
         if servo_number == 1 or servo_number == "one":
@@ -1237,7 +1240,7 @@ class Servo(Sensor):
             return "Invalid Servo Number"
         # Set position for the servo
         self.gpg.set_servo(servo_number, int(pulsewidth))
-        
+
     def reset_servo(self,servo_number):
         if servo_number == 1 or servo_number == "one":
             servo_number=self.gpg.SERVO_1
@@ -1259,7 +1262,7 @@ class Distance(Sensor,DistanceSensor):
         try:
             Sensor.__init__(self, port, "OUTPUT", gpg)
             DistanceSensor.__init__(self)
-            self.set_descriptor("Distance Sensor")         
+            self.set_descriptor("Distance Sensor")
         except:
             raise ValueError("Distance Sensor not found")
     # Returns the values in cms
@@ -1287,7 +1290,7 @@ if __name__ == '__main__':
     #c.display_text_over("\nK")
     #c.set_BgColor(0,128,64)
     #time.sleep(2)
-    
+
 
     #d=Distance("I2C",e)
     #h=d.read_distance()
