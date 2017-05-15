@@ -1162,12 +1162,13 @@ class DHTSensor(Sensor):
             data_collector.join()
         except KeyboardInterrupt:
             self.event.set()
+'''
 
+'''
 class RgbLcd(Sensor):
-    '''
-    Wrapper to display Text, change background color on RGB LCD.
-    Connect the sensor to the I2C Port.
-    '''
+    
+    #Wrapper to display Text, change background color on RGB LCD.
+    #Connect the sensor to the I2C Port.
     def __init__(self, port="I2C",gpg=None):
         try:
             Sensor.__init__(self, port, "OUTPUT",gpg)
@@ -1176,11 +1177,9 @@ class RgbLcd(Sensor):
             raise ValueError("Grove RGB Lcd not found")
 
     def display_text(self,text):
-        '''
-        To display a text. It moves to the next line when it encounters "\n" in the text or if there are more than 16 characters.
-        Input the text as a string.
-        '''
-
+        # To display a text. It moves to the next line when it encounters "\n" in the text or if there are more than 16 characters.
+        # Input the text as a string.
+        
         grove_rgb_lcd.setText(text)
 
     # Displays Text over the previous screen without clearing the screen
@@ -1188,19 +1187,18 @@ class RgbLcd(Sensor):
         grove_rgb_lcd.setText_norefresh(text)
 
     def set_BgColor(self,red,green,blue):
-        '''
-        To set the background color of the LCD
-        Red, Green and Blue variables range between (0-255) which indicate the intensity of the color
-        '''
+        #To set the background color of the LCD
+        #Red, Green and Blue variables range between (0-255) which indicate the intensity of the color
+
         grove_rgb_lcd.setRGB(red,green,blue)
+'''
 
-
+'''
 class Servo(Sensor):
-    '''
-    Wrapper to control the Servo Motors on the GPG3.
-    Allows you to rotate the servo by feeding in the angle of rotation.
-    Connect the Servo to the Servo1 and Servo2 ports of GPG3.
-    '''
+    # Wrapper to control the Servo Motors on the GPG3.
+    # Allows you to rotate the servo by feeding in the angle of rotation.
+    # Connect the Servo to the Servo1 and Servo2 ports of GPG3.
+    
 
     def __init__(self, port="SERVO",gpg=None):
         try:
@@ -1210,14 +1208,13 @@ class Servo(Sensor):
             raise ValueError("GoPiGo3 Servo not found")
 			
     def rotate_servo(self,servo_number,servo_position):
-	'''
-        This calculation will vary with servo and is an approximate anglular movement of the servo
-        Pulse Width varies between 575us to 24250us for a 60KHz Servo Motor which rotates between 0 to 180 degrees
-        0 degree ~= 575us
-        180 degree ~= 2425us
-        Pulse width Range= 2425-575 =1850
-        => 1 degree rotation requires ~= 10.27us
-        '''
+        #This calculation will vary with servo and is an approximate anglular movement of the servo
+        #Pulse Width varies between 575us to 24250us for a 60KHz Servo Motor which rotates between 0 to 180 degrees
+        #0 degree ~= 575us
+        #180 degree ~= 2425us
+        #Pulse width Range= 2425-575 =1850
+        #=> 1 degree rotation requires ~= 10.27us
+        
         #Pulse width range in us corresponding to 0 to 180 degrees
         PULSE_WIDTH_RANGE=1850
         
@@ -1251,12 +1248,12 @@ class Servo(Sensor):
             return "Invalid Servo Number"
 
         self.gpg.set_servo(servo_number, 0)
-
+'''
+'''
 class Distance(Sensor,DistanceSensor):
-    '''
-    Wrapper to measure the distance in cms from the DI distance sensor.
-    Connect the distance sensor to I2C port.
-    '''
+    #Wrapper to measure the distance in cms from the DI distance sensor.
+    #Connect the distance sensor to I2C port.
+    
     def __init__(self, port="I2C",gpg=None):
         try:
             Sensor.__init__(self, port, "OUTPUT", gpg)
@@ -1274,6 +1271,7 @@ class Distance(Sensor,DistanceSensor):
         print('{:4.1f}'.format(distance_cms))
         return '{:4.1f}'.format(distance_cms)
 '''
+
 if __name__ == '__main__':
     e=EasyGoPiGo3()
 #    b = Buzzer()
