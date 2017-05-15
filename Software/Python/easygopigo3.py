@@ -8,14 +8,18 @@ import sys
 # import select
 import time
 import gopigo3
+'''
 import numpy
 import math
 import threading
 from datetime import datetime
+'''
 import picamera
+'''
 import DHT
 import grove_rgb_lcd
 from distance_sensor import DistanceSensor
+'''
 from glob import glob  # for USB checking
 import os
 
@@ -1048,7 +1052,7 @@ class EasyCamera(picamera.PiCamera):
         # now we can take a photo. Smile!
         self.capture(path + "/" + filename)
         return True
-
+'''
 class DHTSensor(Sensor):
 
     def __init__(self, port="SERIAL",gpg=None):
@@ -1269,7 +1273,7 @@ class Distance(Sensor,DistanceSensor):
             _release_read()
         print('{:4.1f}'.format(distance_cms))
         return '{:4.1f}'.format(distance_cms)
-
+'''
 if __name__ == '__main__':
     e=EasyGoPiGo3()
 #    b = Buzzer()
