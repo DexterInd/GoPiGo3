@@ -161,24 +161,19 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
 
         # get the starting position of each motor
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-            self.set_motor_position(self.MOTOR_LEFT,
-                                    (StartPositionLeft + WheelTurnDegrees))
-            self.set_motor_position(self.MOTOR_RIGHT,
-                                    (StartPositionRight + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight + WheelTurnDegrees))
 
-            _release_read()
-
-            if blocking:
-                while self.target_reached(
-                        StartPositionLeft + WheelTurnDegrees,
-                        StartPositionRight + WheelTurnDegrees) is False:
-                    time.sleep(0.1)
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight + WheelTurnDegrees) is False:
+                time.sleep(0.1)
 
     def drive_inches(self, dist, blocking=False):
         self.drive_cm(dist * 2.54, blocking)
@@ -527,12 +522,7 @@ class AnalogSensor(Sensor):
         Sensor.__init__(self, port, pinmode, gpg)
 
     def read(self):
-        _wait_for_read()
-
-        if _is_read_open():
-            _grab_read()
-            self.value = self.gpg.get_grove_analog(self.get_pin())
-            _release_read()
+        self.value = self.gpg.get_grove_analog(self.get_pin())
         return self.value
 
     def percent_read(self):
@@ -544,28 +534,18 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         self.value = power
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
+        return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
                                                        power)
-            # debug ("Analog Write on {} at {}".format(self.get_pin(),
-            #                                          power))
-            _release_read()
         return return_value
 
     def write_freq(self, freq):
         self.freq = freq
         # debug("write_freq: {}".format(self.freq))
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            return_value = self.gpg.set_grove_pwm_frequency(
+        return_value = self.gpg.set_grove_pwm_frequency(
                 self.get_port_ID(),
                 self.freq)
-            debug ("Analog Write on {} at {}".format(self.get_port_ID(),
+        debug ("Analog Write on {} at {}".format(self.get_port_ID(),
                                                      self.freq))
-            _release_read()
         return return_value
 ##########################
 
@@ -634,26 +614,20 @@ class UltraSonicSensor(AnalogSensor):
         readings = []
         skip = 0
 
-        # THREAD SAFE
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
+        while len(readings) < 3:
+            try:
+                value = self.gpg.get_grove_value(self.get_port_ID())
+                print("raw US value {} ".format(value))
+            except:
+                continue
 
-            while len(readings) < 3:
-                try:
-                    value = self.gpg.get_grove_value(self.get_port_ID())
-                    print("raw US value {} ".format(value))
-                except:
-                    continue
-
-                if value < 4300 and value > 14:
-                    readings.append(value)
-                    debug (readings)
-                else:
-                    skip += 1
-                    if skip > 5:
-                        break
-            _release_read()
+            if value < 4300 and value > 14:
+                readings.append(value)
+                debug (readings)
+            else:
+                skip += 1
+                if skip > 5:
+                    break
 
         if skip > 5:
             # no special meaning to the number 501
@@ -669,7 +643,7 @@ class UltraSonicSensor(AnalogSensor):
     def read(self):
         # returns value in cm
         value = self.read_mm()
-        if value > 15 and value < 5010:
+        if value > 15 and value <= 5010:
             return value // 10
         return value
 
@@ -1184,7 +1158,7 @@ class EasyCamera(picamera.PiCamera):
 
 
 if __name__ == '__main__':
-    e=EasyGoPiGo3()
+   e=EasyGoPiGo3()
    # b = Buzzer()
    # print (b)
    # print ("Sounding buzzer")
