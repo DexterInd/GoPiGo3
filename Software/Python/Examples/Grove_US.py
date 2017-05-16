@@ -25,13 +25,10 @@ try:
     GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.US)
     
     while(True):
-        value = GPG.get_grove_value(GPG.GROVE_1)
-        if value is 0:
-            print("   0mm Sensor not responding")
-        elif value is 1:
-            print("   0mm Object not detected within range")
-        else:
-            print("%4dmm" % value)
+        try:
+            print("%4dmm" % GPG.get_grove_value(GPG.GROVE_1))
+        except gopigo3.SensorError as error:
+            print(error)
         time.sleep(0.05)
 
 except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.

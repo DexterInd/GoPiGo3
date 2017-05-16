@@ -14,8 +14,10 @@ from __future__ import division
 import subprocess # for executing system calls
 import spidev
 import math       # import math for math.pi constant
+import fcntl      # for lockf mutex support
+import time
 
-FIRMWARE_VERSION_REQUIRED = "0.2.x" # Make sure the top 2 of 3 numbers match
+FIRMWARE_VERSION_REQUIRED = "0.3.x" # Make sure the top 2 of 3 numbers match
 
 GPG_SPI = spidev.SpiDev()
 GPG_SPI.open(0, 1)
@@ -55,6 +57,37 @@ class FirmwareVersionError(Exception):
 
 class SensorError(Exception):
     """Exception raised if a sensor is not yet configured when trying to read it"""
+
+
+class I2CError(Exception):
+    """Exception raised if there was an error on an I2C bus"""
+
+
+class ValueError(Exception):
+    """Exception raised if trying to read an invalid value"""
+
+
+#DexterLockSPI_handle = None
+#def SPI_Mutex_Acquire():
+#    global DexterLockSPI_handle
+#    while DexterLockSPI_handle is not None:
+#        time.sleep(0.001)
+#    DexterLockSPI_handle = True # set to something other than None
+#    DexterLockSPI_handle = open('/run/lock/DexterLockSPI', 'w')
+#    Acquired = False
+#    while not Acquired:
+#        try:
+#            fcntl.lockf(DexterLockSPI_handle, fcntl.LOCK_EX | fcntl.LOCK_NB) # lock
+#            Acquired = True
+#        except IOError: # already locked by a different process
+#            time.sleep(0.001)
+
+#def SPI_Mutex_Release():
+#    global DexterLockSPI_handle
+#    if DexterLockSPI_handle is not None:
+#        DexterLockSPI_handle.close()
+#        DexterLockSPI_handle = None
+#        time.sleep(0.001)
 
 
 class GoPiGo3(object):
@@ -121,13 +154,17 @@ class GoPiGo3(object):
         GET_GROVE_ANALOG_1_2,
         GET_GROVE_ANALOG_2_1,
         GET_GROVE_ANALOG_2_2,
+        
+        START_GROVE_I2C_1,
+        START_GROVE_I2C_2,
     """)
     
     GROVE_TYPE = Enumeration("""
-        CUSTOM,
+        CUSTOM = 1,
         IR_GO_BOX,
         IR_EV3,
         US,
+        I2C,
     """)
     
     LED_EYE_LEFT      = 0x02
@@ -157,6 +194,7 @@ class GoPiGo3(object):
     GROVE_2 = GROVE_2_1 + GROVE_2_2
     
     GroveType = [0, 0]
+    GroveI2CInBytes = [0, 0]
     
     GROVE_INPUT_DIGITAL          = 0
     GROVE_OUTPUT_DIGITAL         = 1
@@ -203,7 +241,10 @@ class GoPiGo3(object):
         
         Returns a list of the bytes read.
         """
-        return GPG_SPI.xfer2(data_out)
+#        SPI_Mutex_Acquire()
+        result = GPG_SPI.xfer2(data_out)
+#        SPI_Mutex_Release()
+        return result
     
     def spi_read_8(self, MessageType):
         """
@@ -554,7 +595,7 @@ class GoPiGo3(object):
         type -- The grove device type
         """
         for p in range(2):
-            if port & (1 << p):
+            if ((port >> (p * 2)) & 3) == 3:
                 self.GroveType[p] = type
         outArray = [self.SPI_Address, self.SPI_MESSAGE_TYPE.SET_GROVE_TYPE, port, type]
         reply = self.spi_transfer_array(outArray)
@@ -615,6 +656,82 @@ class GoPiGo3(object):
                     ((freq_value >> 8) & 0xFF), (freq_value & 0xFF)]
         reply = self.spi_transfer_array(outArray)
     
+    def grove_i2c_transfer(self, port, addr, outArr, inBytes = 0):
+        """
+        Conduct an I2C transaction
+        
+        Keyword arguments:
+        port -- The grove port. GROVE_1 or GROVE_2.
+        addr -- The I2C address of the slave to be addressed.
+        outArr -- A list of bytes to send.
+        inBytes -- The number of bytes to read.
+        
+        Returns:
+        list of bytes read from the slave
+        """
+        # start an I2C transaction as soon as the bus is available
+        Continue = False
+        while not Continue:
+            try:
+                self.grove_i2c_start(port, addr, outArr, inBytes)
+                Continue = True
+            except I2CError:
+                pass
+        
+        DelayTime = 0
+        if len(outArr):
+            DelayTime += 1 + len(outArr)
+        if inBytes:
+            DelayTime += 1 + inBytes
+        DelayTime *= (0.000115) # each I2C byte takes about 115uS at full speed (about 100kbps)
+        # No point trying to read the values before they are ready.
+        time.sleep(DelayTime) # delay for as long as it will take to do the I2C transaction.
+        
+        # read the results as soon as they are available
+        while True:
+            try:
+                values = self.get_grove_value(port)
+                return values
+            except ValueError:
+                pass
+    
+    def grove_i2c_start(self, port, addr, outArr, inBytes = 0):
+        """
+        Start an I2C transaction
+        
+        Keyword arguments:
+        port -- The grove port. GROVE_1 or GROVE_2.
+        addr -- The I2C address of the slave to be addressed.
+        outArr -- A list of bytes to send.
+        inBytes -- The number of bytes to read.
+        """
+        if port == self.GROVE_1:
+            message_type = self.SPI_MESSAGE_TYPE.START_GROVE_I2C_1
+            port_index = 0
+        elif port == self.GROVE_2:
+            message_type = self.SPI_MESSAGE_TYPE.START_GROVE_I2C_2
+            port_index = 1
+        else:
+            raise IOError("Port unsupported. Must get one at a time.")
+        
+        address = ((int(addr) & 0x7F) << 1)
+        
+        if inBytes > 16:
+            raise IOError("Read length error. Up to 16 bytes can be read in a single transaction.")
+        
+        outBytes = len(outArr)
+        if outBytes > 16:
+            raise IOError("Write length error. Up to 16 bytes can be written in a single transaction.")
+        
+        outArray = [self.SPI_Address, message_type, address, inBytes, outBytes]
+        outArray.extend(outArr)
+        reply = self.spi_transfer_array(outArray)
+        self.GroveI2CInBytes[port_index] = inBytes
+        if(reply[3] != 0xA5):
+            raise IOError("start_grove_i2c error: No SPI response")
+        if(reply[4] != 0):
+            raise I2CError("start_grove_i2c error: Not ready to start I2C transaction")
+    
     def get_grove_value(self, port):
         """
         Get a grove port value
@@ -632,38 +749,60 @@ class GoPiGo3(object):
             raise IOError("Port unsupported. Must get one at a time.")
         
         if self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3:
-            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0]
+            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
-                if(reply[4] == self.GroveType[port_index]):
-                    return [reply[5], reply[6], reply[7], reply[8]]
+                if(reply[4] == self.GroveType[port_index] and reply[5] == 0):
+                    return [reply[6], reply[7], reply[8], reply[9]]
                 else:
                     raise SensorError("get_grove_value error: Invalid value")
             else:
                 raise IOError("get_grove_value error: No SPI response")
             
         elif self.GroveType[port_index] == self.GROVE_TYPE.IR_GO_BOX:
-            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0]
+            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
-                if(reply[4] == self.GroveType[port_index]):
-                    return reply[5]
+                if(reply[4] == self.GroveType[port_index] and reply[5] == 0):
+                    return reply[6]
                 else:
                     raise SensorError("get_grove_value error: Invalid value")
             else:
                 raise IOError("get_grove_value error: No SPI response")
             
         elif self.GroveType[port_index] == self.GROVE_TYPE.US:
-            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
+            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
-                if(reply[4] == self.GroveType[port_index]):
-                    return (((reply[5] << 8) & 0xFF00) | (reply[6] & 0xFF))
+                if(reply[4] == self.GroveType[port_index] and reply[5] == 0):
+                    value = (((reply[6] << 8) & 0xFF00) | (reply[7] & 0xFF))
+                    if value == 0:
+                        raise SensorError("get_grove_value error: Sensor not responding")
+                    elif value == 1:
+                        raise SensorError("get_grove_value error: Object not detected within range")
+                    else:
+                        return value
                 else:
                     raise SensorError("get_grove_value error: Invalid value")
             else:
                 raise IOError("get_grove_value error: No SPI response")
             
+        elif self.GroveType[port_index] == self.GROVE_TYPE.I2C:
+            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0]
+            outArray.extend([0 for i in range(self.GroveI2CInBytes[port_index])])
+            reply = self.spi_transfer_array(outArray)
+            if(reply[3] == 0xA5):
+                if(reply[4] == self.GroveType[port_index]):
+                    if(reply[5] == 0):   # no error
+                        return reply[6:]
+                    elif(reply[5] == 4): # I2C bus error
+                        raise I2CError("get_grove_value error: I2C bus error")
+                    else:
+                        raise ValueError("get_grove_value error: Invalid value")
+                else:
+                    raise SensorError("get_grove_value error: Grove type mismatch")
+            else:
+                raise IOError("get_grove_value error: No SPI response")
         value = self.spi_read_8(message_type)
         return value
     
@@ -684,10 +823,16 @@ class GoPiGo3(object):
             message_type = self.SPI_MESSAGE_TYPE.GET_GROVE_STATE_2_2
         else:
             raise IOError("Pin(s) unsupported. Must get one at a time.")
-            return
         
-        value = self.spi_read_8(message_type)
-        return value
+        outArray = [self.SPI_Address, message_type, 0, 0, 0, 0]
+        reply = self.spi_transfer_array(outArray)
+        if(reply[3] == 0xA5):
+            if(reply[4] == 0): # no error
+                return reply[5]
+            else:
+                raise ValueError("get_grove_state error: Invalid value")
+        else:
+            raise IOError("get_grove_state error: No SPI response")
     
     def get_grove_voltage(self, pin):
         """
@@ -706,10 +851,16 @@ class GoPiGo3(object):
             message_type = self.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_2_2
         else:
             raise IOError("Pin(s) unsupported. Must get one at a time.")
-            return
         
-        value = self.spi_read_16(message_type)
-        return (value / 1000.0)
+        outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
+        reply = self.spi_transfer_array(outArray)
+        if(reply[3] == 0xA5):
+            if(reply[4] == 0): # no error
+                return ((((reply[5] << 8) & 0xFF00) | (reply[6] & 0xFF)) / 1000.0)
+            else:
+                raise ValueError("get_grove_voltage error: Invalid value")
+        else:
+            raise IOError("get_grove_voltage error: No SPI response")
     
     def get_grove_analog(self, pin):
         """
@@ -728,10 +879,16 @@ class GoPiGo3(object):
             message_type = self.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_2_2
         else:
             raise IOError("Pin(s) unsupported. Must get one at a time.")
-            return
         
-        value = self.spi_read_16(message_type)
-        return value
+        outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
+        reply = self.spi_transfer_array(outArray)
+        if(reply[3] == 0xA5):
+            if(reply[4] == 0): # no error
+                return (((reply[5] << 8) & 0xFF00) | (reply[6] & 0xFF))
+            else:
+                raise ValueError("get_grove_analog error: Invalid value")
+        else:
+            raise IOError("get_grove_analog error: No SPI response")
     
     def reset_all(self):
         """

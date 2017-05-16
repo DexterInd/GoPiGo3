@@ -31,14 +31,17 @@ try:
     duty = 10
     #freq = 0
     while(True):
-        print("Battery: %6.3fv   5v: %5.3fv   State: %d   Voltage: %4.2fv   ADC: %4d" % (GPG.get_voltage_battery(), GPG.get_voltage_5v(), GPG.get_grove_state(GPG.GROVE_2_1), GPG.get_grove_voltage(GPG.GROVE_2_1), GPG.get_grove_analog(GPG.GROVE_2_1)))
-        duty = duty + 1
-        if duty > 90:
-            duty = 10
-        GPG.set_grove_pwm_duty(GPG.GROVE_1_1, duty)
-        
-        GPG.set_grove_pwm_frequency(GPG.GROVE_1, GPG.get_grove_analog(GPG.GROVE_2_1))
-        time.sleep(0.1)
+        try:
+            print("Battery: %6.3fv   5v: %5.3fv   State: %d   Voltage: %4.2fv   ADC: %4d" % (GPG.get_voltage_battery(), GPG.get_voltage_5v(), GPG.get_grove_state(GPG.GROVE_2_1), GPG.get_grove_voltage(GPG.GROVE_2_1), GPG.get_grove_analog(GPG.GROVE_2_1)))
+            duty = duty + 1
+            if duty > 90:
+                duty = 10
+            GPG.set_grove_pwm_duty(GPG.GROVE_1_1, duty)
+            
+            GPG.set_grove_pwm_frequency(GPG.GROVE_1, GPG.get_grove_analog(GPG.GROVE_2_1))
+            time.sleep(0.1)
+        except gopigo3.ValueError as error:
+            pass
 
 except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.
     GPG.reset_all()        # Unconfigure the sensors, disable the motors, and restore the LED to the control of the GoPiGo3 firmware.
