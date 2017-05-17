@@ -617,7 +617,6 @@ class UltraSonicSensor(AnalogSensor):
         while len(readings) < 3:
             try:
                 value = self.gpg.get_grove_value(self.get_port_ID())
-                print("raw US value {} ".format(value))
             except:
                 continue
 
@@ -630,6 +629,10 @@ class UltraSonicSensor(AnalogSensor):
                     break
 
         if skip > 5:
+            # if value = 0 it means Ultrasonic Sensor wasn't found
+            if value == 0:
+                return(0)
+
             # no special meaning to the number 501
             return(5010)
 
