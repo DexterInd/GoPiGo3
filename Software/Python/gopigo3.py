@@ -554,7 +554,8 @@ class GoPiGo3(object):
         type -- The grove device type
         """
         for p in range(2):
-            if port & (1 << p):
+            # if port & (1 << p):
+            if ((port >> (p * 2)) & 3) == 3:
                 self.GroveType[p] = type
         outArray = [self.SPI_Address, self.SPI_MESSAGE_TYPE.SET_GROVE_TYPE, port, type]
         reply = self.spi_transfer_array(outArray)
@@ -752,4 +753,4 @@ class GoPiGo3(object):
         
         # Turn off the LEDs
         self.set_led(self.LED_EYE_LEFT + self.LED_EYE_RIGHT + self.LED_BLINKER_LEFT + self.LED_BLINKER_RIGHT, 0, 0, 0)
-	
+    

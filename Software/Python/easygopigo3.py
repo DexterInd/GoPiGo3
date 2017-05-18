@@ -64,21 +64,6 @@ def _wait_for_read():
         return True
 
 
-def _is_read_open():
-    return read_is_open
-
-
-def _grab_read():
-    global read_is_open
-    # debug("grab")
-    read_is_open = False
-
-
-def _release_read():
-    global read_is_open
-    # debug("release")
-    read_is_open = True
-
 #####################################################################
 #
 # USB SUPPORT
@@ -160,19 +145,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-            _release_read()
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
     def forward(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
-            _release_read()
 
     def drive_cm(self, dist, blocking=False):
         # dist is in cm
@@ -184,24 +161,19 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
 
         # get the starting position of each motor
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-            self.set_motor_position(self.MOTOR_LEFT,
-                                    (StartPositionLeft + WheelTurnDegrees))
-            self.set_motor_position(self.MOTOR_RIGHT,
-                                    (StartPositionRight + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight + WheelTurnDegrees))
 
-            _release_read()
-
-            if blocking:
-                while self.target_reached(
-                        StartPositionLeft + WheelTurnDegrees,
-                        StartPositionRight + WheelTurnDegrees) is False:
-                    time.sleep(0.1)
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight + WheelTurnDegrees) is False:
+                time.sleep(0.1)
 
     def drive_inches(self, dist, blocking=False):
         self.drive_cm(dist * 2.54, blocking)
@@ -213,25 +185,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # degrees is in degrees, not radians
         # if degrees is negative, this becomes a backward move
 
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            # get the starting position of each motor
-            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-            self.set_motor_position(self.MOTOR_LEFT,
-                                    (StartPositionLeft + degrees))
-            self.set_motor_position(self.MOTOR_RIGHT,
-                                    (StartPositionRight + degrees))
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + degrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight + degrees))
 
-            _release_read()
 
-            if blocking:
-                while self.target_reached(
-                        StartPositionLeft + degrees,
-                        StartPositionRight + degrees) is False:
-                    time.sleep(0.1)
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + degrees,
+                    StartPositionRight + degrees) is False:
+                time.sleep(0.1)
         return
 
     def target_reached(self, left_target_degrees, right_target_degrees):
@@ -244,12 +212,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         min_right_target = right_target_degrees - tolerance
         max_right_target = right_target_degrees + tolerance
 
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
-            current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
-            _release_read()
+        current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
+        current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
 
         if current_left_position > min_left_target and \
            current_left_position < max_left_target and \
@@ -260,48 +224,30 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             return False
 
     def backward(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed() * -1)
-            _release_read()
+
 
     def left(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-            self.set_motor_dps(self.MOTOR_RIGHT, 0)
-            _release_read()
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, 0)
+
 
     def right(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_motor_dps(self.MOTOR_LEFT, 0)
-            self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
-            _release_read()
+        self.set_motor_dps(self.MOTOR_LEFT, 0)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
 
     def blinker_on(self, id):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            if id == 1 or id == "left":
-                self.set_led(self.LED_LEFT_BLINKER, 255)
-            if id == 0 or id == "right":
-                self.set_led(self.LED_RIGHT_BLINKER, 255)
-            _release_read()
+        if id == 1 or id == "left":
+            self.set_led(self.LED_LEFT_BLINKER, 255)
+        if id == 0 or id == "right":
+            self.set_led(self.LED_RIGHT_BLINKER, 255)
 
     def blinker_off(self, id):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            if id == 1:
-                self.set_led(self.LED_LEFT_BLINKER, 0)
-            if id == 0:
-                self.set_led(self.LED_RIGHT_BLINKER, 0)
-            _release_read()
+        if id == 1:
+            self.set_led(self.LED_LEFT_BLINKER, 0)
+        if id == 0:
+            self.set_led(self.LED_RIGHT_BLINKER, 0)
 
     def led_on(self, id):
         self.blinker_on(id)
@@ -326,44 +272,28 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_right_eye_color(color)
 
     def open_left_eye(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_led(self.LED_LEFT_EYE,
-                         self.left_eye_color[0],
-                         self.left_eye_color[1],
-                         self.left_eye_color[2],
-                         )
-            _release_read()
+        self.set_led(self.LED_LEFT_EYE,
+                     self.left_eye_color[0],
+                     self.left_eye_color[1],
+                     self.left_eye_color[2],
+                     )
 
     def open_right_eye(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_led(self.LED_RIGHT_EYE,
-                         self.left_eye_color[0],
-                         self.left_eye_color[1],
-                         self.left_eye_color[2],
-                         )
-            _release_read()
+        self.set_led(self.LED_RIGHT_EYE,
+                     self.left_eye_color[0],
+                     self.left_eye_color[1],
+                     self.left_eye_color[2],
+                     )
 
     def open_eyes(self):
         self.open_left_eye()
         self.open_right_eye()
 
     def close_left_eye(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
-            _release_read()
+        self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
 
     def close_right_eye(self):
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
-            _release_read()
+        self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
 
     def close_eyes(self):
         self.close_left_eye()
@@ -380,19 +310,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) *
                             360)
 
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            # get the starting position of each motor
-            StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-            StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
-            # Set each motor target
-            self.set_motor_position(self.MOTOR_LEFT,
-                                    (StartPositionLeft + WheelTurnDegrees))
-            self.set_motor_position(self.MOTOR_RIGHT,
-                                    (StartPositionRight - WheelTurnDegrees))
-            _release_read()
+        # Set each motor target
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight - WheelTurnDegrees))
 
 
 # the following functions may be redundant
@@ -467,23 +393,19 @@ class Sensor(object):
         self.set_port(port)
         self.set_pin_mode(pinmode)
 
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            if pinmode == "INPUT":
-                self.gpg.set_grove_type(self.portID,
-                                        self.gpg.GROVE_TYPE.CUSTOM)
-                self.gpg.set_grove_mode(self.portID,
-                                        self.gpg.GROVE_INPUT_ANALOG)
-            if pinmode == "OUTPUT":
-                self.gpg.set_grove_type(self.portID,
-                                        self.gpg.GROVE_TYPE.CUSTOM)
-                self.gpg.set_grove_mode(self.portID,
-                                        self.gpg.GROVE_OUTPUT_PWM)
-            if pinmode == "US":
-                self.gpg.set_grove_type(self.portID,
-                                        self.gpg.GROVE_TYPE.US)
-            _release_read()
+        if pinmode == "INPUT":
+            self.gpg.set_grove_type(self.portID,
+                                    self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,
+                                    self.gpg.GROVE_INPUT_ANALOG)
+        if pinmode == "OUTPUT":
+            self.gpg.set_grove_type(self.portID,
+                                    self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,
+                                    self.gpg.GROVE_OUTPUT_PWM)
+        if pinmode == "US":
+            self.gpg.set_grove_type(self.portID,
+                                    self.gpg.GROVE_TYPE.US)
 
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
@@ -549,46 +471,42 @@ class Sensor(object):
 ##########################
 
 
-class DigitalSensor(Sensor):
-    '''
-    Implements read and write methods
-    '''
-    def __init__(self, port, pinmode, gpg):
-        debug("DigitalSensor init")
-        # self.pin = DIGITAL
-        Sensor.__init__(self, port, pinmode, gpg)
+# class DigitalSensor(Sensor):
+#     '''
+#     Implements read and write methods
+#     NOT IMPLEMENTED IN GOPIGO3
+#     '''
+#     def __init__(self, port, pinmode, gpg):
+#         debug("DigitalSensor init")
+#         # self.pin = DIGITAL
+#         Sensor.__init__(self, port, pinmode, gpg)
 
-    def read(self):
-        '''
-        tries to get a value up to 10 times.
-        As soon as a valid value is read, it returns either 0 or 1
-        returns -1 after 10 unsuccessful tries
-        '''
-        okay = False
-        error_count = 0
+#     def read(self):
+#         '''
+#         tries to get a value up to 10 times.
+#         As soon as a valid value is read, it returns either 0 or 1
+#         returns -1 after 10 unsuccessful tries
+#         '''
+#         okay = False
+#         error_count = 0
 
-        _wait_for_read()
+#         rtn = -1
+#         while not okay and error_count < 10:
+#             try:
+#                 # not ported to gpg3 yet
+#                 # rtn = int(gopigo.digitalRead(self.get_port_ID()))
+#                 okay = True
+#             except:
+#                 error_count += 1
+#             if error_count > 10:
+#                 return -1
+#             else:
+#                 return rtn
 
-        if _is_read_open():
-            _grab_read()
-            rtn = -1
-            while not okay and error_count < 10:
-                try:
-                    # not ported to gpg3 yet
-                    # rtn = int(gopigo.digitalRead(self.get_port_ID()))
-                    okay = True
-                except:
-                    error_count += 1
-            _release_read()
-            if error_count > 10:
-                return -1
-            else:
-                return rtn
-
-    def write(self, power):
-        self.value = power
-        # not ported to GPG3 yet
-        return -1
+#     def write(self, power):
+#         self.value = power
+#         # not ported to GPG3 yet
+#         return -1
         # return gopigo.digitalWrite(self.get_port_ID(), power)
 ##########################
 
@@ -604,12 +522,7 @@ class AnalogSensor(Sensor):
         Sensor.__init__(self, port, pinmode, gpg)
 
     def read(self):
-        _wait_for_read()
-
-        if _is_read_open():
-            _grab_read()
-            self.value = self.gpg.get_grove_analog(self.get_pin())
-            _release_read()
+        self.value = self.gpg.get_grove_analog(self.get_pin())
         return self.value
 
     def percent_read(self):
@@ -621,28 +534,18 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         self.value = power
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
+        return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
                                                        power)
-            # debug ("Analog Write on {} at {}".format(self.get_pin(),
-            #                                          power))
-            _release_read()
         return return_value
 
     def write_freq(self, freq):
         self.freq = freq
         # debug("write_freq: {}".format(self.freq))
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            return_value = self.gpg.set_grove_pwm_frequency(
+        return_value = self.gpg.set_grove_pwm_frequency(
                 self.get_port_ID(),
                 self.freq)
-            debug ("Analog Write on {} at {}".format(self.get_port_ID(),
+        debug ("Analog Write on {} at {}".format(self.get_port_ID(),
                                                      self.freq))
-            _release_read()
         return return_value
 ##########################
 
@@ -711,27 +614,25 @@ class UltraSonicSensor(AnalogSensor):
         readings = []
         skip = 0
 
-        # THREAD SAFE
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
+        while len(readings) < 3:
+            try:
+                value = self.gpg.get_grove_value(self.get_port_ID())
+            except:
+                continue
 
-            while len(readings) < 3:
-                try:
-                    value = self.gpg.get_grove_value(self.get_port_ID())
-                except:
-                    continue
-
-                if value < 4300 and value > 14:
-                    readings.append(value)
-                    # debug (readings)
-                else:
-                    skip += 1
-                    if skip > 5:
-                        break
-            _release_read()
+            if value < 4300 and value > 14:
+                readings.append(value)
+                debug (readings)
+            else:
+                skip += 1
+                if skip > 5:
+                    break
 
         if skip > 5:
+            # if value = 0 it means Ultrasonic Sensor wasn't found
+            if value == 0:
+                return(0)
+
             # no special meaning to the number 501
             return(5010)
 
@@ -745,7 +646,7 @@ class UltraSonicSensor(AnalogSensor):
     def read(self):
         # returns value in cm
         value = self.read_mm()
-        if value > 15 and value < 5010:
+        if value > 15 and value <= 5010:
             return value // 10
         return value
 
@@ -870,18 +771,18 @@ class Led(AnalogSensor):
 ##########################
 
 
-class MotionSensor(DigitalSensor):
-    def __init__(self, port="D11", gpg=None):
-        DigitalSensor.__init__(self, port, "INPUT", gpg)
-        self.set_descriptor("Motion Sensor")
+# class MotionSensor(DigitalSensor):
+#     def __init__(self, port="D11", gpg=None):
+#         DigitalSensor.__init__(self, port, "INPUT", gpg)
+#         self.set_descriptor("Motion Sensor")
 ##########################
 
 
-class ButtonSensor(DigitalSensor):
+# class ButtonSensor(DigitalSensor):
 
-    def __init__(self, port="D11", gpg=None):
-        DigitalSensor.__init__(self, port, "INPUT", gpg)
-        self.set_descriptor("Button sensor")
+#     def __init__(self, port="D11", gpg=None):
+#         DigitalSensor.__init__(self, port, "INPUT", gpg)
+#         self.set_descriptor("Button sensor")
 ##########################
 
 
@@ -955,11 +856,8 @@ class LineFollower(Sensor):
         From 0 to 1023
         May return a list of -1 when there's a read error
         '''
-        _wait_for_read()
 
-        _grab_read()
         five_vals = line_sensor.read_sensor()
-        _release_read()
 
         if five_vals != -1:
             return five_vals
@@ -979,12 +877,7 @@ class LineFollower(Sensor):
             through the Line Sensor Calibration tool
         May return all -1 on a read error
         '''
-        _wait_for_read()
-
-        if _is_read_open():
-            _grab_read()
-            five_vals = scratch_line.absolute_line_pos()
-            _release_read()
+        five_vals = scratch_line.absolute_line_pos()
 
         return five_vals
 
@@ -998,11 +891,8 @@ class LineFollower(Sensor):
         '''
         five_vals = [-1, -1, -1, -1, -1]
 
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            five_vals = self.read()
-            _release_read()
+
+        five_vals = self.read()
 
         if five_vals == [0, 0, 1, 0, 0] or five_vals == [0, 1, 1, 1, 0]:
             return "Center"
@@ -1069,11 +959,7 @@ class EasyCamera(picamera.PiCamera):
 #         except:
 #             raise ValueError("DHT Sensor not found")
 #     def read_temperature(self,sensor_type=0):
-#         _wait_for_read()
-#         if _is_read_open():
-#             _grab_read()
-#             temp=DHT.dht(sensor_type)[0]
-#             _release_read()
+#         temp=DHT.dht(sensor_type)[0]
 #         if temp == -2:
 #             return "Bad reading, trying again"
 #         elif temp == -3:
@@ -1082,11 +968,7 @@ class EasyCamera(picamera.PiCamera):
 #             print("Temperature = %.02fC"%temp)
 #             return temp
 #     def read_humidity(self,sensor_type=0):
-#         _wait_for_read()
-#         if _is_read_open():
-#             _grab_read()
-#             humidity=DHT.dht(sensor_type)[1]
-#             _release_read()
+#         humidity=DHT.dht(sensor_type)[1]
 #         if humidity == -2:
 #             return "Bad reading, trying again"
 #         elif humidity == -3:
@@ -1095,11 +977,7 @@ class EasyCamera(picamera.PiCamera):
 #             print("Humidity = %.02f%%"%humidity)
 #             return humidity
 #     def read_dht(self,sensor_type=0):
-#         _wait_for_read()
-#         if _is_read_open():
-#             _grab_read()
-#             [temp , humidity]=DHT.dht(sensor_type)
-#             _release_read()
+#         [temp , humidity]=DHT.dht(sensor_type)
 #         if temp ==-2.0 or humidity == -2.0:
 #             return "Bad reading, trying again"
 #         elif temp ==-3.0 or humidity == -3.0:
@@ -1283,7 +1161,7 @@ class EasyCamera(picamera.PiCamera):
 
 
 if __name__ == '__main__':
-    e=EasyGoPiGo3()
+   e=EasyGoPiGo3()
    # b = Buzzer()
    # print (b)
    # print ("Sounding buzzer")
