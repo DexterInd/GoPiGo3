@@ -1,13 +1,31 @@
 #!/usr/bin/env python
 from __future__ import print_function
 from __future__ import division
-from builtins import input
+# from builtins import input
 
 import sys
-import tty
-import select
-
+# import tty
+# import select
+import time
 import gopigo3
+
+# import numpy
+# import math
+# import threading
+# from datetime import datetime
+
+import picamera
+
+# import DHT
+# import grove_rgb_lcd
+# from distance_sensor import DistanceSensor
+
+from glob import glob  # for USB checking
+import os
+
+# not used yet but will be
+from subprocess import check_output, CalledProcessError
+from multiprocessing import Process, Lock
 
 try:
     sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
@@ -29,49 +47,99 @@ fd = ''
 
 read_is_open = True
 
+
 def debug(in_str):
     if False:
         print(in_str)
 
+
 def _wait_for_read():
-    while read_is_open is False:
+    timeout = 0
+    while read_is_open is False and timeout < 100:
         time.sleep(0.01)
+        timeout += 1
+    if timeout > 99:
+        return False
+    else:
+        return True
 
-def _is_read_open():
-    return read_is_open
 
-def _grab_read():
-    global read_is_open
-    # print("grab")
-    read_is_open = False
+#####################################################################
+#
+# USB SUPPORT
+#
+#####################################################################
 
-def _release_read():
-    global read_is_open
-    # print("release")
-    read_is_open = True
+
+def check_usb():
+    '''
+    will return the path to the USB key if there's one that's mounted
+    will return false otherwise
+    '''
+    if len(_get_mount_points()) == 1:
+        return _get_mount_points()[0][1]
+    return False
+
+
+def create_folder_on_usb(foldername):
+    usb_path = check_usb()
+    if usb_path is not False:
+        try:
+            os.mkdir(usb_path + "/" + foldername, 0755)
+            return True
+        except:
+            return False
+
+
+def _get_usb_devices():
+    '''
+    gets a list of devices that could be a usb
+    '''
+    sdb_devices = map(os.path.realpath, glob('/sys/block/sd*'))
+    usb_devices = (dev for dev in sdb_devices
+                   if 'usb' in dev.split('/')[5])
+    return dict((os.path.basename(dev), dev) for dev in usb_devices)
+
+
+def _get_mount_points(devices=None):
+    '''
+    returns a list of all mounted USBs
+    '''
+    # if devices are None: get_usb_devices
+    devices = devices or _get_usb_devices()
+
+    output = check_output(['mount']).splitlines()
+    is_usb = lambda path: any(dev in path for dev in devices)
+    usb_info = (line for line in output if is_usb(line.split()[0]))
+    return [(info.split()[0], info.split()[2]) for info in usb_info]
+
+#####################################################################
+#
+# EASYGOPIGO3
+#
+#####################################################################
 
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     def __init__(self):
-        super(EasyGoPiGo3, self).__init__()
+        super(self.__class__, self).__init__()
         self.sensor_1 = None
         self.sensor_2 = None
         self.set_speed(300)
-        self.left_eye_color = (0,255,255)
-        self.right_eye_color = (0,255,255)
+        self.left_eye_color = (0, 255, 255)
+        self.right_eye_color = (0, 255, 255)
 
     def volt(self):
-        _wait_for_read()
-        _grab_read()
         voltage = self.get_voltage_battery()
-        _release_read()
         return voltage
 
-    def set_speed(self,in_speed):
+    def set_speed(self, in_speed):
         try:
             self.speed = int(in_speed)
         except:
             self.speed = 300
+        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                              dps=self.speed)
 
     def get_speed(self):
         return int(self.speed)
@@ -81,61 +149,125 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def forward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                             self.get_speed())
+                               self.get_speed())
+
+    def drive_cm(self, dist, blocking=False):
+        # dist is in cm
+        # if dist is negative, this becomes a backward move
+
+        dist_mm = dist * 10
+
+        # the number of degrees each wheel needs to turn
+        WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
+
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight + WheelTurnDegrees))
+
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight + WheelTurnDegrees) is False:
+                time.sleep(0.1)
+
+    def drive_inches(self, dist, blocking=False):
+        self.drive_cm(dist * 2.54, blocking)
+
+    def drive_degrees(self, degrees, blocking=False):
+        # these degrees are meant to be wheel rotations.
+        # 360 degrees would be a full wheel rotation
+        # not the same as turn_degrees() which is a robot rotation
+        # degrees is in degrees, not radians
+        # if degrees is negative, this becomes a backward move
+
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + degrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight + degrees))
+
+
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + degrees,
+                    StartPositionRight + degrees) is False:
+                time.sleep(0.1)
+        return
+
+    def target_reached(self, left_target_degrees, right_target_degrees):
+        '''
+        check if both wheels have reached their target
+        '''
+        tolerance = 5
+        min_left_target = left_target_degrees - tolerance
+        max_left_target = left_target_degrees + tolerance
+        min_right_target = right_target_degrees - tolerance
+        max_right_target = right_target_degrees + tolerance
+
+        current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
+        current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        if current_left_position > min_left_target and \
+           current_left_position < max_left_target and \
+           current_right_position > min_right_target and \
+           current_right_position < max_right_target:
+            return True
+        else:
+            return False
+
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                             self.get_speed()* -1)
+                               self.get_speed() * -1)
+
 
     def left(self):
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
+
     def right(self):
         self.set_motor_dps(self.MOTOR_LEFT, 0)
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
 
-
-    def set_light_sensor(self,port):
-        sensor = LightSensor(self,port)
-        if port == "AD1":
-            self.sensor_1 = sensor
-        elif port == "AD2":
-            self.sensor_2 = sensor
-        return sensor
-
-    def blinker_on(self,id):
+    def blinker_on(self, id):
         if id == 1 or id == "left":
-            self.set_led(self.LED_LEFT_BLINKER,255)
+            self.set_led(self.LED_LEFT_BLINKER, 255)
         if id == 0 or id == "right":
-            self.set_led(self.LED_RIGHT_BLINKER,255)
+            self.set_led(self.LED_RIGHT_BLINKER, 255)
 
-    def blinker_off(self,id):
+    def blinker_off(self, id):
         if id == 1:
-            self.set_led(self.LED_LEFT_BLINKER,0)
+            self.set_led(self.LED_LEFT_BLINKER, 0)
         if id == 0:
-            self.set_led(self.LED_RIGHT_BLINKER,0)
+            self.set_led(self.LED_RIGHT_BLINKER, 0)
 
-    def led_on(self,id):
+    def led_on(self, id):
         self.blinker_on(id)
 
+    def led_off(self, id):
+        self.blinker_off(id)
 
-    def led_off(self,id):
-        blinker_off(id)
-
-
-    def set_left_eye_color(self,color):
-        if isinstance(color,tuple) and len(color)==3:
+    def set_left_eye_color(self, color):
+        if isinstance(color, tuple) and len(color) == 3:
             self.left_eye_color = color
         else:
             raise TypeError
 
-    def set_right_eye_color(self,color):
-        if isinstance(color,tuple) and len(color)==3:
+    def set_right_eye_color(self, color):
+        if isinstance(color, tuple) and len(color) == 3:
             self.right_eye_color = color
         else:
             raise TypeError
 
-    def set_eye_color(self,color):
+    def set_eye_color(self, color):
         self.set_left_eye_color(color)
         self.set_right_eye_color(color)
 
@@ -158,53 +290,64 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.open_right_eye()
 
     def close_left_eye(self):
-        self.set_led(self.LED_LEFT_EYE, 0,0,0)
+        self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
 
     def close_right_eye(self):
-        self.set_led(self.LED_RIGHT_EYE, 0,0,0)
+        self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
 
     def close_eyes(self):
         self.close_left_eye()
         self.close_right_eye()
 
-
-
-    def turn_degrees(self,degrees):
-        # get the starting position of each motor
-        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
-
+    def turn_degrees(self, degrees):
+        # this is the method to use if you want the robot to turn 90 degrees
+        # or any other amount. This method is based on robot orientation
+        # and not wheel rotation
         # the distance in mm that each wheel needs to travel
         WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
 
         # the number of degrees each wheel needs to turn
-        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) * 360)
+        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) *
+                            360)
 
-        # Limit the speed
-        self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT, dps = self.get_speed())
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
 
         # Set each motor target
-        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + WheelTurnDegrees))
-        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight - WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight - WheelTurnDegrees))
 
 
+# the following functions may be redundant
 my_gpg = EasyGoPiGo3()
+
+
 # these functions are here because we need direct access to these
 # for the Drive functionality in Sam
+# they do not need locking as the fct they call handles that.
 def volt():
-    return my_gpg.volt()
+    return_value = my_gpg.volt()
+    return return_value
+
 
 def stop():
-    return my_gpg.stop()
+    my_gpg.stop()
+
 
 def forward():
     my_gpg.forward()
 
+
 def backward():
     my_gpg.backward()
 
+
 def left():
     my_gpg.left()
+
 
 def right():
     my_gpg.right()
@@ -215,10 +358,11 @@ def right():
 #############################################################
 
 
-ANALOG = 1
-DIGITAL = 0
-SERIAL = -1
-I2C = -2
+# ANALOG = 1
+# DIGITAL = 0
+# SERIAL = -1
+# I2C = -2
+# SERVO = -3
 
 ##########################
 
@@ -230,17 +374,15 @@ class Sensor(object):
         port : string - user-readable port identification
         portID : integer - actual port id
         pinmode : "INPUT" or "OUTPUT"
-        pin : 1 for ANALOG, 0 for DIGITAL
+        pin : GROVE_1_1, GROVE_1_2, GROVE_2_1, GROVE_2_2
         descriptor = string to describe the sensor for printing purposes
     Class methods:
-        setPort / getPort
-        setPinMode / getPinMode
-        isAnalog
-        isDigital
+        set_port / get_port
+        set_pin_mode / get_pin_mode
     '''
     PORTS = {}
 
-    def __init__(self, port, pinmode,gpg):
+    def __init__(self, port, pinmode, gpg):
         '''
         port = one of PORTS keys
         pinmode = "INPUT", "OUTPUT", "SERIAL" (which gets ignored)
@@ -248,37 +390,44 @@ class Sensor(object):
         debug("Sensor init")
         self.gpg = gpg
         debug(pinmode)
-        self.setPort(port)
-        self.setPinMode(pinmode)
-
+        self.set_port(port)
+        self.set_pin_mode(pinmode)
 
         if pinmode == "INPUT":
-            self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
-            self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_INPUT_ANALOG)
+            self.gpg.set_grove_type(self.portID,
+                                    self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,
+                                    self.gpg.GROVE_INPUT_ANALOG)
         if pinmode == "OUTPUT":
-            self.gpg.set_grove_type(self.portID,self.gpg.GROVE_TYPE.CUSTOM)
-            self.gpg.set_grove_mode(self.portID,self.gpg.GROVE_OUTPUT_PWM)
+            self.gpg.set_grove_type(self.portID,
+                                    self.gpg.GROVE_TYPE.CUSTOM)
+            self.gpg.set_grove_mode(self.portID,
+                                    self.gpg.GROVE_OUTPUT_PWM)
+        if pinmode == "US":
+            self.gpg.set_grove_type(self.portID,
+                                    self.gpg.GROVE_TYPE.US)
 
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
-                     self.getPort(), self.getPinMode(), self.portID))
+                self.get_port(), self.get_pin_mode(), self.portID))
 
-    def setPin(self,pin):
+    def set_pin(self, pin):
         if self.port == "AD1":
             if pin == 1:
                 self.pin = self.gpg.GROVE_1_1
             else:
                 self.pin = self.gpg.GROVE_1_2
-        else:
-            if pin == 2:
+        elif self.port == "AD2":
+            if pin == 1:
                 self.pin = self.gpg.GROVE_2_1
             else:
                 self.pin = self.gpg.GROVE_2_2
+        debug("setting pin to {}".format(self.pin))
 
-    def getPin(self):
+    def get_pin(self):
         return self.pin
 
-    def setPort(self, port):
+    def set_port(self, port):
         debug(port)
         self.port = port
         debug(self.port)
@@ -286,77 +435,79 @@ class Sensor(object):
 
         if port == "AD1":
             self.portID = self.gpg.GROVE_1
-        elif port == "AD1":
+        elif port == "AD2":
             self.portID = self.gpg.GROVE_2
         elif port == "SERIAL":
             self.portID = -1
         elif port == "I2C":
             self.portID = -2
-        else:
+        elif port == "SERVO":
             self.portID = -3
+        else:
+            self.portID = -4
 
         debug(self.portID)
 
-    def getPort(self):
+    def get_port(self):
         return (self.port)
 
-    def getPortID(self):
+    def get_port_ID(self):
         return (self.portID)
 
-    def setPinMode(self, pinmode):
+    def set_pin_mode(self, pinmode):
         self.pinmode = pinmode
 
-    def getPinMode(self):
+    def get_pin_mode(self):
         return (self.pinmode)
 
-    def isAnalog(self):
-        return (self.pin == ANALOG)
+    # def is_analog(self):
+    #     return (self.pin == ANALOG)
 
-    def isDigital(self):
-        return (self.pin == DIGITAL)
+    # def is_digital(self):
+    #     return (self.pin == DIGITAL)
 
     def set_descriptor(self, descriptor):
         self.descriptor = descriptor
 ##########################
 
 
-class DigitalSensor(Sensor):
-    '''
-    Implements read and write methods
-    '''
-    def __init__(self, port, pinmode, gpg):
-        debug("DigitalSensor init")
-        self.pin = DIGITAL
-        Sensor.__init__(self, port, pinmode,gpg)
+# class DigitalSensor(Sensor):
+#     '''
+#     Implements read and write methods
+#     NOT IMPLEMENTED IN GOPIGO3
+#     '''
+#     def __init__(self, port, pinmode, gpg):
+#         debug("DigitalSensor init")
+#         # self.pin = DIGITAL
+#         Sensor.__init__(self, port, pinmode, gpg)
 
-    def read(self):
-        '''
-        tries to get a value up to 10 times.
-        As soon as a valid value is read, it returns either 0 or 1
-        returns -1 after 10 unsuccessful tries
-        '''
-        okay = False
-        error_count = 0
+#     def read(self):
+#         '''
+#         tries to get a value up to 10 times.
+#         As soon as a valid value is read, it returns either 0 or 1
+#         returns -1 after 10 unsuccessful tries
+#         '''
+#         okay = False
+#         error_count = 0
 
-        _wait_for_read()
+#         rtn = -1
+#         while not okay and error_count < 10:
+#             try:
+#                 # not ported to gpg3 yet
+#                 # rtn = int(gopigo.digitalRead(self.get_port_ID()))
+#                 okay = True
+#             except:
+#                 error_count += 1
+#             if error_count > 10:
+#                 return -1
+#             else:
+#                 return rtn
 
-        if _is_read_open():
-            _grab_read()
-            while not okay and error_count < 10:
-                try:
-                    rtn = int(gopigo.digitalRead(self.getPortID()))
-                    okay = True
-                except:
-                    error_count += 1
-            _release_read()
-            if error_count > 10:
-                return -1
-            else:
-                return rtn
-
-    def write(self, power):
-        self.value = power
-        return gopigo.digitalWrite(self.getPortID(), power)
+#     def write(self, power):
+#         self.value = power
+#         # not ported to GPG3 yet
+#         return -1
+        # return gopigo.digitalWrite(self.get_port_ID(), power)
 ##########################
 
 
@@ -364,18 +515,14 @@ class AnalogSensor(Sensor):
     '''
     implements read and write methods
     '''
-    def __init__(self, port, pinmode,gpg):
+    def __init__(self, port, pinmode, gpg):
         debug("AnalogSensor init")
         self.value = 0
-        Sensor.__init__(self, port, pinmode,gpg)
+        self.freq = 24000
+        Sensor.__init__(self, port, pinmode, gpg)
 
     def read(self):
-        _wait_for_read()
-
-        if _is_read_open():
-            _grab_read()
-            self.value = self.gpg.get_grove_analog(self.getPin())
-        _release_read()
+        self.value = self.gpg.get_grove_analog(self.get_pin())
         return self.value
 
     def percent_read(self):
@@ -387,7 +534,19 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         self.value = power
-        return self.gpg.set_grove_pwm_duty(self.getPortID(), power)
+        return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
+                                                       power)
+        return return_value
+
+    def write_freq(self, freq):
+        self.freq = freq
+        # debug("write_freq: {}".format(self.freq))
+        return_value = self.gpg.set_grove_pwm_frequency(
+                self.get_port_ID(),
+                self.freq)
+        debug ("Analog Write on {} at {}".format(self.get_port_ID(),
+                                                     self.freq))
+        return return_value
 ##########################
 
 
@@ -398,10 +557,10 @@ class LightSensor(AnalogSensor):
     self.pin takes a value of 0 when on analog pin (default value)
         takes a value of 1 when on digital pin
     """
-    def __init__(self, port="AD1",gpg=None):
+    def __init__(self, port="AD1", gpg=None):
         debug("LightSensor init")
         AnalogSensor.__init__(self, port, "INPUT", gpg)
-        self.setPin(2)
+        self.set_pin(1)
         self.set_descriptor("Light sensor")
 ##########################
 
@@ -410,10 +569,10 @@ class SoundSensor(AnalogSensor):
     """
     Creates a sound sensor
     """
-    def __init__(self, port="A1",gpg=None):
-        debug("Sound Sensor on port "+port)
-        AnalogSensor.__init__(self, port, "INPUT",gpg)
-        self.setPin(2)
+    def __init__(self, port="AD1", gpg=None):
+        debug("Sound Sensor on port " + port)
+        AnalogSensor.__init__(self, port, "INPUT", gpg)
+        self.set_pin(1)
         self.set_descriptor("Sound sensor")
 
 ##########################
@@ -423,23 +582,19 @@ class UltraSonicSensor(AnalogSensor):
 
     def __init__(self, port="AD1", gpg=None):
         try:
-            debug("Ultrasonic Sensor on port "+port)
-            AnalogSensor.__init__(self, port, "INPUT",gpg)
-            self.pin = gpg.GROVE_2_2
+            debug("Ultrasonic Sensor on port " + port)
+            AnalogSensor.__init__(self, port, "US", gpg)
             self.safe_distance = 500
+            self.set_pin(1)
             self.set_descriptor("Ultrasonic sensor")
+
         except:
             raise AttributeError
 
     def is_too_close(self):
-        _wait_for_read()
-
-        if _is_read_open():
-            _grab_read()
-            if gpg.us_dist(PORTS[self.port]) < self.get_safe_distance():
-                _release_read()
-                return True
-        _release_read()
+        if self.gpg.get_grove_value(self.get_port_ID()) < \
+           self.get_safe_distance():
+            return True
         return False
 
     def set_safe_distance(self, dist):
@@ -448,32 +603,38 @@ class UltraSonicSensor(AnalogSensor):
     def get_safe_distance(self):
         return self.safe_distance
 
-    def read(self):
+    def read_mm(self):
         '''
-        Limit the ultrasonic sensor to a distance of 5m.
-        Take 3 readings, discard any that's higher than 5m
+        Ultrasonic sensor is limited to 15-4300 range in mm
+        Take 3 readings, discard any that's higher than 4300 or lower than 15
         If we discard 5 times, then assume there's nothing in front
             and return 501
         '''
         return_reading = 0
-        readings =[]
+        readings = []
         skip = 0
-        while len(readings) < 3:
-            _wait_for_read()
 
-            _grab_read()
-            # currently not supported with GPG3
-            value = -1
-            _release_read()
-            if value < 501 and value > 0:
+        while len(readings) < 3:
+            try:
+                value = self.gpg.get_grove_value(self.get_port_ID())
+            except:
+                continue
+
+            if value < 4300 and value > 14:
                 readings.append(value)
+                debug (readings)
             else:
-                skip +=1
+                skip += 1
                 if skip > 5:
                     break
 
         if skip > 5:
-            return(501)
+            # if value = 0 it means Ultrasonic Sensor wasn't found
+            if value == 0:
+                return(0)
+
+            # no special meaning to the number 501
+            return(5010)
 
         for reading in readings:
             return_reading += reading
@@ -482,84 +643,125 @@ class UltraSonicSensor(AnalogSensor):
 
         return (return_reading)
 
+    def read(self):
+        # returns value in cm
+        value = self.read_mm()
+        if value > 15 and value <= 5010:
+            return value // 10
+        return value
+
     def read_inches(self):
-        value = self.read()
+        value = self.read()   # cm reading
         if value == 501:
             return 501
-        return (value / 2.54)
+        return (int(value / 2.54))
 ##########################
 
 
 class Buzzer(AnalogSensor):
     '''
-    The Buzzer class is a digital Sensor with power modulation (PWM).
-    Default port is D11
-    Note that it inherits from AnalogSensor in order to support PWM
+    Default port is AD1
     It has three methods:
-    sound(power)
-    soundoff() -> which is the same as sound(0)
-    soundon() -> which is the same as sound(254), max value
+    sound(power) -> will change incoming power to 0 or 50
+    note: 50 duty cycle allows for musical tones
+    sound_off() -> which is the same as _sound(0)
+    sound_on() -> which is the same as _sound(50)
     '''
-    def __init__(self, port="AD1",gpg=None):
+
+    scale = {"A3": 220,
+             "A3#": 233,
+             "B3": 247,
+             "C4": 261,
+             "C4#": 277,
+             "D4": 293,
+             "D4#": 311,
+             "E4": 329,
+             "F4": 349,
+             "F4#": 370,
+             "G4": 392,
+             "G4#": 415,
+             "A4": 440,
+             "A4#": 466,
+             "B4": 494,
+             "C5": 523,
+             "C5#": 554,
+             "D5": 587,
+             "D5#": 622,
+             "E5": 659,
+             "F5": 698,
+             "F5#": 740,
+             "G5": 784,
+             "G5#": 831}
+
+    def __init__(self, port="AD1", gpg=None):
         try:
-            AnalogSensor.__init__(self, port, "OUTPUT",gpg)
-            self.pin = gpg.GROVE_2_2
+            AnalogSensor.__init__(self, port, "OUTPUT", gpg)
+            self.set_pin(1)
             self.set_descriptor("Buzzer")
-            self.power = 254
+            self.power = 50
+            self.freq = 329
+            self.sound_off()
         except:
             raise AttributeError
 
-    def sound(self, power):
+    def sound(self, freq):
         '''
-        sound takes a power argument (from 0 to 254)
-        the power argument will accept either a string or a numeric value
-        if power can't be cast to an int, then turn buzzer off
         '''
         try:
-            power = int(power)
+            freq = int(freq)
         except:
-            power = 0
+            freq = 0
 
-        if power < 0:
+        # limit duty cycles (aka power) values to either 0 or 50
+        if freq <= 0:
             power = 0
-        self.power = power
-        AnalogSensor.write(self, power)
+            freq = 0
+        else:
+            power = 50
+
+        # if buzzer has to emit a sound then set frequency
+        if power == 50:
+            # translation_factor = ((40000 - 20) / 100)
+            # freq = (freq * translation_factor) + 20
+            self.write_freq(freq)
+
+        # debug(freq, power)
+        # set duty cycle, either 0 or 50
+        self.write(power)
 
     def sound_off(self):
         '''
         Makes buzzer silent
         '''
-        self.power = 0
-        AnalogSensor.write(self, 0)
+        self.sound(0)
 
     def sound_on(self):
         '''
-        Maximum buzzer sound
+        Default buzzer sound. It will take the internal frequency as is
         '''
-        self.power = 254
-        AnalogSensor.write(self, 254)
+        self.sound(self.freq)
 ##########################
 
 
 class Led(AnalogSensor):
-    def __init__(self, port="AD1",gpg=None):
+    def __init__(self, port="AD1", gpg=None):
         try:
-            AnalogSensor.__init__(self, port, "OUTPUT",gpg)
-            self.setPin(2)
+            AnalogSensor.__init__(self, port, "OUTPUT", gpg)
+            self.set_pin(1)
             self.set_descriptor("LED")
         except Exception as e:
             print(e)
             raise ValueError
 
     def light_on(self, power):
-        AnalogSensor.write(self, power)
+        self.write(power)
 
     def light_max(self):
         max_power = 100
         self.light_on(max_power)
 
     def light_off(self):
-        AnalogSensor.write(self, 0)
+        self.write(0)
 
     def is_on(self):
         return (self.value > 0)
@@ -569,24 +771,24 @@ class Led(AnalogSensor):
 ##########################
 
 
-class MotionSensor(DigitalSensor):
-    def __init__(self, port="D11",gpg=None):
-        DigitalSensor.__init__(self, port, "INPUT",gpg)
-        self.set_descriptor("Motion Sensor")
+# class MotionSensor(DigitalSensor):
+#     def __init__(self, port="D11", gpg=None):
+#         DigitalSensor.__init__(self, port, "INPUT", gpg)
+#         self.set_descriptor("Motion Sensor")
 ##########################
 
 
-class ButtonSensor(DigitalSensor):
+# class ButtonSensor(DigitalSensor):
 
-    def __init__(self, port="D11",gpg=None):
-        DigitalSensor.__init__(self, port, "INPUT",gpg)
-        self.set_descriptor("Button sensor")
+#     def __init__(self, port="D11", gpg=None):
+#         DigitalSensor.__init__(self, port, "INPUT", gpg)
+#         self.set_descriptor("Button sensor")
 ##########################
 
 
 class Remote(Sensor):
 
-    def __init__(self, port="SERIAL",gpg=None):
+    def __init__(self, port="SERIAL", gpg=None):
         global IR_RECEIVER_ENABLED
         # IR Receiver
         try:
@@ -601,7 +803,7 @@ class Remote(Sensor):
             print("Please enable the IR Receiver in the Advanced Comms tool")
             IR_RECEIVER_ENABLED = False
         else:
-            Sensor.__init__(self, port, "SERIAL",gpg=None)
+            Sensor.__init__(self, port, "SERIAL", gpg=None)
             self.set_descriptor("Remote Control")
 
     def is_enabled(self):
@@ -654,11 +856,8 @@ class LineFollower(Sensor):
         From 0 to 1023
         May return a list of -1 when there's a read error
         '''
-        _wait_for_read()
 
-        _grab_read()
         five_vals = line_sensor.read_sensor()
-        _release_read()
 
         if five_vals != -1:
             return five_vals
@@ -678,12 +877,7 @@ class LineFollower(Sensor):
             through the Line Sensor Calibration tool
         May return all -1 on a read error
         '''
-        _wait_for_read()
-
-        if _is_read_open():
-            _grab_read()
-            five_vals = scratch_line.absolute_line_pos()
-            _release_read()
+        five_vals = scratch_line.absolute_line_pos()
 
         return five_vals
 
@@ -695,13 +889,10 @@ class LineFollower(Sensor):
         May return "Unknown"
         This method is not intelligent enough to handle intersections.
         '''
-        five_vals = [-1,-1,-1,-1,-1]
+        five_vals = [-1, -1, -1, -1, -1]
 
-        _wait_for_read()
-        if _is_read_open():
-            _grab_read()
-            five_vals = self.read()
-            _release_read()
+
+        five_vals = self.read()
 
         if five_vals == [0, 0, 1, 0, 0] or five_vals == [0, 1, 1, 1, 0]:
             return "Center"
@@ -726,12 +917,281 @@ class LineFollower(Sensor):
         return "Unknown"
 
 
+class EasyCamera(picamera.PiCamera):
+    '''
+    Wrapper around the PiCamera driver
+    you can set the resolution if you want to.
+    And take_photo() will take care of the delay that's required
+        to initialize the camera properly
+    '''
+    def __init__(self, resolution=(1920, 1080), gpg=None):
+        picamera.PiCamera.__init__(self)
+        self.resolution = resolution
+        self.start_time = time.time()  # timestamp on creation
+
+    def take_photo(self, filename):
+        # 2 seconds must have passed since the start of the program
+        # in order to be able to take a photo
+        # known as "camera warm-up time"
+
+        # check for the presence of a properly mounted USB key
+        path = check_usb()
+        if path is False:
+            return False
+
+        # ensure we have waited long enough for camera
+        # to be properly initialised
+        while time.time() - self.start_time < 2:
+            time.sleep(0.1)
+
+        # now we can take a photo. Smile!
+        self.capture(path + "/" + filename)
+        return True
+
+# class DHTSensor(Sensor):
+
+#     def __init__(self, port="SERIAL",gpg=None):
+#         try:
+#             Sensor.__init__(self,port,"INPUT",gpg)
+#             self.filtered_temperature = [] # here we keep the temperature values after removing outliers
+#             self.filtered_humidity = [] # here we keep the filtered humidity values after removing the outliers
+#             self.event = threading.Event() # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
+#         except:
+#             raise ValueError("DHT Sensor not found")
+#     def read_temperature(self,sensor_type=0):
+#         temp=DHT.dht(sensor_type)[0]
+#         if temp == -2:
+#             return "Bad reading, trying again"
+#         elif temp == -3:
+#             return "Run the program as sudo"
+#         else:
+#             print("Temperature = %.02fC"%temp)
+#             return temp
+#     def read_humidity(self,sensor_type=0):
+#         humidity=DHT.dht(sensor_type)[1]
+#         if humidity == -2:
+#             return "Bad reading, trying again"
+#         elif humidity == -3:
+#             return "Run the program as sudo"
+#         else:
+#             print("Humidity = %.02f%%"%humidity)
+#             return humidity
+#     def read_dht(self,sensor_type=0):
+#         [temp , humidity]=DHT.dht(sensor_type)
+#         if temp ==-2.0 or humidity == -2.0:
+#             return "Bad reading, trying again"
+#         elif temp ==-3.0 or humidity == -3.0:
+#             return "Run the program as sudo"
+#         else:
+#             print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
+#             return [temp, humidity]
+
+#     # function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a
+#     # threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the
+#     # extreme values
+#     def _eliminateNoise(self,values, std_factor = 2):
+#         mean = numpy.mean(values)
+#         standard_deviation = numpy.std(values)
+#         if standard_deviation == 0:
+#             return values
+#         final_values = [element for element in values if element > mean - std_factor * standard_deviation]
+#         final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
+#         return final_values
+#     # function for processing the data filtering, periods of time, yada yada
+#     def _readingValues(self,sensor_type=0):
+#         seconds_window = 10 # after this many second we make a record
+#         values = []
+#         while not self.event.is_set():
+#             counter = 0
+#             while counter < seconds_window and not self.event.is_set():
+#                 temp = None
+#                 humidity = None
+#                 try:
+#                     [temp, humidity] = DHT.dht(sensor_type)
+#                 except IOError:
+#                     print("we've got IO error")
+#                 if math.isnan(temp) == False and math.isnan(humidity) == False:
+#                     values.append({"temp" : temp, "hum" : humidity})
+#                     counter += 1
+#                 #else:
+#                     #print("we've got NaN")
+#                 time.sleep(1)
+#             _wait_for_read()
+#             if _is_read_open():
+#                 _grab_read()
+# 		self.filtered_temperature.append(numpy.mean(self._eliminateNoise([x["temp"] for x in values])))
+# 		self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
+#                 _release_read()
+#             values = []
+#     # Function used to Read the values continuously and displays values after normalising them
+#     def continuous_read_dht(self):
+#         try:
+#             # here we start the thread we use a thread in order to gather/process the data separately from the printing proceess
+#             data_collector = threading.Thread(target = self._readingValues)
+#             data_collector.start()
+#             while not self.event.is_set():
+#                 if len(self.filtered_temperature) > 0: # or we could have used filtered_humidity instead
+# 		    _wait_for_read()
+# 		    if _is_read_open():
+# 		        _grab_read()
+# 			# here you can do whatever you want with the variables: print them, file them out, anything
+# 			temperature = self.filtered_temperature.pop()
+# 			humidity = self.filtered_humidity.pop()
+# 			print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
+# 		        _release_read()
+#                 # wait a second before the next check
+#                 time.sleep(1)
+#             # wait until the thread is finished
+#             data_collector.join()
+#         except KeyboardInterrupt:
+#             self.event.set()
+
+
+# class RgbLcd(Sensor):
+#     '''
+#     Wrapper to display Text, change background color on RGB LCD.
+#     Connect the sensor to the I2C Port.
+#     '''
+
+#     def __init__(self, port="I2C",gpg=None):
+#         try:
+#             Sensor.__init__(self, port, "OUTPUT",gpg)
+#             self.set_descriptor("Grove RGB Lcd")
+#         except:
+#             raise ValueError("Grove RGB Lcd not found")
+
+#     def display_text(self,text):
+#         '''
+#         To display a text. It moves to the next line when it encounters "\n" in the text or if there are more than 16 characters.
+#         Input the text as a string.
+#         '''
+
+#         grove_rgb_lcd.setText(text)
+
+#     # Displays Text over the previous screen without clearing the screen
+#     def display_text_over(self,text):
+#         grove_rgb_lcd.setText_norefresh(text)
+
+#     def set_BgColor(self,red,green,blue):
+#         '''
+#         To set the background color of the LCD
+#         Red, Green and Blue variables range between (0-255) which indicate the intensity of the color
+#         '''
+#         grove_rgb_lcd.setRGB(red,green,blue)
+
+
+# class Servo(Sensor):
+#     '''
+#     Wrapper to control the Servo Motors on the GPG3.
+#     Allows you to rotate the servo by feeding in the angle of rotation.
+#     Connect the Servo to the Servo1 and Servo2 ports of GPG3.
+#     '''
+
+#     def __init__(self, port="SERVO",gpg=None):
+#         try:
+#             Sensor.__init__(self, port, "OUTPUT", gpg)
+#             self.set_descriptor("GoPiGo3 Servo")
+#         except:
+#             raise ValueError("GoPiGo3 Servo not found")
+
+#     def rotate_servo(self,servo_number,servo_position):
+# 	'''
+#         This calculation will vary with servo and is an approximate anglular movement of the servo
+#         Pulse Width varies between 575us to 24250us for a 60KHz Servo Motor which rotates between 0 to 180 degrees
+#         0 degree ~= 575us
+#         180 degree ~= 2425us
+#         Pulse width Range= 2425-575 =1850
+#         => 1 degree rotation requires ~= 10.27us
+#         '''
+#         #Pulse width range in us corresponding to 0 to 180 degrees
+#         PULSE_WIDTH_RANGE=1850
+
+#         # Servo Position in degrees
+#         if servo_position > 180:
+#             servo_position = 180
+#         elif servo_position < 0:
+#             servo_position = 0
+
+#         pulsewidth = round((1500-(PULSE_WIDTH_RANGE/2)) + ((PULSE_WIDTH_RANGE/180)*servo_position))
+#         # Selecting the Servo Number
+#         if servo_number == 1 or servo_number == "one":
+#             servo_number=self.gpg.SERVO_1
+#         elif servo_number == 2 or servo_number == "two":
+#             servo_number=self.gpg.SERVO_2
+#         elif servo_number == 3 or servo_number == "both":
+#             servo_number=self.gpg.SERVO_1+self.gpg.SERVO_2
+#         else:
+#             return "Invalid Servo Number"
+#         # Set position for the servo
+#         self.gpg.set_servo(servo_number, int(pulsewidth))
+
+#     def reset_servo(self,servo_number):
+#         if servo_number == 1 or servo_number == "one":
+#             servo_number=self.gpg.SERVO_1
+#         elif servo_number == 2 or servo_number == "two":
+#             servo_number=self.gpg.SERVO_2
+#         elif servo_number == 3 or servo_number == "both":
+#             servo_number=self.gpg.SERVO_1+self.gpg.SERVO_2
+#         else:
+#             return "Invalid Servo Number"
+
+#         self.gpg.set_servo(servo_number, 0)
+
+# class Distance(Sensor,DistanceSensor):
+#     '''
+#     Wrapper to measure the distance in cms from the DI distance sensor.
+#     Connect the distance sensor to I2C port.
+#     '''
+#     def __init__(self, port="I2C",gpg=None):
+#         try:
+#             Sensor.__init__(self, port, "OUTPUT", gpg)
+#             DistanceSensor.__init__(self)
+#             self.set_descriptor("Distance Sensor")
+#         except:
+#             raise ValueError("Distance Sensor not found")
+#     # Returns the values in cms
+#     def read_distance(self):
+#         _wait_for_read()
+#         if _is_read_open():
+#             _grab_read()
+#             distance_cms=self.readRangeSingleMillimeters()/10
+#             _release_read()
+#         print('{:4.1f}'.format(distance_cms))
+#         return '{:4.1f}'.format(distance_cms)
+
+
 if __name__ == '__main__':
-    import time
-    b = Buzzer()
-    print (b)
-    print ("Sounding buzzer")
-    b.sound_on()
-    time.sleep(1)
-    print ("buzzer off")
-    b.sound_off()
+   e=EasyGoPiGo3()
+   # b = Buzzer()
+   # print (b)
+   # print ("Sounding buzzer")
+   # b.sound_on()
+   # time.sleep(1)
+   # print ("buzzer off")
+   # b.sound_off()
+
+   #  c = RgbLcd("I2C",e)
+   #  c.display_text("Hello World")
+   #  c.display_text_over("\nK")
+   #  c.set_BgColor(0,128,64)
+   #  time.sleep(2)
+
+
+   #  d=Distance("I2C",e)
+   #  h=d.read_distance()
+   #  print(h)
+
+   #  f=Servo("SERVO",e)
+   #  f.rotate_servo("both",0)
+   #  time.sleep(1)
+   #  f.rotate_servo(1,180)
+   #  time.sleep(1)
+   #  f.rotate_servo("two",180)
+
+   #  g=DHTSensor("SERIAL",e)
+   #  g.read_humidity()
+   #  g.read_temperature()
+   #  g.read_dht()
+   #  g.continuous_read_dht()
+
+

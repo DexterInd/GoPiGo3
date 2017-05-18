@@ -18,10 +18,6 @@
 #
 
 
-# use python 3 syntax but make it compatible with python 2
-from __future__ import print_function
-from __future__ import division
-
 # import the time library for the sleep function
 import time
 
@@ -32,18 +28,14 @@ import easygopigo3 as easy
 # GPG will be the GoPiGo3 object.
 GPG = easy.EasyGoPiGo3()
 
-my_light_sensor = GPG.set_light_sensor("AD1")
-print (GPG.sensor_1)
+# Create an instance of the Light sensor
+my_light_sensor = easy.LightSensor("AD1", GPG)
 
-try:
-    # loop forever while polling the sensor
-    while(True):
-        reading = my_light_sensor.read()
-        # scale the reading to a 0-100 scale
-        percent_reading = reading * 100 / 4095
-        print("{}, {:.1f}%".format(reading, percent_reading))
-        time.sleep(0.05)
+# loop forever while polling the sensor
+while(True):
+    reading = my_light_sensor.read()
+    # scale the reading to a 0-100 scale
+    percent_reading = my_light_sensor.percent_read()
+    print("{}, {:.1f}%".format(reading, percent_reading))
+    time.sleep(0.05)
 
-except Exception as e:
-    GPG.reset_all()
-    print(e)
