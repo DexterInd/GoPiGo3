@@ -67,29 +67,6 @@ class ValueError(Exception):
     """Exception raised if trying to read an invalid value"""
 
 
-#DexterLockSPI_handle = None
-#def SPI_Mutex_Acquire():
-#    global DexterLockSPI_handle
-#    while DexterLockSPI_handle is not None:
-#        time.sleep(0.001)
-#    DexterLockSPI_handle = True # set to something other than None
-#    DexterLockSPI_handle = open('/run/lock/DexterLockSPI', 'w')
-#    Acquired = False
-#    while not Acquired:
-#        try:
-#            fcntl.lockf(DexterLockSPI_handle, fcntl.LOCK_EX | fcntl.LOCK_NB) # lock
-#            Acquired = True
-#        except IOError: # already locked by a different process
-#            time.sleep(0.001)
-
-#def SPI_Mutex_Release():
-#    global DexterLockSPI_handle
-#    if DexterLockSPI_handle is not None:
-#        DexterLockSPI_handle.close()
-#        DexterLockSPI_handle = None
-#        time.sleep(0.001)
-
-
 class GoPiGo3(object):
     WHEEL_BASE_WIDTH         = 117  # distance (mm) from left wheel to right wheel. This works with the initial GPG3 prototype. Will need to be adjusted.
     WHEEL_DIAMETER           = 66.5 # wheel diameter (mm)
@@ -241,9 +218,7 @@ class GoPiGo3(object):
         
         Returns a list of the bytes read.
         """
-#        SPI_Mutex_Acquire()
         result = GPG_SPI.xfer2(data_out)
-#        SPI_Mutex_Release()
         return result
     
     def spi_read_8(self, MessageType):
@@ -675,7 +650,7 @@ class GoPiGo3(object):
             try:
                 self.grove_i2c_start(port, addr, outArr, inBytes)
                 Continue = True
-            except I2CError:
+            except (IOError, I2CError):
                 pass
         
         DelayTime = 0
@@ -692,7 +667,7 @@ class GoPiGo3(object):
             try:
                 values = self.get_grove_value(port)
                 return values
-            except ValueError:
+            except (IOError, ValueError, SensorError):
                 pass
     
     def grove_i2c_start(self, port, addr, outArr, inBytes = 0):
