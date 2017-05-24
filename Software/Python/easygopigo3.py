@@ -1178,6 +1178,9 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             raise ValueError("Distance Sensor not found")
     # Returns the values in cms
     def read_mm(self):
+        
+        # 8190 is what the sensor sends when it's out of range
+        # we're just setting a default value
         mm = 8190
         readings = []
         attempt = 0
