@@ -292,9 +292,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def open_right_eye(self):
         self.set_led(self.LED_RIGHT_EYE,
-                     self.left_eye_color[0],
-                     self.left_eye_color[1],
-                     self.left_eye_color[2],
+                     self.right_eye_color[0],
+                     self.right_eye_color[1],
+                     self.right_eye_color[2],
                      )
 
     def open_eyes(self):
