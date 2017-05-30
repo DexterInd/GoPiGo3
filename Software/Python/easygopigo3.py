@@ -16,9 +16,10 @@ import gopigo3
 
 import picamera
 
-# import DHT
-# import grove_rgb_lcd
-# from distance_sensor import DistanceSensor
+from I2C_mutex import *
+#import DHT
+#import grove_rgb_lcd
+from Distance_Sensor import distance_sensor
 
 from glob import glob  # for USB checking
 import os
@@ -53,15 +54,26 @@ def debug(in_str):
         print(in_str)
 
 
-def _wait_for_read():
-    timeout = 0
-    while read_is_open is False and timeout < 100:
-        time.sleep(0.01)
-        timeout += 1
-    if timeout > 99:
-        return False
-    else:
-        return True
+def _grab_read():
+    global read_is_open
+    try:
+        I2C_Mutex_Acquire()
+    except:
+        pass
+    # thread safe doesn't seem to be required so
+    # commented out
+    # while read_is_open is False:
+    #     time.sleep(0.01)
+    read_is_open = False
+    # print("acquired")
+
+
+def _release_read():
+    global read_is_open
+    I2C_Mutex_Release()
+    read_is_open = True
+    # print("released")
+
 
 
 #####################################################################
@@ -280,9 +292,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def open_right_eye(self):
         self.set_led(self.LED_RIGHT_EYE,
-                     self.left_eye_color[0],
-                     self.left_eye_color[1],
-                     self.left_eye_color[2],
+                     self.right_eye_color[0],
+                     self.right_eye_color[1],
+                     self.right_eye_color[2],
                      )
 
     def open_eyes(self):
@@ -393,20 +405,24 @@ class Sensor(object):
         self.set_port(port)
         self.set_pin_mode(pinmode)
 
-        if pinmode == "INPUT":
-            self.gpg.set_grove_type(self.portID,
-                                    self.gpg.GROVE_TYPE.CUSTOM)
-            self.gpg.set_grove_mode(self.portID,
-                                    self.gpg.GROVE_INPUT_ANALOG)
-        if pinmode == "OUTPUT":
-            self.gpg.set_grove_type(self.portID,
-                                    self.gpg.GROVE_TYPE.CUSTOM)
-            self.gpg.set_grove_mode(self.portID,
-                                    self.gpg.GROVE_OUTPUT_PWM)
-        if pinmode == "US":
-            self.gpg.set_grove_type(self.portID,
-                                    self.gpg.GROVE_TYPE.US)
-
+        try:
+            # I2C sensors don't need a valid gpg
+            if pinmode == "INPUT":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.CUSTOM)
+                self.gpg.set_grove_mode(self.portID,
+                                        self.gpg.GROVE_INPUT_ANALOG)
+            if pinmode == "OUTPUT":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.CUSTOM)
+                self.gpg.set_grove_mode(self.portID,
+                                        self.gpg.GROVE_OUTPUT_PWM)
+            if pinmode == "US":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.US)
+        except:
+            pass
+            
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
                 self.get_port(), self.get_pin_mode(), self.portID))
@@ -1137,27 +1153,74 @@ class EasyCamera(picamera.PiCamera):
 
 #         self.gpg.set_servo(servo_number, 0)
 
-# class Distance(Sensor,DistanceSensor):
-#     '''
-#     Wrapper to measure the distance in cms from the DI distance sensor.
-#     Connect the distance sensor to I2C port.
-#     '''
-#     def __init__(self, port="I2C",gpg=None):
-#         try:
-#             Sensor.__init__(self, port, "OUTPUT", gpg)
-#             DistanceSensor.__init__(self)
-#             self.set_descriptor("Distance Sensor")
-#         except:
-#             raise ValueError("Distance Sensor not found")
-#     # Returns the values in cms
-#     def read_distance(self):
-#         _wait_for_read()
-#         if _is_read_open():
-#             _grab_read()
-#             distance_cms=self.readRangeSingleMillimeters()/10
-#             _release_read()
-#         print('{:4.1f}'.format(distance_cms))
-#         return '{:4.1f}'.format(distance_cms)
+#######################################################################
+#
+# DistanceSensor 
+#
+#######################################################################
+class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
+    '''
+    Wrapper to measure the distance in cms from the DI distance sensor.
+    Connect the distance sensor to I2C port.
+    '''
+    def __init__(self, port="I2C1",gpg=None):
+        try:
+            Sensor.__init__(self, port, "OUTPUT", gpg)
+            _grab_read()
+            try:
+                distance_sensor.DistanceSensor.__init__(self)
+            except:
+                pass
+            _release_read()
+            self.set_descriptor("Distance Sensor")
+        except Exception as e:
+            print(e)
+            raise ValueError("Distance Sensor not found")
+    # Returns the values in cms
+    def read_mm(self):
+        
+        # 8190 is what the sensor sends when it's out of range
+        # we're just setting a default value
+        mm = 8190
+        readings = []
+        attempt = 0
+        
+        # try 3 times to have a reading that is 
+        # smaller than 8m or bigger than 5 mm.
+        # if sensor insists on that value, then pass it on
+        while (mm > 8000 or mm < 5) and attempt < 3:
+            _grab_read()
+            try:
+                mm = self.readRangeSingleMillimeters()
+            except:
+                mm = 0
+            _release_read()
+            attempt = attempt + 1
+            time.sleep(0.001)
+            
+        # add the reading to our last 3 readings
+        # a 0 value is possible when sensor is not found
+        if (mm < 8000 and mm > 5) or mm == 0:
+            readings.append(mm)
+        if len(readings) > 3:
+            readings.pop(0)
+        
+        # calculate an average and limit it to 5 > X > 3000
+        if len(readings) > 1: # avoid division by 0
+            mm = round(sum(readings) / float(len(readings)))
+        if mm > 3000:
+            mm = 3000
+            
+        return mm
+        
+    def read(self):
+        cm = self.read_mm()//10
+        return (cm)
+        
+    def read_inches(self):
+        cm = self.read()
+        return cm / 2.54
+
 
 
 if __name__ == '__main__':
