@@ -240,14 +240,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                self.get_speed() * -1)
 
 
-    def left(self):
+    def right(self):
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
-
-    def right(self):
+    def left(self):
         self.set_motor_dps(self.MOTOR_LEFT, 0)
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+        
 
     def blinker_on(self, id):
         if id == 1 or id == "left":
@@ -261,11 +261,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if id == 0:
             self.set_led(self.LED_RIGHT_BLINKER, 0)
 
+
     def led_on(self, id):
         self.blinker_on(id)
 
     def led_off(self, id):
         self.blinker_off(id)
+
 
     def set_left_eye_color(self, color):
         if isinstance(color, tuple) and len(color) == 3:
