@@ -27,34 +27,37 @@ from builtins import input
 # the integer division and input()
 # mind your parentheses!
 
+import time
 import easygopigo3 as easy
 
 gpg = easy.EasyGoPiGo3()
 gpg.reset_all()
-gpg.set_speed(50)
+gpg.set_speed(300)
 
 import sys
 
 import atexit
-atexit.register(stop)
+atexit.register(gpg.stop)
 
 print ("Both motors moving Forward with Dex Eyes On")
 gpg.open_eyes()
 gpg.forward()
 time.sleep(5)
 
-print ("Both motors stopped with LED Off")
+print ("Both motors stopped with Dex Eyes Off")
 gpg.close_eyes()
 gpg.stop()
 time.sleep(2)
 
-print ("Both motors moving back with LED On")
-gpg.blinker_on()
+print ("Both motors moving back with blinkers On")
+gpg.blinker_on(1)
+gpg.blinker_on(0)
 gpg.backward()
 time.sleep(5)
 
-print ("Both motors stopped with LED Off")
-gpg.blinker_on()
+print ("Both motors stopped with blinkers Off")
+gpg.blinker_off(1)
+gpg.blinker_off(0)
 gpg.stop()
 time.sleep(2)
 
