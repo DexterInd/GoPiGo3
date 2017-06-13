@@ -207,9 +207,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             self.set_led(self.LED_RIGHT_BLINKER, 255)
 
     def blinker_off(self, id):
-        if id == 1:
+        if id == 1 or id == "left":
             self.set_led(self.LED_LEFT_BLINKER, 0)
-        if id == 0:
+        if id == 0 or id == "right":
             self.set_led(self.LED_RIGHT_BLINKER, 0)
 
 

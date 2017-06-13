@@ -153,6 +153,11 @@ EYE_COLOR_G_GROUP = EYE_COLOR_GROUP+6
 EYE_COLOR_B_GROUP = EYE_COLOR_GROUP+7
 EYE_COLOR_HTML_GROUP = EYE_COLOR_GROUP+8
 EYE_COLOR_STRING_GROUP = EYE_COLOR_GROUP+9
+BLINKER_GROUP = 42
+BLINKER_LEFT_GROUP = BLINKER_GROUP+2
+BLINKER_RIGHT_GROUP = BLINKER_GROUP+3
+BLINKER_STATUS_GROUP = BLINKER_GROUP+4
+
 
 def set_regex_string():
     '''
@@ -198,11 +203,11 @@ def set_regex_string():
     # open/close left/right/both eye(s)
     regex_eyes = "(((open)|(close))\s*(("+regex_left+"|"+regex_right+"|both)?\s*eye[s]??))"
     
-    regex_eyes_color = "(("+regex_left+"|"+regex_right+"|both)\s*eye[s]*\s*(([0-9]{1,3})(?:,|\s)+([0-9]{1,3})(?:,|\s)+([0-9]{1,3})|(#[0-9A-F]{6})|("+regex_accepted_colors+")))"
+    regex_eyes_color = "(("+regex_left+"|"+regex_right+"|both)\s*eye[s]?\s*(([0-9]{1,3})(?:,|\s)+([0-9]{1,3})(?:,|\s)+([0-9]{1,3})|(#[0-9A-F]{6})|("+regex_accepted_colors+")))"
 
     # fourth one:
     # left/right/both blinker(s) on/off
-    regex_blinkers = "("+regex_left+"|"+regex_right+"|both)\s*(blinker[s]*)\s*(on|off)"
+    regex_blinkers = "(("+regex_left+"|"+regex_right+"|both)?\s*blinker[s]?\s*(on|off))"
     
     full_regex = ("^"+regex_drive + "$|" +
             regex_turn + "$|^" +
@@ -273,9 +278,30 @@ def handle_GoPiGo3_msg(msg):
         print("eyes")
         handle_eyes(regObj)
         
-    elif regObj.groups(EYE_COLOR_GROUP):
+    elif regObj.group(EYE_COLOR_GROUP):
         print("eye color")
         handle_eye_color(regObj)
+        
+    elif regObj.group(BLINKER_GROUP):
+        print("blinkers")
+        handle_blinkers(regObj)
+        
+def handle_blinkers(regObj):
+    '''
+    set left/right/both blinkers on/off
+    '''
+    print("handle blinkers {}".format(regObj.group(BLINKER_STATUS_GROUP)))
+    if regObj.group(BLINKER_STATUS_GROUP) == "on":
+        if regObj.group(BLINKER_LEFT_GROUP) == None:
+            gpg.blinker_on("right")
+        if regObj.group(BLINKER_RIGHT_GROUP) == None:
+            gpg.blinker_on("left")   
+    else:
+        print ("blinkers off")
+        if regObj.group(BLINKER_LEFT_GROUP) == None:
+            gpg.blinker_off("right")
+        if regObj.group(BLINKER_RIGHT_GROUP) == None:
+            gpg.blinker_off("left")         
         
 
 def handle_eye_color(regObj):
@@ -455,6 +481,8 @@ if __name__ == '__main__':
         s.broadcast("stop")
         s.broadcast("open eyes")
         s.broadcast("close eyes")
+        s.broadcast("blinkers on")
+        s.broadcast("blinkers off")
     except NameError:
         if en_debug:
             print ("GoPiGo3 Scratch: Unable to Broadcast")
