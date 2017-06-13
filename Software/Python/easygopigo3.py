@@ -9,15 +9,21 @@ import sys
 import time
 import gopigo3
 
+
 # import numpy
 # import math
 # import threading
 # from datetime import datetime
 
-from I2C_mutex import *
+try:
+    from I2C_mutex import *
+
+    mutex = True
+except:
+    mutex = False
+    pass
 #import DHT
 #import grove_rgb_lcd
-from Distance_Sensor import distance_sensor
 
 import os
 
@@ -100,7 +106,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
+        # only one is needed, we're going overkill
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
     def forward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -1072,71 +1080,79 @@ class LineFollower(Sensor):
 #
 # DistanceSensor 
 #
+# under try/except in case the Distance Sensor is not installed
 #######################################################################
-class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
-    '''
-    Wrapper to measure the distance in cms from the DI distance sensor.
-    Connect the distance sensor to I2C port.
-    '''
-    def __init__(self, port="I2C1",gpg=None):
-        try:
-            Sensor.__init__(self, port, "OUTPUT", gpg)
-            _grab_read()
+try:
+    from Distance_Sensor import distance_sensor
+    class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
+        '''
+        Wrapper to measure the distance in cms from the DI distance sensor.
+        Connect the distance sensor to I2C port.
+        '''
+        def __init__(self, port="I2C1",gpg=None):
             try:
-                distance_sensor.DistanceSensor.__init__(self)
-            except:
-                pass
-            _release_read()
-            self.set_descriptor("Distance Sensor")
-        except Exception as e:
-            print(e)
-            raise ValueError("Distance Sensor not found")
-    # Returns the values in cms
-    def read_mm(self):
-        
-        # 8190 is what the sensor sends when it's out of range
-        # we're just setting a default value
-        mm = 8190
-        readings = []
-        attempt = 0
-        
-        # try 3 times to have a reading that is 
-        # smaller than 8m or bigger than 5 mm.
-        # if sensor insists on that value, then pass it on
-        while (mm > 8000 or mm < 5) and attempt < 3:
-            _grab_read()
-            try:
-                mm = self.readRangeSingleMillimeters()
-            except:
-                mm = 0
-            _release_read()
-            attempt = attempt + 1
-            time.sleep(0.001)
+                Sensor.__init__(self, port, "OUTPUT", gpg)
+                _grab_read()
+                try:
+                    distance_sensor.DistanceSensor.__init__(self)
+                except:
+                    pass
+                _release_read()
+                self.set_descriptor("Distance Sensor")
+            except Exception as e:
+                print(e)
+                raise ValueError("Distance Sensor not found")
+        # Returns the values in cms
+        def read_mm(self):
             
-        # add the reading to our last 3 readings
-        # a 0 value is possible when sensor is not found
-        if (mm < 8000 and mm > 5) or mm == 0:
-            readings.append(mm)
-        if len(readings) > 3:
-            readings.pop(0)
-        
-        # calculate an average and limit it to 5 > X > 3000
-        if len(readings) > 1: # avoid division by 0
-            mm = round(sum(readings) / float(len(readings)))
-        if mm > 3000:
-            mm = 3000
+            # 8190 is what the sensor sends when it's out of range
+            # we're just setting a default value
+            mm = 8190
+            readings = []
+            attempt = 0
             
-        return mm
-        
-    def read(self):
-        cm = self.read_mm()//10
-        return (cm)
-        
-    def read_inches(self):
-        cm = self.read()
-        return cm / 2.54
-
-
+            # try 3 times to have a reading that is 
+            # smaller than 8m or bigger than 5 mm.
+            # if sensor insists on that value, then pass it on
+            while (mm > 8000 or mm < 5) and attempt < 3:
+                _grab_read()
+                try:
+                    mm = self.readRangeSingleMillimeters()
+                except:
+                    mm = 0
+                _release_read()
+                attempt = attempt + 1
+                time.sleep(0.001)
+                
+            # add the reading to our last 3 readings
+            # a 0 value is possible when sensor is not found
+            if (mm < 8000 and mm > 5) or mm == 0:
+                readings.append(mm)
+            if len(readings) > 3:
+                readings.pop(0)
+            
+            # calculate an average and limit it to 5 > X > 3000
+            if len(readings) > 1: # avoid division by 0
+                mm = round(sum(readings) / float(len(readings)))
+            if mm > 3000:
+                mm = 3000
+                
+            return mm
+            
+        def read(self):
+            cm = self.read_mm()//10
+            return (cm)
+            
+        def read_inches(self):
+            cm = self.read()
+            return cm / 2.54
+except Exception as e:
+    # it is possible to use easygopigo3 on Raspbian without having
+    # the distance sensor library installed.
+    # if that's the case, just ignore
+    print("Note: Distance Sensor library not installed")
+    print(e)
+    
 
 if __name__ == '__main__':
    e=EasyGoPiGo3()
