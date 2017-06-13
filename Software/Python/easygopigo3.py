@@ -9,6 +9,7 @@ import sys
 import time
 import gopigo3
 
+
 # import numpy
 # import math
 # import threading
@@ -16,6 +17,7 @@ import gopigo3
 
 try:
     from I2C_mutex import *
+
     mutex = True
 except:
     mutex = False
@@ -1145,9 +1147,12 @@ try:
             cm = self.read()
             return cm / 2.54
 except Exception as e:
-    print("Note: {}".format(e))
-    pass
-
+    # it is possible to use easygopigo3 on Raspbian without having
+    # the distance sensor library installed.
+    # if that's the case, just ignore
+    print("Note: Distance Sensor library not installed")
+    print(e)
+    
 
 if __name__ == '__main__':
    e=EasyGoPiGo3()
