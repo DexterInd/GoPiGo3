@@ -23,6 +23,7 @@ from Tkinter import *
 import tkMessageBox
 import atexit
 
+    
 def error_box(in_string):
     '''
     Code to generate popup window
@@ -383,7 +384,6 @@ def handle_distance(regObj):
     sensors = {}
     if port is None:
         if distance_sensor is not None:
-            print("reading from distance sensor")
             distance = distance_sensor.read()
             sensors["distance"] = distance
         
@@ -398,9 +398,7 @@ def handle_distance(regObj):
         try:
             # create Ultrasonic sensor instance if needed
             if known_sensors[port] == None:
-                print("instancing an ultrasonic sensor")
                 known_sensors[port] = easy.UltraSonicSensor(port,gpg)
-                print("with success")
         except Exception as e:
             print ("handle_distance: {}".format(e))
                             
@@ -408,7 +406,8 @@ def handle_distance(regObj):
         distance = known_sensors[port].read()
         sensors["distance"+port] = distance
 
-        
+    if en_debug:    
+        print(sensors)
     return (sensors)
         
         
@@ -748,7 +747,7 @@ if __name__ == '__main__':
                 if sensors is not None:
                     s.sensorupdate(sensors)
                     
-            if is_GoPiGo3_Sensor_msg(msg_nospace):
+            elif is_GoPiGo3_Sensor_msg(msg_nospace):
                 sensors = handle_GoPiGo3_Sensor_msg(msg_nospace)
                 if sensors is not None:
                     s.sensorupdate(sensors)
