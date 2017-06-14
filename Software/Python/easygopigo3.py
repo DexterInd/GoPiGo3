@@ -590,11 +590,15 @@ class UltraSonicSensor(AnalogSensor):
         return_reading = 0
         readings = []
         skip = 0
+        value=0
 
-        while len(readings) < 3:
+        while len(readings) < 3 and skip < 5:
             try:
+                print("taking a reading")
                 value = self.gpg.get_grove_value(self.get_port_ID())
             except:
+                skip += 1
+                time.sleep(0.05)
                 continue
 
             if value < 4300 and value > 14:
@@ -602,15 +606,13 @@ class UltraSonicSensor(AnalogSensor):
                 debug (readings)
             else:
                 skip += 1
-                if skip > 5:
-                    break
 
-        if skip > 5:
+        if skip >= 5:
             # if value = 0 it means Ultrasonic Sensor wasn't found
             if value == 0:
                 return(0)
 
-            # no special meaning to the number 501
+            # no special meaning to the number 5010
             return(5010)
 
         for reading in readings:
