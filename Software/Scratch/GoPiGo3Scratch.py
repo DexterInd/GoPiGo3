@@ -47,7 +47,7 @@ def cleanup():
         # we want the gopigo3 to stop if gopigo3Scratch.py crashes
     except:
         pass
-    print ("Scratch Interpreted closed")
+    print ("Scratch Interpreter closed")
 
 
 ##################################################################
@@ -176,6 +176,7 @@ ENCODER_READ_GROUP = ENCODER_GROUP+9
 ENCODER_VALUE_GROUP = ENCODER_GROUP+11
 
 
+
 ##################################################################
 # HELPER FUNCTIONS
 ##################################################################
@@ -234,6 +235,8 @@ def set_regex_string():
     regex_reset = "(RESET)"
     
     regex_encoders = "((("+regex_left+"|"+regex_right+"|both)?encoder[s]?("+regex_left+"|"+regex_right+"|both)?)\s*((reset)|(read)|([0-9.]*)))"
+    
+
 
     
     full_regex = ("^"+regex_drive + "$|" +
@@ -257,17 +260,31 @@ SENSOR_BUZZER_GROUP = 5
 SENSOR_BUZZER_PORT1_GROUP = SENSOR_BUZZER_GROUP+2
 SENSOR_BUZZER_PORT2_GROUP = SENSOR_BUZZER_GROUP+3
 SENSOR_BUZZER_POWER_GROUP = SENSOR_BUZZER_GROUP+4
+SENSOR_LED_GROUP = 10
+SENSOR_LED_PORT1_GROUP = SENSOR_LED_GROUP+2
+SENSOR_LED_PORT2_GROUP = SENSOR_LED_GROUP+3
+SENSOR_LED_POWER_GROUP = SENSOR_LED_GROUP+4
+SENSOR_LIGHT_GROUP = 15
+SENSOR_LIGHT_PORT1_GROUP = SENSOR_LIGHT_GROUP+2
+SENSOR_LIGHT_PORT2_GROUP = SENSOR_LIGHT_GROUP+3
+SENSOR_LINE_GROUP = 19
 
 def set_sensor_regex_string():
-    regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))?"
+    regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))"
     
     # group 1 distance
     # group 2 port (optional)
-    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*"+regex_ADport+")"
-    regex_buzzer = "(BUZ(?:Z(?:E(?:R)?)?)?\s*"+regex_ADport+"\s*([0-9.]+|off))"
+    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*"+regex_ADport+"?)"
+    regex_buzzer = "(BUZ(?:Z(?:E(?:R)?)?)?\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
+    regex_LED = "(LED\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
+    regex_light = "((?:light|lite|lit)\s*"+regex_ADport+"?)"
+    regex_line = "(LINE)"    
     
     full_regex = ("^"+regex_distance + "$|^" +
-                    regex_buzzer +"$")
+                    regex_buzzer + "$|^" +
+                    regex_LED + "$|^" +
+                    regex_light + "$|^" +
+                    regex_line +"$")
 
     print (full_regex)
     return full_regex
@@ -301,6 +318,7 @@ def is_msg(reg,msg):
     else:
         print ("Recognized {}".format(msg))
         return True
+
 
 def handle_GoPiGo3_msg(msg):
     '''
@@ -356,6 +374,7 @@ def handle_GoPiGo3_msg(msg):
         
     return sensors
 
+
 def handle_GoPiGo3_Sensor_msg(msg):
     if en_debug:
         print("received sensor {}".format(msg.strip().lower()))
@@ -375,25 +394,119 @@ def handle_GoPiGo3_Sensor_msg(msg):
         
     elif regObj.group(SENSOR_BUZZER_GROUP):
         sensors = handle_buzzer(regObj)
+
+    elif regObj.group(SENSOR_LED_GROUP):
+        sensors = handle_led(regObj)
+
+    elif regObj.group(SENSOR_LIGHT_GROUP):
+        sensors = handle_light(regObj)
+
+    elif regObj.group(SENSOR_LINE_GROUP):
+        print("handling line sensor")
+        sensors = handle_line_sensor(regObj)
         
     return sensors
+
+def handle_line_sensor(regObj):
+    
+    if en_debug:
+        print ("line follower!")
+        
+    sensors = {}
+    explanation = [
+    "Completely to the right", 
+    "Way to the right",
+    "Going right",
+    "Slightly to the right",
+    "Center", 
+    "Slightly to the left",
+    "Going left",
+    "Way to the left",
+    "Completely to the left",
+    "Reading black everywhere",
+    "Reading white everywhere",
+    "Technical difficulties"
+    ]
+    try:
+        import sys
+        # NOTE: for now te line follower is still kept in the GoPiGo folder
+        sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
+        # import line_sensor
+        import scratch_line
+
+    except ImportError:
+        print ("Line sensor libraries not found")
+        return({'line':-3,'line explanation': "technical difficulties"})
+
+    try:
+        line=scratch_line.line_sensor_val_scratch()
+        if en_debug:
+            print ("Line Sensor Readings: {}".format(str(line)))
+        sensors["line"] = line
+        sensors["line explanation"] = explanation[line+4]
+
+    except Exception as e:
+        if debug:
+            print ("Error reading Line sensor: {}",format(str(e)))
+        sensors["line"] = -3
+    
+    print (sensors)   
+    return sensors
+
+
+def handle_light(regObj):
+    sensors = {}
+    
+    port = "AD2" if regObj.group(SENSOR_LIGHT_PORT2_GROUP) else "AD1"
+    print ("handle_light: {}".format(port))    
+
+    if known_sensors[port] == None or \
+       isinstance(known_sensors[port], easy.LightSensor) is False:
+        known_sensors[port] = easy.LightSensor(port,gpg)
+    
+    sensors["Light"+port:known_sensors[port].percent_read()]
+        
+    return sensors
+    
+    
+def handle_led(regObj):
+    '''
+    if a port is not provided assume AD1
+    '''
+    sensors = {}
+    port = "AD2" if regObj.group(SENSOR_LED_PORT2_GROUP) else "AD1"
+    print ("handle_led: {}".format(port))
+    
+    if known_sensors[port] == None or \
+       isinstance(known_sensors[port], easy.Led) is False:
+        known_sensors[port] = easy.Led(port,gpg)
+        
+    try:
+        power = float(regObj.group(SENSOR_LED_POWER_GROUP))
+    except:
+        power = 100 if regObj.group(SENSOR_LED_POWER_GROUP)=="on" else 0
+        
+    known_sensors[port].light_on(power)
+    
+    return {"LED"+port:power}
 
 
 def handle_buzzer(regObj):
     '''
     if a port is not provided assume AD1
     '''
-    sensors = None
+    sensors = {}
     port = "AD2" if regObj.group(SENSOR_BUZZER_PORT2_GROUP) else "AD1"
     print ("handle_buzzer: {}".format(port))
     
-    if known_sensors[port] == None:
+    if known_sensors[port] == None or \
+       isinstance(known_sensors[port], easy.Buzzer) is False:
         known_sensors[port] = easy.Buzzer(port,gpg)
         
     try:
         power = float(regObj.group(SENSOR_BUZZER_POWER_GROUP))
     except:
-        power = 0
+        power = 100 if regObj.group(SENSOR_BUZZER_POWER_GROUP)=="on" else 0
         
     known_sensors[port].sound(power)
     
@@ -433,7 +546,8 @@ def handle_distance(regObj):
         
         try:
             # create Ultrasonic sensor instance if needed
-            if known_sensors[port] == None:
+            if known_sensors[port] == None  or \
+               isinstance(known_sensors[port], easy.UltraSonicSensor) is False:
                 known_sensors[port] = easy.UltraSonicSensor(port,gpg)
         except Exception as e:
             print ("handle_distance: {}".format(e))
@@ -846,34 +960,6 @@ if __name__ == '__main__':
                 pivotsensors = PivotPiScratch.handlePivotPi(msg)
                 # print "Back from PivotPi",pivotsensors
                 s.sensorupdate(pivotsensors)
-
-            # Get the value from the Dexter Industries line sensor
-            elif msg.lower()=="LINE".lower():
-                try:
-                    import sys
-
-                    # NOTE: for now te line follower is still kept in the GoPiGo folder
-                    sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
-                    # import line_sensor
-                    import scratch_line
-
-                except ImportError:
-                    print ("Line sensor libraries not found")
-                    s.sensorupdate({'line':-3})
-
-                if en_debug:
-                    print ("LINE!")
-
-                try:
-                    line=scratch_line.line_sensor_val_scratch()
-                    if en_debug:
-                        print ("Line Sensor Readings: ".format(str(line)))
-                    s.sensorupdate({'line':line})
-
-                except:
-                    if en_debug:
-                        e = sys.exc_info()[1]
-                        print ("Error reading Line sensor: ",format(str(e)))
 
             else:
                 if en_debug:
