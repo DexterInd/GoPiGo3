@@ -507,12 +507,12 @@ def drive_gpg(regObj):
     # start with the calls that will not require encoder readings
     if incoming_distance == None:
         if incoming_direction > 0:
-            print("gpg forward")
+            # print("gpg forward")
             gpg.forward()
         else:
-            print("gpg backward")
+            # print("gpg backward")
             gpg.backward()
-        return()
+        return None
 
     # these will return encoder readings
     try:
