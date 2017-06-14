@@ -223,7 +223,6 @@ def set_regex_string():
             regex_stop + "$|^" +
             regex_eyes + "$|^" +
             regex_eyes_color + "$|^" +
-
             regex_blinkers + "$|^" +
             regex_reset + "$|^" +
             regex_encoders)
