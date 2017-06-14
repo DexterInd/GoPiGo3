@@ -497,6 +497,9 @@ class AnalogSensor(Sensor):
         self.value = 0
         self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
+        
+        # this delay is at least needed by the Light sensor
+        time.sleep(0.01)
 
     def read(self):
         self.value = self.gpg.get_grove_analog(self.get_pin())

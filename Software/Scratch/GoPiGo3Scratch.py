@@ -65,7 +65,7 @@ try:
 
 except gpg.FirmwareVersionError as error:
     error_box("The GoPiGo3 needs to be updated (see DI Update Software)")
-    print ("Scratch Interpreted closed: {}".format(error.args[0]))
+    print ("Scratch Interpreter closed: {}".format(error.args[0]))
     sys.exit()
 except IOError as error:
     error_box("Connection Error: {}".format(error.args[0]))
@@ -249,7 +249,7 @@ def set_regex_string():
             regex_reset + "$|^" +
             regex_encoders +"$")
 
-    print (full_regex)
+    # print (full_regex)
     return full_regex
     
 
@@ -286,7 +286,7 @@ def set_sensor_regex_string():
                     regex_light + "$|^" +
                     regex_line +"$")
 
-    print (full_regex)
+    # print (full_regex)
     return full_regex
 
 
@@ -340,36 +340,36 @@ def handle_GoPiGo3_msg(msg):
     #     print ("{}: {}".format(i,regObj.group(i)))
         
     if regObj.group(DRIVE_GROUP):
-        print("go for a drive")
+        # print("go for a drive")
 
         sensors = drive_gpg(regObj)
         # Drive forward/Backward (for X Units)
     
     elif regObj.group(STOP_GROUP):
-        print('stop')
+        # print('stop')
         sensors = gpg.stop()
     
     elif regObj.group(DRIVE_TURN):
-        print('turn')
+        # print('turn')
         sensors = turn_gpg(regObj)
     
     elif regObj.group(EYES_GROUP):
-        print("eyes")
+        # print("eyes")
         sensors = handle_eyes(regObj)
         
     elif regObj.group(EYE_COLOR_GROUP):
-        print("eye color")
+        # print("eye color")
         sensors = handle_eye_color(regObj)
         
     elif regObj.group(BLINKER_GROUP):
-        print("blinkers")
+        # print("blinkers")
         sensors = handle_blinkers(regObj)
         
     elif regObj.group(RESET_GROUP):
         sensors = GoPiGo3_reset();
         
     elif regObj.group(ENCODER_GROUP):
-        print("handling encoders")
+        # print("handling encoders")
         sensors = handle_encoders(regObj)
         
     return sensors
@@ -383,11 +383,11 @@ def handle_GoPiGo3_Sensor_msg(msg):
     regObj = compiled_regexSensors.match(msg.strip().lower())
     if regObj is None:
         if en_debug:
-            print ("GoPiGo3 command is not recognized")
+            print ("GoPiGo3 Sensor command is not recognized")
         return None
 
-    for i in range(len(regObj.groups())+1):
-        print ("{}: {}".format(i,regObj.group(i)))
+    # for i in range(len(regObj.groups())+1):
+    #     print ("{}: {}".format(i,regObj.group(i)))
     
     if regObj.group(SENSOR_DISTANCE_GROUP):
         sensors = handle_distance(regObj)
@@ -402,7 +402,6 @@ def handle_GoPiGo3_Sensor_msg(msg):
         sensors = handle_light(regObj)
 
     elif regObj.group(SENSOR_LINE_GROUP):
-        print("handling line sensor")
         sensors = handle_line_sensor(regObj)
         
     return sensors
@@ -450,21 +449,29 @@ def handle_line_sensor(regObj):
             print ("Error reading Line sensor: {}",format(str(e)))
         sensors["line"] = -3
     
-    print (sensors)   
     return sensors
 
 
 def handle_light(regObj):
     sensors = {}
+    light_reading = 0
     
     port = "AD2" if regObj.group(SENSOR_LIGHT_PORT2_GROUP) else "AD1"
-    print ("handle_light: {}".format(port))    
 
     if known_sensors[port] == None or \
        isinstance(known_sensors[port], easy.LightSensor) is False:
-        known_sensors[port] = easy.LightSensor(port,gpg)
-    
-    sensors["Light"+port:known_sensors[port].percent_read()]
+        try:
+            # print("Instancing Light Sensor")
+            known_sensors[port] = easy.LightSensor(port,gpg)
+            # time.sleep(0.01)
+        except Exception as e:
+            # print("handle_light {}".format(e))
+            return ({"Light"+port:"technical difficulties"})
+            
+    # print("Reading from port {}".format(port))
+
+    light_reading = known_sensors[port].percent_read()    
+    sensors["{}: Light".format(port)] = light_reading
         
     return sensors
     
@@ -475,7 +482,6 @@ def handle_led(regObj):
     '''
     sensors = {}
     port = "AD2" if regObj.group(SENSOR_LED_PORT2_GROUP) else "AD1"
-    print ("handle_led: {}".format(port))
     
     if known_sensors[port] == None or \
        isinstance(known_sensors[port], easy.Led) is False:
@@ -488,7 +494,7 @@ def handle_led(regObj):
         
     known_sensors[port].light_on(power)
     
-    return {"LED"+port:power}
+    return {"{}: LED".format(port):power}
 
 
 def handle_buzzer(regObj):
@@ -497,7 +503,6 @@ def handle_buzzer(regObj):
     '''
     sensors = {}
     port = "AD2" if regObj.group(SENSOR_BUZZER_PORT2_GROUP) else "AD1"
-    print ("handle_buzzer: {}".format(port))
     
     if known_sensors[port] == None or \
        isinstance(known_sensors[port], easy.Buzzer) is False:
@@ -510,7 +515,7 @@ def handle_buzzer(regObj):
         
     known_sensors[port].sound(power)
     
-    return {"Buzzer"+port:power}
+    return {"{}: Buzzer".format(port):power}
 
 
 def handle_distance(regObj):
@@ -537,7 +542,7 @@ def handle_distance(regObj):
         
         # if no distance sensor, then default to port AD1
         else:
-            print("no port provided, going with AD1")
+            # print("no port provided, going with AD1")
             port = "AD1"
     
     # don't use an else here even if it's tempting
@@ -550,11 +555,11 @@ def handle_distance(regObj):
                isinstance(known_sensors[port], easy.UltraSonicSensor) is False:
                 known_sensors[port] = easy.UltraSonicSensor(port,gpg)
         except Exception as e:
-            print ("handle_distance: {}".format(e))
+            # print ("handle_distance: {}".format(e))
                             
-        print("reading from ultrasonic sensor on port {}".format(port))
+        # print("reading from ultrasonic sensor on port {}".format(port))
         distance = known_sensors[port].read()
-        sensors["distance"+port] = distance
+        sensors["{}: distance".format(port)] = distance
 
     if en_debug:    
         print(sensors)
@@ -569,12 +574,12 @@ def handle_encoders(regObj):
     sensors = {}
     # ask for an encode reset, either just one side, or both
     if regObj.group(ENCODER_RESET_GROUP):
-        print("encoder resetting")
+        # print("encoder resetting")
         # if the right encoder wasn't specified, then it's either 
         # a left reset or both.
         if regObj.group(ENCODER_RIGHT_GROUP)==None and \
            regObj.group(ENCODER_RIGHT2_GROUP)==None:
-            print("resetting left encoder")
+            # print("resetting left encoder")
             gpg.set_motor_power(gpg.MOTOR_LEFT, 0)
             gpg.offset_motor_encoder(gpg.MOTOR_LEFT, 
                                     gpg.get_motor_encoder(gpg.MOTOR_LEFT))
@@ -583,7 +588,7 @@ def handle_encoders(regObj):
         # the right or both
         if regObj.group(ENCODER_LEFT_GROUP)==None and \
            regObj.group(ENCODER_LEFT2_GROUP)==None:
-            print("resetting right encoder")
+            # print("resetting right encoder")
             gpg.set_motor_power(gpg.MOTOR_RIGHT, 0)
             gpg.offset_motor_encoder(gpg.MOTOR_RIGHT,
                                     gpg.get_motor_encoder(gpg.MOTOR_RIGHT))
@@ -620,7 +625,7 @@ def handle_blinkers(regObj):
     '''
     set left/right/both blinkers on/off
     '''
-    print("handle blinkers {}".format(regObj.group(BLINKER_STATUS_GROUP)))
+    # print("handle blinkers {}".format(regObj.group(BLINKER_STATUS_GROUP)))
     
     try:
         if regObj.group(BLINKER_SELECTION_GROUP) == "ledl":
@@ -640,7 +645,6 @@ def handle_blinkers(regObj):
             if left:
                 gpg.blinker_on("left")   
         else:
-            print ("blinkers off")
             if right:
                 gpg.blinker_off("right")
             if left:
@@ -655,7 +659,6 @@ def handle_eye_color(regObj):
     set the color of one or both eyes, and open the eye
     '''
     if regObj.group(EYE_COLOR_STRING_GROUP):
-        print("got a string")
         r,g,b=eye_colors[regObj.group(EYE_COLOR_STRING_GROUP)]
 
     if regObj.group(EYE_COLOR_R_GROUP):
@@ -666,11 +669,8 @@ def handle_eye_color(regObj):
         b = int(regObj.group(EYE_COLOR_B_GROUP))
     if regObj.group(EYE_COLOR_HTML_GROUP):
         color = regObj.group(EYE_COLOR_HTML_GROUP)
-        print(color)
         r,g,b = tuple(int(color[i:i+2], 16) for i in (1, 3 ,5))
         
-    print(r,g,b)
-    
     try:
         if regObj.group(EYE_COLOR_LEFT_GROUP)==None:
             gpg.set_right_eye_color((r,g,b))
@@ -708,11 +708,10 @@ def turn_gpg(regObj):
     Turn left/right
     Turn left/right X degrees/seconds/rotations
     '''
-    print ("turn_gpg")
     
     # these will return encoder readings
     if regObj.group(DRIVE_TURN_AMOUNT):
-        print("turn x amount")
+        # print("turn x amount")
         try:
             turn_amount = int(regObj.group(DRIVE_TURN_AMOUNT))
         except Exception as e:
@@ -724,28 +723,28 @@ def turn_gpg(regObj):
             
         if regObj.group(DRIVE_TURN_ROTATIONS):
             turn_amount = turn_amount * 360
-            print ( "gpg turn {} degrees".format(turn_amount))
+            # print ( "gpg turn {} degrees".format(turn_amount))
             gpg.turn_degrees(turn_amount,blocking=True)
             
         elif regObj.group(DRIVE_TURN_SECONDS):
             if regObj.group(DRIVE_TURN_LEFT):
-                print("turning left")
+                # print("turning left")
                 gpg.left()
             else:
-                print("turning right")
+                # print("turning right")
                 gpg.right()
                 
             # don't use turn_amount here as it could be negative when
             # going left
             time.sleep(float(regObj.group(DRIVE_TURN_AMOUNT)))
             gpg.stop()
-            print("stopped")
+            # print("stopped")
 
         # don't test for degrees per se as it's the default value
         # and is optional 
         # left 90 is the same as left 90 degrees
         else:
-            print ( "gpg turn {} degrees".format(turn_amount))
+            # print ( "gpg turn {} degrees".format(turn_amount))
             try:
                 gpg.turn_degrees(turn_amount,blocking=True)
             except Exception as e:
@@ -758,11 +757,11 @@ def turn_gpg(regObj):
 
     # calls that will not require encoder readings
     if regObj.group(DRIVE_TURN_LEFT):
-        print("turn left")
+        # print("turn left")
         gpg.left()
         return None
     elif regObj.group(DRIVE_TURN_RIGHT):
-        print("turn right")
+        # print("turn right")
         gpg.right()
         return None
 
@@ -800,26 +799,26 @@ def drive_gpg(regObj):
     except:
         print("issue with casting distance to a float")
     if incoming_cm:
-        print ("gpg cm {}".format(incoming_distance*incoming_direction))
+        # print ("gpg cm {}".format(incoming_distance*incoming_direction))
         gpg.drive_cm(incoming_distance*incoming_direction, blocking=True)
     elif incoming_inches:
-        print ("gpg inches {}".format(incoming_distance*incoming_direction))
+        # print ("gpg inches {}".format(incoming_distance*incoming_direction))
         gpg.drive_inches(incoming_distance*incoming_direction, blocking=True)
     elif incoming_degrees:
-        print ("gpg degrees {}".format(incoming_distance*incoming_direction))
+        # print ("gpg degrees {}".format(incoming_distance*incoming_direction))
         gpg.drive_degrees(incoming_distance*incoming_direction, blocking=True)
     elif incoming_rotations: 
-        print ("gpg rotations {}".format(incoming_distance*incoming_direction))
+        # print ("gpg rotations {}".format(incoming_distance * incoming_direction))
         gpg.drive_degrees(incoming_distance*incoming_direction*360, blocking=True)
     elif incoming_seconds:
-        print("gpg forward")
+        # print("gpg forward")
         if incoming_direction > 0:
             gpg.forward()
         else:
             gpg.backward()
         time.sleep(incoming_distance)
         gpg.stop()
-        print ("gpg stopped")
+        # print ("gpg stopped")
         
     sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
     sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
