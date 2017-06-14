@@ -244,7 +244,7 @@ def set_regex_string():
             regex_eyes_color + "$|^" +
             regex_blinkers + "$|^" +
             regex_reset + "$|^" +
-            regex_encoders)
+            regex_encoders +"$")
 
     print (full_regex)
     return full_regex
@@ -254,17 +254,22 @@ SENSOR_DISTANCE_GROUP = 1
 SENSOR_DISTANCE_PORT1 = SENSOR_DISTANCE_GROUP+2
 SENSOR_DISTANCE_PORT2 = SENSOR_DISTANCE_GROUP+3
 SENSOR_BUZZER_GROUP = 5
-SENSOR_BUZZER_PORT_GROUP = SENSOR_BUZZER_GROUP+1
-SENSOR_BUZZER_POWER_GROUP = SENSOR_BUZZER_GROUP+2
+SENSOR_BUZZER_PORT1_GROUP = SENSOR_BUZZER_GROUP+2
+SENSOR_BUZZER_PORT2_GROUP = SENSOR_BUZZER_GROUP+3
+SENSOR_BUZZER_POWER_GROUP = SENSOR_BUZZER_GROUP+4
+
 def set_sensor_regex_string():
-    regex_ADport = "(([AD]*1)|([AD]*2))?"
+    regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))?"
     
     # group 1 distance
     # group 2 port (optional)
     regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*"+regex_ADport+")"
-    regex_buzzer = "(BUZ(?:Z(?:E(?:R)))?"+regex_ADport+")"
+    regex_buzzer = "(BUZ(?:Z(?:E(?:R)?)?)?\s*"+regex_ADport+"\s*([0-9.]+|off))"
     
-    full_regex = ("^"+regex_distance )
+    full_regex = ("^"+regex_distance + "$|^" +
+                    regex_buzzer +"$")
+
+    print (full_regex)
     return full_regex
 
 
@@ -296,27 +301,6 @@ def is_msg(reg,msg):
     else:
         print ("Recognized {}".format(msg))
         return True
-
-
-def handle_GoPiGo3_Sensor_msg(msg):
-    if en_debug:
-        print("received sensor {}".format(msg.strip().lower()))
-        
-    sensors = {}
-    regObj = compiled_regexSensors.match(msg.strip().lower())
-    if regObj is None:
-        if en_debug:
-            print ("GoPiGo3 command is not recognized")
-        return None
-
-    for i in range(len(regObj.groups())+1):
-        print ("{}: {}".format(i,regObj.group(i)))
-    
-    if regObj.group(SENSOR_DISTANCE_GROUP):
-        sensors = handle_distance(regObj)
-        
-    return sensors
-
 
 def handle_GoPiGo3_msg(msg):
     '''
@@ -371,6 +355,50 @@ def handle_GoPiGo3_msg(msg):
         sensors = handle_encoders(regObj)
         
     return sensors
+
+def handle_GoPiGo3_Sensor_msg(msg):
+    if en_debug:
+        print("received sensor {}".format(msg.strip().lower()))
+        
+    sensors = {}
+    regObj = compiled_regexSensors.match(msg.strip().lower())
+    if regObj is None:
+        if en_debug:
+            print ("GoPiGo3 command is not recognized")
+        return None
+
+    for i in range(len(regObj.groups())+1):
+        print ("{}: {}".format(i,regObj.group(i)))
+    
+    if regObj.group(SENSOR_DISTANCE_GROUP):
+        sensors = handle_distance(regObj)
+        
+    elif regObj.group(SENSOR_BUZZER_GROUP):
+        sensors = handle_buzzer(regObj)
+        
+    return sensors
+
+
+def handle_buzzer(regObj):
+    '''
+    if a port is not provided assume AD1
+    '''
+    sensors = None
+    port = "AD2" if regObj.group(SENSOR_BUZZER_PORT2_GROUP) else "AD1"
+    print ("handle_buzzer: {}".format(port))
+    
+    if known_sensors[port] == None:
+        known_sensors[port] = easy.Buzzer(port,gpg)
+        
+    try:
+        power = float(regObj.group(SENSOR_BUZZER_POWER_GROUP))
+    except:
+        power = 0
+        
+    known_sensors[port].sound(power)
+    
+    return {"Buzzer"+port:power}
+
 
 def handle_distance(regObj):
     '''
