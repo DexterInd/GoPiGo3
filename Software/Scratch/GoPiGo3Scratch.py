@@ -77,19 +77,7 @@ except Exception as e:
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder
-
-##################################################################
-# HELPER FUNCTIONS
-##################################################################
-
-def get_regex_sensors():
-    '''
-    generate a regex ready string with all the sensor_types keys
-    '''
-    list_of_sensors = ""
-
-    return list_of_sensors
-
+sensors = {}
 
 eye_colors = {
 "white":  (255,255,255),
@@ -157,11 +145,24 @@ BLINKER_GROUP = 42
 BLINKER_LEFT_GROUP = BLINKER_GROUP+2
 BLINKER_RIGHT_GROUP = BLINKER_GROUP+3
 BLINKER_STATUS_GROUP = BLINKER_GROUP+4
+RESET_GROUP = 47
+ENCODER_GROUP = 48
+ENCODER_LEFT_GROUP = ENCODER_GROUP+3
+ENCODER_RIGHT_GROUP = ENCODER_GROUP+4
+ENCODER_LEFT2_GROUP = ENCODER_GROUP+6
+ENCODER_RIGHT2_GROUP = ENCODER_GROUP+7
+ENCODER_RESET_GROUP = ENCODER_GROUP+9
+ENCODER_READ_GROUP = ENCODER_GROUP+9
+ENCODER_VALUE_GROUP = ENCODER_GROUP+11
+##################################################################
+# HELPER FUNCTIONS
+##################################################################
 
 
 def set_regex_string():
     '''
     Sets up the regex string, and the test_msgs for asserting
+    refer to https://regex101.com/ to make sense of it all
 
     regex explanation:
     1. Forward/Backward [x cm|inches|degrees|rotations|seconds
@@ -208,6 +209,10 @@ def set_regex_string():
     # fourth one:
     # left/right/both blinker(s) on/off
     regex_blinkers = "(("+regex_left+"|"+regex_right+"|both)?\s*blinker[s]?\s*(on|off))"
+
+    regex_reset = "(RESET)"
+    
+    regex_encoders = "((("+regex_left+"|"+regex_right+"|both)?encoder[s]?("+regex_left+"|"+regex_right+"|both)?)\s*((reset)|(read)|([0-9.]*)))"
     
     full_regex = ("^"+regex_drive + "$|" +
             regex_turn + "$|^" +
@@ -215,7 +220,9 @@ def set_regex_string():
             regex_stop + "$|^" +
             regex_eyes + "$|^" +
             regex_eyes_color + "$|^" +
-            regex_blinkers)
+            regex_blinkers + "$|^" +
+            regex_reset + "$|^" +
+            regex_encoders)
 
     print (full_regex)
     return full_regex
@@ -251,6 +258,8 @@ def handle_GoPiGo3_msg(msg):
     '''
     if en_debug:
         print("received {}".format(msg.strip().lower()))
+    
+    sensors = {}
 
     regObj = compiled_regexGPG3.match(msg.strip().lower())
     if regObj is None:
@@ -258,33 +267,89 @@ def handle_GoPiGo3_msg(msg):
             print ("GoPiGo3 command is not recognized")
         return None
 
-    for i in range(len(regObj.groups())):
+    for i in range(len(regObj.groups())+1):
         print ("{}: {}".format(i,regObj.group(i)))
         
     if regObj.group(DRIVE_GROUP):
         print("go for a drive")
-        drive_gpg(regObj)
+        sensors = drive_gpg(regObj)
         # Drive forward/Backward (for X Units)
     
     elif regObj.group(STOP_GROUP):
         print('stop')
-        gpg.stop()
+        sensors = gpg.stop()
     
     elif regObj.group(DRIVE_TURN):
         print('turn')
-        turn_gpg(regObj)
+        sensors = turn_gpg(regObj)
     
     elif regObj.group(EYES_GROUP):
         print("eyes")
-        handle_eyes(regObj)
+        sensors = handle_eyes(regObj)
         
     elif regObj.group(EYE_COLOR_GROUP):
         print("eye color")
-        handle_eye_color(regObj)
+        sensors = handle_eye_color(regObj)
         
     elif regObj.group(BLINKER_GROUP):
         print("blinkers")
-        handle_blinkers(regObj)
+        sensors = handle_blinkers(regObj)
+        
+    elif regObj.group(RESET_GROUP):
+        sensors = GoPiGo3_reset();
+        
+    elif regObj.group(ENCODER_GROUP):
+        print("handling encoders")
+        sensors = handle_encoders(regObj)
+        
+    return sensors
+        
+def handle_encoders(regObj):
+    '''
+    reset the encoders or go to a specific position
+    '''
+    sensors = {}
+    # ask for an encode reset, either just one side, or both
+    if regObj.group(ENCODER_RESET_GROUP):
+        print("encoder resetting")
+        # if the right encoder wasn't specified, then it's either 
+        # a left reset or both.
+        if regObj.group(ENCODER_RIGHT_GROUP)==None and \
+           regObj.group(ENCODER_RIGHT2_GROUP)==None:
+            print("resetting left encoder")
+            gpg.set_motor_power(gpg.MOTOR_LEFT, 0)
+            gpg.offset_motor_encoder(gpg.MOTOR_LEFT, 
+                                    gpg.get_motor_encoder(gpg.MOTOR_LEFT))
+            
+        # if the left encoder wasn't specified, then it's either
+        # the right or both
+        if regObj.group(ENCODER_LEFT_GROUP)==None and \
+           regObj.group(ENCODER_LEFT2_GROUP)==None:
+            print("resetting right encoder")
+            gpg.set_motor_power(gpg.MOTOR_RIGHT, 0)
+            gpg.offset_motor_encoder(gpg.MOTOR_RIGHT,
+                                    gpg.get_motor_encoder(gpg.MOTOR_RIGHT))
+    
+    # ask for a specific position            
+    if regObj.group(ENCODER_VALUE_GROUP):
+        # if the right encoder wasn't specified, then it's either 
+        # a left reset or both.
+        if regObj.group(ENCODER_RIGHT_GROUP)==None and \
+           regObj.group(ENCODER_RIGHT2_GROUP)==None:
+                gpg.set_motor_position(gpg.MOTOR_LEFT, 
+                                    int(regObj.group(ENCODER_VALUE_GROUP)))
+        # if the left encoder wasn't specified, then it's either
+        # the right or both
+        if regObj.group(ENCODER_LEFT_GROUP)==None and \
+           regObj.group(ENCODER_LEFT2_GROUP)==None:
+                gpg.set_motor_position(gpg.MOTOR_RIGHT, 
+                                        int(regObj.group(ENCODER_VALUE_GROUP)))
+
+    # done for every code path, but most notable for ENCODER READ
+    sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
+    sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
+    return(sensors)
+
         
 def handle_blinkers(regObj):
     '''
@@ -301,7 +366,8 @@ def handle_blinkers(regObj):
         if regObj.group(BLINKER_LEFT_GROUP) == None:
             gpg.blinker_off("right")
         if regObj.group(BLINKER_RIGHT_GROUP) == None:
-            gpg.blinker_off("left")         
+            gpg.blinker_off("left")     
+    return None    
         
 
 def handle_eye_color(regObj):
@@ -334,6 +400,8 @@ def handle_eye_color(regObj):
             gpg.open_left_eye()
     except Exception as e:
         print("handle_eye_color".format(e))
+    
+    return None
 
 
 def handle_eyes(regObj):
@@ -350,6 +418,8 @@ def handle_eyes(regObj):
             gpg.close_left_eye()
         if regObj.group(EYES_LEFT_GROUP)==None:
             gpg.close_right_eye()
+    
+    return None
 
 def turn_gpg(regObj):
     '''
@@ -358,21 +428,32 @@ def turn_gpg(regObj):
     Turn left/right X degrees/seconds/rotations
     '''
     print ("turn_gpg")
+    
+    # these will return encoder readings
     if regObj.group(DRIVE_TURN_AMOUNT):
         print("turn x amount")
         try:
-            turn_amount = float(regObj.group(DRIVE_TURN_AMOUNT))
-        except:
+            turn_amount = int(regObj.group(DRIVE_TURN_AMOUNT))
+        except Exception as e:
+            print("turn_gpg: {}".format(e))
             pass
+            
         if regObj.group(DRIVE_TURN_LEFT):
             turn_amount = turn_amount * -1
+            
         if regObj.group(DRIVE_TURN_ROTATIONS):
             turn_amount = turn_amount * 360
             print ( "gpg turn {} degrees".format(turn_amount))
-            gpg.turn_degrees(turn_amount)
+            gpg.turn_degrees(turn_amount,blocking=True)
+            
         if regObj.group(DRIVE_TURN_DEGREES):
             print ( "gpg turn {} degrees".format(turn_amount))
-            gpg.turn_degrees(turn_amount)
+            try:
+                gpg.turn_degrees(turn_amount,blocking=True)
+            except Exception as e:
+                print("turn_gpg: {}".format(e))
+                pass                
+            
         if regObj.group(DRIVE_TURN_SECONDS):
             if regObj.group(DRIVE_TURN_LEFT):
                 print("turning left")
@@ -386,15 +467,20 @@ def turn_gpg(regObj):
             time.sleep(float(regObj.group(DRIVE_TURN_AMOUNT)))
             gpg.stop()
             print("stopped")
+                
+        sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
+        sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
+        return(sensors)
 
-    elif regObj.group(DRIVE_TURN_LEFT):
+    # calls that will not require encoder readings
+    if regObj.group(DRIVE_TURN_LEFT):
         print("turn left")
         gpg.left()
+        return None
     elif regObj.group(DRIVE_TURN_RIGHT):
         print("turn right")
         gpg.right()
-    else:
-        print("turn error")
+        return None
 
     
 def drive_gpg(regObj):
@@ -402,6 +488,7 @@ def drive_gpg(regObj):
     Handle driving forward or backward
     infinite, or X cm, or X inches, or X wheel rotations, or X seconds
     '''
+    sensors = {}
     incoming_drive = regObj.group(DRIVE_GROUP)
     incoming_direction = ( 1 if regObj.group(DRIVE_DIRECTION_GROUP) != None else -1)
     incoming_distance = regObj.group(DRIVE_DISTANCE_GROUP)
@@ -410,8 +497,8 @@ def drive_gpg(regObj):
     incoming_degrees = regObj.group(DRIVE_DEGREES_GROUP)
     incoming_rotations = regObj.group(DRIVE_ROTATIONS_GROUP)
     incoming_seconds = regObj.group(DRIVE_SECONDS_GROUP)
-    print ("{} {} {} {} {} {} {} {}".format(incoming_drive,incoming_direction, incoming_distance,incoming_cm,incoming_inches,incoming_degrees,incoming_rotations,incoming_seconds))
     
+    # start with the calls that will not require encoder readings
     if incoming_distance == None:
         if incoming_direction > 0:
             print("gpg forward")
@@ -419,32 +506,38 @@ def drive_gpg(regObj):
         else:
             print("gpg backward")
             gpg.backward()
-    else:
-        try:
-            incoming_distance = float(incoming_distance)
-        except:
-            print("issue with casting distance to a float")
-        if incoming_cm:
-            print ("gpg cm {}".format(incoming_distance*incoming_direction))
-            gpg.drive_cm(incoming_distance*incoming_direction)
-        elif incoming_inches:
-            print ("gpg inches {}".format(incoming_distance*incoming_direction))
-            gpg.drive_inches(incoming_distance*incoming_direction)
-        elif incoming_degrees:
-            print ("gpg degrees {}".format(incoming_distance*incoming_direction))
-            gpg.drive_degrees(incoming_distance*incoming_direction)
-        elif incoming_rotations: 
-            print ("gpg rotations {}".format(incoming_distance*incoming_direction))
-            gpg.drive_degrees(incoming_distance*incoming_direction*360)
-        elif incoming_seconds:
-            print("gpg forward")
-            if incoming_direction > 0:
-                gpg.forward()
-            else:
-                gpg.backward()
-            time.sleep(incoming_distance)
-            gpg.stop()
-            print ("gpg stopped")
+        return()
+
+    # these will return encoder readings
+    try:
+        incoming_distance = float(incoming_distance)
+    except:
+        print("issue with casting distance to a float")
+    if incoming_cm:
+        print ("gpg cm {}".format(incoming_distance*incoming_direction))
+        gpg.drive_cm(incoming_distance*incoming_direction, blocking=True)
+    elif incoming_inches:
+        print ("gpg inches {}".format(incoming_distance*incoming_direction))
+        gpg.drive_inches(incoming_distance*incoming_direction, blocking=True)
+    elif incoming_degrees:
+        print ("gpg degrees {}".format(incoming_distance*incoming_direction))
+        gpg.drive_degrees(incoming_distance*incoming_direction, blocking=True)
+    elif incoming_rotations: 
+        print ("gpg rotations {}".format(incoming_distance*incoming_direction))
+        gpg.drive_degrees(incoming_distance*incoming_direction*360, blocking=True)
+    elif incoming_seconds:
+        print("gpg forward")
+        if incoming_direction > 0:
+            gpg.forward()
+        else:
+            gpg.backward()
+        time.sleep(incoming_distance)
+        gpg.stop()
+        print ("gpg stopped")
+        
+    sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
+    sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
+    return(sensors)
             
 ##################################################################
 # MAIN FUNCTION
@@ -465,7 +558,7 @@ if __name__ == '__main__':
                 if en_debug:
                     print("GoPiGo3 Scratch: Connected to Scratch successfully")
             connected = 1   # We are succesfully connected!  Exit Away!
-            # time.sleep(1)
+
 
         except scratch.ScratchError:
             arbitrary_delay = 10  # no need to issue error statement if at least 10 seconds haven't gone by.
@@ -483,6 +576,9 @@ if __name__ == '__main__':
         s.broadcast("close eyes")
         s.broadcast("blinkers on")
         s.broadcast("blinkers off")
+        sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
+        sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
+        s.sensorupdate(sensors)
     except NameError:
         if en_debug:
             print ("GoPiGo3 Scratch: Unable to Broadcast")

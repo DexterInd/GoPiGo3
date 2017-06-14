@@ -109,7 +109,19 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # only one is needed, we're going overkill
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        
+    def backward(self):
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                               self.get_speed() * -1)
 
+    def right(self):
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, 0)
+
+    def left(self):
+        self.set_motor_dps(self.MOTOR_LEFT, 0)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+        
     def forward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
@@ -177,7 +189,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
         current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
-
+        
         if current_left_position > min_left_target and \
            current_left_position < max_left_target and \
            current_right_position > min_right_target and \
@@ -185,20 +197,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             return True
         else:
             return False
-
-    def backward(self):
-        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                               self.get_speed() * -1)
-
-
-    def right(self):
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_dps(self.MOTOR_RIGHT, 0)
-
-    def left(self):
-        self.set_motor_dps(self.MOTOR_LEFT, 0)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
-        
+            
+    def reset_encoders(self):
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
+        self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
 
     def blinker_on(self, id):
         if id == 1 or id == "left":
@@ -264,7 +267,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-    def turn_degrees(self, degrees):
+    def turn_degrees(self, degrees, blocking=False):
         # this is the method to use if you want the robot to turn 90 degrees
         # or any other amount. This method is based on robot orientation
         # and not wheel rotation
@@ -284,8 +287,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                 (StartPositionLeft + WheelTurnDegrees))
         self.set_motor_position(self.MOTOR_RIGHT,
                                 (StartPositionRight - WheelTurnDegrees))
-
-
+        
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight - WheelTurnDegrees) is False:
+                time.sleep(0.1)
+                
 # the following functions may be redundant
 my_gpg = EasyGoPiGo3()
 
