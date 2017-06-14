@@ -77,6 +77,7 @@ except Exception as e:
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder
+
 sensors = {}
 
 eye_colors = {
@@ -154,10 +155,11 @@ ENCODER_RIGHT2_GROUP = ENCODER_GROUP+7
 ENCODER_RESET_GROUP = ENCODER_GROUP+9
 ENCODER_READ_GROUP = ENCODER_GROUP+9
 ENCODER_VALUE_GROUP = ENCODER_GROUP+11
+
+
 ##################################################################
 # HELPER FUNCTIONS
 ##################################################################
-
 
 def set_regex_string():
     '''
@@ -213,6 +215,7 @@ def set_regex_string():
     regex_reset = "(RESET)"
     
     regex_encoders = "((("+regex_left+"|"+regex_right+"|both)?encoder[s]?("+regex_left+"|"+regex_right+"|both)?)\s*((reset)|(read)|([0-9.]*)))"
+
     
     full_regex = ("^"+regex_drive + "$|" +
             regex_turn + "$|^" +
@@ -220,6 +223,7 @@ def set_regex_string():
             regex_stop + "$|^" +
             regex_eyes + "$|^" +
             regex_eyes_color + "$|^" +
+
             regex_blinkers + "$|^" +
             regex_reset + "$|^" +
             regex_encoders)
@@ -267,11 +271,12 @@ def handle_GoPiGo3_msg(msg):
             print ("GoPiGo3 command is not recognized")
         return None
 
-    for i in range(len(regObj.groups())+1):
-        print ("{}: {}".format(i,regObj.group(i)))
+    # for i in range(len(regObj.groups())+1):
+    #     print ("{}: {}".format(i,regObj.group(i)))
         
     if regObj.group(DRIVE_GROUP):
         print("go for a drive")
+
         sensors = drive_gpg(regObj)
         # Drive forward/Backward (for X Units)
     
@@ -368,7 +373,7 @@ def handle_blinkers(regObj):
         if regObj.group(BLINKER_RIGHT_GROUP) == None:
             gpg.blinker_off("left")     
     return None    
-        
+
 
 def handle_eye_color(regObj):
     '''
@@ -420,6 +425,7 @@ def handle_eyes(regObj):
             gpg.close_right_eye()
     
     return None
+
 
 def turn_gpg(regObj):
     '''
@@ -481,13 +487,13 @@ def turn_gpg(regObj):
         print("turn right")
         gpg.right()
         return None
-
     
 def drive_gpg(regObj):
     '''
     Handle driving forward or backward
     infinite, or X cm, or X inches, or X wheel rotations, or X seconds
     '''
+
     sensors = {}
     incoming_drive = regObj.group(DRIVE_GROUP)
     incoming_direction = ( 1 if regObj.group(DRIVE_DIRECTION_GROUP) != None else -1)
@@ -497,6 +503,7 @@ def drive_gpg(regObj):
     incoming_degrees = regObj.group(DRIVE_DEGREES_GROUP)
     incoming_rotations = regObj.group(DRIVE_ROTATIONS_GROUP)
     incoming_seconds = regObj.group(DRIVE_SECONDS_GROUP)
+
     
     # start with the calls that will not require encoder readings
     if incoming_distance == None:
@@ -538,6 +545,7 @@ def drive_gpg(regObj):
     sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
     sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
     return(sensors)
+
             
 ##################################################################
 # MAIN FUNCTION
@@ -559,7 +567,6 @@ if __name__ == '__main__':
                     print("GoPiGo3 Scratch: Connected to Scratch successfully")
             connected = 1   # We are succesfully connected!  Exit Away!
 
-
         except scratch.ScratchError:
             arbitrary_delay = 10  # no need to issue error statement if at least 10 seconds haven't gone by.
             if (time.time() - startTime > arbitrary_delay):
@@ -579,6 +586,7 @@ if __name__ == '__main__':
         sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
         sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
         s.sensorupdate(sensors)
+
     except NameError:
         if en_debug:
             print ("GoPiGo3 Scratch: Unable to Broadcast")
