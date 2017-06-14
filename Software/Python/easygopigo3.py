@@ -1101,18 +1101,15 @@ try:
         Connect the distance sensor to I2C port.
         '''
         def __init__(self, port="I2C1",gpg=None):
+            Sensor.__init__(self, port, "OUTPUT", gpg)
             try:
-                Sensor.__init__(self, port, "OUTPUT", gpg)
-                _grab_read()
-                try:
-                    distance_sensor.DistanceSensor.__init__(self)
-                except:
-                    pass
-                _release_read()
-                self.set_descriptor("Distance Sensor")
+                distance_sensor.DistanceSensor.__init__(self)
             except Exception as e:
                 print(e)
                 raise IOError("Distance Sensor not found")
+                
+            _release_read()
+            self.set_descriptor("Distance Sensor")
                 
         # Returns the values in cms
         def read_mm(self):
@@ -1127,12 +1124,10 @@ try:
             # smaller than 8m or bigger than 5 mm.
             # if sensor insists on that value, then pass it on
             while (mm > 8000 or mm < 5) and attempt < 3:
-                _grab_read()
                 try:
                     mm = self.readRangeSingleMillimeters()
                 except:
                     mm = 0
-                _release_read()
                 attempt = attempt + 1
                 time.sleep(0.001)
                 
@@ -1158,6 +1153,7 @@ try:
         def read_inches(self):
             cm = self.read()
             return cm / 2.54
+
 except Exception as e:
     # it is possible to use easygopigo3 on Raspbian without having
     # the distance sensor library installed.

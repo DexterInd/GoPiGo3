@@ -74,9 +74,11 @@ except IOError as error:
 except Exception as e:
     error_box("Unknown Error, closing Scratch Interpreter")
     print("Unknown Error: {}".format(e))
+    sys.exit()
     
 try:
-    distance_sensor = easy.DistanceSensor()
+    distance_sensor = easy.DistanceSensor(gpg)
+    print ("Distance sensor is detected")
 except:
     distance_sensor = None
 
@@ -251,11 +253,16 @@ def set_regex_string():
 SENSOR_DISTANCE_GROUP = 1
 SENSOR_DISTANCE_PORT1 = SENSOR_DISTANCE_GROUP+2
 SENSOR_DISTANCE_PORT2 = SENSOR_DISTANCE_GROUP+3
+SENSOR_BUZZER_GROUP = 5
+SENSOR_BUZZER_PORT_GROUP = SENSOR_BUZZER_GROUP+1
+SENSOR_BUZZER_POWER_GROUP = SENSOR_BUZZER_GROUP+2
 def set_sensor_regex_string():
+    regex_ADport = "(([AD]*1)|([AD]*2))?"
     
     # group 1 distance
     # group 2 port (optional)
-    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*(([AD]*1)|([AD]*2))?)"
+    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*"+regex_ADport+")"
+    regex_buzzer = "(BUZ(?:Z(?:E(?:R)))?"+regex_ADport+")"
     
     full_regex = ("^"+regex_distance )
     return full_regex
@@ -389,6 +396,7 @@ def handle_distance(regObj):
         
         # if no distance sensor, then default to port AD1
         else:
+            print("no port provided, going with AD1")
             port = "AD1"
     
     # don't use an else here even if it's tempting
