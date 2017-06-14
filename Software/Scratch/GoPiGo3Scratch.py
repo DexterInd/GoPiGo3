@@ -73,12 +73,27 @@ except IOError as error:
 except Exception as e:
     error_box("Unknown Error, closing Scratch Interpreter")
     print("Unknown Error: {}".format(e))
-
+    
+try:
+    distance_sensor = easy.DistanceSensor()
+except:
+    distance_sensor = None
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder
 
+# sensor values as sent to Scratch to display
 sensors = {}
+
+# known sensors per port
+# I2C not being tracked as not needed
+known_sensors = {
+    "AD1": None,
+    "AD2": None,
+    "Serial:": None,
+    "Servo1": None,
+    "Servo2": None
+}
 
 eye_colors = {
 "white":  (255,255,255),
@@ -145,9 +160,10 @@ EYE_COLOR_STRING_GROUP = EYE_COLOR_GROUP+9
 BLINKER_GROUP = 42
 BLINKER_LEFT_GROUP = BLINKER_GROUP+2
 BLINKER_RIGHT_GROUP = BLINKER_GROUP+3
-BLINKER_STATUS_GROUP = BLINKER_GROUP+4
-RESET_GROUP = 47
-ENCODER_GROUP = 48
+BLINKER_SELECTION_GROUP = BLINKER_GROUP+4
+BLINKER_STATUS_GROUP = BLINKER_GROUP+5
+RESET_GROUP = 48
+ENCODER_GROUP = 49
 ENCODER_LEFT_GROUP = ENCODER_GROUP+3
 ENCODER_RIGHT_GROUP = ENCODER_GROUP+4
 ENCODER_LEFT2_GROUP = ENCODER_GROUP+6
@@ -200,7 +216,7 @@ def set_regex_string():
 
     # second one:
     # (turn) left/right (x degrees/seconds)
-    regex_turn = "(?:t(?:urn)?)?\s*("+regex_left+"|"+regex_right+")\s*(([0-9.]+)\s*("+regex_degrees+"|"+regex_rotations+"|"+regex_seconds+")*)*"
+    regex_turn = "(?:t(?:urn)?)?\s*("+regex_left+"|"+regex_right+")\s*(([0-9.]+)\s*("+regex_degrees+"|"+regex_rotations+"|"+regex_seconds+")?)*"
     
     # third one:
     # open/close left/right/both eye(s)
@@ -210,7 +226,7 @@ def set_regex_string():
 
     # fourth one:
     # left/right/both blinker(s) on/off
-    regex_blinkers = "(("+regex_left+"|"+regex_right+"|both)?\s*blinker[s]?\s*(on|off))"
+    regex_blinkers = "(("+regex_left+"|"+regex_right+"|both)?\s*(blinker[s]?|LEDL|LEDR)\s*(on|255|off|0))"
 
     regex_reset = "(RESET)"
     
@@ -229,6 +245,19 @@ def set_regex_string():
 
     print (full_regex)
     return full_regex
+    
+
+SENSOR_DISTANCE_GROUP = 1
+SENSOR_DISTANCE_PORT1 = SENSOR_DISTANCE_GROUP+2
+SENSOR_DISTANCE_PORT2 = SENSOR_DISTANCE_GROUP+3
+def set_sensor_regex_string():
+    
+    # group 1 distance
+    # group 2 port (optional)
+    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*(([AD]*1)|([AD]*2))?)"
+    
+    full_regex = ("^"+regex_distance )
+    return full_regex
 
 
 def is_GoPiGo3_msg(msg):
@@ -238,7 +267,21 @@ def is_GoPiGo3_msg(msg):
         True if valid for GoPiGo3
         False otherwise
     '''
-    retval = compiled_regexGPG3.match(msg.strip())
+    return is_msg(compiled_regexGPG3,msg)
+
+
+def is_GoPiGo3_Sensor_msg(msg):
+    '''
+    Check if msg is a valid Sensor command
+    '''
+    return is_msg(compiled_regexSensors,msg)
+
+
+def is_msg(reg,msg):
+    '''
+    Check if msg is a valid form of the compiled regex
+    '''
+    retval = reg.match(msg.strip())
 
     if retval is None:
         return False
@@ -247,11 +290,24 @@ def is_GoPiGo3_msg(msg):
         return True
 
 
-def GoPiGo3_reset():
-    '''
-    Resets the GoPiGo3
-    '''
-    gpg.reset_all()
+def handle_GoPiGo3_Sensor_msg(msg):
+    if en_debug:
+        print("received sensor {}".format(msg.strip().lower()))
+        
+    sensors = {}
+    regObj = compiled_regexSensors.match(msg.strip().lower())
+    if regObj is None:
+        if en_debug:
+            print ("GoPiGo3 command is not recognized")
+        return None
+
+    for i in range(len(regObj.groups())+1):
+        print ("{}: {}".format(i,regObj.group(i)))
+    
+    if regObj.group(SENSOR_DISTANCE_GROUP):
+        sensors = handle_distance(regObj)
+        
+    return sensors
 
 
 def handle_GoPiGo3_msg(msg):
@@ -307,6 +363,55 @@ def handle_GoPiGo3_msg(msg):
         sensors = handle_encoders(regObj)
         
     return sensors
+
+def handle_distance(regObj):
+    '''
+    if a port is provided, assume it's ultrasonic sensor
+ 
+    If no port is provided :
+        Try to deal with Distance Sensor first. 
+        if Distance sensor fails, attempt US sensor on port AD1
+
+    '''
+    if regObj.group(SENSOR_DISTANCE_PORT2):
+        port = "AD2" 
+    elif regObj.group(SENSOR_DISTANCE_PORT1):
+        port = "AD1" 
+    else:
+        port = None
+  
+    sensors = {}
+    if port is None:
+        if distance_sensor is not None:
+            print("reading from distance sensor")
+            distance = distance_sensor.read()
+            sensors["distance"] = distance
+        
+        # if no distance sensor, then default to port AD1
+        else:
+            port = "AD1"
+    
+    # don't use an else here even if it's tempting
+    # as port can be modified in the first if block  
+    if port:
+        
+        try:
+            # create Ultrasonic sensor instance if needed
+            if known_sensors[port] == None:
+                print("instancing an ultrasonic sensor")
+                known_sensors[port] = easy.UltraSonicSensor(port,gpg)
+                print("with success")
+        except Exception as e:
+            print ("handle_distance: {}".format(e))
+                            
+        print("reading from ultrasonic sensor on port {}".format(port))
+        distance = known_sensors[port].read()
+        sensors["distance"+port] = distance
+
+        
+    return (sensors)
+        
+        
         
 def handle_encoders(regObj):
     '''
@@ -354,23 +459,45 @@ def handle_encoders(regObj):
     sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
     return(sensors)
 
-        
+
+def GoPiGo3_reset():
+    '''
+    Resets the GoPiGo3
+    '''
+    gpg.reset_all()
+
+
 def handle_blinkers(regObj):
     '''
     set left/right/both blinkers on/off
     '''
     print("handle blinkers {}".format(regObj.group(BLINKER_STATUS_GROUP)))
-    if regObj.group(BLINKER_STATUS_GROUP) == "on":
-        if regObj.group(BLINKER_LEFT_GROUP) == None:
-            gpg.blinker_on("right")
-        if regObj.group(BLINKER_RIGHT_GROUP) == None:
-            gpg.blinker_on("left")   
-    else:
-        print ("blinkers off")
-        if regObj.group(BLINKER_LEFT_GROUP) == None:
-            gpg.blinker_off("right")
-        if regObj.group(BLINKER_RIGHT_GROUP) == None:
-            gpg.blinker_off("left")     
+    
+    try:
+        if regObj.group(BLINKER_SELECTION_GROUP) == "ledl":
+            left = True
+            right = False
+        elif regObj.group(BLINKER_SELECTION_GROUP) == "ledr":
+            right = True
+            left = False
+        else:
+            left = True if regObj.group(BLINKER_RIGHT_GROUP) == None else False
+            right = True if regObj.group(BLINKER_LEFT_GROUP) == None else False
+        
+        if regObj.group(BLINKER_STATUS_GROUP) == "on" or \
+           regObj.group(BLINKER_STATUS_GROUP) == "255":
+            if right:
+                gpg.blinker_on("right")
+            if left:
+                gpg.blinker_on("left")   
+        else:
+            print ("blinkers off")
+            if right:
+                gpg.blinker_off("right")
+            if left:
+                gpg.blinker_off("left") 
+    except Exception as e:
+        print("handle_blinkers: {}".format(e))    
     return None    
 
 
@@ -451,15 +578,7 @@ def turn_gpg(regObj):
             print ( "gpg turn {} degrees".format(turn_amount))
             gpg.turn_degrees(turn_amount,blocking=True)
             
-        if regObj.group(DRIVE_TURN_DEGREES):
-            print ( "gpg turn {} degrees".format(turn_amount))
-            try:
-                gpg.turn_degrees(turn_amount,blocking=True)
-            except Exception as e:
-                print("turn_gpg: {}".format(e))
-                pass                
-            
-        if regObj.group(DRIVE_TURN_SECONDS):
+        elif regObj.group(DRIVE_TURN_SECONDS):
             if regObj.group(DRIVE_TURN_LEFT):
                 print("turning left")
                 gpg.left()
@@ -472,6 +591,17 @@ def turn_gpg(regObj):
             time.sleep(float(regObj.group(DRIVE_TURN_AMOUNT)))
             gpg.stop()
             print("stopped")
+
+        # don't test for degrees per se as it's the default value
+        # and is optional 
+        # left 90 is the same as left 90 degrees
+        else:
+            print ( "gpg turn {} degrees".format(turn_amount))
+            try:
+                gpg.turn_degrees(turn_amount,blocking=True)
+            except Exception as e:
+                print("turn_gpg: {}".format(e))
+                pass     
                 
         sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
         sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
@@ -486,7 +616,8 @@ def turn_gpg(regObj):
         print("turn right")
         gpg.right()
         return None
-    
+
+
 def drive_gpg(regObj):
     '''
     Handle driving forward or backward
@@ -550,6 +681,7 @@ def drive_gpg(regObj):
 # MAIN FUNCTION
 ##################################################################
 compiled_regexGPG3 = re.compile(set_regex_string(), re.IGNORECASE)
+compiled_regexSensors = re.compile(set_sensor_regex_string(), re.IGNORECASE)
 
 if __name__ == '__main__':
     
@@ -595,22 +727,12 @@ if __name__ == '__main__':
             m = s.receive()
 
             while m is None or m[0] == 'sensor-update' :
-
-                # keep this for reference.
-                # may work to detect File/new, File/Open but needs a change in scratchpi
-                # to detect "send_vars" msg as being valid
-                # if m[0] == "send_vars":  # File/New
-                #     print("Resetting everything")
-                #     SensorType = ["None","None","None","None"]
-                #     for port in range(4):
-                #         BP3.set_sensor_type(bp3ports[port], sensor_types["NONE"][0])
-
                 m = s.receive()
 
             msg = m[1]
 
 # remove all spaces in the input msg to create ms_nospace
-# brickpi3 handles the one without spaces but we keep the one with spaces
+# gopigo3 handles the one without spaces but we keep the one with spaces
 # for others (like pivotpi, camera, line_sensor) as a precautionary measure.
             try:
                 msg_nospace = msg.replace(" ","")
@@ -623,6 +745,11 @@ if __name__ == '__main__':
 
             if is_GoPiGo3_msg(msg_nospace):
                 sensors = handle_GoPiGo3_msg(msg_nospace)
+                if sensors is not None:
+                    s.sensorupdate(sensors)
+                    
+            if is_GoPiGo3_Sensor_msg(msg_nospace):
+                sensors = handle_GoPiGo3_Sensor_msg(msg_nospace)
                 if sensors is not None:
                     s.sensorupdate(sensors)
 
@@ -738,7 +865,6 @@ if __name__ == '__main__':
                 except scratch.ScratchError:
                     if en_debug:
                         print("GoPiGo3 Scratch: Scratch is either not opened or remote sensor connections aren't enabled\n..............................\n")
-        except:
-            e = sys.exc_info()[0]
+        except Exception as e:
             if en_debug:
                 print("GoPiGo3 Scratch: Error %s" % e)

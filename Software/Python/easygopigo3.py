@@ -227,13 +227,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if isinstance(color, tuple) and len(color) == 3:
             self.left_eye_color = color
         else:
-            raise TypeError
+            raise TypeError("Eye color  not valid")
 
     def set_right_eye_color(self, color):
         if isinstance(color, tuple) and len(color) == 3:
             self.right_eye_color = color
         else:
-            raise TypeError
+            raise TypeError("Eye color  not valid")
 
     def set_eye_color(self, color):
         self.set_left_eye_color(color)
@@ -565,8 +565,8 @@ class UltraSonicSensor(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Ultrasonic sensor")
 
-        except:
-            raise AttributeError
+        except Exception as e:
+            raise IOError(e)
 
     def is_too_close(self):
         if self.gpg.get_grove_value(self.get_port_ID()) < \
@@ -1092,6 +1092,7 @@ class LineFollower(Sensor):
 #######################################################################
 try:
     from Distance_Sensor import distance_sensor
+    
     class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         '''
         Wrapper to measure the distance in cms from the DI distance sensor.
@@ -1109,7 +1110,8 @@ try:
                 self.set_descriptor("Distance Sensor")
             except Exception as e:
                 print(e)
-                raise ValueError("Distance Sensor not found")
+                raise IOError("Distance Sensor not found")
+                
         # Returns the values in cms
         def read_mm(self):
             
