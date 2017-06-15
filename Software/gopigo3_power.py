@@ -14,10 +14,6 @@
 import RPi.GPIO as GPIO
 import time
 import os
-import atexit
-
-atexit.register(GPIO.cleanup)
-
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22, GPIO.IN)
