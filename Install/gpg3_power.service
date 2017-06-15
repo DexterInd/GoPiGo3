@@ -1,0 +1,9 @@
+ [Unit]
+ Description=GoPiGo3 Power Service
+
+ [Service]
+ Type=idle
+ExecStart=/usr/bin/env bash  /home/pi/Dexter/GoPiGo3/Install/gpg3_power.sh
+
+ [Install]
+ WantedBy=multi-user.target
