@@ -268,6 +268,8 @@ SENSOR_LIGHT_GROUP = 15
 SENSOR_LIGHT_PORT1_GROUP = SENSOR_LIGHT_GROUP+2
 SENSOR_LIGHT_PORT2_GROUP = SENSOR_LIGHT_GROUP+3
 SENSOR_LINE_GROUP = 19
+SENSOR_SERVO_GROUP = 20
+SENSOR_SERVO_ANGLE_GROUP = SENSOR_SERVO_GROUP+1
 
 def set_sensor_regex_string():
     regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))"
@@ -279,12 +281,14 @@ def set_sensor_regex_string():
     regex_LED = "(LED\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
     regex_light = "((?:light|lite|lit)\s*"+regex_ADport+"?)"
     regex_line = "(LINE)"    
+    regex_servo = "(SERVO\s*[1|2|s])\s*(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)"
     
     full_regex = ("^"+regex_distance + "$|^" +
                     regex_buzzer + "$|^" +
                     regex_LED + "$|^" +
                     regex_light + "$|^" +
-                    regex_line +"$")
+                    regex_line + "$|^" +
+                    regex_servo +"$")
 
     # print (full_regex)
     return full_regex
@@ -386,8 +390,8 @@ def handle_GoPiGo3_Sensor_msg(msg):
             print ("GoPiGo3 Sensor command is not recognized")
         return None
 
-    # for i in range(len(regObj.groups())+1):
-    #     print ("{}: {}".format(i,regObj.group(i)))
+    for i in range(len(regObj.groups())+1):
+        print ("{}: {}".format(i,regObj.group(i)))
     
     if regObj.group(SENSOR_DISTANCE_GROUP):
         sensors = handle_distance(regObj)
@@ -404,8 +408,40 @@ def handle_GoPiGo3_Sensor_msg(msg):
     elif regObj.group(SENSOR_LINE_GROUP):
         sensors = handle_line_sensor(regObj)
         
+    elif regObj.group(SENSOR_SERVO_GROUP):
+        sensors = handle_servos(regObj)        
+        
     return sensors
+    
+def handle_servos(regObj):
+    angle = int(regObj.group(SENSOR_SERVO_ANGLE_GROUP))
+    sensors = {}
+    
+    if regObj.group(SENSOR_SERVO_GROUP)=="servo1" or \
+       regObj.group(SENSOR_SERVO_GROUP)=="servos":
+        sensors = handle_one_servo("Servo1", angle)
 
+    if regObj.group(SENSOR_SERVO_GROUP)=="servo2" or \
+       regObj.group(SENSOR_SERVO_GROUP)=="servos":
+        sensors = handle_one_servo("Servo2", angle)      
+    
+    return (sensors)  
+
+def handle_one_servo(port, angle):
+    
+    if known_sensors[port] == None or \
+       isinstance(known_sensors[port], easy.Servo) is False:
+        try:
+            # print("Instancing Light Sensor")
+            known_sensors[port] = easy.Servo(port,gpg)
+        except Exception as e:
+            print("handle_servo {}".format(e))
+            return ({port:"technical difficulties"})
+    
+    known_sensors[port].rotate_servo(angle) 
+    
+    return ({port:angle})       
+            
 def handle_line_sensor(regObj):
     
     if en_debug:
@@ -441,7 +477,7 @@ def handle_line_sensor(regObj):
         line=scratch_line.line_sensor_val_scratch()
         if en_debug:
             print ("Line Sensor Readings: {}".format(str(line)))
-        sensors["line"] = line
+        sensors["line follower"] = line
         sensors["line explanation"] = explanation[line+4]
 
     except Exception as e:
@@ -463,10 +499,9 @@ def handle_light(regObj):
         try:
             # print("Instancing Light Sensor")
             known_sensors[port] = easy.LightSensor(port,gpg)
-            # time.sleep(0.01)
         except Exception as e:
-            # print("handle_light {}".format(e))
-            return ({"Light"+port:"technical difficulties"})
+            print("handle_light {}".format(e))
+            return ({"{}: Light".format(port):"technical difficulties"})
             
     # print("Reading from port {}".format(port))
 
@@ -555,7 +590,7 @@ def handle_distance(regObj):
                isinstance(known_sensors[port], easy.UltraSonicSensor) is False:
                 known_sensors[port] = easy.UltraSonicSensor(port,gpg)
         except Exception as e:
-            # print ("handle_distance: {}".format(e))
+            print ("handle_distance: {}".format(e))
                             
         # print("reading from ultrasonic sensor on port {}".format(port))
         distance = known_sensors[port].read()
@@ -565,8 +600,7 @@ def handle_distance(regObj):
         print(sensors)
     return (sensors)
         
-        
-        
+  
 def handle_encoders(regObj):
     '''
     reset the encoders or go to a specific position
