@@ -44,26 +44,28 @@ echo "                                       "
 echo ""
 echo "Welcome to GoPiGo3 Installer."
 
-# Make sure the gopigo3_power.py program will run at boot
-# Add 'sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &' to /etc/rc.local
 echo ""
-if grep -q "sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &" /etc/rc.local; then
-    echo "'sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &' already present in /etc/rc.local"
-else
-    # allow appending to rc.local
-    sudo chmod 777 /etc/rc.local
-    
-    # remove 'exit 0'
-    sudo sed -i '/exit/d' /etc/rc.local
-    
-    # add 'sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &'
-    echo "sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &" >> /etc/rc.local
-    
-    # add 'exit 0' back in
-    echo "exit 0" >> /etc/rc.local
-    
-    echo "'sudo python /home/pi/Dexter/GoPiGo3/Software/gopigo3_power.py &' added to /etc/rc.local"
-fi
+
+# Enable GoPiGo3 Power Services in Systemd
+# Make sure the gopigo3_power.py program will run at boot
+
+# Update the Service File with the new directory path
+SERVICEFILE=$REPO_PATH/Install/gpg3_power.service # This should be changed to the location of the sh file first.
+SCRIPTFILE=$REPO_PATH/Install/gpg3_power.sh
+SERVICECOMMAND=" ExecStart=/usr/bin/env bash "
+# Remove line 8 from the service file, the default location of the Service File
+sed -i '6d' $SERVICEFILE
+# Add new path and file name of gpg3_power.sh to the service file
+sed -i "6i $SERVICECOMMAND $SCRIPTFILE" $SERVICEFILE
+
+# Install the system services
+sudo cp $REPO_PATH/Install/gpg3_power.service /etc/systemd/system
+
+sudo chmod 644 /etc/systemd/system/gpg3_power.service
+sudo systemctl daemon-reload
+
+
+sudo systemctl enable gpg3_power.service
 
 echo ""
 sudo bash $REPO_PATH/Firmware/openocd/install_openocd_compiled.sh
