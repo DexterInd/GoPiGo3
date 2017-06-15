@@ -9,10 +9,6 @@ import sys
 import time
 import gopigo3
 
-
-# import numpy
-# import math
-# import threading
 # from datetime import datetime
 
 try:
@@ -109,7 +105,19 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # only one is needed, we're going overkill
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        
+    def backward(self):
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                               self.get_speed() * -1)
 
+    def right(self):
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, 0)
+
+    def left(self):
+        self.set_motor_dps(self.MOTOR_LEFT, 0)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+        
     def forward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
@@ -177,7 +185,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
         current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
-
+        
         if current_left_position > min_left_target and \
            current_left_position < max_left_target and \
            current_right_position > min_right_target and \
@@ -185,20 +193,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             return True
         else:
             return False
-
-    def backward(self):
-        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                               self.get_speed() * -1)
-
-
-    def right(self):
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_dps(self.MOTOR_RIGHT, 0)
-
-    def left(self):
-        self.set_motor_dps(self.MOTOR_LEFT, 0)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
-        
+            
+    def reset_encoders(self):
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
+        self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
 
     def blinker_on(self, id):
         if id == 1 or id == "left":
@@ -207,9 +206,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             self.set_led(self.LED_RIGHT_BLINKER, 255)
 
     def blinker_off(self, id):
-        if id == 1:
+        if id == 1 or id == "left":
             self.set_led(self.LED_LEFT_BLINKER, 0)
-        if id == 0:
+        if id == 0 or id == "right":
             self.set_led(self.LED_RIGHT_BLINKER, 0)
 
 
@@ -224,13 +223,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if isinstance(color, tuple) and len(color) == 3:
             self.left_eye_color = color
         else:
-            raise TypeError
+            raise TypeError("Eye color  not valid")
 
     def set_right_eye_color(self, color):
         if isinstance(color, tuple) and len(color) == 3:
             self.right_eye_color = color
         else:
-            raise TypeError
+            raise TypeError("Eye color  not valid")
 
     def set_eye_color(self, color):
         self.set_left_eye_color(color)
@@ -264,7 +263,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-    def turn_degrees(self, degrees):
+    def turn_degrees(self, degrees, blocking=False):
         # this is the method to use if you want the robot to turn 90 degrees
         # or any other amount. This method is based on robot orientation
         # and not wheel rotation
@@ -284,8 +283,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                 (StartPositionLeft + WheelTurnDegrees))
         self.set_motor_position(self.MOTOR_RIGHT,
                                 (StartPositionRight - WheelTurnDegrees))
-
-
+        
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight - WheelTurnDegrees) is False:
+                time.sleep(0.1)
+                
 # the following functions may be redundant
 my_gpg = EasyGoPiGo3()
 
@@ -321,15 +325,6 @@ def right():
 #############################################################
 #
 #############################################################
-
-
-# ANALOG = 1
-# DIGITAL = 0
-# SERIAL = -1
-# I2C = -2
-# SERVO = -3
-
-##########################
 
 
 class Sensor(object):
@@ -410,10 +405,12 @@ class Sensor(object):
             self.portID = -1
         elif port == "I2C":
             self.portID = -2
-        elif port == "SERVO":
-            self.portID = -3
+        elif port == "SERVO1":
+            self.portID = self.gpg.SERVO_1
+        elif port == "SERVO2":
+            self.portID = self.gpg.SERVO_2
         else:
-            self.portID = -4
+            self.portID = -5
 
         debug(self.portID)
 
@@ -489,6 +486,9 @@ class AnalogSensor(Sensor):
         self.value = 0
         self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
+        
+        # this delay is at least needed by the Light sensor
+        time.sleep(0.01)
 
     def read(self):
         self.value = self.gpg.get_grove_analog(self.get_pin())
@@ -557,8 +557,8 @@ class UltraSonicSensor(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Ultrasonic sensor")
 
-        except:
-            raise AttributeError
+        except Exception as e:
+            raise IOError(e)
 
     def is_too_close(self):
         if self.gpg.get_grove_value(self.get_port_ID()) < \
@@ -582,11 +582,15 @@ class UltraSonicSensor(AnalogSensor):
         return_reading = 0
         readings = []
         skip = 0
+        value=0
 
-        while len(readings) < 3:
+        while len(readings) < 3 and skip < 5:
             try:
+                print("taking a reading")
                 value = self.gpg.get_grove_value(self.get_port_ID())
             except:
+                skip += 1
+                time.sleep(0.05)
                 continue
 
             if value < 4300 and value > 14:
@@ -594,15 +598,13 @@ class UltraSonicSensor(AnalogSensor):
                 debug (readings)
             else:
                 skip += 1
-                if skip > 5:
-                    break
 
-        if skip > 5:
+        if skip >= 5:
             # if value = 0 it means Ultrasonic Sensor wasn't found
             if value == 0:
                 return(0)
 
-            # no special meaning to the number 501
+            # no special meaning to the number 5010
             return(5010)
 
         for reading in readings:
@@ -884,21 +886,156 @@ class LineFollower(Sensor):
            five_vals == [0, 1, 1, 1, 1]:
             return "Right"
         return "Unknown"
+##########################
 
 
+class Servo(Sensor):
+    '''
+    Wrapper to control the Servo Motors on the GPG3.
+    Allows you to rotate the servo by feeding in the angle of rotation.
+    Connect the Servo to the Servo1 and Servo2 ports of GPG3.
+    '''
 
+    def __init__(self, port="SERVO1", gpg=None):
+        try:
+            Sensor.__init__(self, port, "OUTPUT", gpg)
+            self.set_descriptor("GoPiGo3 Servo")
+        except:
+            raise ValueError("GoPiGo3 Servo not found")
+
+    def rotate_servo(self, servo_position):
+        '''
+        This calculation will vary with servo and is an approximate anglular movement of the servo
+        Pulse Width varies between 575us to 24250us for a 60KHz Servo Motor which rotates between 0 to 180 degrees
+        0 degree ~= 575us
+        180 degree ~= 2425us
+        Pulse width Range= 2425-575 =1850
+        => 1 degree rotation requires ~= 10.27us
+        '''
+        
+        #Pulse width range in us corresponding to 0 to 180 degrees
+        PULSE_WIDTH_RANGE=1850
+
+        # Servo Position in degrees
+        if servo_position > 180:
+            servo_position = 180
+        elif servo_position < 0:
+            servo_position = 0
+
+        pulsewidth = round( (1500-(PULSE_WIDTH_RANGE/2)) + 
+                            ((PULSE_WIDTH_RANGE /180) * servo_position))
+        
+        # Set position for the servo
+        self.gpg.set_servo( self.portID, int(pulsewidth))
+
+    def reset_servo(self):
+        self.gpg.set_servo(self.portID, 0)
+
+#######################################################################
+#
+# DistanceSensor 
+#
+# under try/except in case the Distance Sensor is not installed
+#######################################################################
+try:
+    from Distance_Sensor import distance_sensor
+    
+    class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
+        '''
+        Wrapper to measure the distance in cms from the DI distance sensor.
+        Connect the distance sensor to I2C port.
+        '''
+        def __init__(self, port="I2C1",gpg=None):
+            Sensor.__init__(self, port, "OUTPUT", gpg)
+            try:
+                distance_sensor.DistanceSensor.__init__(self)
+            except Exception as e:
+                print(e)
+                raise IOError("Distance Sensor not found")
+                
+            _release_read()
+            self.set_descriptor("Distance Sensor")
+                
+        # Returns the values in cms
+        def read_mm(self):
+            
+            # 8190 is what the sensor sends when it's out of range
+            # we're just setting a default value
+            mm = 8190
+            readings = []
+            attempt = 0
+            
+            # try 3 times to have a reading that is 
+            # smaller than 8m or bigger than 5 mm.
+            # if sensor insists on that value, then pass it on
+            while (mm > 8000 or mm < 5) and attempt < 3:
+                try:
+                    mm = self.readRangeSingleMillimeters()
+                except:
+                    mm = 0
+                attempt = attempt + 1
+                time.sleep(0.001)
+                
+            # add the reading to our last 3 readings
+            # a 0 value is possible when sensor is not found
+            if (mm < 8000 and mm > 5) or mm == 0:
+                readings.append(mm)
+            if len(readings) > 3:
+                readings.pop(0)
+            
+            # calculate an average and limit it to 5 > X > 3000
+            if len(readings) > 1: # avoid division by 0
+                mm = round(sum(readings) / float(len(readings)))
+            if mm > 3000:
+                mm = 3000
+                
+            return mm
+            
+        def read(self):
+            cm = self.read_mm()//10
+            return (cm)
+            
+        def read_inches(self):
+            cm = self.read()
+            return cm / 2.54
+
+except Exception as e:
+    # it is possible to use easygopigo3 on Raspbian without having
+    # the distance sensor library installed.
+    # if that's the case, just ignore
+    print("Note: Distance Sensor library not installed")
+    print(e)
+    
+    
 # class DHTSensor(Sensor):
+#     '''
+#     Support for the Adafruit DHT sensor, blue or white
+#     '''
 
+    
 #     def __init__(self, port="SERIAL",gpg=None):
 #         try:
+#             import threading
+#             from DHT_Sensor import DHT
 #             Sensor.__init__(self,port,"INPUT",gpg)
-#             self.filtered_temperature = [] # here we keep the temperature values after removing outliers
-#             self.filtered_humidity = [] # here we keep the filtered humidity values after removing the outliers
-#             self.event = threading.Event() # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
-#         except:
+            
+#             # here we keep the temperature values after removing outliers
+#             self.filtered_temperature = [] 
+            
+#             # here we keep the filtered humidity values after removing the outliers
+#             self.filtered_humidity = [] 
+            
+#             # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
+#             self.event = threading.Event() 
+            
+#         except Exception as e:
+#             print("DHTSensor: {}".format(e))
 #             raise ValueError("DHT Sensor not found")
+            
 #     def read_temperature(self,sensor_type=0):
-#         temp=DHT.dht(sensor_type)[0]
+#         import threading
+#         from DHT_Sensor import DHT
+#         temp = DHT.dht(sensor_type)[0]
 #         if temp == -2:
 #             return "Bad reading, trying again"
 #         elif temp == -3:
@@ -906,8 +1043,11 @@ class LineFollower(Sensor):
 #         else:
 #             print("Temperature = %.02fC"%temp)
 #             return temp
+
 #     def read_humidity(self,sensor_type=0):
-#         humidity=DHT.dht(sensor_type)[1]
+#         import threading
+#         from DHT_Sensor import DHT
+#         humidity = DHT.dht(sensor_type)[1]
 #         if humidity == -2:
 #             return "Bad reading, trying again"
 #         elif humidity == -3:
@@ -915,7 +1055,10 @@ class LineFollower(Sensor):
 #         else:
 #             print("Humidity = %.02f%%"%humidity)
 #             return humidity
+
 #     def read_dht(self,sensor_type=0):
+#         import threading
+#         from DHT_Sensor import DHT
 #         [temp , humidity]=DHT.dht(sensor_type)
 #         if temp ==-2.0 or humidity == -2.0:
 #             return "Bad reading, trying again"
@@ -925,10 +1068,11 @@ class LineFollower(Sensor):
 #             print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
 #             return [temp, humidity]
 
-#     # function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a
-#     # threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the
-#     # extreme values
 #     def _eliminateNoise(self,values, std_factor = 2):
+#         """
+#         function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the extreme values
+#         """
+#         import numpy
 #         mean = numpy.mean(values)
 #         standard_deviation = numpy.std(values)
 #         if standard_deviation == 0:
@@ -936,9 +1080,15 @@ class LineFollower(Sensor):
 #         final_values = [element for element in values if element > mean - std_factor * standard_deviation]
 #         final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
 #         return final_values
-#     # function for processing the data filtering, periods of time, yada yada
+        
 #     def _readingValues(self,sensor_type=0):
-#         seconds_window = 10 # after this many second we make a record
+#         """function for processing the data filtering, periods of time, yada yada
+#         """
+#         import numpy
+#         import math
+#         # after this many second we make a record
+#         seconds_window = 10 
+        
 #         values = []
 #         while not self.event.is_set():
 #             counter = 0
@@ -955,35 +1105,45 @@ class LineFollower(Sensor):
 #                 #else:
 #                     #print("we've got NaN")
 #                 time.sleep(1)
-#             _wait_for_read()
-#             if _is_read_open():
-#                 _grab_read()
-# 		self.filtered_temperature.append(numpy.mean(self._eliminateNoise([x["temp"] for x in values])))
-# 		self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
-#                 _release_read()
-#             values = []
-#     # Function used to Read the values continuously and displays values after normalising them
+
+#         _grab_read()
+#         self.filtered_temperature.append(numpy.mean(self._eliminateNoise([x["temp"] for x in values])))
+#         self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
+#         _release_read()
+#         values = []
+            
 #     def continuous_read_dht(self):
+#         """
+#         Function used to Read the values continuously and displays values after normalising them
+#         """
+#         import threading
+#         from DHT_Sensor import DHT
 #         try:
-#             # here we start the thread we use a thread in order to gather/process the data separately from the printing proceess
+#             # here we start the thread we use a thread in order to gather/process the data separately from the printing process
 #             data_collector = threading.Thread(target = self._readingValues)
 #             data_collector.start()
+            
 #             while not self.event.is_set():
-#                 if len(self.filtered_temperature) > 0: # or we could have used filtered_humidity instead
-# 		    _wait_for_read()
-# 		    if _is_read_open():
-# 		        _grab_read()
-# 			# here you can do whatever you want with the variables: print them, file them out, anything
-# 			temperature = self.filtered_temperature.pop()
-# 			humidity = self.filtered_humidity.pop()
-# 			print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
-# 		        _release_read()
-#                 # wait a second before the next check
-#                 time.sleep(1)
+#                 if len(self.filtered_temperature) > 0: 
+#                 # or we could have used filtered_humidity instead
+
+#                     _grab_read()
+#                     temperature = self.filtered_temperature.pop()
+#                     humidity = self.filtered_humidity.pop()
+#                     _release_read()
+            
+#             # here you can do whatever you want with the variables: print them, file them out, anything            
+#             print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
+            
+#             # wait a second before the next check
+#             time.sleep(1)
+            
 #             # wait until the thread is finished
 #             data_collector.join()
-#         except KeyboardInterrupt:
+            
+#         except Exception as e:
 #             self.event.set()
+#             print ("continuous_read_dht: {}".format(e))
 
 
 # class RgbLcd(Sensor):
@@ -1018,141 +1178,6 @@ class LineFollower(Sensor):
 #         '''
 #         grove_rgb_lcd.setRGB(red,green,blue)
 
-
-# class Servo(Sensor):
-#     '''
-#     Wrapper to control the Servo Motors on the GPG3.
-#     Allows you to rotate the servo by feeding in the angle of rotation.
-#     Connect the Servo to the Servo1 and Servo2 ports of GPG3.
-#     '''
-
-#     def __init__(self, port="SERVO",gpg=None):
-#         try:
-#             Sensor.__init__(self, port, "OUTPUT", gpg)
-#             self.set_descriptor("GoPiGo3 Servo")
-#         except:
-#             raise ValueError("GoPiGo3 Servo not found")
-
-#     def rotate_servo(self,servo_number,servo_position):
-# 	'''
-#         This calculation will vary with servo and is an approximate anglular movement of the servo
-#         Pulse Width varies between 575us to 24250us for a 60KHz Servo Motor which rotates between 0 to 180 degrees
-#         0 degree ~= 575us
-#         180 degree ~= 2425us
-#         Pulse width Range= 2425-575 =1850
-#         => 1 degree rotation requires ~= 10.27us
-#         '''
-#         #Pulse width range in us corresponding to 0 to 180 degrees
-#         PULSE_WIDTH_RANGE=1850
-
-#         # Servo Position in degrees
-#         if servo_position > 180:
-#             servo_position = 180
-#         elif servo_position < 0:
-#             servo_position = 0
-
-#         pulsewidth = round((1500-(PULSE_WIDTH_RANGE/2)) + ((PULSE_WIDTH_RANGE/180)*servo_position))
-#         # Selecting the Servo Number
-#         if servo_number == 1 or servo_number == "one":
-#             servo_number=self.gpg.SERVO_1
-#         elif servo_number == 2 or servo_number == "two":
-#             servo_number=self.gpg.SERVO_2
-#         elif servo_number == 3 or servo_number == "both":
-#             servo_number=self.gpg.SERVO_1+self.gpg.SERVO_2
-#         else:
-#             return "Invalid Servo Number"
-#         # Set position for the servo
-#         self.gpg.set_servo(servo_number, int(pulsewidth))
-
-#     def reset_servo(self,servo_number):
-#         if servo_number == 1 or servo_number == "one":
-#             servo_number=self.gpg.SERVO_1
-#         elif servo_number == 2 or servo_number == "two":
-#             servo_number=self.gpg.SERVO_2
-#         elif servo_number == 3 or servo_number == "both":
-#             servo_number=self.gpg.SERVO_1+self.gpg.SERVO_2
-#         else:
-#             return "Invalid Servo Number"
-
-#         self.gpg.set_servo(servo_number, 0)
-
-#######################################################################
-#
-# DistanceSensor 
-#
-# under try/except in case the Distance Sensor is not installed
-#######################################################################
-try:
-    from Distance_Sensor import distance_sensor
-    class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
-        '''
-        Wrapper to measure the distance in cms from the DI distance sensor.
-        Connect the distance sensor to I2C port.
-        '''
-        def __init__(self, port="I2C1",gpg=None):
-            try:
-                Sensor.__init__(self, port, "OUTPUT", gpg)
-                _grab_read()
-                try:
-                    distance_sensor.DistanceSensor.__init__(self)
-                except:
-                    pass
-                _release_read()
-                self.set_descriptor("Distance Sensor")
-            except Exception as e:
-                print(e)
-                raise ValueError("Distance Sensor not found")
-        # Returns the values in cms
-        def read_mm(self):
-            
-            # 8190 is what the sensor sends when it's out of range
-            # we're just setting a default value
-            mm = 8190
-            readings = []
-            attempt = 0
-            
-            # try 3 times to have a reading that is 
-            # smaller than 8m or bigger than 5 mm.
-            # if sensor insists on that value, then pass it on
-            while (mm > 8000 or mm < 5) and attempt < 3:
-                _grab_read()
-                try:
-                    mm = self.readRangeSingleMillimeters()
-                except:
-                    mm = 0
-                _release_read()
-                attempt = attempt + 1
-                time.sleep(0.001)
-                
-            # add the reading to our last 3 readings
-            # a 0 value is possible when sensor is not found
-            if (mm < 8000 and mm > 5) or mm == 0:
-                readings.append(mm)
-            if len(readings) > 3:
-                readings.pop(0)
-            
-            # calculate an average and limit it to 5 > X > 3000
-            if len(readings) > 1: # avoid division by 0
-                mm = round(sum(readings) / float(len(readings)))
-            if mm > 3000:
-                mm = 3000
-                
-            return mm
-            
-        def read(self):
-            cm = self.read_mm()//10
-            return (cm)
-            
-        def read_inches(self):
-            cm = self.read()
-            return cm / 2.54
-except Exception as e:
-    # it is possible to use easygopigo3 on Raspbian without having
-    # the distance sensor library installed.
-    # if that's the case, just ignore
-    print("Note: Distance Sensor library not installed")
-    print(e)
-    
 
 if __name__ == '__main__':
    e=EasyGoPiGo3()
