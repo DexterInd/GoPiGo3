@@ -270,6 +270,9 @@ SENSOR_LIGHT_PORT2_GROUP = SENSOR_LIGHT_GROUP+3
 SENSOR_LINE_GROUP = 19
 SENSOR_SERVO_GROUP = 20
 SENSOR_SERVO_ANGLE_GROUP = SENSOR_SERVO_GROUP+1
+SENSOR_BUTTON_GROUP = 22
+SENSOR_BUTTON_PORT1_GROUP = SENSOR_BUTTON_GROUP+1
+SENSOR_BUTTON_PORT2_GROUP = SENSOR_BUTTON_GROUP+2
 
 def set_sensor_regex_string():
     regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))"
@@ -282,13 +285,15 @@ def set_sensor_regex_string():
     regex_light = "((?:light|lite|lit)\s*"+regex_ADport+"?)"
     regex_line = "(LINE)"    
     regex_servo = "(SERVO\s*[1|2|s])\s*(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)"
+    regex_button=("BUTTON\s*"+regex_ADport)
     
     full_regex = ("^"+regex_distance + "$|^" +
                     regex_buzzer + "$|^" +
                     regex_LED + "$|^" +
                     regex_light + "$|^" +
                     regex_line + "$|^" +
-                    regex_servo +"$")
+                    regex_servo + "$|^" +
+                    regex_button+"$")
 
     # print (full_regex)
     return full_regex
@@ -410,8 +415,27 @@ def handle_GoPiGo3_Sensor_msg(msg):
         
     elif regObj.group(SENSOR_SERVO_GROUP):
         sensors = handle_servos(regObj)        
-        
+    
+    elif regObj.group(SENSOR_BUTTON_GROUP):
+        sensors = handle_button(regObj)
+    
     return sensors
+    
+def handle_button(regObj):
+
+    port = "AD2" if regObj.group(SENSOR_BUTTON_PORT2_GROUP) else "AD1"
+    
+    if known_sensors[port] == None or \
+       isinstance(known_sensors[port], easy.ButtonSensor) is False:
+        try:
+            # print("Instancing Light Sensor")
+            known_sensors[port] = easy.ButtonSensor(port,gpg)
+        except Exception as e:
+            print("handle_button {}".format(e))
+            return ({port:"technical difficulties"})
+            
+    return {"{}: Button Pressed".format(port):known_sensors[port].is_button_pressed()}
+    
     
 def handle_servos(regObj):
     angle = int(regObj.group(SENSOR_SERVO_ANGLE_GROUP))
