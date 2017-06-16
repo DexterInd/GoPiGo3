@@ -20,6 +20,7 @@ def test_sensors():
     assert(s.is_GoPiGo3_Sensor_msg("get_distance")==True)
     assert(s.is_GoPiGo3_Sensor_msg("dist")==True)
     assert(s.is_GoPiGo3_Sensor_msg("get_dist")==True)
+
     
     # Buzzer
     assert(s.is_GoPiGo3_Sensor_msg("buzzer")==False)
