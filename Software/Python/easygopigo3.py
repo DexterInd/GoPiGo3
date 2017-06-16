@@ -360,11 +360,21 @@ class Sensor(object):
                                         self.gpg.GROVE_TYPE.CUSTOM)
                 self.gpg.set_grove_mode(self.portID,
                                         self.gpg.GROVE_INPUT_ANALOG)
+            if pinmode == "DIGITAL_INPUT":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.CUSTOM)
+                self.gpg.set_grove_mode(self.portID,
+                                        self.gpg.GROVE_INPUT_DIGITAL)
             if pinmode == "OUTPUT":
                 self.gpg.set_grove_type(self.portID,
                                         self.gpg.GROVE_TYPE.CUSTOM)
                 self.gpg.set_grove_mode(self.portID,
                                         self.gpg.GROVE_OUTPUT_PWM)
+            if pinmode == "DIGITAL_OUTPUT":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.CUSTOM)
+                self.gpg.set_grove_mode(self.portID,
+                                        self.gpg.GROVE_OUTPUT_DIGITAL)
             if pinmode == "US":
                 self.gpg.set_grove_type(self.portID,
                                         self.gpg.GROVE_TYPE.US)
@@ -437,43 +447,26 @@ class Sensor(object):
 ##########################
 
 
-# class DigitalSensor(Sensor):
-#     '''
-#     Implements read and write methods
-#     NOT IMPLEMENTED IN GOPIGO3
-#     '''
-#     def __init__(self, port, pinmode, gpg):
-#         debug("DigitalSensor init")
-#         # self.pin = DIGITAL
-#         Sensor.__init__(self, port, pinmode, gpg)
+class DigitalSensor(Sensor):
+    '''
+    Implements read and write methods
+    NOT IMPLEMENTED IN GOPIGO3
+    '''
+    def __init__(self, port, pinmode, gpg):
+        debug("DigitalSensor init")
+        Sensor.__init__(self, port, pinmode, gpg)
 
-#     def read(self):
-#         '''
-#         tries to get a value up to 10 times.
-#         As soon as a valid value is read, it returns either 0 or 1
-#         returns -1 after 10 unsuccessful tries
-#         '''
-#         okay = False
-#         error_count = 0
+    def read(self):
+        '''
+        '''
+        self.value = self.gpg.get_grove_state(self.get_pin())
+        return self.value
 
-#         rtn = -1
-#         while not okay and error_count < 10:
-#             try:
-#                 # not ported to gpg3 yet
-#                 # rtn = int(gopigo.digitalRead(self.get_port_ID()))
-#                 okay = True
-#             except:
-#                 error_count += 1
-#             if error_count > 10:
-#                 return -1
-#             else:
-#                 return rtn
-
-#     def write(self, power):
-#         self.value = power
-#         # not ported to GPG3 yet
-#         return -1
-        # return gopigo.digitalWrite(self.get_port_ID(), power)
+    def write(self, power):
+        self.value = power
+        # not ported to GPG3 yet
+        return -1
+        return gopigo.digitalWrite(self.get_port_ID(), power)
 ##########################
 
 
@@ -749,11 +742,15 @@ class Led(AnalogSensor):
 ##########################
 
 
-# class ButtonSensor(DigitalSensor):
+class ButtonSensor(DigitalSensor):
 
-#     def __init__(self, port="D11", gpg=None):
-#         DigitalSensor.__init__(self, port, "INPUT", gpg)
-#         self.set_descriptor("Button sensor")
+    def __init__(self, port="AD1", gpg=None):
+        DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+        self.set_pin(1)
+        self.set_descriptor("Button sensor")
+        
+    def is_button_pressed(self):
+        return self.read() == 1
 ##########################
 
 
