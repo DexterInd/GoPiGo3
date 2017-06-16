@@ -55,7 +55,7 @@ def test_sensors():
     assert(s.is_GoPiGo3_Sensor_msg("servo  2 20")==True)
     assert(s.is_GoPiGo3_Sensor_msg("servo  2 2 0")==False) 
     assert(s.is_GoPiGo3_Sensor_msg("servo2  220")==False) 
-    assert(s.is_GoPiGo3_Sensor_msg("ser  120")==True) 
+
     
 if __name__ == '__main__':
     test_sensors()
