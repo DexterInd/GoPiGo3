@@ -19,6 +19,8 @@ def test_sensors():
     assert(s.is_GoPiGo3_Sensor_msg("distance")==True)
     assert(s.is_GoPiGo3_Sensor_msg("get_distance")==True)
     assert(s.is_GoPiGo3_Sensor_msg("dist")==True)
+    assert(s.is_GoPiGo3_Sensor_msg("get_dist")==True)
+
     
     # Buzzer
     assert(s.is_GoPiGo3_Sensor_msg("buzzer")==False)
@@ -54,6 +56,7 @@ def test_sensors():
     assert(s.is_GoPiGo3_Sensor_msg("servo  2 20")==True)
     assert(s.is_GoPiGo3_Sensor_msg("servo  2 2 0")==False) 
     assert(s.is_GoPiGo3_Sensor_msg("servo2  220")==False) 
+
     
 if __name__ == '__main__':
     test_sensors()
