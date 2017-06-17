@@ -950,7 +950,6 @@ try:
                 print(e)
                 raise IOError("Distance Sensor not found")
                 
-            _release_read()
             self.set_descriptor("Distance Sensor")
                 
         # Returns the values in cms
@@ -1000,147 +999,183 @@ except Exception as e:
     # it is possible to use easygopigo3 on Raspbian without having
     # the distance sensor library installed.
     # if that's the case, just ignore
-    print("Note: Distance Sensor library not installed")
-    print(e)
+    # print("Note: Distance Sensor library not installed")
+    # print(e)
+    pass
     
     
-# class DHTSensor(Sensor):
-#     '''
-#     Support for the Adafruit DHT sensor, blue or white
-#     '''
+class DHTSensor(Sensor):
+    '''
+    Support for the Adafruit DHT sensor, blue or white
+    All imports are done internally so it's done on a as needed basis only
+        as in many cases the DHT sensor is not connected.
+    '''
+    def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
+        try:
+            import threading
 
-    
-#     def __init__(self, port="SERIAL",gpg=None):
-#         try:
-#             import threading
-#             from DHT_Sensor import DHT
-#             Sensor.__init__(self,port,"INPUT",gpg)
+            Sensor.__init__(self,port,"INPUT",gpg)
             
-#             # here we keep the temperature values after removing outliers
-#             self.filtered_temperature = [] 
+            self.sensor_type = sensor_type
             
-#             # here we keep the filtered humidity values after removing the outliers
-#             self.filtered_humidity = [] 
+            # here we keep the temperature values after removing outliers
+            self.filtered_temperature = [] 
             
-#             # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
-#             self.event = threading.Event() 
+            # here we keep the filtered humidity values after removing the outliers
+            self.filtered_humidity = [] 
             
-#         except Exception as e:
-#             print("DHTSensor: {}".format(e))
-#             raise ValueError("DHT Sensor not found")
+            # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
+            self.event = threading.Event() 
+            if self.sensor_type == 0:
+                self.set_descriptor("Blue DHT Sensor")
+            else:
+                self.set_descriptor("White DHT Sensor")
             
-#     def read_temperature(self,sensor_type=0):
-#         import threading
-#         from DHT_Sensor import DHT
-#         temp = DHT.dht(sensor_type)[0]
-#         if temp == -2:
-#             return "Bad reading, trying again"
-#         elif temp == -3:
-#             return "Run the program as sudo"
-#         else:
-#             print("Temperature = %.02fC"%temp)
-#             return temp
+        except Exception as e:
+            print("DHTSensor: {}".format(e))
+            raise ValueError("DHT Sensor not found")
+            
+    def read_temperature(self):
+        '''
+        Return values may be a float, or error strings
+        TBD: raise errors instead of returning strings
+        import done internally so it's done on a as needed basis only
+        '''
 
-#     def read_humidity(self,sensor_type=0):
-#         import threading
-#         from DHT_Sensor import DHT
-#         humidity = DHT.dht(sensor_type)[1]
-#         if humidity == -2:
-#             return "Bad reading, trying again"
-#         elif humidity == -3:
-#             return "Run the program as sudo"
-#         else:
-#             print("Humidity = %.02f%%"%humidity)
-#             return humidity
-
-#     def read_dht(self,sensor_type=0):
-#         import threading
-#         from DHT_Sensor import DHT
-#         [temp , humidity]=DHT.dht(sensor_type)
-#         if temp ==-2.0 or humidity == -2.0:
-#             return "Bad reading, trying again"
-#         elif temp ==-3.0 or humidity == -3.0:
-#             return "Run the program as sudo"
-#         else:
-#             print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
-#             return [temp, humidity]
-
-#     def _eliminateNoise(self,values, std_factor = 2):
-#         """
-#         function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the extreme values
-#         """
-#         import numpy
-#         mean = numpy.mean(values)
-#         standard_deviation = numpy.std(values)
-#         if standard_deviation == 0:
-#             return values
-#         final_values = [element for element in values if element > mean - std_factor * standard_deviation]
-#         final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
-#         return final_values
+        from DHT_Sensor import DHT
         
-#     def _readingValues(self,sensor_type=0):
-#         """function for processing the data filtering, periods of time, yada yada
-#         """
-#         import numpy
-#         import math
-#         # after this many second we make a record
-#         seconds_window = 10 
+        _grab_read()
+        temp = DHT.dht(self.sensor_type)[0]
+        _release_read()
         
-#         values = []
-#         while not self.event.is_set():
-#             counter = 0
-#             while counter < seconds_window and not self.event.is_set():
-#                 temp = None
-#                 humidity = None
-#                 try:
-#                     [temp, humidity] = DHT.dht(sensor_type)
-#                 except IOError:
-#                     print("we've got IO error")
-#                 if math.isnan(temp) == False and math.isnan(humidity) == False:
-#                     values.append({"temp" : temp, "hum" : humidity})
-#                     counter += 1
-#                 #else:
-#                     #print("we've got NaN")
-#                 time.sleep(1)
+        if temp == -2:
+            return "Bad reading, trying again"
+        elif temp == -3:
+            return "Run the program as sudo"
+        else:
+            # print("Temperature = %.02fC"%temp)
+            return temp
 
-#         _grab_read()
-#         self.filtered_temperature.append(numpy.mean(self._eliminateNoise([x["temp"] for x in values])))
-#         self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
-#         _release_read()
-#         values = []
-            
-#     def continuous_read_dht(self):
-#         """
-#         Function used to Read the values continuously and displays values after normalising them
-#         """
-#         import threading
-#         from DHT_Sensor import DHT
-#         try:
-#             # here we start the thread we use a thread in order to gather/process the data separately from the printing process
-#             data_collector = threading.Thread(target = self._readingValues)
-#             data_collector.start()
-            
-#             while not self.event.is_set():
-#                 if len(self.filtered_temperature) > 0: 
-#                 # or we could have used filtered_humidity instead
+    def read_humidity(self):
+        '''
+        Return values may be a float, or error strings
+        TBD: raise errors instead of returning strins
+        '''
+        import threading
+        from DHT_Sensor import DHT
+        
+        _grab_read()
+        humidity = DHT.dht(self.sensor_type)[1]
+        _release_read()
+        
+        if humidity == -2:
+            return "Bad reading, trying again"
+        elif humidity == -3:
+            return "Run the program as sudo"
+        else:
+            # print("Humidity = %.02f%%"%humidity)
+            return humidity
 
-#                     _grab_read()
-#                     temperature = self.filtered_temperature.pop()
-#                     humidity = self.filtered_humidity.pop()
-#                     _release_read()
+    def read_dht(self):
+        from DHT_Sensor import DHT
+        
+        _grab_read()
+        [temp , humidity]=DHT.dht(self.sensor_type)
+        _release_read()
+        
+        if temp ==-2.0 or humidity == -2.0:
+            return "Bad reading, trying again"
+        elif temp ==-3.0 or humidity == -3.0:
+            return "Run the program as sudo"
+        else:
+            print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
+            return [temp, humidity]
+
+    def _eliminateNoise(self, values, std_factor = 2):
+        """
+        function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the extreme values
+        """
+        import numpy
+        
+        mean = numpy.mean(values)
+        standard_deviation = numpy.std(values)
+        
+        if standard_deviation == 0:
+            return values
             
-#             # here you can do whatever you want with the variables: print them, file them out, anything            
-#             print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
+        final_values = [element for element in values if element > mean - std_factor * standard_deviation]
+        
+        final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
+        
+        return final_values
+        
+    def _readingValues(self,sensor_type=0):
+        """function for processing the data filtering, periods of time, yada yada
+        """
+        
+        import threading
+        from DHT_Sensor import DHT
+        import numpy
+        import math
+        # after this many second we make a record
+        seconds_window = 10 
+        
+        values = []
+        while not self.event.is_set():
+            counter = 0
+            while counter < seconds_window and not self.event.is_set():
+                temp = None
+                humidity = None
+                
+                _grab_read()
+                try:
+                    [temp, humidity] = DHT.dht(sensor_type)
+                except IOError:
+                    print("we've got IO error")
+                _release_read()
+                
+                if math.isnan(temp) == False and math.isnan(humidity) == False:
+                    values.append({"temp" : temp, "hum" : humidity})
+                    counter += 1
+                #else:
+                    #print("we've got NaN")
+                time.sleep(1)
+
+        self.filtered_temperature.append(numpy.mean(self._eliminateNoise([x["temp"] for x in values])))
+        self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
+
+        values = []
             
-#             # wait a second before the next check
-#             time.sleep(1)
+    def continuous_read_dht(self):
+        """
+        Function used to Read the values continuously and displays values after normalising them
+        """
+        import threading
+
+        try:
+            # here we start the thread we use a thread in order to gather/process the data separately from the printing process
+            data_collector = threading.Thread(target = self._readingValues)
+            data_collector.start()
             
-#             # wait until the thread is finished
-#             data_collector.join()
+            while not self.event.is_set():
+                if len(self.filtered_temperature) > 0: 
+                # or we could have used filtered_humidity instead
+
+                    temperature = self.filtered_temperature.pop()
+                    humidity = self.filtered_humidity.pop()
             
-#         except Exception as e:
-#             self.event.set()
-#             print ("continuous_read_dht: {}".format(e))
+            # here you can do whatever you want with the variables: print them, file them out, anything            
+            print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
+            
+            # wait a second before the next check
+            time.sleep(1)
+            
+            # wait until the thread is finished
+            data_collector.join()
+            
+        except Exception as e:
+            self.event.set()
+            print ("continuous_read_dht: {}".format(e))
 
 
 # class RgbLcd(Sensor):
