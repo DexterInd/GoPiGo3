@@ -10,12 +10,6 @@ import time
 import sys
 import easygopigo3 as easy
 import os # needed to create folders
-try:
-    sys.path.insert(0, '/home/pi/Dexter/PivotPi/Software/Scratch/')
-    import PivotPiScratch
-    pivotpi_available=True
-except:
-    pivotpi_available=False
 
 ## Add what's required to have modal popup windows
 ## and handle crashes if any
@@ -75,6 +69,13 @@ except Exception as e:
     error_box("Unknown Error, closing Scratch Interpreter")
     print("Unknown Error: {}".format(e))
     sys.exit()
+
+try:
+    sys.path.insert(0, '/home/pi/Dexter/PivotPi/Software/Scratch/')
+    import PivotPiScratch
+    pivotpi_available=True
+except:
+    pivotpi_available=False
     
 try:
     distance_sensor = easy.DistanceSensor(gpg)
@@ -93,7 +94,7 @@ sensors = {}
 known_sensors = {
     "AD1": None,
     "AD2": None,
-    "Serial:": None,
+    "SERIAL": None,
     "Servo1": None,
     "Servo2": None
 }
@@ -181,6 +182,26 @@ ENCODER_VALUE_GROUP = ENCODER_GROUP+11
 # HELPER FUNCTIONS
 ##################################################################
 
+def get_sensor_instance(port,sensor_class):
+    '''
+    Checks if an instance of the requested sensor already exists for 
+        the desired port. If it does, return that one
+    If there's nothing on that port, or there's another sensor,
+        then create the requested sensor and return this new one
+    '''
+    if known_sensors[port] == None or \
+       isinstance(known_sensors[port], sensor_class) is False:
+       
+        try:
+            known_sensors[port] = sensor_class(port,gpg)
+        except Exception as e:
+            print("create_sensor_instance {}".format(e))
+            known_sensors[port] = None
+            
+        print(known_sensors[port])
+        return(known_sensors[port])
+
+
 def set_regex_string():
     '''
     Sets up the regex string, and the test_msgs for asserting
@@ -236,9 +257,6 @@ def set_regex_string():
     
     regex_encoders = "((("+regex_left+"|"+regex_right+"|both)?encoder[s]?("+regex_left+"|"+regex_right+"|both)?)\s*((reset)|(read)|([0-9.]*)))"
     
-
-
-    
     full_regex = ("^"+regex_drive + "$|" +
             regex_turn + "$|^" +
             regex_speed + "$|^" +
@@ -273,6 +291,7 @@ SENSOR_SERVO_ANGLE_GROUP = SENSOR_SERVO_GROUP+1
 SENSOR_BUTTON_GROUP = 22
 SENSOR_BUTTON_PORT1_GROUP = SENSOR_BUTTON_GROUP+1
 SENSOR_BUTTON_PORT2_GROUP = SENSOR_BUTTON_GROUP+2
+SENSOR_DHT_GROUP = 25
 
 def set_sensor_regex_string():
     regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))"
@@ -286,6 +305,7 @@ def set_sensor_regex_string():
     regex_line = "(LINE)"    
     regex_servo = "(SERVO\s*[1|2|s])\s*(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)"
     regex_button=("BUTTON\s*"+regex_ADport)
+    regex_dht=("(DHT)\s*")
     
     full_regex = ("^"+regex_distance + "$|^" +
                     regex_buzzer + "$|^" +
@@ -293,7 +313,8 @@ def set_sensor_regex_string():
                     regex_light + "$|^" +
                     regex_line + "$|^" +
                     regex_servo + "$|^" +
-                    regex_button+"$")
+                    regex_button+ "$|^" +
+                    regex_dht+"$")
 
     # print (full_regex)
     return full_regex
@@ -418,23 +439,42 @@ def handle_GoPiGo3_Sensor_msg(msg):
     
     elif regObj.group(SENSOR_BUTTON_GROUP):
         sensors = handle_button(regObj)
+        
+    elif regObj.group(SENSOR_DHT_GROUP):
+        sensors = handle_dht(regObj)
     
     return sensors
+    
+
+
+def handle_dht(regObj):
+    
+    port = "SERIAL"
+    dht_sensor = get_sensor_instance(port, easy.DHTSensor)
+    
+    if dht_sensor:
+        sensors = {"Temperature": dht_sensor.read_temperature(),
+             "Humidity": dht_sensor.read_humidity()}
+    else:
+        sensors = {"Temperature": "no readings",
+                    "Humidity": "no readings" }
+    
+    return sensors
+    
+    
     
 def handle_button(regObj):
 
     port = "AD2" if regObj.group(SENSOR_BUTTON_PORT2_GROUP) else "AD1"
     
-    if known_sensors[port] == None or \
-       isinstance(known_sensors[port], easy.ButtonSensor) is False:
-        try:
-            # print("Instancing Light Sensor")
-            known_sensors[port] = easy.ButtonSensor(port,gpg)
-        except Exception as e:
-            print("handle_button {}".format(e))
-            return ({port:"technical difficulties"})
+    button_sensor = get_sensor_instance(port, easy.ButtonSensor)
+
+    if button_sensor:
+        sensors = {"{}: Button Pressed".format(port):known_sensors[port].is_button_pressed()}
+    else:
+        sensors = {port:"technical difficulties"}
             
-    return {"{}: Button Pressed".format(port):known_sensors[port].is_button_pressed()}
+    return sensors
     
     
 def handle_servos(regObj):
@@ -451,20 +491,16 @@ def handle_servos(regObj):
     
     return (sensors)  
 
+
 def handle_one_servo(port, angle):
     
-    if known_sensors[port] == None or \
-       isinstance(known_sensors[port], easy.Servo) is False:
-        try:
-            # print("Instancing Light Sensor")
-            known_sensors[port] = easy.Servo(port,gpg)
-        except Exception as e:
-            print("handle_servo {}".format(e))
-            return ({port:"technical difficulties"})
+    servo = get_sensor_instance(port, easy.Servo)
     
-    known_sensors[port].rotate_servo(angle) 
+    if servo:
+        servo.rotate_servo(angle) 
     
     return ({port:angle})       
+ 
             
 def handle_line_sensor(regObj):
     
@@ -518,19 +554,13 @@ def handle_light(regObj):
     
     port = "AD2" if regObj.group(SENSOR_LIGHT_PORT2_GROUP) else "AD1"
 
-    if known_sensors[port] == None or \
-       isinstance(known_sensors[port], easy.LightSensor) is False:
-        try:
-            # print("Instancing Light Sensor")
-            known_sensors[port] = easy.LightSensor(port,gpg)
-        except Exception as e:
-            print("handle_light {}".format(e))
-            return ({"{}: Light".format(port):"technical difficulties"})
-            
-    # print("Reading from port {}".format(port))
-
-    light_reading = known_sensors[port].percent_read()    
-    sensors["{}: Light".format(port)] = light_reading
+    light = get_sensor_instance(port, easy.LightSensor)
+    
+    if light:
+        light_reading = light.percent_read()    
+        sensors["{}: Light".format(port)] = light_reading
+    else:
+        return ({"{}: Light".format(port):"technical difficulties"})
         
     return sensors
     
@@ -538,20 +568,19 @@ def handle_light(regObj):
 def handle_led(regObj):
     '''
     if a port is not provided assume AD1
+    if power is not a valid float, check for the word "on" and go full power
+        otherwise turn led off on any other word
     '''
-    sensors = {}
     port = "AD2" if regObj.group(SENSOR_LED_PORT2_GROUP) else "AD1"
-    
-    if known_sensors[port] == None or \
-       isinstance(known_sensors[port], easy.Led) is False:
-        known_sensors[port] = easy.Led(port,gpg)
-        
     try:
         power = float(regObj.group(SENSOR_LED_POWER_GROUP))
     except:
         power = 100 if regObj.group(SENSOR_LED_POWER_GROUP)=="on" else 0
         
-    known_sensors[port].light_on(power)
+    Led = get_sensor_instance(port, easy.Led)
+    
+    if Led:   
+        Led.light_on(power)
     
     return {"{}: LED".format(port):power}
 
@@ -563,16 +592,14 @@ def handle_buzzer(regObj):
     sensors = {}
     port = "AD2" if regObj.group(SENSOR_BUZZER_PORT2_GROUP) else "AD1"
     
-    if known_sensors[port] == None or \
-       isinstance(known_sensors[port], easy.Buzzer) is False:
-        known_sensors[port] = easy.Buzzer(port,gpg)
-        
     try:
         power = float(regObj.group(SENSOR_BUZZER_POWER_GROUP))
     except:
         power = 100 if regObj.group(SENSOR_BUZZER_POWER_GROUP)=="on" else 0
-        
-    known_sensors[port].sound(power)
+
+    Buzzer = get_sensor_instance(port, easy.Buzzer)   
+    if Buzzer:     
+        Buzzer.sound(power)
     
     return {"{}: Buzzer".format(port):power}
 
@@ -593,8 +620,10 @@ def handle_distance(regObj):
     else:
         port = None
   
-    sensors = {}
+    sensors = {}  # default sensors 
+    
     if port is None:
+        # Port wasn't specified, do we have a DI distance sensor?
         if distance_sensor is not None:
             distance = distance_sensor.read()
             sensors["distance"] = distance
@@ -607,21 +636,15 @@ def handle_distance(regObj):
     # don't use an else here even if it's tempting
     # as port can be modified in the first if block  
     if port:
-        
-        try:
-            # create Ultrasonic sensor instance if needed
-            if known_sensors[port] == None  or \
-               isinstance(known_sensors[port], easy.UltraSonicSensor) is False:
-                known_sensors[port] = easy.UltraSonicSensor(port,gpg)
-        except Exception as e:
-            print ("handle_distance: {}".format(e))
-                            
-        # print("reading from ultrasonic sensor on port {}".format(port))
-        distance = known_sensors[port].read()
-        sensors["{}: distance".format(port)] = distance
+        UltraSonicSensor = get_sensor_instance(port, easy.UltraSonicSensor)   
 
-    if en_debug:    
-        print(sensors)
+        if UltraSonicSensor:                            
+            # print("reading from ultrasonic sensor on port {}".format(port))
+            distance = UltraSonicSensor.read()
+            sensors["{}: distance".format(port)] = distance
+        else:
+            sensors["{}: distance".format(port)] = "Unknown Error"
+            
     return (sensors)
         
   
