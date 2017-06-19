@@ -905,6 +905,24 @@ def drive_gpg(regObj):
     sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
     return(sensors)
 
+def setup_default_broadcasts():
+    s.broadcast('READY')
+    s.broadcast("forward")
+    s.broadcast("backward")
+    s.broadcast("turn left")
+    s.broadcast("turn right")
+    s.broadcast("stop")
+    s.broadcast("open eyes")
+    s.broadcast("close eyes")
+    s.broadcast("blinkers on")
+    s.broadcast("blinkers off")
+    try:
+        sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
+        sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
+        s.sensorupdate(sensors)
+    except:
+        pass  
+        # we tried. No big deal if we fail (happens on creating a new file)
             
 ##################################################################
 # MAIN FUNCTION
@@ -933,19 +951,7 @@ if __name__ == '__main__':
                 print ("GoPiGo3 Scratch: Scratch is either not opened or remote sensor connections aren't enabled")
 
     try:
-        s.broadcast('READY')
-        s.broadcast("forward")
-        s.broadcast("backward")
-        s.broadcast("turn left")
-        s.broadcast("turn right")
-        s.broadcast("stop")
-        s.broadcast("open eyes")
-        s.broadcast("close eyes")
-        s.broadcast("blinkers on")
-        s.broadcast("blinkers off")
-        sensors["Encoder Left"] = gpg.get_motor_encoder(gpg.MOTOR_LEFT)
-        sensors["Encoder Right"] = gpg.get_motor_encoder(gpg.MOTOR_RIGHT)
-        s.sensorupdate(sensors)
+        setup_default_broadcasts()
 
     except NameError:
         if en_debug:
@@ -954,6 +960,9 @@ if __name__ == '__main__':
     while True:
         try:
             m = s.receive()
+            
+            if m is None:
+                setup_default_broadcasts()
 
             while m is None or m[0] == 'sensor-update' :
                 m = s.receive()
@@ -967,7 +976,6 @@ if __name__ == '__main__':
                 msg_nospace = msg.replace(" ","")
             except:
                 pass
-
 
             if en_debug:
                 print("Rx:{}".format(msg))
@@ -1059,7 +1067,7 @@ if __name__ == '__main__':
                 time.sleep(5)
                 try:
                     s = scratch.Scratch()
-                    s.broadcast('READY')
+                    setup_default_broadcasts()
                     if en_debug:
                         print("GoPiGo3 Scratch: Connected to Scratch successfully")
                     break
