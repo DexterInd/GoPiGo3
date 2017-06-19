@@ -56,7 +56,10 @@ def test_sensors():
     assert(s.is_GoPiGo3_Sensor_msg("servo  2 20")==True)
     assert(s.is_GoPiGo3_Sensor_msg("servo  2 2 0")==False) 
     assert(s.is_GoPiGo3_Sensor_msg("servo2  220")==False) 
-
+    
+    # BUTTON
+    assert(s.is_GoPiGo3_Sensor_msg("button AD1")==True)
+    assert(s.is_GoPiGo3_Sensor_msg("BUTT AD2")==False)
     
 if __name__ == '__main__':
     test_sensors()
