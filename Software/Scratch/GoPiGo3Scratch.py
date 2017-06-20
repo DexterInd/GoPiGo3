@@ -350,7 +350,7 @@ def is_msg(reg,msg):
     if retval is None:
         return False
     else:
-        print ("Recognized {}".format(msg))
+        # print ("Recognized {}".format(msg))
         return True
 
 
@@ -359,8 +359,8 @@ def handle_GoPiGo3_msg(msg):
     parses the message
     dispatches to appropriate method
     '''
-    if en_debug:
-        print("received {}".format(msg.strip().lower()))
+    # if en_debug:
+    #     print("received {}".format(msg.strip().lower()))
     
     sensors = {}
 
@@ -410,8 +410,8 @@ def handle_GoPiGo3_msg(msg):
 
 
 def handle_GoPiGo3_Sensor_msg(msg):
-    if en_debug:
-        print("received sensor {}".format(msg.strip().lower()))
+    # if en_debug:
+    #     print("received sensor {}".format(msg.strip().lower()))
         
     sensors = {}
     regObj = compiled_regexSensors.match(msg.strip().lower())
@@ -420,8 +420,8 @@ def handle_GoPiGo3_Sensor_msg(msg):
             print ("GoPiGo3 Sensor command is not recognized")
         return None
 
-    for i in range(len(regObj.groups())+1):
-        print ("{}: {}".format(i,regObj.group(i)))
+    # for i in range(len(regObj.groups())+1):
+    #     print ("{}: {}".format(i,regObj.group(i)))
     
     if regObj.group(SENSOR_DISTANCE_GROUP):
         sensors = handle_distance(regObj)
