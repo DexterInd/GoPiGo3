@@ -3,7 +3,7 @@
 #
 # This library provides the basic functions to access the sensor data from the line sensor
 #
-# Have a question about this example?  Ask on the forums here:  http://www.dexterindustries.com/forum/?forum=grovepi
+# Have a question about this example?  Ask on the forums here:  http://forum.dexterindustries.com/c/gopigo
 #
 # Karan Nayan
 # Initial Date: 13 Dec 2015
