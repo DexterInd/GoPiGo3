@@ -3,7 +3,7 @@
 #
 # This example shows a basic example to read sensor data from the line sensor.  Most basic example prints out the data from the 5 sensors on the line follower.
 #
-# Have a question about this example?  Ask on the forums here:  http://forum.dexterindustries.com/c/gopigo
+# Have a question about this example?  Ask on the forums here:  http://www.dexterindustries.com/forum/?forum=gopigo
 #
 # 
 # Initial Date: 13 Dec 2015  Karan Nayan
