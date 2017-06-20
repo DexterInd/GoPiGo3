@@ -37,19 +37,22 @@ GPG = gopigo3.GoPiGo3()
 LIGHT_PORT = GPG.GROVE_1
 LIGHT_PIN = GPG.GROVE_1_1
 
-try:
-    # set the port as an analog input port
-    GPG.set_grove_type(LIGHT_PORT, GPG.GROVE_TYPE.CUSTOM)
-    GPG.set_grove_mode(LIGHT_PORT, GPG.GROVE_INPUT_ANALOG)
 
-    # loop forever while polling the sensor
-    while(True):
+# set the port as an analog input port
+GPG.set_grove_type(LIGHT_PORT, GPG.GROVE_TYPE.CUSTOM)
+GPG.set_grove_mode(LIGHT_PORT, GPG.GROVE_INPUT_ANALOG)
+
+# loop forever while polling the sensor
+while(True):
+    try:
         reading = GPG.get_grove_analog(LIGHT_PIN)
         # scale the reading to a 0-100 scale
         percent_reading = reading * 100 / 4095
         print("{}, {:.1f}%".format(reading, percent_reading))
         time.sleep(0.05)
+    except KeyboardInterrupt:
+        GPG.reset_all()
+        exit(0)
+    except:
+        pass
 
-except Exception as e:
-    GPG.reset_all()
-    print(e)

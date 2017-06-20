@@ -453,7 +453,6 @@ class Sensor(object):
 class DigitalSensor(Sensor):
     '''
     Implements read and write methods
-    NOT IMPLEMENTED IN GOPIGO3
     '''
     def __init__(self, port, pinmode, gpg):
         debug("DigitalSensor init")
