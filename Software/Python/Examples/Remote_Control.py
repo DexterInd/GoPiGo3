@@ -15,7 +15,8 @@ from __future__ import division       #                           ''
 import time    # import the time library for the sleep function
 import gopigo3 # import the GoPiGo3 drivers
 
-GPG = gopigo3.GoPiGo3() # Create an instance of the GoPiGo3 class. GPG will be the GoPiGo3 object.
+# Create an instance of the GoPiGo3 class. GPG will be the GoPiGo3 object.
+GPG = gopigo3.GoPiGo3() 
 
 value_last = -1
 
@@ -40,21 +41,28 @@ def read_ir_keys():
             else:
                 GPG.set_motor_dps(GPG.MOTOR_LEFT , 0)
                 GPG.set_motor_dps(GPG.MOTOR_RIGHT, 0)
-    except IOError or gopigo3.SensorError:
-    # except:
+    except IOError or gopigo3.SensorError as e:
         pass
 
 
-
-print("Use the arrows on the remote controller to control your GoPiGo3")
-print("The remote sensor should be in port AD1 or port AD2")
+print("Use the arrows on your remote controller to control your GoPiGo3")
+print("The IR Receiver (remote sensor) should be in port AD1 or port AD2")
 print("Ctrl-C to exit the program")
-try:
-    GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_GO_BOX)
-    while True:
+
+
+GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_GO_BOX)
+while True:
+    try:
         read_ir_keys()
         
-except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.
-    GPG.reset_all()       
-    # Unconfigure the sensors, disable the motors, and 
-    # restore the LED to the control of the GoPiGo3 firmware.
+    # except the program gets interrupted by Ctrl+C on the keyboard.
+    except KeyboardInterrupt: 
+        # Unconfigure the sensors, disable the motors, and 
+        # restore the LED to the control of the GoPiGo3 firmware.
+        GPG.reset_all()  
+        exit(0)
+    
+    except:
+        pass
+         
+
