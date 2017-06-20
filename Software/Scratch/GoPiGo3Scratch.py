@@ -202,8 +202,8 @@ def get_sensor_instance(port,sensor_class):
             print("create_sensor_instance {}".format(e))
             known_sensors[port] = None
             
-        print(known_sensors[port])
-        return(known_sensors[port])
+    # print(known_sensors[port])
+    return(known_sensors[port])
 
 
 def set_regex_string():
@@ -561,7 +561,7 @@ def handle_light(regObj):
     light = get_sensor_instance(port, easy.LightSensor)
     
     if light:
-        light_reading = light.percent_read()    
+        light_reading = light.percent_read()   
         sensors["{}: Light".format(port)] = light_reading
     else:
         return ({"{}: Light".format(port):"technical difficulties"})
