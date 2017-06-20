@@ -44,10 +44,18 @@ def read_ir_keys():
     except:
         print(" ")
 
+
+
+print("Use the arrows on the remote controller to control your GoPiGo3")
+print("The remote sensor should be in port AD1 or port AD2")
+print("Ctrl-C to exit the program")
 try:
     GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_GO_BOX)
     while True:
         read_ir_keys()
+        
+        # sleep is needed to control-C out of the program
+        time.sleep(0.01)
     
 except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.
     GPG.reset_all()       # Unconfigure the sensors, disable the motors, and restore the LED to the control of the GoPiGo3 firmware.
