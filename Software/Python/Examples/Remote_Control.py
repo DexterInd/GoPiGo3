@@ -42,7 +42,7 @@ def read_ir_keys():
                 GPG.set_motor_dps(GPG.MOTOR_RIGHT, 0)
     except IOError or gopigo3.SensorError:
     # except:
-        print(" ")
+        pass
 
 
 
@@ -55,4 +55,6 @@ try:
         read_ir_keys()
         
 except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.
-    GPG.reset_all()       # Unconfigure the sensors, disable the motors, and restore the LED to the control of the GoPiGo3 firmware.
+    GPG.reset_all()       
+    # Unconfigure the sensors, disable the motors, and 
+    # restore the LED to the control of the GoPiGo3 firmware.
