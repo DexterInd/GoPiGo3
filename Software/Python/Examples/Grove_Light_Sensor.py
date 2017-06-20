@@ -45,11 +45,12 @@ GPG.set_grove_mode(LIGHT_PORT, GPG.GROVE_INPUT_ANALOG)
 # loop forever while polling the sensor
 while(True):
     try:
+        time.sleep(0.05)
         reading = GPG.get_grove_analog(LIGHT_PIN)
         # scale the reading to a 0-100 scale
         percent_reading = reading * 100 / 4095
         print("{}, {:.1f}%".format(reading, percent_reading))
-        time.sleep(0.05)
+
     except KeyboardInterrupt:
         GPG.reset_all()
         exit(0)
