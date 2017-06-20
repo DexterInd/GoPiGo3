@@ -79,9 +79,13 @@ except:
     
 try:
     distance_sensor = easy.DistanceSensor(gpg)
-    print ("Distance sensor is detected")
-except:
+except Exception as e:
     distance_sensor = None
+    
+if distance_sensor != None:
+    print ("Distance sensor is detected")
+else:
+    print ("No distance sensor detected")
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder

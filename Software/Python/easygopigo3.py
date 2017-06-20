@@ -378,6 +378,9 @@ class Sensor(object):
             if pinmode == "US":
                 self.gpg.set_grove_type(self.portID,
                                         self.gpg.GROVE_TYPE.US)
+            if pinmode == "IR":
+                self.gpg.set_grove_type(self.portID,
+                                        self.gpg.GROVE_TYPE.IR_GO_BOX)
         except:
             pass
             
@@ -754,43 +757,18 @@ class ButtonSensor(DigitalSensor):
 ##########################
 
 
-class Remote(Sensor):
+# class Remote(Sensor):
 
-    def __init__(self, port="SERIAL", gpg=None):
-        global IR_RECEIVER_ENABLED
-        # IR Receiver
-        try:
-            import ir_receiver
-            import ir_receiver_check
-            IR_RECEIVER_ENABLED = True
-        except:
-            IR_RECEIVER_ENABLED = False
+#     def __init__(self, port="AD1", gpg=None):
+#         Sensor.__init__(self, port, "IR", gpg)
+#         self.set_descriptor("Remote Control")
 
-        if ir_receiver_check.check_ir() == 0:
-            print("*** Error with the Remote Controller")
-            print("Please enable the IR Receiver in the Advanced Comms tool")
-            IR_RECEIVER_ENABLED = False
-        else:
-            Sensor.__init__(self, port, "SERIAL", gpg=None)
-            self.set_descriptor("Remote Control")
+#     def get_remote_code(self):
+#         '''
+#         Returns the keycode from the remote control
+#         '''
+#         self.get_grove_value(self.getPortID())
 
-    def is_enabled(self):
-        return IR_RECEIVER_ENABLED
-
-    def get_remote_code(self):
-        '''
-        Returns the keycode from the remote control
-        No preprocessing
-        You have to check that length > 0
-            before handling the code value
-        if the IR Receiver is not enabled, this will return -1
-        '''
-        if IR_RECEIVER_ENABLED:
-            return ir_receiver.nextcode()
-        else:
-            print("Error with the Remote Controller")
-            print("Please enable the IR Receiver in the Advanced Comms tool")
-            return -1
 ##########################
 
 
@@ -947,7 +925,7 @@ try:
             try:
                 distance_sensor.DistanceSensor.__init__(self)
             except Exception as e:
-                print(e)
+                # print(e)
                 raise IOError("Distance Sensor not found")
                 
             self.set_descriptor("Distance Sensor")
