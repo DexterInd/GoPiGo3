@@ -35,7 +35,7 @@ GPG = gopigo3.GoPiGo3()
 
 # Connect the light sensor to port Analog/Digital 1
 LIGHT_PORT = GPG.GROVE_1
-LIGHT_PIN = GPG.GROVE_1_2
+LIGHT_PIN = GPG.GROVE_1_1
 
 try:
     # set the port as an analog input port
