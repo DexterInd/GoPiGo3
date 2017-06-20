@@ -46,7 +46,7 @@ def read_ir_keys():
 
 
 print("Use the arrows on your remote controller to control your GoPiGo3")
-print("The IR Receiver (remote sensor) should be in port AD1 or port AD2")
+print("The IR Receiver (remote sensor) should connected to port AD1")
 print("Ctrl-C to exit the program")
 
 
