@@ -513,15 +513,15 @@ def handle_line_sensor(regObj):
         
     sensors = {}
     explanation = [
-    "Completely to the right", 
-    "Way to the right",
-    "Going right",
-    "Slightly to the right",
-    "Center", 
-    "Slightly to the left",
-    "Going left",
+    "Completely to the left", 
     "Way to the left",
-    "Completely to the left",
+    "Going left",
+    "Slightly to the left",
+    "Center", 
+    "Slightly to the right",
+    "Going right",
+    "Way to the right",
+    "Completely to the right",
     "Reading black everywhere",
     "Reading white everywhere",
     "Technical difficulties"
@@ -538,6 +538,8 @@ def handle_line_sensor(regObj):
         return({'line':-3,'line explanation': "technical difficulties"})
 
     try:
+        line=scratch_line.line_sensor_val_scratch()
+        time.sleep(0.01)
         line=scratch_line.line_sensor_val_scratch()
         if en_debug:
             print ("Line Sensor Readings: {}".format(str(line)))
