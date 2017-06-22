@@ -662,13 +662,15 @@ class GoPiGo3(object):
         # No point trying to read the values before they are ready.
         time.sleep(DelayTime) # delay for as long as it will take to do the I2C transaction.
         
-        # read the results as soon as they are available
+        Timeout = time.time() + 0.005 # timeout after 5ms of failed attempted reads
         while True:
             try:
+                # read the results as soon as they are available
                 values = self.get_grove_value(port)
                 return values
-            except (IOError, ValueError, SensorError):
-                pass
+            except (ValueError, SensorError):
+                if time.time() > Timeout:
+                    raise IOError("grove_i2c_transfer error: Timeout waiting for data")
     
     def grove_i2c_start(self, port, addr, outArr, inBytes = 0):
         """
