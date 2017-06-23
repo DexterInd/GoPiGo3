@@ -2,10 +2,10 @@
 
 You can program the GoPiGo3 with Scratch 1.4.  This repo contains support programs and example programs to help you program the [GoPiGo3](http://www.dexterindustries.com/GoPiGo3) in Scratch.
 
-The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo3 is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo).
+The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo3 is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo3).
 
 ## Sensor Placement
-You can add a number of Grove sensors to the GoPiGo.  Sensors must be placed in the correct port to work.
+You can add a number of Grove sensors to the GoPiGo3.  Sensors must be placed in the correct port to work.
 
  	
 | Sensor | Port |
@@ -15,6 +15,8 @@ You can add a number of Grove sensors to the GoPiGo.  Sensors must be placed in 
 | Buzzer | AD1 or AD2 |
 | LED | AD1 or AD2 |
 | DHT Sensor | Serial |
+
+Dexter Industries also provide a growing number of sensors for the GoPiGo3
 | Line Sensor | I2C |
 | Dexter Distance Sensor | I2C |
 
@@ -29,19 +31,19 @@ Here are a list of example commands.
 
 ## See Also
 
-- [Dexter Industries] (http://www.dexterindustries.com/GoPiGo)
+- [Dexter Industries] (http://www.dexterindustries.com/GoPiGo3)
 - [Kickstarter Campaign] (http://kck.st/Q6vVOP)
 - [Raspberry Pi] (http://www.raspberrypi.org/)
 
 ![ GoPiGo ](https://raw.githubusercontent.com/DexterInd/GoPiGo/master/GoPiGo_Chassis-300.jpg)
 
-This repository contains source code, firmware and design materials for the GoPiGo.
+This repository contains source code, firmware and design materials for the GoPiGo3.
 
 ![ GoPiGo ](https://raw.githubusercontent.com/DexterInd/GoPiGo/master/GoPiGo_Front_Facing_Camera300.jpg)
 
 ## License
-GoPiGo for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
-Copyright (C) 2015  Dexter Industries
+GoPiGo3 for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
+Copyright (C) 2017  Dexter Industries
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
