@@ -76,7 +76,9 @@ class GoPiGo3(object):
     MOTOR_GEAR_RATIO           = 120 # Motor gear ratio # 220 for Nicole's prototype
     ENCODER_TICKS_PER_ROTATION = 6   # Encoder ticks per motor rotation (number of magnet positions) # 16 for early prototypes
     MOTOR_TICKS_PER_DEGREE = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0) # encoder ticks per output shaft rotation degree
-
+    
+    GROVE_I2C_LENGTH_LIMIT = 16
+    
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
         
@@ -645,13 +647,15 @@ class GoPiGo3(object):
         list of bytes read from the slave
         """
         # start an I2C transaction as soon as the bus is available
+        Timeout = time.time() + 0.005 # timeout after 5ms of failed attempted starts
         Continue = False
         while not Continue:
             try:
                 self.grove_i2c_start(port, addr, outArr, inBytes)
                 Continue = True
             except (IOError, I2CError):
-                pass
+                if time.time() > Timeout:
+                    raise IOError("grove_i2c_transfer error: Timeout trying to start transaction")
         
         DelayTime = 0
         if len(outArr):
@@ -689,16 +693,16 @@ class GoPiGo3(object):
             message_type = self.SPI_MESSAGE_TYPE.START_GROVE_I2C_2
             port_index = 1
         else:
-            raise IOError("Port unsupported. Must get one at a time.")
+            raise RuntimeError("Port unsupported. Must get one at a time.")
         
         address = ((int(addr) & 0x7F) << 1)
         
-        if inBytes > 16:
-            raise IOError("Read length error. Up to 16 bytes can be read in a single transaction.")
+        if inBytes > GROVE_I2C_LENGTH_LIMIT:
+            raise RuntimeError("Read length error. Up to %d bytes can be read in a single transaction." % GROVE_I2C_LENGTH_LIMIT)
         
         outBytes = len(outArr)
-        if outBytes > 16:
-            raise IOError("Write length error. Up to 16 bytes can be written in a single transaction.")
+        if outBytes > GROVE_I2C_LENGTH_LIMIT:
+            raise RuntimeError("Write length error. Up to %d bytes can be written in a single transaction." % GROVE_I2C_LENGTH_LIMIT)
         
         outArray = [self.SPI_Address, message_type, address, inBytes, outBytes]
         outArray.extend(outArr)
