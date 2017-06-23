@@ -14,7 +14,7 @@ You can add a number of Grove sensors to the GoPiGo.  Sensors must be placed in 
 | Button | AD1 or AD2 |
 | Buzzer | AD1 or AD2 |
 | LED | AD1 or AD2 |
-| Infrared Receiver	| Serial |
+| DHT Sensor | Serial |
 | Line Sensor | I2C |
 | Dexter Distance Sensor | I2C |
 
