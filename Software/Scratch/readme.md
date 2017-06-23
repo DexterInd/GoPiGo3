@@ -17,6 +17,9 @@ You can add a number of Grove sensors to the GoPiGo3.  Sensors must be placed in
 | DHT Sensor | Serial |
 
 Dexter Industries also provide a growing number of sensors for the GoPiGo3
+
+| Sensor | Port |
+| ------------- | ------------- |
 | Line Sensor | I2C |
 | Dexter Distance Sensor | I2C |
 
