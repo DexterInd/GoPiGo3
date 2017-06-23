@@ -10,7 +10,7 @@ You can add a number of Grove sensors to the GoPiGo.  Sensors must be placed in 
  	
 | Sensor | Port |
 | ------------- | ------------- |
-| Ultrasonic | AD1 or AD2 |
+| Ultrasonic Distance Sensor | AD1 or AD2 |
 | Button | AD1 or AD2 |
 | Buzzer | AD1 or AD2 |
 | LED | AD1 or AD2 |
@@ -20,7 +20,7 @@ You can add a number of Grove sensors to the GoPiGo.  Sensors must be placed in 
 
 
 ## Getting Started Examples
-Please see our Examples folder for examples on how to get started with programming the GoPiGo in Scratch!
+Please see our Examples folder for examples on how to get started with programming the GoPiGo3 in Scratch!
 
 Here are a list of example commands.
 ![Scratch Functions](scratch_functions.png "Overview of functions in Scratch.")
