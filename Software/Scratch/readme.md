@@ -28,9 +28,9 @@ Dexter Industries also provide a growing number of sensors for the GoPiGo3
 Please see our Examples folder for examples on how to get started with programming the GoPiGo3 in Scratch!
 
 Here are a list of example commands.
-![Scratch Functions](scratch_functions.png "Overview of functions in Scratch.")
-
-
+![GoPiGo3 Control](gopigo3commands.png "Overview of GoPiGo3 controls in Scratch.")
+![GoPiGo3 LEDs](gopigo3led.png "Overview of GoPiGo3 LEDs in Scratch.")
+![GoPiGo3 Sensors](gopigo3sensors.png "Overview of GoPiGo3 controls in Scratch.")
 
 ## See Also
 
