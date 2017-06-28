@@ -69,7 +69,6 @@ def _release_read():
     read_is_open = True
     # print("released")
 
-
 #####################################################################
 #
 # EASYGOPIGO3
@@ -78,6 +77,10 @@ def _release_read():
 
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
+    """
+    This class gives the user access to control
+    a GoPiGo3 from within Python.
+    """
     def __init__(self):
         super(self.__class__, self).__init__()
         self.sensor_1 = None
