@@ -16,9 +16,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..\..\Software\Python'))
 
 
 # -- General configuration ------------------------------------------------
@@ -33,6 +33,11 @@
 extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode']
+
+# autoclass_content for showing the __init__ constructor
+# autodoc_member_order for ordering the functions the way they are represented in the source files
+autoclass_content = "both"
+autodoc_member_order = "bysource"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
