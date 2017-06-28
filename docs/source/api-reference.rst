@@ -16,11 +16,11 @@ The ``easygopigo3`` module
    | This class is used for controlling a `GoPiGo3`_ robot.
    | With this class you can do the following things with your `GoPiGo3`_:
 
-   * drive your robot in any number of directions
-   * have precise control over the direction of the robot
-   * set the speed of the robot
-   * turn *on* or *off* the blinker LEDs
-   * control the distance sensor's *eyes*, *color* and so on ...
+     * drive your robot in any number of directions
+     * have precise control over the direction of the robot
+     * set the speed of the robot
+     * turn *on* or *off* the blinker LEDs
+     * control the distance sensor's *eyes*, *color* and so on ...
 
    .. py:method:: __init__(self)
 
