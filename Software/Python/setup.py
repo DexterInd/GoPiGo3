@@ -13,7 +13,7 @@ setuptools.setup(
     name = "gopigo3",
     version = "0.1.0",
 
-    description = "Drivers and examples for using the GoPiGo3 in Python",
+    description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = " \
     Within this python package there 2 main modules we can develop with:\n \
     1. gopigo3 - low-level module for controlling the GPG3\n \
