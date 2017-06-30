@@ -37,12 +37,11 @@ setuptools.setup(
     'Programming Language :: Python :: 3',
     'Topic :: Software Development :: Embedded Systems',
     'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
+    ],
     url = "https://github.com/DexterInd/GoPiGo3",
 
     keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning'],
 
     py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
-    package_dir = ['' : 'Examples'],
-    install_requires = ['spidev', 'fcntl']
+    install_requires = ['spidev']
 )
