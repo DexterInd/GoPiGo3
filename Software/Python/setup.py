@@ -11,7 +11,7 @@ import setuptools
 
 setuptools.setup(
     name = "gopigo3-test",
-    version = "0.1.0",
+    version = "0.0.3",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = " \
