@@ -43,6 +43,6 @@ setuptools.setup(
     keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning'],
 
     py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
-    packages = ['examples'],
+    package_dir = ['' : 'Examples'],
     install_requires = ['spidev', 'fcntl']
 )
