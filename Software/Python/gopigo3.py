@@ -10,20 +10,26 @@
 from __future__ import print_function
 from __future__ import division
 #from builtins import input
+no_hardware = False
 
 import subprocess # for executing system calls
-import spidev
+try:
+    import spidev
+    import fcntl      # for lockf mutex support
+except:
+    no_hardware = True
+    
 import math       # import math for math.pi constant
-import fcntl      # for lockf mutex support
 import time
 
 FIRMWARE_VERSION_REQUIRED = "0.3.x" # Make sure the top 2 of 3 numbers match
 
-GPG_SPI = spidev.SpiDev()
-GPG_SPI.open(0, 1)
-GPG_SPI.max_speed_hz = 500000
-GPG_SPI.mode = 0b00
-GPG_SPI.bits_per_word = 8
+if no_hardware == False:
+    GPG_SPI = spidev.SpiDev()
+    GPG_SPI.open(0, 1)
+    GPG_SPI.max_speed_hz = 500000
+    GPG_SPI.mode = 0b00
+    GPG_SPI.bits_per_word = 8
 
 
 class Enumeration(object):

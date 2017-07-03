@@ -7,7 +7,14 @@ import sys
 # import tty
 # import select
 import time
-import gopigo3
+no_hardware = False
+try:
+    import gopigo3
+except ImportError:
+    no_hardware = True
+except:
+    no_hardware = True
+    
 
 # from datetime import datetime
 
