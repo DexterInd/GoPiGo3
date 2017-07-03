@@ -12,8 +12,11 @@ try:
     import gopigo3
 except ImportError:
     hardware_connected = False
-except:
+    print("Cannot import gopigo3 library")
+except Exception as e:
     hardware_connected = False
+    print("Unknown issue while importing gopigo3")
+    print(e)
     
 
 # from datetime import datetime

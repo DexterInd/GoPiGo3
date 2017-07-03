@@ -18,6 +18,7 @@ try:
     import fcntl      # for lockf mutex support
 except:
     hardware_connected = False
+    print ("Can't import spidev or fcntl")
     
 import math       # import math for math.pi constant
 import time
