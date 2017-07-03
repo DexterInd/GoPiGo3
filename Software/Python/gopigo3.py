@@ -10,21 +10,21 @@
 from __future__ import print_function
 from __future__ import division
 #from builtins import input
-no_hardware = False
+hardware_connected = True
 
 import subprocess # for executing system calls
 try:
     import spidev
     import fcntl      # for lockf mutex support
 except:
-    no_hardware = True
+    hardware_connected = False
     
 import math       # import math for math.pi constant
 import time
 
 FIRMWARE_VERSION_REQUIRED = "0.3.x" # Make sure the top 2 of 3 numbers match
 
-if no_hardware == False:
+if hardware_connected:
     GPG_SPI = spidev.SpiDev()
     GPG_SPI.open(0, 1)
     GPG_SPI.max_speed_hz = 500000

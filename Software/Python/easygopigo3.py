@@ -7,13 +7,13 @@ import sys
 # import tty
 # import select
 import time
-no_hardware = False
+hardware_connected = True
 try:
     import gopigo3
 except ImportError:
-    no_hardware = True
+    hardware_connected = False
 except:
-    no_hardware = True
+    hardware_connected = False
     
 
 # from datetime import datetime
