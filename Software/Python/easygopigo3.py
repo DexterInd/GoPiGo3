@@ -290,15 +290,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight - WheelTurnDegrees) is False:
                 time.sleep(0.1)
 
-    def create_sensor(self, port, pinmode):
-        return Sensor(port, pinmode, self)
-
-    def create_digital_sensor(self, port, pinmode):
-        return DigitalSensor(port, pinmode, self)
-
-    def create_analog_sensor(self, port, pinmode):
-        return AnalogSensor(port, pinmode, self)
-
     def create_light_sensor(self, port):
         return LightSensor(port, self)
 
