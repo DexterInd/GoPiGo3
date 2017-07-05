@@ -304,6 +304,35 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 time.sleep(0.1)
                 
 
+    def create_light_sensor(self, port):
+        return LightSensor(port, self)
+
+    def create_sound_sensor(self, port):
+        return SoundSensor(port, self)
+
+    def create_ultrasonic_sensor(self, port):
+        return UltraSonicSensor(port, self)
+
+    def create_buzzer(self, port):
+        return Buzzer(port, self)
+
+    def create_led(self, port):
+        return Led(port, self)
+
+    def create_button_sensor(self, port):
+        return ButtonSensor(port, self)
+
+    def create_linefollower(self, port):
+        return LineFollower(port, self)
+
+    def create_servo(self, port):
+        return Servo(port, self)
+
+    def create_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+        return DHTSensor(port, port, self, sensor_type)
+
+# the following functions may be redundant
+
 #############################################################
 # SENSORS
 #############################################################
