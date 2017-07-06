@@ -97,13 +97,17 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
      * turn *on* or *off* the blinker LEDs
      * control the distance sensor's *eyes*, *color* and so on ...
 
+     .. warning::
+
+         Without a battery pack connected to the `GoPiGo3`_, the robot won't move.
+
     """
 
     def __init__(self):
         """
         | This constructor sets the variables to the following values:
 
-        :var int speed = 300: the speed of the motors can go between **0-1000**
+        :var int speed = 300: the speed of the motors should go between **0-1000** DPS
         :var (int,int,int) left_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
         :var (int,int,int) right_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
 
@@ -129,8 +133,16 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def set_speed(self, in_speed):
         """
         | This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
+        | The speed is measured in *DPS = degrees per second* of the robot's wheel(s).
 
-        :param int in_speed: the speed at which the robot is set to run - speed between **0-1000**
+        :param int in_speed: the speed at which the robot is set to run - speed between **0-1000** DPS
+
+        .. warning::
+
+             **0-1000** DPS are the *preffered* speeds for the `GoPiGo3`_ robot.
+             The speed variable can be basically set to any positive value, but factors like *voltage*, *load*, *battery amp rating*, etc, will determine the effective speed of the motors.
+
+             Experiments should be run by every user, as each case is unique.
 
         """
         try:
@@ -144,7 +156,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Use this method for getting the speed of your `GoPiGo3`_.
 
-        :return: the speed of the robot measured between **0-1000**
+        :return: the speed of the robot measured between **0-1000** DPS
         :rtype: int
 
         """
@@ -175,7 +187,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Move the `GoPiGo3`_ to the right.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        | Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
              | The robot will activate only the left motor, whilst the right motor will be completely stopped.
@@ -190,7 +202,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Move the `GoPiGo3`_ to the left.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        | Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
              | The robot will activate only the right motor, whilst the left motor will be completely stopped.
@@ -205,7 +217,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Move the `GoPiGo3`_ forward.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        | Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -273,13 +285,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. code-block:: python
 
-            gpg3_object.drive_degrees(310)
+            gpg3_obj.drive_degrees(310)
 
         On the other hand, changing the polarity of the argument we're passing, is going to make the `GoPiGo3`_ robot move backward.
 
         .. code-block:: python
 
-            gpg3_object.drive_degrees(-30.5)
+            gpg3_obj.drive_degrees(-30.5)
 
         This line of code is going to drive the `GoPiGo3`_ robot backward for *30.5 / 360* rotations, which is roughly *8.5%* of the `GoPiGo3`_'s wheel circumference.
 
@@ -309,8 +321,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def target_reached(self, left_target_degrees, right_target_degrees):
         """
-        | Check whether the left wheel has rotated for ``left_target_degrees`` degrees and if
-        | the right wheel has rotated for ``right_target_degrees`` degrees.
+        | Checks if :
+
+             * The left *wheel* has rotated for ``left_target_degrees`` degrees.
+             * The right *wheel* has rotated for ``right_target_degrees`` degrees.
+
         | If both conditions are met, it returns ``True``, otherwise it's ``False``.
 
         :param int left_target_degrees: target degrees for the *left* wheel.
@@ -318,6 +333,57 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         :return: whether both wheels have reached their target
         :rtype: boolean
+
+        For checking if the `GoPiGo3`_ robot has moved **forward** for ``360 / 360`` wheel rotations, we'd use the following code snippet.
+
+        .. code-block:: python
+
+            # both variables are measured in degrees
+            left_motor_target = 360
+            right_motor_target = 360
+
+            # reset the encoders
+            gpg3_obj.reset_encoders()
+            # and make the robot move forward
+            gpg3_obj.drive_degrees(360)
+
+            while gpg3_obj.target_reached(left_motor_target, right_motor_target):
+                # give the robot some time to move
+                sleep(0.05)
+            # now lets stop the robot
+            # otherwise it would keep on going
+            gpg3_obj.stop()
+
+        On the other hand, for moving the `GoPiGo3`_ robot to the **right** for ``187 / 360`` wheel rotations of the left wheel, we'd use the following code snippet.
+
+        .. code-block:: python
+
+            # both variables are measured in degrees
+            left_motor_target = 187
+            right_motor_target = 0
+
+            # reset the encoders
+            gpg3_obj.reset_encoders()
+            # and make the robot move to the right
+            gpg3_obj.right()
+
+            while gpg3_obj.target_reached(left_motor_target, right_motor_target):
+                # give the robot some time to move
+                sleep(0.05)
+            # now lets stop the robot
+            # otherwise it would keep on going
+            gpg3_obj.stop()
+
+        .. note::
+
+            It's prefferable to use this method with the following methods:
+
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_inches`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_degrees`
+
+            when the methods are *non-blocking*.
+
         """
         tolerance = 5
         min_left_target = left_target_degrees - tolerance
