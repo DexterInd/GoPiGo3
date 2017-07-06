@@ -308,9 +308,17 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return
 
     def target_reached(self, left_target_degrees, right_target_degrees):
-        '''
-        check if both wheels have reached their target
-        '''
+        """
+        | Check whether the left wheel has rotated for ``left_target_degrees`` degrees and if
+        | the right wheel has rotated for ``right_target_degrees`` degrees.
+        | If both conditions are met, it returns ``True``, otherwise it's ``False``.
+
+        :param int left_target_degrees: target degrees for the *left* wheel.
+        :param int right_target_degrees: target degrees for the *right* wheel.
+
+        :return: whether both wheels have reached their target
+        :rtype: boolean
+        """
         tolerance = 5
         min_left_target = left_target_degrees - tolerance
         max_left_target = left_target_degrees + tolerance
