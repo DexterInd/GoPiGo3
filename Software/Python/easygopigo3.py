@@ -390,13 +390,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. note::
 
-            You *can* use this method in conjuction with the following:
+            You *can* use this method in conjuction with the following methods:
 
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_inches`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_degrees`
 
-            when the methods are used in *non-blocking* mode.
+            when they are used in *non-blocking* mode.
 
             And almost *everytime* with the following ones:
 
@@ -441,7 +441,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def blinker_on(self, id):
         """
-        | Turns **on** one of the 2 blinkers that `GoPiGo3`_ has.
+        | Turns **on** one of the 2 **red** blinkers that `GoPiGo3`_ has.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
 
@@ -454,7 +454,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def blinker_off(self, id):
         """
-        | Turns **off** one of the 2 blinkers that `GoPiGo3`_ has.
+        | Turns **off** one of the 2 **red** blinkers that `GoPiGo3`_ has.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
 
@@ -467,7 +467,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def led_on(self, id):
         """
-        | Turns **on** one of the 2 blinkers that `GoPiGo3`_ has.
+        | Turns **on** one of the 2 **red** blinkers that `GoPiGo3`_ has.
         | The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_on`.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
@@ -477,7 +477,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def led_off(self, id):
         """
-        | Turns **off** one of the 2 blinkers that `GoPiGo3`_ has.
+        | Turns **off** one of the 2 **red** blinkers that `GoPiGo3`_ has.
         | The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_off`.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
