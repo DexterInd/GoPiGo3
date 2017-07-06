@@ -120,7 +120,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         This method returns the battery voltage of the `GoPiGo3`_.
 
         :return: the battery voltage of the `GoPiGo3`_
-        :rtype: double
+        :rtype: float
 
         """
         voltage = self.get_voltage_battery()
@@ -201,10 +201,28 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
 
     def forward(self):
+        """
+        | Move the `GoPiGo3`_ forward.
+
+        | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
 
     def drive_cm(self, dist, blocking=False):
+        """
+        | Move the `GoPiGo3`_ forward / backward, depending on ``dist`` parameter.
+
+        :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
+        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` to make it a blocking function.
+
+        .. note::
+             | When ``dist`` parameter is positive, the `GoPiGo3`_ moves forward.
+             | When ``dist`` parameter is negative, the `GoPiGo3`_ moves backward.
+
+        """
         # dist is in cm
         # if dist is negative, this becomes a backward move
 
