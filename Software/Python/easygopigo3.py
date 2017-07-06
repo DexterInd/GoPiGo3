@@ -424,6 +424,17 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             return False
 
     def reset_encoders(self):
+        """
+        | Resets both the encoders back to **0**.
+
+        | When keeping track of the `GoPiGo3`_ movements, this method is exclusively being required by the following methods:
+
+             * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
+             * :py:meth:`~easygopigo3.EasyGoPiGo3.right`
+             * :py:meth:`~easygopigo3.EasyGoPiGo3.left`
+             * :py:meth:`~easygopigo3.EasyGoPiGo3.forward`
+
+        """
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
         self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
