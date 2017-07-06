@@ -160,6 +160,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
     def backward(self):
+        """
+        | Move the `GoPiGo3`_ backward.
+        | For setting the motor speed, use :py:meth:`easygopigo3.EasyGoPiGo3.set_speed`.
+        .. note::
+             Default speed is set to 300.
+
+        """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed() * -1)
 
