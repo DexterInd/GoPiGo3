@@ -163,9 +163,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Move the `GoPiGo3`_ backward.
         | For setting the motor speed, use :py:meth:`easygopigo3.EasyGoPiGo3.set_speed`.
-
-        .. note::
-             Default speed is set to 300.
+        | Default ``speed`` is set ``300`` - see :py:meth:`easygopigo3.EasyGoPiGo3.__init__`.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -175,13 +173,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Move the `GoPiGo3`_ to the right.
         | For setting the motor speed, use :py:meth:`easygopigo3.EasyGoPiGo3.set_speed`.
+        | Default ``speed`` is set ``300`` - see :py:meth:`easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
              | The robot will activate only the left motor, whilst the right motor will be completely stopped.
              | This causes the robot to rotate in very short circles.
 
-        .. note::
-             Default speed is set to 300.
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
@@ -190,13 +187,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Move the `GoPiGo3`_ to the left.
         | For setting the motor speed, use :py:meth:`easygopigo3.EasyGoPiGo3.set_speed`.
+        | Default ``speed`` is set ``300`` - see :py:meth:`easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
              | The robot will activate only the right motor, whilst the left motor will be completely stopped.
              | This causes the robot to rotate in very short circles.
-
-        .. note::
-             Default speed is set to 300.
+             
         """
         self.set_motor_dps(self.MOTOR_LEFT, 0)
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
