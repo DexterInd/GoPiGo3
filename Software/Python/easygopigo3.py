@@ -95,7 +95,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
      * have precise control over the direction of the robot
      * set the speed of the robot
      * turn *on* or *off* the blinker LEDs
-     * control the distance sensor's *eyes*, *color* and so on ...
+     * control the `GoPiGo3`_'s sensor's *eyes*, *color* and so on ...
 
      .. needs revisiting
 
