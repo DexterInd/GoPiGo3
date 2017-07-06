@@ -7,7 +7,17 @@ import sys
 # import tty
 # import select
 import time
-import gopigo3
+hardware_connected = True
+try:
+    import gopigo3
+except ImportError:
+    hardware_connected = False
+    print("Cannot import gopigo3 library")
+except Exception as e:
+    hardware_connected = False
+    print("Unknown issue while importing gopigo3")
+    print(e)
+    
 
 # from datetime import datetime
 
@@ -318,39 +328,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return DHTSensor(port, port, self, sensor_type)
 
 # the following functions may be redundant
-my_gpg = EasyGoPiGo3()
-
-
-# these functions are here because we need direct access to these
-# for the Drive functionality in Sam
-# they do not need locking as the fct they call handles that.
-def volt():
-    return_value = my_gpg.volt()
-    return return_value
-
-
-def stop():
-    my_gpg.stop()
-
-
-def forward():
-    my_gpg.forward()
-
-
-def backward():
-    my_gpg.backward()
-
-
-def left():
-    my_gpg.left()
-
-
-def right():
-    my_gpg.right()
-
+                
 
 #############################################################
-#
+# SENSORS
 #############################################################
 
 
