@@ -427,7 +427,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Resets both the encoders back to **0**.
 
-        | When keeping track of the `GoPiGo3`_ movements, this method is exclusively being required by the following methods:
+        When keeping track of the `GoPiGo3`_ movements, this method is exclusively being required by the following methods:
 
              * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
              * :py:meth:`~easygopigo3.EasyGoPiGo3.right`
