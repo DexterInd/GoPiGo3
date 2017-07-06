@@ -386,7 +386,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. note::
 
-            It's prefferable to use this method with the following methods:
+            It's justifiable to use this method in conjunction the following methods:
 
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_inches`
