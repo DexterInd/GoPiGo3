@@ -22,8 +22,9 @@ import sys
 '''
 from mock import Mock as MagicMock
 import mox
+'''
 sys.path.insert(0, os.path.abspath('..\..\Software\Python'))
-
+'''
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
@@ -48,7 +49,7 @@ extensions = ['sphinx.ext.autodoc',
 
 # autoclass_content for showing the __init__ constructor
 # autodoc_member_order for ordering the functions the way they are represented in the source files
-autoclass_content = "both"
+# autoclass_content = "both"
 autodoc_member_order = "bysource"
 
 # Add any paths that contain templates here, relative to this directory.
@@ -122,6 +123,7 @@ html_theme = 'default'
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'GoPiGo3doc'
 
+autodoc_mock_imports = ["spidev", "fcntl"]
 
 # -- Options for LaTeX output ---------------------------------------------
 
