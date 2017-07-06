@@ -97,6 +97,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
      * turn *on* or *off* the blinker LEDs
      * control the distance sensor's *eyes*, *color* and so on ...
 
+     .. needs revisiting
+
      .. warning::
 
          Without a battery pack connected to the `GoPiGo3`_, the robot won't move.
@@ -235,7 +237,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_cm(self, dist, blocking=False):
         """
-        | Move the `GoPiGo3`_ forward / backward for ``dist`` centimeters.
+        | Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
 
         | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
@@ -269,7 +271,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_inches(self, dist, blocking=False):
         """
-        | Move the `GoPiGo3`_ forward / backward for ``dist`` inches.
+        | Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
 
         | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
@@ -386,13 +388,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. note::
 
-            It's justifiable to use this method in conjunction the following methods:
+            You *should* use this method in conjuction with the following:
 
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_inches`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_degrees`
 
-            when the methods are *non-blocking*.
+            when the methods are used in *non-blocking* mode.
+
+            And almost everytime with the following ones:
+
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.right`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.left`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.forward`
 
         """
         tolerance = 5
