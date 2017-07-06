@@ -17,7 +17,7 @@ except Exception as e:
     hardware_connected = False
     print("Unknown issue while importing gopigo3")
     print(e)
-    
+
 
 # from datetime import datetime
 
@@ -88,10 +88,26 @@ def _release_read():
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     """
-    This class gives the user access to control
-    a GoPiGo3 from within Python.
+    | This class is used for controlling a `GoPiGo3`_ robot.
+    | With this class you can do the following things with your `GoPiGo3`_:
+
+     * drive your robot in any number of directions
+     * have precise control over the direction of the robot
+     * set the speed of the robot
+     * turn *on* or *off* the blinker LEDs
+     * control the distance sensor's *eyes*, *color* and so on ...
+
     """
+
     def __init__(self):
+        """
+        This constructor sets the variables to the following values:
+
+        :var int speed = 300: the speed of the motors can go between **0-1000**
+        :var (int,int,int) left_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
+        :var (int,int,int) right_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
+
+        """
         super(self.__class__, self).__init__()
         self.sensor_1 = None
         self.sensor_2 = None
@@ -100,10 +116,23 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.right_eye_color = (0, 255, 255)
 
     def volt(self):
+        """
+        This method returns the battery voltage of the `GoPiGo3`_.
+
+        :return: the battery voltage of the `GoPiGo3`_
+        :rtype: double
+
+        """
         voltage = self.get_voltage_battery()
         return voltage
 
     def set_speed(self, in_speed):
+        """
+        This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
+
+        :param int in_speed: the speed at which the robot is set to run - speed between **0-1000**
+
+        """
         try:
             self.speed = int(in_speed)
         except:
@@ -112,9 +141,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                               dps=self.speed)
 
     def get_speed(self):
+        """
+        Use this method for getting the speed of your `GoPiGo3`_.
+
+        :return: the speed of the robot measured between **0-1000**
+        :rtype: int
+
+        """
         return int(self.speed)
 
     def stop(self):
+        """
+        | This method stops the `GoPiGo3`_ from moving.
+        | It brings the `GoPiGo3`_ to a full stop.
+        """
         # only one is needed, we're going overkill
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
@@ -302,7 +342,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionLeft + WheelTurnDegrees,
                     StartPositionRight - WheelTurnDegrees) is False:
                 time.sleep(0.1)
-                
+
 
     def create_light_sensor(self, port):
         return LightSensor(port, self)
