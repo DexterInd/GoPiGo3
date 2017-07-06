@@ -166,6 +166,16 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | This method stops the `GoPiGo3`_ from moving.
         | It brings the `GoPiGo3`_ to a full stop.
+
+        .. note::
+
+             This method is used in conjuction with the following methods:
+
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.right`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.left`
+                 * :py:meth:`~easygopigo3.EasyGoPiGo3.forward`
+
         """
         # only one is needed, we're going overkill
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
@@ -348,11 +358,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             gpg3_obj.drive_degrees(360)
 
             while gpg3_obj.target_reached(left_motor_target, right_motor_target):
+                # while the robot is moving
+                # do something important here
+
                 # give the robot some time to move
                 sleep(0.05)
-            # now lets stop the robot
-            # otherwise it would keep on going
-            gpg3_obj.stop()
 
         On the other hand, for moving the `GoPiGo3`_ robot to the **right** for ``187 / 360`` wheel rotations of the left wheel, we'd use the following code snippet.
 
