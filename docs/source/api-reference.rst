@@ -11,11 +11,11 @@ Bla bla bla and bla bla bla.
 That great! Bla bla bla!.
 
 **************************
-The ``easygopigo3`` Module
+``easygopigo3`` Module
 **************************
 
 =====================================
-The ``EasyGoPiGo3`` class
+``EasyGoPiGo3`` class
 =====================================
 
 .. autoclass:: easygopigo3.EasyGoPiGo3
@@ -23,53 +23,53 @@ The ``EasyGoPiGo3`` class
    :special-members:
 
 =====================================
-The ``Sensor`` class
+``Sensor`` class
 =====================================
 
 =====================================
-The ``DigitalSensor`` class
+``DigitalSensor`` class
 =====================================
 
 =====================================
-The ``AnalogSensor`` class
+``AnalogSensor`` class
 =====================================
 
 =====================================
-The ``LightSensor`` class
+``LightSensor`` class
 =====================================
 
 =====================================
-The ``SoundSensor`` class
+``SoundSensor`` class
 =====================================
 
 =====================================
-The ``UltrasonicSensor`` class
+``UltrasonicSensor`` class
 =====================================
 
 =====================================
-The ``Buzzer`` class
+``Buzzer`` class
 =====================================
 
 =====================================
-The ``Led`` class
+``Led`` class
 =====================================
 
 =====================================
-The ``ButtonSensor`` class
+``ButtonSensor`` class
 =====================================
 
 =====================================
-The ``LineFollower`` class
+``LineFollower`` class
 =====================================
 
 =====================================
-The ``Servo`` class
+``Servo`` class
 =====================================
 
 =====================================
-The ``DistanceSensor`` class
+``DistanceSensor`` class
 =====================================
 
 =====================================
-The ``DHTSensor`` class
+``DHTSensor`` class
 =====================================
