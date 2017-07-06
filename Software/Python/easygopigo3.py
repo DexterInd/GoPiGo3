@@ -357,14 +357,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             # reset the encoders
             gpg3_obj.reset_encoders()
             # and make the robot move forward
-            gpg3_obj.drive_degrees(360)
+            gpg3_obj.forward()
 
             while gpg3_obj.target_reached(left_motor_target, right_motor_target):
-                # while the robot is moving
-                # do something important here
-
                 # give the robot some time to move
                 sleep(0.05)
+
+            # now lets stop the robot
+            # otherwise it would keep on going
+            gpg3_obj.stop()
 
         On the other hand, for moving the `GoPiGo3`_ robot to the **right** for ``187 / 360`` wheel rotations of the left wheel, we'd use the following code snippet.
 
@@ -382,13 +383,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             while gpg3_obj.target_reached(left_motor_target, right_motor_target):
                 # give the robot some time to move
                 sleep(0.05)
+
             # now lets stop the robot
             # otherwise it would keep on going
             gpg3_obj.stop()
 
         .. note::
 
-            You *should* use this method in conjuction with the following:
+            You *can* use this method in conjuction with the following:
 
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_inches`
@@ -396,7 +398,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
             when the methods are used in *non-blocking* mode.
 
-            And almost everytime with the following ones:
+            And almost *everytime* with the following ones:
 
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.right`
