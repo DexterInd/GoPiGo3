@@ -23,7 +23,7 @@ import sys
 from mock import Mock as MagicMock
 import mox
 '''
-sys.path.insert(0, os.path.abspath('..\..\Software\Python'))
+sys.path.insert(0, os.path.abspath('../../Software/Python'))
 '''
 class Mock(MagicMock):
     @classmethod
