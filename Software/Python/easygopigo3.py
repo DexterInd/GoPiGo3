@@ -161,7 +161,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def backward(self):
         """
-        | Move the `GoPiGo3`_ backward.
+        Move the `GoPiGo3`_ backward.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         | Default ``speed`` is set ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
@@ -172,7 +172,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def right(self):
         """
-        | Move the `GoPiGo3`_ to the right.
+        Move the `GoPiGo3`_ to the right.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
@@ -187,7 +187,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def left(self):
         """
-        | Move the `GoPiGo3`_ to the left.
+        Move the `GoPiGo3`_ to the left.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
@@ -202,7 +202,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def forward(self):
         """
-        | Move the `GoPiGo3`_ forward.
+        Move the `GoPiGo3`_ forward.
 
         | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         | Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
@@ -213,7 +213,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_cm(self, dist, blocking=False):
         """
-        | Move the `GoPiGo3`_ forward / backward, depending on ``dist`` parameter.
+        Move the `GoPiGo3`_ forward / backward, depending on ``dist`` parameter.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
         :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` to make it a blocking function.
