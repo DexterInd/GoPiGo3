@@ -9,6 +9,7 @@ DexterIndustries' GoPiGo3 Documentation!
 
 .. toctree::
    :maxdepth: 2
+   :numbered:
    :caption: Contents:
 
    quickstart
