@@ -213,13 +213,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_cm(self, dist, blocking=False):
         """
-        | Move the `GoPiGo3`_ forward / backward, depending on ``dist`` parameter.
+        | Move the `GoPiGo3`_ forward / backward for ``dist`` centimeters.
 
         | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
-        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` to make it a blocking function.
+        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` and your function exits when the robot completes the task.
 
         """
         # dist is in cm
@@ -246,9 +246,44 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 time.sleep(0.1)
 
     def drive_inches(self, dist, blocking=False):
+        """
+        | Move the `GoPiGo3`_ forward / backward for ``dist`` inches.
+
+        | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
+        | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
+
+        :param float dist: The distance in ``inches`` the `GoPiGo3`_ has to move.
+        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` and your function exits when the robot completes the task.
+
+        """
         self.drive_cm(dist * 2.54, blocking)
 
     def drive_degrees(self, degrees, blocking=False):
+        """
+        | Move the `GoPiGo3`_ forward / backward for ``degrees / 360`` wheel rotations.
+
+        | For moving the `GoPiGo3`_ robot forward, the ``degrees`` parameter has to be *positive*.
+        | For moving the `GoPiGo3`_ robot backward, the ``degrees`` parameter has to be *negative*.
+
+        :param float degrees: Distance based on how many wheel rotations are made. Calculated by ``degrees / 360``.
+        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` and your function exits when the robot completes the task.
+
+        For instance, the following function call is going to drive the `GoPiGo3`_ robot forward for *310 / 360* wheel rotations, which equates to aproximately *86%*
+        of the `GoPiGo3`_'s wheel circumference.
+
+        .. code-block:: python
+
+            gpg3_object.drive_degrees(310)
+
+        On the other hand, changing the polarity of the argument we're passing, is going to make the `GoPiGo3`_ robot move backward.
+
+        .. code-block:: python
+
+            gpg3_object.drive_degrees(-30.5)
+
+        This line of code is going to drive the `GoPiGo3`_ robot backward for *30.5 / 360* rotations, which is roughly *8.5%* of the `GoPiGo3`_'s wheel circumference.
+
+        """
         # these degrees are meant to be wheel rotations.
         # 360 degrees would be a full wheel rotation
         # not the same as turn_degrees() which is a robot rotation
