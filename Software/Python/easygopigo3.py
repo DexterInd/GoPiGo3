@@ -101,7 +101,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def __init__(self):
         """
-        This constructor sets the variables to the following values:
+        | This constructor sets the variables to the following values:
 
         :var int speed = 300: the speed of the motors can go between **0-1000**
         :var (int,int,int) left_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
@@ -117,7 +117,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def volt(self):
         """
-        This method returns the battery voltage of the `GoPiGo3`_.
+        | This method returns the battery voltage of the `GoPiGo3`_.
 
         :return: the battery voltage of the `GoPiGo3`_
         :rtype: float
@@ -128,7 +128,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def set_speed(self, in_speed):
         """
-        This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
+        | This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
 
         :param int in_speed: the speed at which the robot is set to run - speed between **0-1000**
 
@@ -142,7 +142,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def get_speed(self):
         """
-        Use this method for getting the speed of your `GoPiGo3`_.
+        | Use this method for getting the speed of your `GoPiGo3`_.
 
         :return: the speed of the robot measured between **0-1000**
         :rtype: int
