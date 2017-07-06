@@ -215,8 +215,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Move the `GoPiGo3`_ forward / backward, depending on ``dist`` parameter.
 
-        | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be positive.
-        | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be negative.
+        | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
+        | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
         :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` to make it a blocking function.
