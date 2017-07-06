@@ -123,7 +123,7 @@ html_theme = 'default'
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'GoPiGo3doc'
 
-autodoc_mock_imports = ["spidev", "fcntl"]
+# autodoc_mock_imports = ["spidev", "fcntl"]
 
 # -- Options for LaTeX output ---------------------------------------------
 
