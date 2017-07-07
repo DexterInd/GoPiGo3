@@ -440,6 +440,32 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
 
     def turn_degrees(self, degrees, blocking=False):
+        """
+        | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
+
+        :param float degrees: the angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
+        :param boolean blocking: by default is set to `False`, which means the method will exit as the command is processed. For ``True`` it waits until the command is finished.
+
+        In order to better understand what does this method do, let's take a look at the following graphical representation.
+
+        .. image:: gpg3_robot.svg
+
+        In the image, we have multiple identifiers:
+
+             * The "*heading*": it represents the robot's heading. By default, "rotating" the robot by 0 degrees is going to make the robot stay in place.
+             * The "*wheel circle circumference*": this is the circle that's described by the 2 motors moving in opposite direction.
+             * The "*GoPiGo3*": the robot we're playing with. The robot's body isn't draw in this representation as it's not the main focus here.
+             * The "*wheels*": these are just the `GoPiGo3`_'s wheels - selfexplanatory.
+
+        The effect of this class method is that the `GoPiGo3`_ will rotate in the same spot (depending on ``degrees`` parameter), while the wheels will be describing a perfect circle.
+
+        So, in order to calculate how much the motors have to spin, we divide the *angle* (at which we want to rotate the robot) by 360 degrees and we get a float number between 0 and 1 (think of it as a percentage).
+        We then multiply this value with the *wheel circle circumference* (which is the circumference of the circle the robot's wheels describe when rotating in the same place).
+
+
+        At the end we get the distance each motor has to travel in order to rotate the robot by ``degrees`` degrees.
+
+        """
         # this is the method to use if you want the robot to turn 90 degrees
         # or any other amount. This method is based on robot orientation
         # and not wheel rotation
