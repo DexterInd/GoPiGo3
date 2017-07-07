@@ -439,6 +439,33 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
         self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
 
+    def turn_degrees(self, degrees, blocking=False):
+        # this is the method to use if you want the robot to turn 90 degrees
+        # or any other amount. This method is based on robot orientation
+        # and not wheel rotation
+        # the distance in mm that each wheel needs to travel
+        WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
+
+        # the number of degrees each wheel needs to turn
+        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) *
+                            360)
+
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+        # Set each motor target
+        self.set_motor_position(self.MOTOR_LEFT,
+                                (StartPositionLeft + WheelTurnDegrees))
+        self.set_motor_position(self.MOTOR_RIGHT,
+                                (StartPositionRight - WheelTurnDegrees))
+
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight - WheelTurnDegrees) is False:
+                time.sleep(0.1)
+
     def blinker_on(self, id):
         """
         | Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
@@ -589,33 +616,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         self.close_left_eye()
         self.close_right_eye()
-
-    def turn_degrees(self, degrees, blocking=False):
-        # this is the method to use if you want the robot to turn 90 degrees
-        # or any other amount. This method is based on robot orientation
-        # and not wheel rotation
-        # the distance in mm that each wheel needs to travel
-        WheelTravelDistance = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
-
-        # the number of degrees each wheel needs to turn
-        WheelTurnDegrees = ((WheelTravelDistance / self.WHEEL_CIRCUMFERENCE) *
-                            360)
-
-        # get the starting position of each motor
-        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
-        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
-
-        # Set each motor target
-        self.set_motor_position(self.MOTOR_LEFT,
-                                (StartPositionLeft + WheelTurnDegrees))
-        self.set_motor_position(self.MOTOR_RIGHT,
-                                (StartPositionRight - WheelTurnDegrees))
-
-        if blocking:
-            while self.target_reached(
-                    StartPositionLeft + WheelTurnDegrees,
-                    StartPositionRight - WheelTurnDegrees) is False:
-                time.sleep(0.1)
 
     def init_light_sensor(self, port):
         return LightSensor(port, self)
