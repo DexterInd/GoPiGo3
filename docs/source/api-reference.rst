@@ -38,6 +38,10 @@ AnalogSensor
 LightSensor
 =====================================
 
+.. autoclass:: easygopigo3.LightSensor
+   :members:
+   :special-members:
+
 =====================================
 SoundSensor
 =====================================

@@ -645,9 +645,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_light_sensor(self, port):
         """
-        | Initialises a :py:class:'~easygopigo3.LightSensor` object and it returns it.
+        | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
 
-        :param str port:
+        :param str port: 33
+        :returns: an instance of the :py:class:`~easygopigo3.LightSensor` class, with the port set to ``port``.
+
+        NOT COMPLETE HERE!!!
 
         """
         return LightSensor(port, self)
@@ -819,8 +822,6 @@ class DigitalSensor(Sensor):
         Sensor.__init__(self, port, pinmode, gpg)
 
     def read(self):
-        '''
-        '''
         self.value = self.gpg.get_grove_state(self.get_pin())
         return self.value
 
