@@ -493,7 +493,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the left eye's color.
         :raises TypeError: when eye color is not valid
 
-        .. tip::
+        .. important::
 
              After setting the eye's color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_left_eye` or :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color,
              or otherwise the left eye's color won't change.
@@ -511,7 +511,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the right eye's color.
         :raises TypeError: when eye color is not valid
 
-        .. tip::
+        .. important::
 
              After setting the eye's color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_right_eye` or :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color,
              or otherwise the right eye's color won't change.
@@ -529,7 +529,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the eyes' color.
         :raises TypeError: when eye color is not valid
 
-        .. tip::
+        .. important::
 
              After setting the eyes' color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color of both eyes,
              or otherwise the color won't change.
