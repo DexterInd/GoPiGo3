@@ -300,31 +300,31 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight - WheelTurnDegrees) is False:
                 time.sleep(0.1)
 
-    def assign_light_sensor(self, port):
+    def init_light_sensor(self, port):
         return LightSensor(port, self)
 
-    def assign_sound_sensor(self, port):
+    def init_sound_sensor(self, port):
         return SoundSensor(port, self)
 
-    def assign_ultrasonic_sensor(self, port):
+    def init_ultrasonic_sensor(self, port):
         return UltraSonicSensor(port, self)
 
-    def assign_buzzer(self, port):
+    def init_buzzer(self, port):
         return Buzzer(port, self)
 
-    def assign_led(self, port):
+    def init_led(self, port):
         return Led(port, self)
 
-    def assign_button_sensor(self, port):
+    def init_button_sensor(self, port):
         return ButtonSensor(port, self)
 
-    def assign_line_follower(self, port):
+    def init_line_follower(self, port):
         return LineFollower(port, self)
 
-    def assign_servo(self, port):
+    def init_servo(self, port):
         return Servo(port, self)
 
-    def assign_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
         return DHTSensor(port, port, self, sensor_type)
 
 # the following functions may be redundant
