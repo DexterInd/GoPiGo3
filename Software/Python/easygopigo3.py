@@ -558,8 +558,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 time.sleep(0.1)
 
     def assign_light_sensor(self, port):
-
-    def create_light_sensor(self, port):
         return LightSensor(port, self)
 
     def assign_sound_sensor(self, port):
