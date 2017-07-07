@@ -644,31 +644,40 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_right_eye()
 
     def init_light_sensor(self, port):
+        """
+        | Initialises a :py:class:'~easygopigo3.LightSensor` object and it returns it.
+
+        :param str port:
+
+        """
         return LightSensor(port, self)
 
-    def init_sound_sensor(self, port):
+    def init_sound_sensor(self, port = "AD1"):
         return SoundSensor(port, self)
 
-    def init_ultrasonic_sensor(self, port):
+    def init_ultrasonic_sensor(self, port = "AD1"):
         return UltraSonicSensor(port, self)
 
-    def init_buzzer(self, port):
+    def init_buzzer(self, port = "AD1"):
         return Buzzer(port, self)
 
-    def init_led(self, port):
+    def init_led(self, port = "AD1"):
         return Led(port, self)
 
-    def init_button_sensor(self, port):
+    def init_button_sensor(self, port = "AD1"):
         return ButtonSensor(port, self)
 
-    def init_line_follower(self, port):
+    def init_line_follower(self, port = "I2C"):
         return LineFollower(port, self)
 
-    def init_servo(self, port):
+    def init_servo(self, port = "SERVO1"):
         return Servo(port, self)
 
+    def init_distance_sensor(self, port = "I2C"):
+        return DistanceSensor(port, self)
+
     def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
-        return DHTSensor(port, port, self, sensor_type)
+        return DHTSensor(port, self, sensor_type)
 
 # the following functions may be redundant
 
