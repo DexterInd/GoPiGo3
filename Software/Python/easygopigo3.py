@@ -444,7 +444,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
         :param float degrees: the angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
-        :param boolean blocking: by default is set to `False`, which means the method will exit as the command is processed. For ``True`` it waits until the command is finished.
+        :param boolean blocking: by default is set to `False`, which means the method will exit as the command is processed. For ``True`` it waits until the `GoPiGo3`_ has completed rotating.
 
         In order to better understand what does this method do, let's take a look at the following graphical representation.
 
