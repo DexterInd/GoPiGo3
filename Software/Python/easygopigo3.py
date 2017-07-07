@@ -531,8 +531,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. tip::
 
-             After setting the eyes' color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_right_eye` or :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color,
-             or otherwise the eyes' color won't change.
+             After setting the eyes' color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color of both eyes,
+             or otherwise the color won't change.
 
         """
         self.set_left_eye_color(color)
