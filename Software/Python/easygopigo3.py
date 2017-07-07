@@ -539,6 +539,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_right_eye_color(color)
 
     def open_left_eye(self):
+        """
+        | Turns *ON* Dexter mascot's left eye.
+
+        """
         self.set_led(self.LED_LEFT_EYE,
                      self.left_eye_color[0],
                      self.left_eye_color[1],
@@ -546,6 +550,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                      )
 
     def open_right_eye(self):
+        """
+        | Turns *ON* Dexter mascot's right eye.
+
+        """
         self.set_led(self.LED_RIGHT_EYE,
                      self.right_eye_color[0],
                      self.right_eye_color[1],
@@ -553,16 +561,32 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                      )
 
     def open_eyes(self):
+        """
+        | Turns *ON* Dexter mascot's eyes.
+
+        """
         self.open_left_eye()
         self.open_right_eye()
 
     def close_left_eye(self):
+        """
+        | Turns *OFF* Dexter mascot's left eye.
+
+        """
         self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
 
     def close_right_eye(self):
+        """
+        | Turns *OFF* Dexter mascot's right eye.
+
+        """
         self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
 
     def close_eyes(self):
+        """
+        | Turns *OFF* Dexter mascot's eyes.
+
+        """
         self.close_left_eye()
         self.close_right_eye()
 
