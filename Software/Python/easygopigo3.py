@@ -491,7 +491,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Sets the LED color for Dexter mascot's left eye.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the left eye's color.
-        :raises TypeError: when eye color is not valid
+        :raises TypeError: when ``color`` parameter is not valid.
 
         .. important::
 
@@ -509,7 +509,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Sets the LED color for Dexter mascot's right eye.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the right eye's color.
-        :raises TypeError: when eye color is not valid
+        :raises TypeError: when ``color`` parameter is not valid.
 
         .. important::
 
@@ -527,7 +527,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Sets the LED color for Dexter mascot's eyes.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the eyes' color.
-        :raises TypeError: when eye color is not valid
+        :raises TypeError: when ``color`` parameter is not valid.
 
         .. important::
 
