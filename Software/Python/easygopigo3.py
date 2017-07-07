@@ -17,7 +17,7 @@ except Exception as e:
     hardware_connected = False
     print("Unknown issue while importing gopigo3")
     print(e)
-    
+
 
 # from datetime import datetime
 
@@ -125,7 +125,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # only one is needed, we're going overkill
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        
+
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed() * -1)
@@ -137,7 +137,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def left(self):
         self.set_motor_dps(self.MOTOR_LEFT, 0)
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
-        
+
     def forward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
@@ -205,7 +205,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
         current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
-        
+
         if current_left_position > min_left_target and \
            current_left_position < max_left_target and \
            current_right_position > min_right_target and \
@@ -213,7 +213,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             return True
         else:
             return False
-            
+
     def reset_encoders(self):
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
@@ -303,13 +303,42 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                 (StartPositionLeft + WheelTurnDegrees))
         self.set_motor_position(self.MOTOR_RIGHT,
                                 (StartPositionRight - WheelTurnDegrees))
-        
+
         if blocking:
             while self.target_reached(
                     StartPositionLeft + WheelTurnDegrees,
                     StartPositionRight - WheelTurnDegrees) is False:
                 time.sleep(0.1)
-                
+
+    def init_light_sensor(self, port):
+        return LightSensor(port, self)
+
+    def init_sound_sensor(self, port):
+        return SoundSensor(port, self)
+
+    def init_ultrasonic_sensor(self, port):
+        return UltraSonicSensor(port, self)
+
+    def init_buzzer(self, port):
+        return Buzzer(port, self)
+
+    def init_led(self, port):
+        return Led(port, self)
+
+    def init_button_sensor(self, port):
+        return ButtonSensor(port, self)
+
+    def init_line_follower(self, port):
+        return LineFollower(port, self)
+
+    def init_servo(self, port):
+        return Servo(port, self)
+
+    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+        return DHTSensor(port, port, self, sensor_type)
+
+# the following functions may be redundant
+
 
 #############################################################
 # SENSORS
@@ -372,7 +401,7 @@ class Sensor(object):
                                         self.gpg.GROVE_TYPE.IR_GO_BOX)
         except:
             pass
-            
+
     def __str__(self):
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
                 self.get_port(), self.get_pin_mode(), self.portID))
@@ -484,7 +513,7 @@ class AnalogSensor(Sensor):
         self.value = 0
         self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
-        
+
         # this delay is at least needed by the Light sensor
         time.sleep(0.01)
 
@@ -784,7 +813,7 @@ class ButtonSensor(DigitalSensor):
         DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
         self.set_pin(1)
         self.set_descriptor("Button sensor")
-        
+
     def is_button_pressed(self):
         return self.read() == 1
 ##########################
@@ -920,7 +949,7 @@ class Servo(Sensor):
         Pulse width Range= 2425-575 =1850
         => 1 degree rotation requires ~= 10.27us
         '''
-        
+
         #Pulse width range in us corresponding to 0 to 180 degrees
         PULSE_WIDTH_RANGE=1850
 
@@ -930,9 +959,9 @@ class Servo(Sensor):
         elif servo_position < 0:
             servo_position = 0
 
-        pulsewidth = round( (1500-(PULSE_WIDTH_RANGE/2)) + 
+        pulsewidth = round( (1500-(PULSE_WIDTH_RANGE/2)) +
                             ((PULSE_WIDTH_RANGE /180) * servo_position))
-        
+
         # Set position for the servo
         self.gpg.set_servo( self.portID, int(pulsewidth))
 
@@ -941,13 +970,13 @@ class Servo(Sensor):
 
 #######################################################################
 #
-# DistanceSensor 
+# DistanceSensor
 #
 # under try/except in case the Distance Sensor is not installed
 #######################################################################
 try:
     from Distance_Sensor import distance_sensor
-    
+
     class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         '''
         Wrapper to measure the distance in cms from the DI distance sensor.
@@ -960,19 +989,19 @@ try:
             except Exception as e:
                 # print(e)
                 raise IOError("Distance Sensor not found")
-                
+
             self.set_descriptor("Distance Sensor")
-                
+
         # Returns the values in cms
         def read_mm(self):
-            
+
             # 8190 is what the sensor sends when it's out of range
             # we're just setting a default value
             mm = 8190
             readings = []
             attempt = 0
-            
-            # try 3 times to have a reading that is 
+
+            # try 3 times to have a reading that is
             # smaller than 8m or bigger than 5 mm.
             # if sensor insists on that value, then pass it on
             while (mm > 8000 or mm < 5) and attempt < 3:
@@ -982,26 +1011,26 @@ try:
                     mm = 0
                 attempt = attempt + 1
                 time.sleep(0.001)
-                
+
             # add the reading to our last 3 readings
             # a 0 value is possible when sensor is not found
             if (mm < 8000 and mm > 5) or mm == 0:
                 readings.append(mm)
             if len(readings) > 3:
                 readings.pop(0)
-            
+
             # calculate an average and limit it to 5 > X > 3000
             if len(readings) > 1: # avoid division by 0
                 mm = round(sum(readings) / float(len(readings)))
             if mm > 3000:
                 mm = 3000
-                
+
             return mm
-            
+
         def read(self):
             cm = self.read_mm()//10
             return (cm)
-            
+
         def read_inches(self):
             cm = self.read()
             return cm / 2.54
@@ -1013,8 +1042,8 @@ except Exception as e:
     # print("Note: Distance Sensor library not installed")
     # print(e)
     pass
-    
-    
+
+
 class DHTSensor(Sensor):
     '''
     Support for the Adafruit DHT sensor, blue or white
@@ -1026,26 +1055,26 @@ class DHTSensor(Sensor):
             import threading
 
             Sensor.__init__(self,port,"INPUT",gpg)
-            
+
             self.sensor_type = sensor_type
-            
+
             # here we keep the temperature values after removing outliers
-            self.filtered_temperature = [] 
-            
+            self.filtered_temperature = []
+
             # here we keep the filtered humidity values after removing the outliers
-            self.filtered_humidity = [] 
-            
+            self.filtered_humidity = []
+
             # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
-            self.event = threading.Event() 
+            self.event = threading.Event()
             if self.sensor_type == 0:
                 self.set_descriptor("Blue DHT Sensor")
             else:
                 self.set_descriptor("White DHT Sensor")
-            
+
         except Exception as e:
             print("DHTSensor: {}".format(e))
             raise ValueError("DHT Sensor not found")
-            
+
     def read_temperature(self):
         '''
         Return values may be a float, or error strings
@@ -1054,11 +1083,11 @@ class DHTSensor(Sensor):
         '''
 
         from DHT_Sensor import DHT
-        
+
         _grab_read()
         temp = DHT.dht(self.sensor_type)[0]
         _release_read()
-        
+
         if temp == -2:
             return "Bad reading, trying again"
         elif temp == -3:
@@ -1074,11 +1103,11 @@ class DHTSensor(Sensor):
         '''
         import threading
         from DHT_Sensor import DHT
-        
+
         _grab_read()
         humidity = DHT.dht(self.sensor_type)[1]
         _release_read()
-        
+
         if humidity == -2:
             return "Bad reading, trying again"
         elif humidity == -3:
@@ -1089,11 +1118,11 @@ class DHTSensor(Sensor):
 
     def read_dht(self):
         from DHT_Sensor import DHT
-        
+
         _grab_read()
         [temp , humidity]=DHT.dht(self.sensor_type)
         _release_read()
-        
+
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
         elif temp ==-3.0 or humidity == -3.0:
@@ -1107,44 +1136,44 @@ class DHTSensor(Sensor):
         function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the extreme values
         """
         import numpy
-        
+
         mean = numpy.mean(values)
         standard_deviation = numpy.std(values)
-        
+
         if standard_deviation == 0:
             return values
-            
+
         final_values = [element for element in values if element > mean - std_factor * standard_deviation]
-        
+
         final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
-        
+
         return final_values
-        
+
     def _readingValues(self,sensor_type=0):
         """function for processing the data filtering, periods of time, yada yada
         """
-        
+
         import threading
         from DHT_Sensor import DHT
         import numpy
         import math
         # after this many second we make a record
-        seconds_window = 10 
-        
+        seconds_window = 10
+
         values = []
         while not self.event.is_set():
             counter = 0
             while counter < seconds_window and not self.event.is_set():
                 temp = None
                 humidity = None
-                
+
                 _grab_read()
                 try:
                     [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
                 _release_read()
-                
+
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
                     values.append({"temp" : temp, "hum" : humidity})
                     counter += 1
@@ -1156,7 +1185,7 @@ class DHTSensor(Sensor):
         self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
 
         values = []
-            
+
     def continuous_read_dht(self):
         """
         Function used to Read the values continuously and displays values after normalising them
@@ -1167,23 +1196,23 @@ class DHTSensor(Sensor):
             # here we start the thread we use a thread in order to gather/process the data separately from the printing process
             data_collector = threading.Thread(target = self._readingValues)
             data_collector.start()
-            
+
             while not self.event.is_set():
-                if len(self.filtered_temperature) > 0: 
+                if len(self.filtered_temperature) > 0:
                 # or we could have used filtered_humidity instead
 
                     temperature = self.filtered_temperature.pop()
                     humidity = self.filtered_humidity.pop()
-            
-            # here you can do whatever you want with the variables: print them, file them out, anything            
+
+            # here you can do whatever you want with the variables: print them, file them out, anything
             print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
-            
+
             # wait a second before the next check
             time.sleep(1)
-            
+
             # wait until the thread is finished
             data_collector.join()
-            
+
         except Exception as e:
             self.event.set()
             print ("continuous_read_dht: {}".format(e))
@@ -1255,5 +1284,3 @@ if __name__ == '__main__':
    #  g.read_temperature()
    #  g.read_dht()
    #  g.continuous_read_dht()
-
-
