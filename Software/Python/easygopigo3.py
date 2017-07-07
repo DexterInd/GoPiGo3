@@ -110,8 +110,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | This constructor sets the variables to the following values:
 
         :var int speed = 300: the speed of the motors should go between **0-1000** DPS
-        :var (int,int,int) left_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
-        :var (int,int,int) right_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
+        :var tuple(int,int,int) left_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
+        :var tuple(int,int,int) right_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
 
         """
         super(self.__class__, self).__init__()
@@ -487,18 +487,54 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
 
     def set_left_eye_color(self, color):
+        """
+        | Sets the LED color for Dexter mascot's left eye.
+
+        :param tuple(int,int,int) color: 8-bit RGB tuple that represents the left eye's color.
+        :raises TypeError: when eye color is not valid
+
+        .. tip::
+
+             After setting the eye's color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_left_eye` or :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color,
+             or otherwise the left eye's color won't change.
+
+        """
         if isinstance(color, tuple) and len(color) == 3:
             self.left_eye_color = color
         else:
-            raise TypeError("Eye color  not valid")
+            raise TypeError("Eye color not valid")
 
     def set_right_eye_color(self, color):
+        """
+        | Sets the LED color for Dexter mascot's right eye.
+
+        :param tuple(int,int,int) color: 8-bit RGB tuple that represents the right eye's color.
+        :raises TypeError: when eye color is not valid
+
+        .. tip::
+
+             After setting the eye's color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_right_eye` or :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color,
+             or otherwise the right eye's color won't change.
+
+        """
         if isinstance(color, tuple) and len(color) == 3:
             self.right_eye_color = color
         else:
-            raise TypeError("Eye color  not valid")
+            raise TypeError("Eye color not valid")
 
     def set_eye_color(self, color):
+        """
+        | Sets the LED color for Dexter mascot's eyes.
+
+        :param tuple(int,int,int) color: 8-bit RGB tuple that represents the eyes' color.
+        :raises TypeError: when eye color is not valid
+
+        .. tip::
+
+             After setting the eyes' color, call :py:meth:`~easygopigo3.EasyGoPiGo3.open_right_eye` or :py:meth:`~easygopigo3.EasyGoPiGo3.open_eyes` to update the color,
+             or otherwise the eyes' color won't change.
+
+        """
         self.set_left_eye_color(color)
         self.set_right_eye_color(color)
 
@@ -557,31 +593,31 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight - WheelTurnDegrees) is False:
                 time.sleep(0.1)
 
-    def assign_light_sensor(self, port):
+    def assign_n_light_sensor(self, port):
         return LightSensor(port, self)
 
-    def assign_sound_sensor(self, port):
+    def assign_n_sound_sensor(self, port):
         return SoundSensor(port, self)
 
-    def assign_ultrasonic_sensor(self, port):
+    def assign_n_ultrasonic_sensor(self, port):
         return UltraSonicSensor(port, self)
 
-    def assign_buzzer(self, port):
+    def assign_n_buzzer(self, port):
         return Buzzer(port, self)
 
-    def assign_led(self, port):
+    def assign_n_led(self, port):
         return Led(port, self)
 
-    def assign_button_sensor(self, port):
+    def assign_n_button_sensor(self, port):
         return ButtonSensor(port, self)
 
-    def assign_line_follower(self, port):
+    def assign_n_line_follower(self, port):
         return LineFollower(port, self)
 
-    def assign_servo(self, port):
+    def assign_n_servo(self, port):
         return Servo(port, self)
 
-    def assign_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+    def assign_n_dht_sensor(self, port = "SERIAL", sensor_type = 0):
         return DHTSensor(port, port, self, sensor_type)
 
 # the following functions may be redundant
