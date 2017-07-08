@@ -726,7 +726,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. tip::
 
-             The sensor can be connected to any of the ``"I2C"`` ports.
+             | The sensor can be connected to any of the I2C ports.
+             | You can connect different I2C devices simultaneously, provided they have different addresses.
 
         """
         return LineFollower(port, self)
@@ -756,7 +757,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. tip::
 
-             The sensor can be connected to any of the ``"I2C"`` ports.
+             | The sensor can be connected to any of the I2C ports.
+             | You can connect different I2C devices simultaneously, provided they have different addresses.
 
         """
         return DistanceSensor(port, self)
