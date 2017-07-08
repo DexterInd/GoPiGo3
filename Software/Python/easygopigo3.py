@@ -795,11 +795,11 @@ class Sensor(object):
     It *should* only be used as a base class for any type of sensor. Since it contains methods for setting / getting the ports or the pinmode,
     it's basically useless unless a derived class comes in and adds functionalities.
 
-    :var str port: There're 4 types of ports. These string values can be found in the following graphical representation - `physical ports`_.
-    :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
+    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. These string identifiers can be mapped in the following graphical representation - `physical ports`_.
     :var str pinmode: specifies the direction of information - ``"INPUT"`` (for reading data) or ``"OUTPUT"`` (for writing onto the pin).
-    :var int pin: can be ``"AD1"`` or ``"AD2"``. This is where these `physical ports`_ are found on the `GoPiGo3`_ board.
-    :var str descriptor: string used for describing the object when printed with ``print`` function.
+    :var int pin: NEED TO READ MORE ABOUT THE SOURCE CODE.
+    :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
+    :var str descriptor: represents the "informal" string representation of an instantiated object of this class.
 
     .. note::
 
@@ -812,7 +812,7 @@ class Sensor(object):
              * :py:class:`~easygopigo3.DistanceSensor`
              * :py:class:`~easygopigo3.DHTSensor`
 
-        And the classes which are found at 2 levels of inheritance away from this class are:
+        And the classes which are found at 2nd level of inheritance from this class are:
 
             * :py:class:`~easygopigo3.LightSensor`
             * :py:class:`~easygopigo3.SoundSensor`
