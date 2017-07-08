@@ -795,7 +795,7 @@ class Sensor(object):
     It *should* only be used as a base class for any type of sensor. Since it contains methods for setting / getting the ports or the pinmode,
     it's basically useless unless a derived class comes in and adds functionalities.
 
-    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers can be mapped in the following graphical representation - `physical ports`_.
+    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - `physical ports`_.
     :var str pinmode: specifies the direction of information - ``"INPUT"`` (for reading data) or ``"OUTPUT"`` (for writing onto the pin).
     :var int pin: NEED TO READ MORE ABOUT THE SOURCE CODE.
     :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
