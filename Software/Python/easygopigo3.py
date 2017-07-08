@@ -801,6 +801,15 @@ class Sensor(object):
     :var int pin: can be ``"AD1"`` or ``"AD2"``. This is where these `physical ports`_ are found on the `GoPiGo3`_ board.
     :var str descriptor: string used for describing the object when printed with ``print`` function.
 
+    The classes which derive from this class are the following:
+
+         * :py:class:`~easygopigo3.DigitalSensor`
+         * :py:class:`~easygopigo3.AnalogSensor`
+         * :py:class:`~easygopigo3.LineFollower`
+         * :py:class:`~easygopigo3.Servo`
+         * :py:class:`~easygopigo3.DistanceSensor`
+         * :py:class:`~easygopigo3.DHTSensor`
+
     """
     PORTS = {}
 
