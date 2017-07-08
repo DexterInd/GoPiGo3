@@ -826,7 +826,7 @@ class Sensor(object):
 
     def __init__(self, port, pinmode, gpg):
         """
-        Constructor for creating a connection to one of the available grove ports.
+        Constructor for creating a connection to one of the available grove ports on the `GoPIGo3`_.
 
         :param str port: specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : `physical ports`_
         :param str pinmode: the mode of operation of the pin we're selecting.
