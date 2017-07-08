@@ -40,6 +40,7 @@ The quoted literals are to be used as pin identifiers inside the python scripts.
 
       # and so on
 
+
 **************************
 ``easygopigo3`` Module
 **************************

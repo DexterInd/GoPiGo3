@@ -926,6 +926,12 @@ class Sensor(object):
                 self.get_port(), self.get_pin_mode(), self.portID))
 
     def set_pin(self, pin):
+        """
+        Selects one of the 2 available pins of the grove connector.
+
+        :param int pin: **1** for the exterior pin of the grove connector (aka SIG) or anything else for the interior one.
+
+        """
         if self.port == "AD1":
             if pin == 1:
                 self.pin = self.gpg.GROVE_1_1
@@ -939,9 +945,24 @@ class Sensor(object):
         debug("setting pin to {}".format(self.pin))
 
     def get_pin(self):
+        """
+        Tells us which pin of the grove connector is used.
+
+        :returns: for exterior pins (aka SIG) it returns :py:data:`gopigo3.GROVE_2_1` or :py:data:`gopigo3.GROVE_2_2` and for interior pins (aka NC) it returns :py:data:`gopigo3.GROVE_1_2` or :py:data:`gopigo3.GROVE_1_2`
+        :rtype: int
+
+        """
         return self.pin
 
     def set_port(self, port):
+        """
+        Sets the port that's going to be used by our new device. Again, we can't communicate with our
+        device, because the class doesn't have any methods for interfacing with it, so we need to create
+        a derived class that does this.
+
+        :param str port: the port we're connecting the device to. Take a look at the `physical ports`_' locations.
+
+        """
         debug(port)
         self.port = port
         debug(self.port)
@@ -965,6 +986,13 @@ class Sensor(object):
         debug(self.portID)
 
     def get_port(self):
+        """
+        Gets the current port our device is connected to.
+
+        :returns: the current set port. Take a look at the `physical ports`_' locations.
+        :rtype: str
+
+        """
         return (self.port)
 
     def get_port_ID(self):
