@@ -46,6 +46,8 @@ In this graphical representation, the `GoPiGo3`_ board has the following ports a
       # here's a LineFollower object binded on port I2C
       line_follower_obj = gpg3_obj.init_line_follower("I2C")
 
+      # and so on
+
 **************************
 ``easygopigo3`` Module
 **************************
