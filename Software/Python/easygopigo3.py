@@ -463,7 +463,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         We then multiply this value with the *wheel circle circumference* (which is the circumference of the circle the robot's wheels describe when rotating in the same place).
 
 
-        At the end we get the distance each motor has to travel in order to rotate the robot by ``degrees`` degrees.
+        At the end we get the distance each wheel has to travel in order to rotate the robot by ``degrees`` degrees.
 
         """
         # this is the method to use if you want the robot to turn 90 degrees
