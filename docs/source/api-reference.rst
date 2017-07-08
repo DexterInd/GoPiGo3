@@ -11,17 +11,6 @@ API Reference Point
 GoPiGo3 Ports
 **************************
 
-.. role:: red
-
-.. role:: orange
-
-.. role:: blue
-
-.. role:: green
-
-.. role:: yellow
-
-
 In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
 
 .. image:: gpg3_ports.jpg
@@ -64,6 +53,11 @@ EasyGoPiGo3
 Sensor
 =====================================
 
+.. autoclass:: easygopigo3.Sensor
+   :members:
+   :special-members:
+   :exclude-members: __weakref__
+
 =====================================
 DigitalSensor
 =====================================
@@ -75,10 +69,6 @@ AnalogSensor
 =====================================
 LightSensor
 =====================================
-
-.. autoclass:: easygopigo3.LightSensor
-   :members:
-   :special-members:
 
 =====================================
 SoundSensor
