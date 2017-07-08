@@ -821,6 +821,11 @@ class Sensor(object):
             * :py:class:`~easygopigo3.Led`
             * :py:class:`~easygopigo3.ButtonSensor`
 
+    .. warning::
+
+        1. This class should only be used by the developers of the `GoPiGo3`_ platform.
+        2. The name of this class isn't representative of the devices we connect to the `GoPiGo3`_ robot - we don't only use this class for sensors, but for any kind of device that we can connect to the `GoPiGo3`_ robot.
+
     """
     PORTS = {}
 
@@ -895,6 +900,28 @@ class Sensor(object):
             pass
 
     def __str__(self):
+        """
+        Prints out a short summary of the class-instantiated object's attributes.
+
+        :returns: a string with a short summary of the object's attributes
+        :rtype: str
+
+        The returned string is made of the following components:
+
+             * the :py:attr:`~easygopigo3.Sensor.descriptor`'s description
+             * the :py:attr:`~easygopigo3.Sensor.port` name
+             * the :py:attr:`~easygopigo3.Sensor.pin` identifier
+             * the :py:attr:`~easygopigo3.Sensor.portID` - see :py:meth:`~easygopigo3.Sensor.set_port` method.
+
+        Sample of returned string as shown in a terminal:
+
+        .. code-block:: python
+
+             $ ultrasonic sensor on port AD1
+             $ pinmode OUTPUT
+             $ portID 3
+
+        """
         return ("{} on port {} \npinmode {}\nportID {}".format(self.descriptor,
                 self.get_port(), self.get_pin_mode(), self.portID))
 

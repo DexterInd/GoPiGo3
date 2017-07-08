@@ -53,15 +53,6 @@ EasyGoPiGo3
    :special-members:
 
 =====================================
-Sensor
-=====================================
-
-.. autoclass:: easygopigo3.Sensor
-   :members:
-   :special-members:
-   :exclude-members: __weakref__
-
-=====================================
 DigitalSensor
 =====================================
 
@@ -108,3 +99,12 @@ DistanceSensor
 =====================================
 DHTSensor
 =====================================
+
+=====================================
+Sensor
+=====================================
+
+.. autoclass:: easygopigo3.Sensor
+   :members:
+   :special-members:
+   :exclude-members: __weakref__
