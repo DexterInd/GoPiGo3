@@ -496,7 +496,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
 
-        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
+        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"`` and ``"left"``.
 
 
         """
@@ -509,7 +509,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Turns *OFF* one of the 2 red blinkers that `GoPiGo3`_ has.
 
-        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
+        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"`` and ``"left"``.
 
         """
         if id == 1 or id == "left":
@@ -523,7 +523,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
         | The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_on`.
 
-        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
+        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"``` and ``"left"``.
 
         """
         self.blinker_on(id)
@@ -533,7 +533,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Turns *OFF* one of the 2 red blinkers that `GoPiGo3`_ has.
         | The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_off`.
 
-        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``right`` and ``left``.
+        :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"`` and ``"left"``.
 
         """
         self.blinker_off(id)
@@ -643,43 +643,134 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-    def init_light_sensor(self, port):
+    def init_light_sensor(self, port = "AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
 
-        :param str port: 33
-        :returns: an instance of the :py:class:`~easygopigo3.LightSensor` class, with the port set to ``port``.
+        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
 
-        NOT COMPLETE HERE!!!
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
         """
         return LightSensor(port, self)
 
     def init_sound_sensor(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.SoundSensor` object and then returns it.
+
+        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+
+        """
         return SoundSensor(port, self)
 
     def init_ultrasonic_sensor(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.UltraSonicSensor` object and then returns it.
+
+        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+
+        """
         return UltraSonicSensor(port, self)
 
     def init_buzzer(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.Buzzer` object and then returns it.
+
+        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+
+        """
         return Buzzer(port, self)
 
     def init_led(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.Led` object and then returns it.
+
+        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+
+        """
         return Led(port, self)
 
     def init_button_sensor(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.ButtonSensor` object and then returns it.
+
+        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+
+        """
         return ButtonSensor(port, self)
 
     def init_line_follower(self, port = "I2C"):
+        """
+        | Initialises a :py:class:`~easygopigo3.LineFollower` object and then returns it.
+
+        :param str port: the only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
+        :returns: an instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
+
+        The ``"I2C"`` ports are mapped to the following `physical ports`_.
+
+        .. tip::
+
+             The sensor can be connected to any of the ``"I2C"`` ports.
+
+        """
         return LineFollower(port, self)
 
     def init_servo(self, port = "SERVO1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.Servo` object and then returns it.
+
+        :param str port: can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
+        :returns: an instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
+
+        The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following `physical ports`_.
+
+        """
         return Servo(port, self)
 
     def init_distance_sensor(self, port = "I2C"):
+        """
+        .. role:: red
+
+        | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
+
+        :param str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :returns: an instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the :red:`port` set to ``port``'s value.
+
+        The ``"I2C"`` ports are mapped to the following `physical ports`_.
+
+        .. tip::
+
+             The sensor can be connected to any of the ``"I2C"`` ports.
+
+        """
         return DistanceSensor(port, self)
 
     def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+        """
+        | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
+
+        :param str port: the only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
+        :returns: an instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
+
+        The ``"SERIAL"`` port is mapped to the following `physical ports`_.
+
+        """
         return DHTSensor(port, self, sensor_type)
 
 # the following functions may be redundant
