@@ -795,10 +795,10 @@ class Sensor(object):
     It *should* only be used as a base class for any type of sensor. Since it contains methods for setting / getting the ports or the pinmode,
     it's basically useless unless a derived class comes in and adds functionalities.
 
-    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - `physical ports`_.
-    :var str pinmode: specifies the direction of information - ``"INPUT"`` (for reading data) or ``"OUTPUT"`` (for writing onto the pin).
-    :var int pin: NEED TO READ MORE ABOUT THE SOURCE CODE.
-    :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
+    :var str port: there're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - `physical ports`_.
+    :var str pinmode: represents the mode of operation of a pin - can be a digital input/output, an analog input/output or even a custom mode which must defined in the `GoPiGo3`_'s firmware.
+    :var int pin: each grove connector has 4 pins: GND, VCC and 2 signal pins that can be user-defined. This variable specifies which pin of these 2 signal pins is used.
+    :var int portID: depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
     :var str descriptor: represents the "informal" string representation of an instantiated object of this class.
 
     .. note::
@@ -825,6 +825,38 @@ class Sensor(object):
     PORTS = {}
 
     def __init__(self, port, pinmode, gpg):
+        """
+        Constructor for creating a connection to one of the available grove ports.
+
+        :param str port: specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : `physical ports`_
+        :param str pinmode: the mode of operation of the pin we're selecting.
+        :param easygopigo3.EasyGoPiGo3 gpg: an instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
+
+        The ``port`` parameter can take the following string values:
+
+             * ``"AD1"`` - for digital and analog ``pinmode``'s.
+             * ``"AD2"`` - for digital and analog ``pinmode``'s.
+             * ``"SERVO1"`` - for ``"OUTPUT"`` ``pinmode``.
+             * ``"SERVO2"`` - for ``"OUTPUT"`` ``pinmode``.
+             * ``"I2C"`` - what pinmode is required here Matt?.
+             * ``"SERIAL"`` - for ``"INPUT"`` ``pinmode``. It doesn't seem right here Matt. What do you think?
+
+        These ports' locations can be seen in the following graphical representation - `physical ports`_.
+
+        The ``pinmode`` parameter can take the following string values:
+
+             * ``"INPUT"`` - for generic inputs. The `GoPiGo3`_ has 12-bit ADCs.
+             * ``"DIGITAL_INPUT"`` - for digital inputs. The port can detect either **0** or **1**.
+             * ``"OUTPUT"`` - for generic output. The `GoPiGo3`_ has 12-bit DACs.
+             * ``"DIGITAL_OUTPUT"`` - for digital outputs. The port can only be set to **0** or **1**.
+             * ``"US"`` - that's for the :py:class:`~easygopigo3.UltraSonicSensor` which can be bought from our `shop`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
+             * ``"IR"`` - that's for the `infrared receiver`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
+
+        .. warning::
+
+             At the moment, there's no class for interfacing with the `infrared receiver`_.
+
+        """
         debug("Sensor init")
         self.gpg = gpg
         debug(pinmode)

@@ -4,6 +4,8 @@ API Reference Point
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
+.. _shop: https://www.dexterindustries.com/shop/
+.. _infrared receiver: https://www.seeedstudio.com/Grove-Infrared-Receiver-p-994.html
 
 .. _physical ports:
 
@@ -12,6 +14,7 @@ GoPiGo3 Ports
 **************************
 
 In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
+The quoted literals are to be used as pin identifiers inside the python scripts.
 
 .. image:: gpg3_ports.jpg
 
