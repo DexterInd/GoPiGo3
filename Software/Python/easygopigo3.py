@@ -1371,7 +1371,7 @@ try:
         Wrapper to measure the distance in cms from the DI distance sensor.
         Connect the distance sensor to I2C port.
         '''
-        def __init__(self, port="I2C1",gpg=None):
+        def __init__(self, port="I2C",gpg=None):
             Sensor.__init__(self, port, "OUTPUT", gpg)
             try:
                 distance_sensor.DistanceSensor.__init__(self)
