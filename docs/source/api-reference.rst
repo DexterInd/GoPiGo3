@@ -41,7 +41,7 @@ In this graphical representation, the `GoPiGo3`_ board has the following ports a
       light_obj = gpg3_obj.init_light_sensor("AD2")
 
       # here's a UltraSonicSensor object binded on port AD1
-      us_obj = gpg3_obj,init_ultrasonic_sensor("AD1")
+      us_obj = gpg3_obj.init_ultrasonic_sensor("AD1")
 
       # here's a LineFollower object binded on port I2C
       line_follower_obj = gpg3_obj.init_line_follower("I2C")
