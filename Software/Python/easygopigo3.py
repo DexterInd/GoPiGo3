@@ -109,9 +109,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | This constructor sets the variables to the following values:
 
-        :var int speed = 300: the speed of the motors should go between **0-1000** DPS
-        :var tuple(int,int,int) left_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
-        :var tuple(int,int,int) right_eye_color = (0,255,255): set the `distance sensor`_'s color to **turqoise**
+        :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
+        :var tuple(int,int,int) left_eye_color = (0,255,255): Set the `distance sensor`_'s color to **turqoise**.
+        :var tuple(int,int,int) right_eye_color = (0,255,255): Set the `distance sensor`_'s color to **turqoise**.
 
         """
         super(self.__class__, self).__init__()
@@ -125,7 +125,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | This method returns the battery voltage of the `GoPiGo3`_.
 
-        :return: the battery voltage of the `GoPiGo3`_
+        :return: The battery voltage of the `GoPiGo3`_.
         :rtype: float
 
         """
@@ -137,7 +137,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
         | The speed is measured in *DPS = degrees per second* of the robot's wheel(s).
 
-        :param int in_speed: the speed at which the robot is set to run - speed between **0-1000** DPS
+        :param int in_speed: The speed at which the robot is set to run - speed between **0-1000** DPS.
 
         .. warning::
 
@@ -158,7 +158,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Use this method for getting the speed of your `GoPiGo3`_.
 
-        :return: the speed of the robot measured between **0-1000** DPS
+        :return: The speed of the robot measured between **0-1000** DPS.
         :rtype: int
 
         """
@@ -340,10 +340,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | If both conditions are met, it returns ``True``, otherwise it's ``False``.
 
-        :param int left_target_degrees: target degrees for the *left* wheel.
-        :param int right_target_degrees: target degrees for the *right* wheel.
+        :param int left_target_degrees: Target degrees for the *left* wheel.
+        :param int right_target_degrees: Target degrees for the *right* wheel.
 
-        :return: whether both wheels have reached their target.
+        :return: Whether both wheels have reached their target.
         :rtype: boolean.
 
         For checking if the `GoPiGo3`_ robot has moved **forward** for ``360 / 360`` wheel rotations, we'd use the following code snippet.
@@ -443,8 +443,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
-        :param float degrees: the angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
-        :param boolean blocking: by default is set to `False`, which means the method will exit as the command is processed. For ``True`` it waits until the `GoPiGo3`_ has completed rotating.
+        :param float degrees: The angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
+        :param boolean blocking: By default is set to `False`, which means the method will exit as the command is processed. For ``True`` it waits until the `GoPiGo3`_ has completed rotating.
 
         In order to better understand what does this method do, let's take a look at the following graphical representation.
 
@@ -544,7 +544,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Sets the LED color for Dexter mascot's left eye.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the left eye's color.
-        :raises TypeError: when ``color`` parameter is not valid.
+        :raises TypeError: When ``color`` parameter is not valid.
 
         .. important::
 
@@ -562,7 +562,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Sets the LED color for Dexter mascot's right eye.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the right eye's color.
-        :raises TypeError: when ``color`` parameter is not valid.
+        :raises TypeError: When ``color`` parameter is not valid.
 
         .. important::
 
@@ -580,7 +580,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Sets the LED color for Dexter mascot's eyes.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the eyes' color.
-        :raises TypeError: when ``color`` parameter is not valid.
+        :raises TypeError: When ``color`` parameter is not valid.
 
         .. important::
 
@@ -647,8 +647,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
 
-        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
@@ -659,8 +659,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.SoundSensor` object and then returns it.
 
-        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
@@ -671,8 +671,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.UltraSonicSensor` object and then returns it.
 
-        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
@@ -683,8 +683,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Buzzer` object and then returns it.
 
-        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
@@ -695,8 +695,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Led` object and then returns it.
 
-        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
@@ -707,8 +707,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.ButtonSensor` object and then returns it.
 
-        :param str port: can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
 
@@ -719,8 +719,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.LineFollower` object and then returns it.
 
-        :param str port: the only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
-        :returns: an instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
+        :param str port: The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
+        :returns: An instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following `physical ports`_.
 
@@ -739,8 +739,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Servo` object and then returns it.
 
-        :param str port: can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
-        :returns: an instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
+        :param str port: Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
 
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following `physical ports`_.
 
@@ -752,8 +752,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :returns: an instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
+        :param Str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following `physical ports`_.
 
@@ -772,8 +772,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
-        :param str port: the only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
-        :returns: an instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
+        :param str port: The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
+        :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
         The ``"SERIAL"`` port is mapped to the following `physical ports`_.
 
@@ -795,11 +795,11 @@ class Sensor(object):
     It *should* only be used as a base class for any type of sensor. Since it contains methods for setting / getting the ports or the pinmode,
     it's basically useless unless a derived class comes in and adds functionalities.
 
-    :var str port: there're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - `physical ports`_.
-    :var str pinmode: represents the mode of operation of a pin - can be a digital input/output, an analog input/output or even a custom mode which must defined in the `GoPiGo3`_'s firmware.
-    :var int pin: each grove connector has 4 pins: GND, VCC and 2 signal pins that can be user-defined. This variable specifies which pin of these 2 signal pins is used.
-    :var int portID: depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
-    :var str descriptor: represents the "informal" string representation of an instantiated object of this class.
+    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - `physical ports`_.
+    :var str pinmode: Represents the mode of operation of a pin - can be a digital input/output, an analog input/output or even a custom mode which must defined in the `GoPiGo3`_'s firmware.
+    :var int pin: Each grove connector has 4 pins: GND, VCC and 2 signal pins that can be user-defined. This variable specifies which pin of these 2 signal pins is used.
+    :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
+    :var str descriptor: Represents the "informal" string representation of an instantiated object of this class.
 
     .. note::
 
@@ -833,9 +833,9 @@ class Sensor(object):
         """
         Constructor for creating a connection to one of the available grove ports on the `GoPIGo3`_.
 
-        :param str port: specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : `physical ports`_
-        :param str pinmode: the mode of operation of the pin we're selecting.
-        :param easygopigo3.EasyGoPiGo3 gpg: an instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
+        :param str port: Specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : `physical ports`_.
+        :param str pinmode: The mode of operation of the pin we're selecting.
+        :param easygopigo3.EasyGoPiGo3 gpg: An instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
 
         The ``port`` parameter can take the following string values:
 
@@ -903,7 +903,7 @@ class Sensor(object):
         """
         Prints out a short summary of the class-instantiated object's attributes.
 
-        :returns: a string with a short summary of the object's attributes
+        :returns: A string with a short summary of the object's attributes.
         :rtype: str
 
         The returned string is made of the following components:
@@ -948,7 +948,7 @@ class Sensor(object):
         """
         Tells us which pin of the grove connector is used.
 
-        :returns: for exterior pins (aka SIG) it returns :py:data:`gopigo3.GROVE_2_1` or :py:data:`gopigo3.GROVE_2_2` and for interior pins (aka NC) it returns :py:data:`gopigo3.GROVE_1_2` or :py:data:`gopigo3.GROVE_1_2`
+        :returns: For exterior pins (aka SIG) it returns :py:data:`gopigo3.GROVE_2_1` or :py:data:`gopigo3.GROVE_2_2` and for interior pins (aka NC) it returns :py:data:`gopigo3.GROVE_1_2` or :py:data:`gopigo3.GROVE_1_2`.
         :rtype: int
 
         """
@@ -960,7 +960,7 @@ class Sensor(object):
         device, because the class doesn't have any methods for interfacing with it, so we need to create
         a derived class that does this.
 
-        :param str port: the port we're connecting the device to. Take a look at the `physical ports`_' locations.
+        :param str port: The port we're connecting the device to. Take a look at the `physical ports`_' locations.
 
         Apart from this graphical representation of the ports' locations (`physical ports`_ locations),
         take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
@@ -992,7 +992,7 @@ class Sensor(object):
         """
         Gets the current port our device is connected to.
 
-        :returns: the current set port.
+        :returns: The current set port.
         :rtype: str
 
         Apart from this graphical representation of the ports' locations (`physical ports`_ locations),
@@ -1005,7 +1005,7 @@ class Sensor(object):
         """
         Gets the ID of the port we're set to.
 
-        :returns: the ID of the port we're set to.
+        :returns: The ID of the port we're set to.
         :rtype: int
 
         See more about port IDs in :py:class:`~easygopigo3.Sensor`'s description.
@@ -1017,7 +1017,7 @@ class Sensor(object):
         """
         Sets the pin mode of the port we're set to.
 
-        :param str pinmode: the pin mode of the port.
+        :param str pinmode: The pin mode of the port.
 
         See more about pin modes in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
 
@@ -1028,7 +1028,7 @@ class Sensor(object):
         """
         Gets the pin mode of the port we're set to.
 
-        :returns: the pin mode of the port.
+        :returns: The pin mode of the port.
         :rtype: str
 
         See more about pin modes in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
@@ -1046,7 +1046,7 @@ class Sensor(object):
         """
         Sets the object's description.
 
-        :param str descriptor: the object's description.
+        :param str descriptor: The object's description.
 
         See more about class descriptors in :py:class:`~easygopigo3.Sensor`'s description.
 
