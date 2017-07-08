@@ -8,7 +8,7 @@ DexterIndustries' GoPiGo3 Documentation!
 ########################################
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :numbered:
    :caption: Contents:
 

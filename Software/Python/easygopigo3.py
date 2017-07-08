@@ -962,6 +962,9 @@ class Sensor(object):
 
         :param str port: the port we're connecting the device to. Take a look at the `physical ports`_' locations.
 
+        Apart from this graphical representation of the ports' locations (`physical ports`_ locations),
+        take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+
         """
         debug(port)
         self.port = port
@@ -989,19 +992,48 @@ class Sensor(object):
         """
         Gets the current port our device is connected to.
 
-        :returns: the current set port. Take a look at the `physical ports`_' locations.
+        :returns: the current set port.
         :rtype: str
+
+        Apart from this graphical representation of the ports' locations (`physical ports`_ locations),
+        take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
 
         """
         return (self.port)
 
     def get_port_ID(self):
+        """
+        Gets the ID of the port we're set to.
+
+        :returns: the ID of the port we're set to.
+        :rtype: int
+
+        See more about port IDs in :py:class:`~easygopigo3.Sensor`'s description.
+
+        """
         return (self.portID)
 
     def set_pin_mode(self, pinmode):
+        """
+        Sets the pin mode of the port we're set to.
+
+        :param str pinmode: the pin mode of the port.
+
+        See more about pin modes in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+
+        """
         self.pinmode = pinmode
 
     def get_pin_mode(self):
+        """
+        Gets the pin mode of the port we're set to.
+
+        :returns: the pin mode of the port.
+        :rtype: str
+
+        See more about pin modes in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+
+        """
         return (self.pinmode)
 
     # def is_analog(self):
@@ -1011,6 +1043,14 @@ class Sensor(object):
     #     return (self.pin == DIGITAL)
 
     def set_descriptor(self, descriptor):
+        """
+        Sets the object's description.
+
+        :param str descriptor: the object's description.
+
+        See more about class descriptors in :py:class:`~easygopigo3.Sensor`'s description.
+
+        """
         self.descriptor = descriptor
 ##########################
 
