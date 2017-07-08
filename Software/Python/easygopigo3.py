@@ -838,16 +838,16 @@ class Sensor(object):
              * ``"AD2"`` - for digital and analog ``pinmode``'s.
              * ``"SERVO1"`` - for ``"OUTPUT"`` ``pinmode``.
              * ``"SERVO2"`` - for ``"OUTPUT"`` ``pinmode``.
-             * ``"I2C"`` - what pinmode is required here Matt?.
-             * ``"SERIAL"`` - for ``"INPUT"`` ``pinmode``. It doesn't seem right here Matt. What do you think?
+             * ``"I2C"`` - the ``pinmode`` is irrelevant here.
+             * ``"SERIAL"`` - the ``pinmode`` is irrelevant here.
 
         These ports' locations can be seen in the following graphical representation - `physical ports`_.
 
         The ``pinmode`` parameter can take the following string values:
 
-             * ``"INPUT"`` - for generic inputs. The `GoPiGo3`_ has 12-bit ADCs.
+             * ``"INPUT"`` - for general purpose inputs. The `GoPiGo3`_ has 12-bit ADCs.
              * ``"DIGITAL_INPUT"`` - for digital inputs. The port can detect either **0** or **1**.
-             * ``"OUTPUT"`` - for generic output. The `GoPiGo3`_ has 12-bit DACs.
+             * ``"OUTPUT"`` - for general purpose outputs.
              * ``"DIGITAL_OUTPUT"`` - for digital outputs. The port can only be set to **0** or **1**.
              * ``"US"`` - that's for the :py:class:`~easygopigo3.UltraSonicSensor` which can be bought from our `shop`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
              * ``"IR"`` - that's for the `infrared receiver`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
