@@ -800,6 +800,7 @@ class Sensor(object):
     :var int pin: Each grove connector has 4 pins: GND, VCC and 2 signal pins that can be user-defined. This variable specifies which pin of these 2 signal pins is used.
     :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
     :var str descriptor: Represents the "informal" string representation of an instantiated object of this class.
+    :var EasyGoPiGo3 gpg: Object instance of the :py:class:`~easygopigo3.EasyGoPiGo3` class.
 
     .. note::
 
@@ -1056,9 +1057,6 @@ class Sensor(object):
 
 
 class DigitalSensor(Sensor):
-    '''
-    Implements read and write methods
-    '''
     def __init__(self, port, pinmode, gpg):
         debug("DigitalSensor init")
         Sensor.__init__(self, port, pinmode, gpg)

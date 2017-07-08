@@ -57,6 +57,10 @@ EasyGoPiGo3
 DigitalSensor
 =====================================
 
+.. autoclass:: easygopigo3.DigitalSensor
+   :members:
+   :special-members:
+
 =====================================
 AnalogSensor
 =====================================
