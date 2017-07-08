@@ -22,7 +22,7 @@ GoPiGo3 Ports
 .. role:: yellow
 
 
-In this graphical representation, the `GoPiGo3`_ board has the following ports.
+In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
 
 .. image:: gpg3_ports.jpg
 
