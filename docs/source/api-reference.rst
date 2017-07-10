@@ -9,8 +9,8 @@ API Reference Point
 .. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
 .. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
-.. _Grove Ultrasonic Sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
-.. _Grove Buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
+.. _grove ultrasonic sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
+.. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 
 .. _physical ports:
 

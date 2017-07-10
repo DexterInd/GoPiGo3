@@ -1543,13 +1543,14 @@ class Buzzer(AnalogSensor):
          # and now instantiate a UltraSonicSensor object through the gpg3_obj object
          buzzer = gpg3_obj.init_buzzer()
 
-         # do the usual stuff, like read the distance the sensor is measuring
-         distance_cm = buzzer.read()
-         distance_inches = buzzer.read_inches()
+         # turn on and off the buzzer
+         buzzer.sound_on()
+         sleep(1)
+         buzzer.sound_off()
 
          # take a look at AnalogSensor class for more methods and attributes
 
-    | Or if we need to specify the port we want to use, we might do it like in the following example.
+    | If we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -1561,23 +1562,14 @@ class Buzzer(AnalogSensor):
 
          buzzer = gpg3_obj.init_buzzer(port)
 
-         # read the sensor's measured distance as in the previous example
-
     .. seealso::
 
          For more sensors, please see our Dexter Industries `shop`_.
 
 
     """
-    '''
-    Default port is AD1
-    It has three methods:
-    sound(power) -> will change incoming power to 0 or 50
-    note: 50 duty cycle allows for musical tones
-    sound_off() -> which is the same as _sound(0)
-    sound_on() -> which is the same as _sound(50)
-    '''
 
+    #: Dictionary of frequencies for each musical note.
     scale = {"A3": 220,
              "A3#": 233,
              "B3": 247,
@@ -1604,6 +1596,23 @@ class Buzzer(AnalogSensor):
              "G5#": 831}
 
     def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.Buzzer` object for the `Grove Buzzer`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Buzzer` object.
+        :raises AtrributeError: If an attribute couldn't be found - you shouldn't worry about this one.
+        :var int power = 50: Duty cycle of the signal that's put on the buzzer.
+        :var int freq = 329: Frequency of the signal that's put on the buzzer. 329Hz is synonymous to E4 musical note. See :py:attr:`~.easygopigo3.Buzzer.scale` for more musical notes.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+
+        """
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
             self.set_pin(1)
@@ -1615,8 +1624,30 @@ class Buzzer(AnalogSensor):
             raise AttributeError
 
     def sound(self, freq):
-        '''
-        '''
+        """
+        Sets a musical note for the `Grove Buzzer`_.
+
+        :param int freq: The frequency of the signal that's put on the `Grove Buzzer`_.
+
+        For a list of musical notes, please see :py:attr:`~.easygopigo3.Buzzer.scale`.
+
+        Example on how to play musical notes.
+
+        .. code-block:: python
+
+             # initialize all the required objects and connect the sensor to the GoPiGo3
+
+             musical_notes = buzzer.scale
+             notes_i_want_to_play = {"F4#", "F4#", "C5#", "B3", "B3", "B3"}
+             wait_time = 1.0
+
+             for note in notes_i_want_to_play:
+                buzzer.sound(musical_notes[note])
+                sleep(wait_time)
+
+                # enjoy the musical notes
+
+        """
         try:
             freq = int(freq)
         except:
@@ -1640,15 +1671,19 @@ class Buzzer(AnalogSensor):
         self.write(power)
 
     def sound_off(self):
-        '''
-        Makes buzzer silent
-        '''
+        """
+        Turns off the `Grove Buzzer`_.
+
+        """
         self.sound(0)
 
     def sound_on(self):
-        '''
-        Default buzzer sound. It will take the internal frequency as is
-        '''
+        """
+        Turns on the `Grove Buzzer`_ at the set frequency.
+
+        For changing the frequency, please check the :py:meth:`~easygopigo3.Buzzer.sound` method.
+
+        """
         self.sound(self.freq)
 ##########################
 
