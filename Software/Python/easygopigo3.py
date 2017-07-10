@@ -1074,36 +1074,120 @@ class DigitalSensor(Sensor):
 
 
 class AnalogSensor(Sensor):
-    '''
-    implements read and write methods
-    '''
+    """
+    Initialises an analog device with input/output capabilities on the `GoPiGo3`_ robot.
+    This class is derived from :py:class:`~easygopigo3.Sensor` class, so this means this class inherits all attributes and methods.
+
+    For creating an :py:class:`~easygopigo3.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
+
+    .. code-block:: python
+
+         # initialize an EasyGoPiGo3 object first
+         gpg3_obj = EasyGoPiGo3()
+
+         # let's have an analog input sensor on "AD1" port
+         port = "AD1"
+         pinmode = "INPUT"
+
+         # instantiate an AnalogSensor object
+         # pay attention that we need the gpg3_obj
+         analogsensor_obj = AnalogSensor(port, pinmode, gpg3_obj)
+
+         # for example
+         # read the sensor's value as we have an analog sensor connected to "AD1" port
+         analogsensor_obj.read()
+
+    .. warning::
+
+        The name of this class isn't representative of the type of devices we connect to the `GoPiGo3`_ robot.
+        With this class, both analog sensors and actuators (output devices such as LEDs which may require controlled output voltages) can be connected.
+
+    """
     def __init__(self, port, pinmode, gpg):
+        """
+        Binds an analog device to the specified ``port`` with the appropriate ``pinmode`` functionality.
+
+        :param str port: The port to which the sensor/actuator is connected.
+        :param str pinmode: The pin mode of the device that's connected to the `GoPiGo3`_.
+        :param easygopigo3.EasyGoPiGo3 gpg: Required object for instantiating an :py:class:`~easygopigo3.AnalogSensor` object.
+
+        The available ``port``'s for use are the following:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+
+        .. important::
+
+            Since the grove connector allows 2 signals to pass through 2 pins (not concurently), we can select which pin to go with by using the :py:meth:`~easygopigo3.Sensor.set_pin` method.
+            By default, we're using pin **1**, which corresponds to the exterior pin of the grove connector (aka SIG) and the wire is yellow.
+
+        """
         debug("AnalogSensor init")
         self.value = 0
         self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
 
+        # use the green exterior pin of the grove connector
+        self.set_pin(1)
+
         # this delay is at least needed by the Light sensor
         time.sleep(0.01)
 
     def read(self):
+        """
+        Reads analog value of the sensor that's connected to our `GoPiGo3`_ robot.
+
+        :returns: 12-bit number representing the voltage we get from the sensor. Range goes from 0V-5V.
+        :rtype: int
+
+        """
         self.value = self.gpg.get_grove_analog(self.get_pin())
         return self.value
 
     def percent_read(self):
-        '''
-        brings the sensor read to a percent scale
-        '''
+        """
+        Reads analog value of the sensor that's connected to our `GoPiGo3`_ robot as a percentage.
+
+        :returns: Percentage mapped to 0V-5V range.
+        :rtype: int
+
+        """
         reading_percent = self.read() * 100 // 4096
         return reading_percent
 
     def write(self, power):
+        """
+        | Generates a PWM signal on the selected port.
+        | Good for simulating an DAC convertor - for instance an LED is a good candidate.
+
+        :param int power: Number from **0** to **100** that represents the duty cycle as a percentage of the frequency's period.
+
+        .. tip::
+
+             If the ``power`` parameter is out of the given range, the most close and valid value will be selected.
+
+
+        """
         self.value = power
         return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
                                                        power)
         return return_value
 
     def write_freq(self, freq):
+        """
+        | Sets the frequency of the PWM signal.
+        | The frequency range goes between 3Hz and 48000Hz.
+        | Default value is 24000Hz (24kHz).
+
+        :param int freq: Frequency of the PWM signal.
+
+        .. seealso::
+
+            Read more about this in :py:meth:`gopigo3.GoPiGo3.set_grove_pwm_frequency`'s description.
+
+        """
         self.freq = freq
         # debug("write_freq: {}".format(self.freq))
         return_value = self.gpg.set_grove_pwm_frequency(

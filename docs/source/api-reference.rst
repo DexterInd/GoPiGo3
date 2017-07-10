@@ -6,6 +6,7 @@ API Reference Point
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _shop: https://www.dexterindustries.com/shop/
 .. _infrared receiver: https://www.seeedstudio.com/Grove-Infrared-Receiver-p-994.html
+.. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
 
 .. _physical ports:
 
@@ -17,6 +18,13 @@ In this graphical representation, the `GoPiGo3`_ board has the following ports a
 The quoted literals are to be used as pin identifiers inside the python scripts.
 
 .. image:: gpg3_ports.jpg
+
+These ports have the following functionalities:
+
+   * Ports ``"AD1"`` and ``"AD2"`` - general purpose input/output ports.
+   * Ports ``"SERVO1"`` and ``"SERVO2"`` - servo controller ports.
+   * Ports ``"I2C"`` - ports to which you can connect I2C-enabled devices.
+   * Port ``"SERIAL"`` - port to which you can connect UART-enabled device.
 
 .. note::
 
@@ -40,6 +48,10 @@ The quoted literals are to be used as pin identifiers inside the python scripts.
 
       # and so on
 
+.. seealso::
+
+   For more technical details on the `GoPiGo3`_ robot, please check our `technical specs`_ page.
+
 
 **************************
 ``easygopigo3`` Module
@@ -57,13 +69,13 @@ EasyGoPiGo3
 DigitalSensor
 =====================================
 
-.. autoclass:: easygopigo3.DigitalSensor
-   :members:
-   :special-members:
-
 =====================================
 AnalogSensor
 =====================================
+
+.. autoclass:: easygopigo3.AnalogSensor
+   :members:
+   :special-members:
 
 =====================================
 LightSensor
