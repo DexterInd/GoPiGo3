@@ -1364,6 +1364,21 @@ class UltraSonicSensor(AnalogSensor):
     """
 
     def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.UltraSonicSensor` object for the `Grove Ultrasonic Sensor`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.UltraSonicSensor` object.
+        :raises IOError: If there is a communication error with the `GoPiGo3`_ robot.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+
+        """
         try:
             debug("Ultrasonic Sensor on port " + port)
             AnalogSensor.__init__(self, port, "US", gpg)
@@ -1375,15 +1390,54 @@ class UltraSonicSensor(AnalogSensor):
             raise IOError(e)
 
     def is_too_close(self):
+        """
+        Checks whether the `Grove Ultrasonic Sensor`_ measures a distance that's too close to a target than
+        what we consider a *safe distance*.
+
+        :returns: Whether the `Grove Ultrasonic Sensor`_ is too close from a target.
+        :rtype: boolean
+
+        A *safe distance* can be set with the :py:meth:`~easygopigo3.UltraSonicSensor.set_safe_distance` method.
+
+        .. note::
+
+            The default *safe distance* is set at 50 cm.
+
+
+        """
         if self.gpg.get_grove_value(self.get_port_ID()) < \
            self.get_safe_distance():
             return True
         return False
 
     def set_safe_distance(self, dist):
+        """
+        Sets a *safe distance* for the `Grove Ultrasonic Sensor`_.
+
+        :param int dist: Minimum distance from a target that we can call a *safe distance*.
+
+        To check whether the robot is too close from a target, please check the :py:meth:`~easygopigo3.UltraSonicSensor.is_too_close` method.
+
+        .. note::
+
+            The default *safe distance* is set at 50 cm.
+
+
+        """
         self.safe_distance = int(dist)
 
     def get_safe_distance(self):
+        """
+        Gets what we call the *safe distance* for the `Grove Ultrasonic Sensor`_.
+
+        :returns: The minimum distance from a target that can be considered a *safe distance*.
+        :rtype: int
+
+        .. note::
+
+            The default *safe distance* is set at 50 cm.
+
+        """
         return self.safe_distance
 
     def read_mm(self):
