@@ -1990,7 +1990,7 @@ class LineFollower(Sensor):
 
 class Servo(Sensor):
     """
-    Class for controlling `servo'_ motors with the `GoPiGo3`_ robot.
+    Class for controlling `servo`_ motors with the `GoPiGo3`_ robot.
     Allows you to rotate the servo by serving the angle of rotation.
 
     This class is derived from :py:class:`~easygopigo3.Sensor` class and because of this, it inherits all the attributes and methods.
