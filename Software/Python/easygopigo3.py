@@ -1509,6 +1509,18 @@ class UltraSonicSensor(AnalogSensor):
         return value
 
     def read_inches(self):
+        """
+        Measures the distance from a target in inches.
+
+        :returns: The distance from a target in inches.
+        :rtype: int
+
+        .. important::
+
+            * This method can read distances of up to 169 inches.
+            * If data is discarded 5 times (due to a communication error with the sensor), then the method returns **501**.
+
+        """
         value = self.read()   # cm reading
         if value == 501:
             return 501
