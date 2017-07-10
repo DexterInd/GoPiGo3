@@ -76,9 +76,21 @@ EasyGoPiGo3
 DigitalSensor
 =====================================
 
+.. warning::
+
+    The :py:class:`easygopigo3.DigitalSensor` class is unfinished. 
+
+    It also requires testing once it's done.
+
 =====================================
 AnalogSensor
 =====================================
+
+.. warning::
+
+    The following class is unfinished. It doesn't work in certain cases.
+
+    It also requires testing once it's done.
 
 .. autoclass:: easygopigo3.AnalogSensor
    :members:
@@ -151,6 +163,15 @@ DistanceSensor
 =====================================
 DHTSensor
 =====================================
+
+.. warning::
+
+   :py:class:`easygopigo3.DHTSensor` class seems to be a copy (with lots of wrappers)
+   of what I wrote for the DHT sensor for the GrovePi platform (that was on the forum).
+
+   This class *requires* an implementation of what I wrote for the DHT sensor.
+
+   Once it's done, it will also require testing.
 
 =====================================
 Sensor
