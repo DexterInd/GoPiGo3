@@ -1517,7 +1517,7 @@ class UltraSonicSensor(AnalogSensor):
 
         .. important::
 
-            * This method can read distances of up to 169 inches.
+            * This method can read distances of up to **169** inches.
             * If data is discarded 5 times (due to a communication error with the sensor), then the method returns **501**.
 
         """
@@ -2079,6 +2079,15 @@ class Servo(Sensor):
         self.gpg.set_servo( self.portID, int(pulsewidth))
 
     def reset_servo(self):
+        """
+        Resets the `servo`_ at its default position.
+
+        .. tip::
+
+           | Same as calling ``rotate_servo(0)``.
+           | Read more about :py:meth:`~easygopigo3.Servo.rotate_servo` method.
+
+        """
         self.gpg.set_servo(self.portID, 0)
 
 #######################################################################
