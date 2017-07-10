@@ -916,7 +916,7 @@ class Sensor(object):
 
         Sample of returned string as shown in a terminal:
 
-        .. code-block:: python
+        .. code-block:: console
 
              $ ultrasonic sensor on port AD1
              $ pinmode OUTPUT
