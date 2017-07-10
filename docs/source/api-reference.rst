@@ -127,6 +127,11 @@ Led
 ButtonSensor
 =====================================
 
+.. autoclass:: easygopigo3.ButtonSensor
+   :members:
+   :special-members:
+
+
 =====================================
 LineFollower
 =====================================
