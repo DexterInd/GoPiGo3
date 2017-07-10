@@ -8,6 +8,7 @@ API Reference Point
 .. _infrared receiver: https://www.seeedstudio.com/Grove-Infrared-Receiver-p-994.html
 .. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
+.. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
 
 .. _physical ports:
 
@@ -89,6 +90,10 @@ LightSensor
 =====================================
 SoundSensor
 =====================================
+
+.. autoclass:: easygopigo3.SoundSensor
+   :members:
+   :special-members:
 
 =====================================
 UltrasonicSensor
