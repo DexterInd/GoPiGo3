@@ -1441,12 +1441,19 @@ class UltraSonicSensor(AnalogSensor):
         return self.safe_distance
 
     def read_mm(self):
-        '''
-        Ultrasonic sensor is limited to 15-4300 range in mm
-        Take 3 readings, discard any that's higher than 4300 or lower than 15
-        If we discard 5 times, then assume there's nothing in front
-            and return 501
-        '''
+        """
+        Measures the distance from a target in millimeters.
+
+        :returns: The distance from a target in millimeters.
+        :rtype: int
+
+        .. important::
+
+            * This method can read distances between **15-4300** millimeters.
+            * This method will read the data for 3 times and it'll discard anything that's smaller than 15 millimeters and bigger than 4300 millimeters.
+            * If data is discarded 5 times (due to a communication error with the sensor), then the method returns **5010**.
+
+        """
         return_reading = 0
         readings = []
         skip = 0
@@ -1483,6 +1490,18 @@ class UltraSonicSensor(AnalogSensor):
         return (return_reading)
 
     def read(self):
+        """
+        Measures the distance from a target in centimeters.
+
+        :returns: The distance from a target in centimeters.
+        :rtype: int
+
+        .. important::
+
+            * This method can read distances between **2-430** centimeters.
+            * If data is discarded 5 times (due to a communication error with the sensor), then the method returns **501**.
+
+        """
         # returns value in cm
         value = self.read_mm()
         if value > 15 and value <= 5010:
