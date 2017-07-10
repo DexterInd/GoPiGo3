@@ -1075,10 +1075,10 @@ class DigitalSensor(Sensor):
 
 class AnalogSensor(Sensor):
     """
-    Initialises an analog device with input/output capabilities on the `GoPiGo3`_ robot.
-    This class is derived from :py:class:`~easygopigo3.Sensor` class, so this means this class inherits all attributes and methods.
+    | Initialises an analog device with input/output capabilities on the `GoPiGo3`_ robot.
+    | This class is derived from :py:class:`~easygopigo3.Sensor` class, so this means this class inherits all attributes and methods.
 
-    For creating an :py:class:`~easygopigo3.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
+    | For creating an :py:class:`~easygopigo3.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
 
     .. code-block:: python
 
@@ -1201,12 +1201,58 @@ class AnalogSensor(Sensor):
 
 class LightSensor(AnalogSensor):
     """
-    Creates a light sensor from which we can read.
-    Light sensor is by default on pin A1(A-one)
-    self.pin takes a value of 0 when on analog pin (default value)
-        takes a value of 1 when on digital pin
+    | Initialises an object for the `Grove Light Sensor`_.
+
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a LightSensor object through the gpg3_obj object
+         light_sensor = gpg3_obj.init_light_sensor()
+
+         # do the usual stuff, like read the data of the sensor
+         value = light_sensor.read()
+         value_percentage = light_sensor.percent_read()
+
+         # take a look at AnalogSensor class for more methods and attributes
+
+    | Or if we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the Light Sensor connected to
+         port = "AD2"
+
+         light_sensor = gpg3_obj.init_light_sensor(port)
+
+         # read the sensor the same way as in the previous example
+
+
+    | For more sensors, please see our Dexter Industries `shop`_.
+
     """
     def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.LightSensor` object for the `Grove Light Sensor`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Light Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LightSensor` object.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+
+        """
         debug("LightSensor init")
         AnalogSensor.__init__(self, port, "INPUT", gpg)
         self.set_pin(1)
