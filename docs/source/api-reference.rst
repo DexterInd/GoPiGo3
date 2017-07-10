@@ -10,6 +10,7 @@ API Reference Point
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
 .. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
 .. _Grove Ultrasonic Sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
+.. _Grove Buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 
 .. _physical ports:
 
@@ -107,6 +108,10 @@ UltrasonicSensor
 =====================================
 Buzzer
 =====================================
+
+.. autoclass:: easygopigo3.Buzzer
+   :members:
+   :special-members:
 
 =====================================
 Led

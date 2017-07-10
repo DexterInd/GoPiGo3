@@ -1075,7 +1075,7 @@ class DigitalSensor(Sensor):
 
 class AnalogSensor(Sensor):
     """
-    | Initialises an analog device with input/output capabilities on the `GoPiGo3`_ robot.
+    | Class for analog devices with input/output capabilities on the `GoPiGo3`_ robot.
     | This class is derived from :py:class:`~easygopigo3.Sensor` class, so this means this class inherits all attributes and methods.
 
     | For creating an :py:class:`~easygopigo3.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
@@ -1198,7 +1198,7 @@ class AnalogSensor(Sensor):
 
 class LightSensor(AnalogSensor):
     """
-    | Initialises an object for the `Grove Light Sensor`_.
+    | Class for the `Grove Light Sensor`_.
 
     | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
@@ -1260,7 +1260,7 @@ class LightSensor(AnalogSensor):
 
 class SoundSensor(AnalogSensor):
     """
-    | Initialises an object for the `Grove Sound Sensor`_.
+    | Class for the `Grove Sound Sensor`_.
 
     | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.SoundSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_sound_sensor` method like in the following examples.
@@ -1323,7 +1323,7 @@ class SoundSensor(AnalogSensor):
 
 class UltraSonicSensor(AnalogSensor):
     """
-    | Initialises an object for the `Grove Ultrasonic Sensor`_.
+    | Class for the `Grove Ultrasonic Sensor`_.
 
     | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.UltraSonicSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor` method like in the following examples.
@@ -1529,6 +1529,46 @@ class UltraSonicSensor(AnalogSensor):
 
 
 class Buzzer(AnalogSensor):
+    """
+    | Class for the `Grove Buzzer`_.
+
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.Buzzer` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_buzzer` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a UltraSonicSensor object through the gpg3_obj object
+         buzzer = gpg3_obj.init_buzzer()
+
+         # do the usual stuff, like read the distance the sensor is measuring
+         distance_cm = buzzer.read()
+         distance_inches = buzzer.read_inches()
+
+         # take a look at AnalogSensor class for more methods and attributes
+
+    | Or if we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the ultrasonic sensor connected to
+         port = "AD1"
+
+         buzzer = gpg3_obj.init_buzzer(port)
+
+         # read the sensor's measured distance as in the previous example
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+
+    """
     '''
     Default port is AD1
     It has three methods:
