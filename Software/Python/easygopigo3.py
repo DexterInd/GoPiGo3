@@ -1105,7 +1105,7 @@ class AnalogSensor(Sensor):
     """
     def __init__(self, port, pinmode, gpg):
         """
-        Binds an analog device to the specified ``port`` with the appropriate ``pinmode`` functionality.
+        Binds an analog device to the specified ``port`` with the appropriate ``pinmode`` mode.
 
         :param str port: The port to which the sensor/actuator is connected.
         :param str pinmode: The pin mode of the device that's connected to the `GoPiGo3`_.
@@ -1178,8 +1178,8 @@ class AnalogSensor(Sensor):
     def write_freq(self, freq):
         """
         | Sets the frequency of the PWM signal.
-        | The frequency range goes between 3Hz and 48000Hz.
-        | Default value is 24000Hz (24kHz).
+        | The frequency range goes from 3Hz up to 48000Hz.
+        | Default value is set to 24000Hz (24kHz).
 
         :param int freq: Frequency of the PWM signal.
 
@@ -1234,8 +1234,9 @@ class LightSensor(AnalogSensor):
 
          # read the sensor the same way as in the previous example
 
+    .. seealso::
 
-    | For more sensors, please see our Dexter Industries `shop`_.
+         For more sensors, please see our Dexter Industries `shop`_.
 
     """
     def __init__(self, port="AD1", gpg=None):
