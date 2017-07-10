@@ -1599,7 +1599,7 @@ class Buzzer(AnalogSensor):
         """
         Constructor for initializing a :py:class:`~easygopigo3.Buzzer` object for the `Grove Buzzer`_.
 
-        :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
+        :param str port = "AD1": Port to which we have the `Grove Buzzer`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Buzzer` object.
         :raises AtrributeError: If an attribute couldn't be found - you shouldn't worry about this one.
         :var int power = 50: Duty cycle of the signal that's put on the buzzer.
@@ -1689,7 +1689,63 @@ class Buzzer(AnalogSensor):
 
 
 class Led(AnalogSensor):
+    """
+    | Class for the `Grove LED`_.
+
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.Led` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_led` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a Led object through the gpg3_obj object
+         buzzer = gpg3_obj.init_led()
+
+         # turn on and off the buzzer
+         buzzer.light()
+         sleep(1)
+         buzzer.light_off()
+
+         # take a look at AnalogSensor class for more methods and attributes
+
+    | If we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the led connected to
+         port = "AD1"
+
+         buzzer = gpg3_obj.init_led(port)
+
+         # call some Led-specific methods
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+
+    """
     def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.Led` object for the `Grove LED`_.
+
+        :param str port = "AD1": Port to which we have the `Grove LED`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Led` object.
+        :raises ValueError: If an inappropriate value was tried to be assigned - you shouldn't worry about this one.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+
+        """
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
             self.set_pin(1)
@@ -1699,19 +1755,47 @@ class Led(AnalogSensor):
             raise ValueError
 
     def light_on(self, power):
+        """
+        Sets the duty cycle for the `Grove LED`_.
+
+        :param int power: Number between **0** and **100** that represents the duty cycle of PWM signal.
+
+        """
         self.write(power)
 
     def light_max(self):
+        """
+        Turns on the `Grove LED`_ at full power.
+
+        """
         max_power = 100
         self.light_on(max_power)
 
     def light_off(self):
+        """
+        Turns off the `Grove LED`_.
+
+        """
         self.write(0)
 
     def is_on(self):
+        """
+        Checks if the `Grove LED`_ is turned on.
+
+        :returns: If the `Grove LED`_ is on.
+        :rtype: boolean
+
+        """
         return (self.value > 0)
 
     def is_off(self):
+        """
+        Checks if the `Grove LED`_ is turned off.
+
+        :returns: If the `Grove LED`_ is off.
+        :rtype: boolean
+
+        """
         return (self.value == 0)
 ##########################
 
@@ -1724,13 +1808,75 @@ class Led(AnalogSensor):
 
 
 class ButtonSensor(DigitalSensor):
+    """
+    | Class for the `Grove Button`_.
+
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a Led object through the gpg3_obj object
+         button = gpg3_obj.init_button_sensor()
+
+         while True:
+             if button.is_button_pressed():
+                 print("button pressed")
+             else:
+                 print("button released")
+
+         # take a look at AnalogSensor class for more methods and attributes
+
+    | If we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the button connected to
+         port = "AD1"
+
+         button = gpg3_obj.init_button_sensor(port)
+
+         # call some button-specific methods
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+
+    """
 
     def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.ButtonSensor` object for the `Grove Button`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Button`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Button` object.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+
+        """
         DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
         self.set_pin(1)
         self.set_descriptor("Button sensor")
 
     def is_button_pressed(self):
+        """
+        Checks if the `Grove Button`_ is pressed.
+
+        :returns: If the `Grove Button`_ is pressed.
+        :rtype: boolean
+        """
         return self.read() == 1
 ##########################
 
