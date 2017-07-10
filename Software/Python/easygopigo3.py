@@ -95,7 +95,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
      * have precise control over the direction of the robot
      * set the speed of the robot
      * turn *on* or *off* the blinker LEDs
-     * control the `GoPiGo3`_'s sensor's *eyes*, *color* and so on ...
+     * control the `GoPiGo3`_' Dex's *eyes*, *color* and so on ...
 
      .. needs revisiting
 
@@ -110,8 +110,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | This constructor sets the variables to the following values:
 
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
-        :var tuple(int,int,int) left_eye_color = (0,255,255): Set the `distance sensor`_'s color to **turqoise**.
-        :var tuple(int,int,int) right_eye_color = (0,255,255): Set the `distance sensor`_'s color to **turqoise**.
+        :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
+        :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
 
         """
         super(self.__class__, self).__init__()
