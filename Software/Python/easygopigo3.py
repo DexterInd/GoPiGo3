@@ -1322,6 +1322,46 @@ class SoundSensor(AnalogSensor):
 
 
 class UltraSonicSensor(AnalogSensor):
+    """
+    | Initialises an object for the `Grove Ultrasonic Sensor`_.
+
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.UltraSonicSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a UltraSonicSensor object through the gpg3_obj object
+         ultrasonic_sensor = gpg3_obj.init_ultrasonic_sensor()
+
+         # do the usual stuff, like read the distance the sensor is measuring
+         distance_cm = ultrasonic_sensor.read()
+         distance_inches = ultrasonic_sensor.read_inches()
+
+         # take a look at AnalogSensor class for more methods and attributes
+
+    | Or if we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the ultrasonic sensor connected to
+         port = "AD1"
+
+         ultrasonic_sensor = gpg3_obj.init_ultrasonic_sensor(port)
+
+         # read the sensor's measured distance as in the previous example
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+
+    """
 
     def __init__(self, port="AD1", gpg=None):
         try:
