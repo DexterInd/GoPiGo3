@@ -1819,7 +1819,7 @@ class ButtonSensor(DigitalSensor):
          # create an EasyGoPiGo3 object
          gpg3_obj = EasyGoPiGo3()
 
-         # and now instantiate a Led object through the gpg3_obj object
+         # and now instantiate a Button object through the gpg3_obj object
          button = gpg3_obj.init_button_sensor()
 
          while True:
@@ -1989,13 +1989,54 @@ class LineFollower(Sensor):
 
 
 class Servo(Sensor):
-    '''
-    Wrapper to control the Servo Motors on the GPG3.
-    Allows you to rotate the servo by feeding in the angle of rotation.
-    Connect the Servo to the Servo1 and Servo2 ports of GPG3.
-    '''
+    """
+    Class for controlling `servo'_ motors with the `GoPiGo3`_ robot.
+    Allows you to rotate the servo by serving the angle of rotation.
+
+    This class is derived from :py:class:`~easygopigo3.Sensor` class and because of this, it inherits all the attributes and methods.
+
+    For creating a :py:class:`~easygopigo3.Servo` object we need to call :py:meth:`~easygopigo3.Sensor.init_servo` method like in
+    the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now let's instantiate a Servo object through the gpg3_obj object
+         # this will bind a servo to port "SERVO1"
+         servo = gpg3_obj.init_servo()
+
+         # rotate the servo at 160 degrees
+         servo.rotate_servo(160)
+
+    Or if we want to specify the port to which we connect the servo, we need to call :py:meth:`~easygopigo3.Sensor.init_servo` the following way.
+
+    .. code-block:: python
+
+         servo = gpg3_obj.init_servo("SERVO2")
+
+    .. seealso::
+
+        For more sensors, please see our Dexter Industries `shop`_.
+
+    """
 
     def __init__(self, port="SERVO1", gpg=None):
+        """
+        Constructor for instantiating a :py:class:`~easygopigo3.Servo` object for a (or multiple) `servo`_ (servos).
+
+        :param str port = "SERVO1": The port to which we have connected the `servo`_.
+        :param easygopigo3.EasyGoPiGo3 = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
+
+        The available ports that can be used for a `servo`_ are:
+
+             * ``"SERVO1"`` - servo controller port.
+             * ``"SERVO2"`` - servo controller port.
+
+        To see where these 2 ports are located, please take a look at the following graphical representation: `physical ports`_.
+
+        """
         try:
             Sensor.__init__(self, port, "OUTPUT", gpg)
             self.set_descriptor("GoPiGo3 Servo")
@@ -2003,14 +2044,24 @@ class Servo(Sensor):
             raise ValueError("GoPiGo3 Servo not found")
 
     def rotate_servo(self, servo_position):
-        '''
-        This calculation will vary with servo and is an approximate anglular movement of the servo
-        Pulse Width varies between 575us to 24250us for a 60KHz Servo Motor which rotates between 0 to 180 degrees
-        0 degree ~= 575us
-        180 degree ~= 2425us
-        Pulse width Range= 2425-575 =1850
-        => 1 degree rotation requires ~= 10.27us
-        '''
+        """
+        Rotates the `servo`_ at a specific angle.
+
+        :param int servo_position: Angle at which the servo has to rotate. The values can be anywhere from **0** to **180** degrees.
+
+        The pulse width varies the following way:
+
+             * **575 uS** for **0 degrees** - the servo's default position.
+             * **24250 uS** for **180 degrees** - where the servo is rotated at its maximum position.
+
+        Each rotation of **1 degree** requires an increase of the pulse width by **10.27 uS**.
+
+        .. warning::
+
+             | We use PWM signals (Pulse Width Modulation), so the angle at which a `servo`_ will rotate will be case-dependent.
+             | This means a servo's 180 degrees position won't be the same as with another servo.
+
+        """
 
         #Pulse width range in us corresponding to 0 to 180 degrees
         PULSE_WIDTH_RANGE=1850

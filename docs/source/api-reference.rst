@@ -13,6 +13,7 @@ API Reference Point
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
+.. _servo: https://www.dexterindustries.com/shop/servo-package/
 
 .. _physical ports:
 
@@ -131,7 +132,6 @@ ButtonSensor
    :members:
    :special-members:
 
-
 =====================================
 LineFollower
 =====================================
@@ -139,6 +139,10 @@ LineFollower
 =====================================
 Servo
 =====================================
+
+.. autoclass:: easygopigo3.Servo
+   :members:
+   :special-members:
 
 =====================================
 DistanceSensor
