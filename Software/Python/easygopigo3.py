@@ -1129,9 +1129,6 @@ class AnalogSensor(Sensor):
         self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
 
-        # use the green exterior pin of the grove connector
-        self.set_pin(1)
-
         # this delay is at least needed by the Light sensor
         time.sleep(0.01)
 
@@ -1299,7 +1296,7 @@ class SoundSensor(AnalogSensor):
     .. seealso::
 
          For more sensors, please see our Dexter Industries `shop`_.
-         
+
     """
     def __init__(self, port="AD1", gpg=None):
         """
