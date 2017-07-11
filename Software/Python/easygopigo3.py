@@ -2167,7 +2167,7 @@ try:
         """
         Class for the `Distance Sensor`_ device.
 
-        In order to create a :py:class:`~easygopigo3.DistanceSensor` class, we need to take a look at the following template.
+        In order to create a :py:class:`~easygopigo3.DistanceSensor` class, we need to do it like in at the following template.
 
         .. code-block:: python
 
@@ -2185,6 +2185,15 @@ try:
 
         """
         def __init__(self, port="I2C",gpg=None):
+            """
+            Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
+
+            :param str port = "I2C": Port to which the distance sensor is connected.
+            :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+
+            To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: `physical ports`_.
+
+            """
             Sensor.__init__(self, port, "OUTPUT", gpg)
             try:
                 distance_sensor.DistanceSensor.__init__(self)
@@ -2196,6 +2205,18 @@ try:
 
         # Returns the values in cms
         def read_mm(self):
+            """
+            Reads the distance in millimeters.
+
+            :returns: Distance from target in millimeters.
+            :rtype: int
+
+            .. note::
+
+                 1. Sensor's range is **5-8,000** millimeters.
+                 2. When the values are out of the range, it returns **8190**.
+
+            """
 
             # 8190 is what the sensor sends when it's out of range
             # we're just setting a default value
@@ -2230,10 +2251,35 @@ try:
             return mm
 
         def read(self):
+            """
+            Reads the distance in centimeters.
+
+            :returns: Distance from target in centimeters.
+            :rtype: int
+
+            .. note::
+
+                 1. Sensor's range is **0-800** centimeters.
+                 2. When the values are out of the range, it returns **819**.
+
+            """
+
             cm = self.read_mm()//10
             return (cm)
 
         def read_inches(self):
+            """
+            Reads the distance in inches.
+
+            :returns: Distance from target in inches.
+            :rtype: int
+
+            .. note::
+
+                 1. Sensor's range is **0-314** inches.
+                 2. Anything that's bigger than **314** inches is returned when the sensor can't detect any target/surface.
+
+            """
             cm = self.read()
             return cm / 2.54
 
