@@ -165,6 +165,10 @@ Servo
 DistanceSensor
 =====================================
 
+.. autoclass:: easygopigo3.DistanceSensor
+   :members:
+   :special-members:
+
 =====================================
 DHTSensor
 =====================================

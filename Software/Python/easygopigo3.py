@@ -2164,16 +2164,32 @@ try:
     from Distance_Sensor import distance_sensor
 
     class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
-        '''
-        Wrapper to measure the distance in cms from the DI distance sensor.
-        Connect the distance sensor to I2C port.
-        '''
+        """
+        Class for the `Distance Sensor`_ device.
+
+        In order to create a :py:class:`~easygopigo3.DistanceSensor` class, we need to take a look at the following template.
+
+        .. code-block:: python
+
+            # create an EasyGoPiGo3 object
+            gpg3_obj = EasyGoPiGo3()
+
+            # and now let's instantiate a DistanceSensor object through the gpg3_obj object
+            distance_sensor = gpg3_obj.init_distance_sensor()
+
+            # read values continuously and print them in the terminal
+            while True:
+                distance = distance_sensor.read()
+
+                print(distance)
+
+        """
         def __init__(self, port="I2C",gpg=None):
             Sensor.__init__(self, port, "OUTPUT", gpg)
             try:
                 distance_sensor.DistanceSensor.__init__(self)
             except Exception as e:
-                # print(e)
+                #print(e)
                 raise IOError("Distance Sensor not found")
 
             self.set_descriptor("Distance Sensor")
