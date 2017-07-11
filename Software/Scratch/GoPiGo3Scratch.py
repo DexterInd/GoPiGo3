@@ -79,9 +79,13 @@ except:
     
 try:
     distance_sensor = easy.DistanceSensor(gpg)
-    print ("Distance sensor is detected")
-except:
+except Exception as e:
     distance_sensor = None
+    
+if distance_sensor != None:
+    print ("Distance sensor is detected")
+else:
+    print ("No distance sensor detected")
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder
@@ -198,8 +202,8 @@ def get_sensor_instance(port,sensor_class):
             print("create_sensor_instance {}".format(e))
             known_sensors[port] = None
             
-        print(known_sensors[port])
-        return(known_sensors[port])
+    # print(known_sensors[port])
+    return(known_sensors[port])
 
 
 def set_regex_string():
@@ -346,7 +350,7 @@ def is_msg(reg,msg):
     if retval is None:
         return False
     else:
-        print ("Recognized {}".format(msg))
+        # print ("Recognized {}".format(msg))
         return True
 
 
@@ -355,8 +359,8 @@ def handle_GoPiGo3_msg(msg):
     parses the message
     dispatches to appropriate method
     '''
-    if en_debug:
-        print("received {}".format(msg.strip().lower()))
+    # if en_debug:
+    #     print("received {}".format(msg.strip().lower()))
     
     sensors = {}
 
@@ -406,8 +410,8 @@ def handle_GoPiGo3_msg(msg):
 
 
 def handle_GoPiGo3_Sensor_msg(msg):
-    if en_debug:
-        print("received sensor {}".format(msg.strip().lower()))
+    # if en_debug:
+    #     print("received sensor {}".format(msg.strip().lower()))
         
     sensors = {}
     regObj = compiled_regexSensors.match(msg.strip().lower())
@@ -416,8 +420,8 @@ def handle_GoPiGo3_Sensor_msg(msg):
             print ("GoPiGo3 Sensor command is not recognized")
         return None
 
-    for i in range(len(regObj.groups())+1):
-        print ("{}: {}".format(i,regObj.group(i)))
+    # for i in range(len(regObj.groups())+1):
+    #     print ("{}: {}".format(i,regObj.group(i)))
     
     if regObj.group(SENSOR_DISTANCE_GROUP):
         sensors = handle_distance(regObj)
@@ -509,15 +513,15 @@ def handle_line_sensor(regObj):
         
     sensors = {}
     explanation = [
-    "Completely to the right", 
-    "Way to the right",
-    "Going right",
-    "Slightly to the right",
-    "Center", 
-    "Slightly to the left",
-    "Going left",
+    "Completely to the left", 
     "Way to the left",
-    "Completely to the left",
+    "Going left",
+    "Slightly to the left",
+    "Center", 
+    "Slightly to the right",
+    "Going right",
+    "Way to the right",
+    "Completely to the right",
     "Reading black everywhere",
     "Reading white everywhere",
     "Technical difficulties"
@@ -534,6 +538,8 @@ def handle_line_sensor(regObj):
         return({'line':-3,'line explanation': "technical difficulties"})
 
     try:
+        line=scratch_line.line_sensor_val_scratch()
+        time.sleep(0.01)
         line=scratch_line.line_sensor_val_scratch()
         if en_debug:
             print ("Line Sensor Readings: {}".format(str(line)))
@@ -557,7 +563,7 @@ def handle_light(regObj):
     light = get_sensor_instance(port, easy.LightSensor)
     
     if light:
-        light_reading = light.percent_read()    
+        light_reading = light.percent_read()   
         sensors["{}: Light".format(port)] = light_reading
     else:
         return ({"{}: Light".format(port):"technical difficulties"})
