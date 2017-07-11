@@ -2165,15 +2165,7 @@ try:
 
 except Exception as e:
 
-    # if the library can't be import
-    # then import mock module for mocking classes
-    import mock
-
-    # create a mock class for the DistanceSensor class
-    # it's required for the documentation
-    @mock.patch("distance_sensor.DistanceSensor")
-    def mock_distance_sensor(mock_class):
-        print(mock_class)
+    from mock_package import distance_sensor
 
 class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
