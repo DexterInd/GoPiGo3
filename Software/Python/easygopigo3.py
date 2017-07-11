@@ -1897,22 +1897,45 @@ class ButtonSensor(DigitalSensor):
 
 
 class LineFollower(Sensor):
-    '''
-    The line follower detects the presence of a black line or its
-      absence.
-    You can use this in one of three ways.
-    1. You can use read_position() to get a simple position status:
-        center, left or right.
-        these indicate the position of the black line.
-        So if it says left, the GoPiGo has to turn right
-    2. You can use read() to get a list of the five sensors.
-        each position in the list will either be a 0 or a 1
-        It is up to you to determine where the black line is.
-    3. You can use read_raw_sensors() to get raw values from all sensors
-        You will have to handle the calibration yourself
-    '''
+    """
+    Class for interacting with the `Line Follower`_ sensor.
+    With this sensor, you can make your robot follow a black line on a white background.
+
+    The `Line Follower`_ sensor has 5 IR sensors.
+    Each IR sensor is capable of diferentiating a black surface from a white one.
+
+    In order to create an object of this class, we would do it like in the following example.
+
+    .. code-block:: python
+
+         # initialize an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and then initialize the LineFollower object
+         line_follower = gpg3_obj.init_line_follower()
+
+         # use it however you want it
+         line_follower.read_raw_sensors()
+
+    .. warning::
+
+         This class requires the :py:mod:`line_sensor` library.
+
+    """
 
     def __init__(self, port="I2C", gpg=None):
+        """
+        Constructor for initalizing a :py:class:`~easygopigo3.LineFollower` object.
+
+        :param str port = "I2C": The port to which we have connected the `Line Follower`_ sensor.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
+        :raises ValueError: If the ``line_sensor`` library couldn't be found.
+
+        The only value the ``port`` parameter can take is ``"I2C"``.
+
+        The I2C ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: `physical ports`_.
+
+        """
         try:
             Sensor.__init__(self, port, "INPUT", gpg)
             self.set_descriptor("Line Follower")
@@ -1921,12 +1944,13 @@ class LineFollower(Sensor):
             raise ValueError("Line Follower Library not found")
 
     def read_raw_sensors(self):
-        '''
-        Returns raw values from all sensors
-        From 0 to 1023
-        May return a list of -1 when there's a read error
-        '''
+        """
+        Read the 5 IR sensors of the `Line Follower`_ sensor.
 
+        :returns: A list with 5 10-bit numbers that represent the readings from the line follower device.
+        :rtype: list[int]
+
+        """
         five_vals = line_sensor.read_sensor()
 
         if five_vals != -1:
@@ -1935,30 +1959,70 @@ class LineFollower(Sensor):
             return [-1, -1, -1, -1, -1]
 
     def get_white_calibration(self):
+        """
+        Place the `GoPiGo3`_ robot on top of a white-colored surface.
+        After that, call this method for calibrating the robot on a white surface.
+
+        :returns: A list with 5 10-bit numbers that represent the readings of line follower sensor.
+        :rtype: int
+
+        Also, for fully calibrating the sensor, the :py:class:`~easygopigo3.LineFollower.get_black_calibration` method also needs to be called.
+
+        """
         return line_sensor.get_white_line()
 
     def get_black_calibration(self):
+        """
+        Place the `GoPiGo3`_ robot on top of a black-colored surface.
+        After that, call this method for calibrating the robot on a black surface.
+
+        :returns: A list with 5 10-bit numbers that represent the readings of line follower sensor.
+        :rtype: int
+
+        Also, for fully calibrating the sensor, the :py:class:`~easygopigo3.LineFollower.get_white_calibration` method also needs to be called.
+
+        """
         return line_sensor.get_black_line()
 
     def read(self):
-        '''
-        Returns a list of 5 values between 0 and 1
-        Depends on the line sensor being calibrated first
-            through the Line Sensor Calibration tool
-        May return all -1 on a read error
-        '''
+        """
+        Reads the 5 IR sensors of the `Line Follower`_ sensor.
+
+        :returns: A list with 5 numbers that represent the readings of the line follower device. The values are either **0** (for black) or **1** (for white).
+        :rtype: list[int]
+
+        .. warning::
+
+             If an error occurs, a list of **5 numbers** with values set to **-1** will be returned.
+             This may be caused by bad calibration values.
+
+             Please use :py:meth:`~easygopigo3.LineFollower.get_black_calibration` or :py:meth:`~easygopigo3.LineFollower.get_white_calibration` methods before calling this method.
+
+        """
         five_vals = scratch_line.absolute_line_pos()
 
         return five_vals
 
     def read_position(self):
-        '''
-        Returns a string telling where the black line is, compared to
-            the GoPiGo
-        Returns: "Left", "Right", "Center", "Black", "White"
-        May return "Unknown"
-        This method is not intelligent enough to handle intersections.
-        '''
+        """
+        Returns a string telling to which side the black line that we're following is located.
+
+        :returns: String that's indicating the location of the black line.
+        :rtype: str
+
+        The strings this method can return are the following:
+
+            * ``"Center"`` - when the line is found in the middle.
+            * ``"Black"`` - when the line follower sensor only detects black surfaces.
+            * ``"White"`` - when the line follower sensor only detects white surfaces.
+            * ``"Left"`` - when the black line is located on the left of the sensor.
+            * ``"Right"`` - when the black line is located on the right of the sensor.
+
+        .. note::
+
+            This isn't the most "intelligent" algorithm for following a black line, but it proves the point and it works.
+
+        """
         five_vals = [-1, -1, -1, -1, -1]
 
 

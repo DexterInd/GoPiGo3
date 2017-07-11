@@ -14,6 +14,7 @@ API Reference Point
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
+.. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 
 .. _physical ports:
 
@@ -78,7 +79,7 @@ DigitalSensor
 
 .. warning::
 
-    The :py:class:`easygopigo3.DigitalSensor` class is unfinished. 
+    The :py:class:`easygopigo3.DigitalSensor` class is unfinished.
 
     It also requires testing once it's done.
 
@@ -147,6 +148,10 @@ ButtonSensor
 =====================================
 LineFollower
 =====================================
+
+.. autoclass:: easygopigo3.LineFollower
+   :members:
+   :special-members:
 
 =====================================
 Servo
