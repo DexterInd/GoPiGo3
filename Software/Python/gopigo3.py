@@ -146,6 +146,14 @@ class GoPiGo3(object):
         I2C,
     """)
     
+    GROVE_STATE = Enumeration("""
+        VALID_DATA,
+        NOT_CONFIGURED,
+        CONFIGURING,
+        NO_DATA,
+        I2C_ERROR,
+    """)
+    
     LED_EYE_LEFT      = 0x02
     LED_EYE_RIGHT     = 0x01
     LED_BLINKER_LEFT  = 0x04
@@ -760,7 +768,7 @@ class GoPiGo3(object):
                     if value == 0:
                         raise SensorError("get_grove_value error: Sensor not responding")
                     elif value == 1:
-                        raise SensorError("get_grove_value error: Object not detected within range")
+                        raise ValueError("get_grove_value error: Object not detected within range")
                     else:
                         return value
                 else:
@@ -774,9 +782,9 @@ class GoPiGo3(object):
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
                 if(reply[4] == self.GroveType[port_index]):
-                    if(reply[5] == 0):   # no error
+                    if(reply[5] == self.GROVE_STATE.VALID_DATA):  # no error
                         return reply[6:]
-                    elif(reply[5] == 4): # I2C bus error
+                    elif(reply[5] == self.GROVE_STATE.I2C_ERROR): # I2C bus error
                         raise I2CError("get_grove_value error: I2C bus error")
                     else:
                         raise ValueError("get_grove_value error: Invalid value")
