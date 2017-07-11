@@ -122,14 +122,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
-        # only one is needed, we're going overkill
+        '''
+        Stop the GoPiGo3 by setting the degrees per second speed 
+        of each motor to 0
+        '''
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         
-        # setting the motor power worked was needed for older firmware
-        if self.get_version_firmware() == "0.2.6": 
-            self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        # removing the above results in a soft stop for newer firmware
-        # not a hard stop
 
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
