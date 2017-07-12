@@ -12,6 +12,7 @@ DexterIndustries' GoPiGo3 Documentation!
    :numbered:
    :caption: Contents:
 
+   about
    quickstart
    tutorials
    apiref
