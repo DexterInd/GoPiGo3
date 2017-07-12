@@ -96,6 +96,10 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# With this feature enabled, figures, tables, code-blocks and sections are automatically numbered
+# numfig = True
+# numfig_format = {'figure': 'Figure %s', 'table': 'Table %s', 'code-block': 'Listing %s', 'section': 'Section %s'}
+
 
 # -- Options for HTML output ----------------------------------------------
 

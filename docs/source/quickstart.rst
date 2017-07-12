@@ -1,3 +1,5 @@
+.. _getting-started-chapter:
+
 ###############
 Getting Started
 ###############
@@ -20,7 +22,7 @@ For assembling your `GoPiGo3`_ robot, read the instructions from the following p
 Connecting to GoPiGo3
 ************************
 
-For connecting to your `GoPiGo3`_ robot with a computer / laptop, read the instructions from the followin page: `connecting to robot`_.
+For connecting to your `GoPiGo3`_ robot with a computer / laptop, read the instructions from the following page: `connecting to robot`_.
 
 ***********************
 Program your GoPiGo3

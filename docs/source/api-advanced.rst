@@ -1,3 +1,5 @@
+.. _api-advanced-chapter:
+
 ##############################
 API Reference Point - Advanced
 ##############################
@@ -13,7 +15,13 @@ Before using this chapter's classes, you need to be able to import the following
    import easygopigo3
    import gopigo3
 
-Unless you're already running `Raspbian For Robots`_ , make sure the `gopigo3 package`_ is installed as otherwise an import error will be thrown.
+If you have issues importing these 2 modules, then make sure that:
+
+   * You've followed the steps found in :ref:`Getting Started <getting-started-chapter>` guide.
+   * You have installed either `Raspbian For Robots`_, the GoPiGo3 `repository`_ or the `GoPiGo3 package`_ (the pip package).
+   * You have the ``gopigo3`` package installed by typing the command ``pip freeze | grep gopigo3`` on your Raspberry Pi's terminal. If the package is installed, then a string with the ``GoPiGo3==[x.y.z]`` format will show up.
+
+If you encounter issues that aren't covered by our :ref:`Getting Started <getting-started-chapter>` guide or :ref:`FAQ <faq-chapter>` chapter, please head over to our `forum`_.
 
 =====================================
 Sensor
@@ -59,4 +67,6 @@ AnalogSensor
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
+.. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
+.. _forum: http://forum.dexterindustries.com/categories

@@ -1,3 +1,5 @@
+.. _devguide-chapter:
+
 #################
 Developer's Guide
 #################

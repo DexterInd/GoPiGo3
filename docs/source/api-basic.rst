@@ -1,3 +1,5 @@
+.. _api-basic-chapter:
+
 ###########################
 API Reference Point - Basic
 ###########################
@@ -12,10 +14,10 @@ Before using this chapter's classes, you need to be able to import the following
 
    import easygopigo3
 
-Unless you're already running `Raspbian For Robots`_ , make sure the `gopigo3 package`_ is installed as otherwise an import error will be thrown.
+Unless you're already running `Raspbian For Robots`_ , make sure the `gopigo3 package`_ (pip package) is installed as otherwise an import error will be thrown.
 
 
-.. _physical ports:
+.. _hardware-ports-section:
 
 =====================================
 Hardware Ports
@@ -163,4 +165,5 @@ DHTSensor
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
+.. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/

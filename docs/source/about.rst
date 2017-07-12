@@ -1,3 +1,5 @@
+.. _about-chapter:
+
 ########
 About Us
 ########

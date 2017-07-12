@@ -1,3 +1,5 @@
+.. _tutorials-chapter:
+
 #########
 Tutorials
 #########
