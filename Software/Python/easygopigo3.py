@@ -1713,6 +1713,11 @@ class Buzzer(AnalogSensor):
 class Led(AnalogSensor):
     """
     | Class for the `Grove LED`_.
+    | With this class the following things can be done:
+
+         * Turn *ON*/*OFF* an LED.
+         * Set a level of brightness for the LED.
+         * Check if an LED is turned *ON* or *OFF*.
 
     | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.Led` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_led` method like in the following examples.
