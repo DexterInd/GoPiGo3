@@ -920,7 +920,7 @@ class Servo(Sensor):
 # under try/except in case the Distance Sensor is not installed
 #######################################################################
 try:
-    from Distance_Sensor import distance_sensor
+    from di_sensors import distance_sensor
 
     class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         '''
@@ -1027,7 +1027,7 @@ class DHTSensor(Sensor):
         import done internally so it's done on a as needed basis only
         '''
 
-        from DHT_Sensor import DHT
+        from di_sensors import DHT
 
         _grab_read()
         temp = DHT.dht(self.sensor_type)[0]
@@ -1047,7 +1047,7 @@ class DHTSensor(Sensor):
         TBD: raise errors instead of returning strins
         '''
         import threading
-        from DHT_Sensor import DHT
+        from di_sensors import DHT
 
         _grab_read()
         humidity = DHT.dht(self.sensor_type)[1]
@@ -1062,7 +1062,7 @@ class DHTSensor(Sensor):
             return humidity
 
     def read_dht(self):
-        from DHT_Sensor import DHT
+        from di_sensors import DHT
 
         _grab_read()
         [temp , humidity]=DHT.dht(self.sensor_type)
@@ -1099,7 +1099,7 @@ class DHTSensor(Sensor):
         """
 
         import threading
-        from DHT_Sensor import DHT
+        from di_sensors import DHT
         import numpy
         import math
         # after this many second we make a record
