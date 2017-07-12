@@ -670,7 +670,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
 
-        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return LightSensor(port, self)
@@ -682,7 +682,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
 
-        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return SoundSensor(port, self)
@@ -694,7 +694,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
 
-        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return UltraSonicSensor(port, self)
@@ -706,7 +706,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
 
-        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return Buzzer(port, self)
@@ -718,7 +718,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
 
-        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return Led(port, self)
@@ -730,7 +730,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
 
-        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following `physical ports`_.
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return ButtonSensor(port, self)
@@ -742,7 +742,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
         :returns: An instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
 
-        The ``"I2C"`` ports are mapped to the following `physical ports`_.
+        The ``"I2C"`` ports are mapped to the following :ref:`physical ports`.
 
         .. tip::
 
@@ -762,7 +762,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
 
-        The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following `physical ports`_.
+        The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`physical ports`.
 
         """
         return Servo(port, self)
@@ -775,7 +775,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param Str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
-        The ``"I2C"`` ports are mapped to the following `physical ports`_.
+        The ``"I2C"`` ports are mapped to the following :ref:`physical ports`.
 
         .. tip::
 
@@ -795,7 +795,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param str port: The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
-        The ``"SERIAL"`` port is mapped to the following `physical ports`_.
+        The ``"SERIAL"`` port is mapped to the following :ref:`physical ports`.
 
         """
         return DHTSensor(port, self, sensor_type)
@@ -815,7 +815,7 @@ class Sensor(object):
     It *should* only be used as a base class for any type of sensor. Since it contains methods for setting / getting the ports or the pinmode,
     it's basically useless unless a derived class comes in and adds functionalities.
 
-    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - `physical ports`_.
+    :var str port: There're 4 types of ports - analog, digital, I2C and serial ports. The string identifiers are mapped in the following graphical representation - :ref:`physical ports`.
     :var str pinmode: Represents the mode of operation of a pin - can be a digital input/output, an analog input/output or even a custom mode which must defined in the `GoPiGo3`_'s firmware.
     :var int pin: Each grove connector has 4 pins: GND, VCC and 2 signal pins that can be user-defined. This variable specifies which pin of these 2 signal pins is used.
     :var int portID: Depending on ``ports``'s value, an ID is given to each port. This variable is not important to us.
@@ -854,7 +854,7 @@ class Sensor(object):
         """
         Constructor for creating a connection to one of the available grove ports on the `GoPIGo3`_.
 
-        :param str port: Specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : `physical ports`_.
+        :param str port: Specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : :ref:`physical ports`.
         :param str pinmode: The mode of operation of the pin we're selecting.
         :param easygopigo3.EasyGoPiGo3 gpg: An instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
 
@@ -867,7 +867,7 @@ class Sensor(object):
              * ``"I2C"`` - the ``pinmode`` is irrelevant here.
              * ``"SERIAL"`` - the ``pinmode`` is irrelevant here.
 
-        These ports' locations can be seen in the following graphical representation - `physical ports`_.
+        These ports' locations can be seen in the following graphical representation - :ref:`physical ports`.
 
         The ``pinmode`` parameter can take the following string values:
 
@@ -981,9 +981,9 @@ class Sensor(object):
         device, because the class doesn't have any methods for interfacing with it, so we need to create
         a derived class that does this.
 
-        :param str port: The port we're connecting the device to. Take a look at the `physical ports`_' locations.
+        :param str port: The port we're connecting the device to. Take a look at the :ref:`physical ports`' locations.
 
-        Apart from this graphical representation of the ports' locations (`physical ports`_ locations),
+        Apart from this graphical representation of the ports' locations (:ref:`physical ports` locations),
         take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
 
         """
@@ -1016,7 +1016,7 @@ class Sensor(object):
         :returns: The current set port.
         :rtype: str
 
-        Apart from this graphical representation of the ports' locations (`physical ports`_ locations),
+        Apart from this graphical representation of the ports' locations (:ref:`physical ports` locations),
         take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
 
         """
@@ -1268,7 +1268,7 @@ class LightSensor(AnalogSensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         debug("LightSensor init")
@@ -1330,7 +1330,7 @@ class SoundSensor(AnalogSensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         debug("Sound Sensor on port " + port)
@@ -1396,7 +1396,7 @@ class UltraSonicSensor(AnalogSensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         try:
@@ -1632,7 +1632,7 @@ class Buzzer(AnalogSensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         try:
@@ -1770,7 +1770,7 @@ class Led(AnalogSensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         try:
@@ -1890,7 +1890,7 @@ class ButtonSensor(DigitalSensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
@@ -1960,7 +1960,7 @@ class LineFollower(Sensor):
 
         The only value the ``port`` parameter can take is ``"I2C"``.
 
-        The I2C ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: `physical ports`_.
+        The I2C ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`physical ports`.
 
         """
         try:
@@ -2125,7 +2125,7 @@ class Servo(Sensor):
              * ``"SERVO1"`` - servo controller port.
              * ``"SERVO2"`` - servo controller port.
 
-        To see where these 2 ports are located, please take a look at the following graphical representation: `physical ports`_.
+        To see where these 2 ports are located, please take a look at the following graphical representation: :ref:`physical ports`.
 
         """
         try:
@@ -2222,7 +2222,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
 
-        To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: `physical ports`_.
+        To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`physical ports`.
 
         """
         Sensor.__init__(self, port, "OUTPUT", gpg)

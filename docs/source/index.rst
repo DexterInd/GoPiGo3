@@ -15,7 +15,8 @@ DexterIndustries' GoPiGo3 Documentation!
    about
    quickstart
    tutorials
-   apiref
+   api-basic
+   api-advanced
    devguide
    faq
 

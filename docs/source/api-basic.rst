@@ -6,7 +6,7 @@ API Reference Point - Basic
 Requirements
 ============
 
-Before using this chapter's classes, you need to import the following module.
+Before using this chapter's classes, you need to be able to import the following module.
 
 .. code-block:: python
 
@@ -147,39 +147,6 @@ DHTSensor
 .. warning::
 
    Coming soon!
-
-##############################
-API Reference Point - Advanced
-##############################
-
-=====================================
-Sensor
-=====================================
-
-.. autoclass:: easygopigo3.Sensor
-  :members:
-  :special-members:
-  :exclude-members: __weakref__
-
-=====================================
-DigitalSensor
-=====================================
-
-.. warning::
-
-   Coming soon!
-
-=====================================
-AnalogSensor
-=====================================
-
-.. warning::
-
-   Class has some issues - not ready for general use.
-
-.. autoclass:: easygopigo3.AnalogSensor
-  :members:
-  :special-members:
 
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
