@@ -247,8 +247,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | ``blocking`` parameter can take the following values:
 
-             * ``True`` when the method will wait for the `GoPiGo3`_ robot to finish moving.
-             * ``False`` when the method will exit immediately and while the `GoPiGo3`_ robot will continue moving.
+             * ``True`` so that the method will wait for the `GoPiGo3`_ robot to finish moving.
+             * ``False`` so that the method will exit immediately and while the `GoPiGo3`_ robot will continue moving.
 
         """
         # dist is in cm
