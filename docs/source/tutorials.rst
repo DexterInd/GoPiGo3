@@ -4,7 +4,9 @@
 Tutorials
 #########
 
-Coming soon!
+.. note::
+
+   Being developed!
 
 ..
   ****************

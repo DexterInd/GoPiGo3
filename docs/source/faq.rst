@@ -4,7 +4,9 @@
 Frequently Asked Questions
 ##########################
 
-Coming soon!
+.. note::
+
+   Being developed!
 
 ..
   ********************************

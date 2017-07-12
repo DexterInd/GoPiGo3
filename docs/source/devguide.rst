@@ -4,7 +4,9 @@
 Developer's Guide
 #################
 
-Coming soon!
+.. note::
+
+   Being developed!
 
 ..
   ************************
