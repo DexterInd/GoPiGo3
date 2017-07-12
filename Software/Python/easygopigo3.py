@@ -245,8 +245,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
         :param boolean blocking: By default, the function is non-blocking.
 
-        | When ``blocking`` parameter is set to ``True``, the method exits after the `GoPiGo3`_ has driven for ``dist`` amount of centimeters.
-        | When ``blocking`` parameter is set to ``False``, the method exits immediately while the `GoPiGo3`_ continues to drive for ``dist`` amount of centimers. 
+        | ``blocking`` parameter can take the following values:
+
+             * ``True`` when the method will wait for the `GoPiGo3`_ robot to finish moving.
+             * ``False`` when the method will exit immediately and while the `GoPiGo3`_ robot will continue moving.
 
         """
         # dist is in cm
