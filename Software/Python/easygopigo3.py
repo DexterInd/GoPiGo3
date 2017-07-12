@@ -1728,12 +1728,12 @@ class Led(AnalogSensor):
          gpg3_obj = EasyGoPiGo3()
 
          # and now instantiate a Led object through the gpg3_obj object
-         buzzer = gpg3_obj.init_led()
+         led = gpg3_obj.init_led()
 
          # turn on and off the buzzer
-         buzzer.light()
+         led.light_max()
          sleep(1)
-         buzzer.light_off()
+         led.light_off()
 
          # take a look at AnalogSensor class for more methods and attributes
 
@@ -1747,7 +1747,7 @@ class Led(AnalogSensor):
          # variable for holding the port to which we have the led connected to
          port = "AD1"
 
-         buzzer = gpg3_obj.init_led(port)
+         led = gpg3_obj.init_led(port)
 
          # call some Led-specific methods
 
