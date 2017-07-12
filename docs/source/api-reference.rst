@@ -18,9 +18,10 @@ API Reference Point
 
 .. _physical ports:
 
-**************************
-GoPiGo3 Ports
-**************************
+=====================================
+Hardware Ports
+=====================================
+
 
 In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
 The quoted literals are to be used as pin identifiers inside the python scripts.
@@ -60,10 +61,6 @@ These ports have the following functionalities:
 
    For more technical details on the `GoPiGo3`_ robot, please check our `technical specs`_ page.
 
-
-**************************
-``easygopigo3`` Module
-**************************
 
 =====================================
 EasyGoPiGo3
