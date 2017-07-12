@@ -243,12 +243,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
-        :param boolean blocking: By default, the function is non-blocking.
+        :param boolean blocking = False: Set it as a blocking or non-blocking method.
 
-        | ``blocking`` parameter can take the following values:
+        ``blocking`` parameter can take the following values:
 
              * ``True`` so that the method will wait for the `GoPiGo3`_ robot to finish moving.
-             * ``False`` so that the method will exit immediately and while the `GoPiGo3`_ robot will continue moving.
+             * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue moving.
 
         """
         # dist is in cm
@@ -282,7 +282,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``inches`` the `GoPiGo3`_ has to move.
-        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` and your function exits when the robot completes the task.
+        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+
+        ``blocking`` parameter can take the following values:
+
+             * ``True`` so that the method will wait for the `GoPiGo3`_ robot to finish moving.
+             * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue moving.
 
         """
         self.drive_cm(dist * 2.54, blocking)
@@ -295,7 +300,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``degrees`` parameter has to be *negative*.
 
         :param float degrees: Distance based on how many wheel rotations are made. Calculated by ``degrees / 360``.
-        :param boolean blocking: By default, the function is non-blocking. Set it to ``True`` and your function exits when the robot completes the task.
+        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+
+        ``blocking`` parameter can take the following values:
+
+             * ``True`` so that the method will wait for the `GoPiGo3`_ robot to finish rotating.
+             * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue rotating.
 
         For instance, the following function call is going to drive the `GoPiGo3`_ robot forward for *310 / 360* wheel rotations, which equates to aproximately *86%*
         of the `GoPiGo3`_'s wheel circumference.
@@ -449,7 +459,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
         :param float degrees: The angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
-        :param boolean blocking: By default is set to `False`, which means the method will exit as the command is processed. For ``True`` it waits until the `GoPiGo3`_ has completed rotating.
+        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+
+        ``blocking`` parameter can take the following values:
+
+             * ``True`` so that the method will wait for the `GoPiGo3`_ robot to finish moving.
+             * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue moving.
 
         In order to better understand what does this method do, let's take a look at the following graphical representation.
 
