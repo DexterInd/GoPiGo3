@@ -18,3 +18,9 @@ Coming soon!
   ****************************************
   Custom libraries
   ****************************************
+
+****************
+Our contributors
+****************
+
+   1. Robert Lucian Chiriac - `Github Account <https://github.com/RobertLucian/>`_
