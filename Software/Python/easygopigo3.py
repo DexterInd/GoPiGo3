@@ -2173,7 +2173,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
     Class for the `Distance Sensor`_ device.
 
-    In order to create a :py:class:`~easygopigo3.DistanceSensor` class, we need to do it like in at the following template.
+    We can create this :py:class:`~easygopigo3.DistanceSensor` object similar to how we create it in the following template.
 
     .. code-block:: python
 
