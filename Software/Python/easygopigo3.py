@@ -1569,7 +1569,9 @@ class Buzzer(AnalogSensor):
 
     """
 
-    #: Dictionary of frequencies for each musical note.
+    #: | Dictionary of frequencies for each musical note.
+    #: | For instance, ``scale["A3"]`` instruction is equal to 220 Hz (that's the A3 musical note's frequency).
+    #: | This dictionary is useful when we want to make the buzzer ring at certain frequencies (aka musical notes).
     scale = {"A3": 220,
              "A3#": 233,
              "B3": 247,
