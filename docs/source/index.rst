@@ -4,11 +4,11 @@
    contain the root `toctree` directive.
 
 ########################################
-DexterIndustries' GoPiGo3 Documentation!
+Dexter Industries GoPiGo3 Documentation!
 ########################################
 
-.. image:: dexter-logo.*
-   :scale: 34
+.. image:: gpg3_with_logo.*
+   :scale: 50
 
 .. toctree::
    :maxdepth: 4

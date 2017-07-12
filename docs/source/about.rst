@@ -8,7 +8,7 @@ About Us
 Who are we and what we do.
 **************************
 
-.. image:: dexter-logo.*
+.. image:: dexter-logo.jpg
    :scale: 100
 
 `Dexter Industries`_ is an American educational robotics company that develops robot kits that make programming accessible for everyone.
