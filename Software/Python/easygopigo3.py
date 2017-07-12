@@ -1116,7 +1116,7 @@ class AnalogSensor(Sensor):
              * ``"AD1"`` - general purpose input/output port.
              * ``"AD2"`` - general purpose input/output port.
 
-        The ports' locations can be seen in the following graphical representation: `physical ports`_.
+        The ports' locations can be seen in the following graphical representation: :ref:`physical ports`.
 
         .. important::
 

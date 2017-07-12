@@ -1,6 +1,6 @@
-###################
-API Reference Point
-###################
+###########################
+API Reference Point - Basic
+###########################
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
@@ -21,7 +21,6 @@ API Reference Point
 =====================================
 Hardware Ports
 =====================================
-
 
 In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
 The quoted literals are to be used as pin identifiers inside the python scripts.
@@ -67,30 +66,6 @@ EasyGoPiGo3
 =====================================
 
 .. autoclass:: easygopigo3.EasyGoPiGo3
-   :members:
-   :special-members:
-
-=====================================
-DigitalSensor
-=====================================
-
-.. warning::
-
-    The :py:class:`easygopigo3.DigitalSensor` class is unfinished.
-
-    It also requires testing once it's done.
-
-=====================================
-AnalogSensor
-=====================================
-
-.. warning::
-
-    The following class is unfinished. It doesn't work in certain cases.
-
-    It also requires testing once it's done.
-
-.. autoclass:: easygopigo3.AnalogSensor
    :members:
    :special-members:
 
@@ -172,18 +147,37 @@ DHTSensor
 
 .. warning::
 
-   :py:class:`easygopigo3.DHTSensor` class seems to be a copy (with lots of wrappers)
-   of what I wrote for the DHT sensor for the GrovePi platform (that was on the forum).
+   Coming soon!
 
-   This class *requires* an implementation of what I wrote for the DHT sensor.
-
-   Once it's done, it will also require testing.
+##############################
+API Reference Point - Advanced
+##############################
 
 =====================================
 Sensor
 =====================================
 
 .. autoclass:: easygopigo3.Sensor
-   :members:
-   :special-members:
-   :exclude-members: __weakref__
+  :members:
+  :special-members:
+  :exclude-members: __weakref__
+
+=====================================
+DigitalSensor
+=====================================
+
+.. warning::
+
+   Coming soon!
+
+=====================================
+AnalogSensor
+=====================================
+
+.. warning::
+
+   Class has some issues - not ready for general use.
+
+.. autoclass:: easygopigo3.AnalogSensor
+  :members:
+  :special-members:
