@@ -174,3 +174,4 @@ DHTSensor
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
+.. _forum: http://forum.dexterindustries.com/categories
