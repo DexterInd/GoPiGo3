@@ -1186,6 +1186,8 @@ class AnalogSensor(Sensor):
 
         :returns: 12-bit number representing the voltage we get from the sensor. Range goes from 0V-5V.
         :rtype: int
+        :raises gopigo3.ValueError: If an invalid value was read.
+        :raises Exception: If any other errors happens.
 
         """
         try:
@@ -1451,6 +1453,7 @@ class UltraSonicSensor(AnalogSensor):
 
         :returns: Whether the `Grove Ultrasonic Sensor`_ is too close from a target.
         :rtype: boolean
+        :raises gopigo3.SensorError: If a sensor is not yet configured when trying to read it.
 
         A *safe distance* can be set with the :py:meth:`~easygopigo3.UltraSonicSensor.set_safe_distance` method.
 
@@ -1507,6 +1510,8 @@ class UltraSonicSensor(AnalogSensor):
 
         :returns: The distance from a target in millimeters.
         :rtype: int
+        :raises gopigo3.ValueError: If trying to read an invalid value.
+        :raises Exception: If any other error occurs.
 
         .. important::
 
