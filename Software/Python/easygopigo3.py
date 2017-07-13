@@ -114,7 +114,17 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
 
         """
-        super(self.__class__, self).__init__()
+        try:
+            super(self.__class__, self).__init__()
+        except IOError as e:
+            print("FATAL ERROR:\nGoPiGo3 is not detected.")
+            raise e
+        except gopigo3.FirmwareVersionError as e:
+            print("FATAL ERROR:\nTo update the firmware on Raspbian for Robots you need to run DI Software Update and choose Update Robot")
+            raise e
+        except Exception as e:
+            raise e
+                    
         self.sensor_1 = None
         self.sensor_2 = None
         self.set_speed(300)
@@ -165,6 +175,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
+<<<<<<<
         """
         | This method stops the `GoPiGo3`_ from moving.
         | It brings the `GoPiGo3`_ to a full stop.
@@ -180,8 +191,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         # only one is needed, we're going overkill
+=======
+        '''
+        Stop the GoPiGo3 by setting the degrees per second speed 
+        of each motor to 0
+        '''
+>>>>>>>
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        
 
     def backward(self):
         """
@@ -1082,7 +1099,23 @@ class DigitalSensor(Sensor):
         Sensor.__init__(self, port, pinmode, gpg)
 
     def read(self):
-        self.value = self.gpg.get_grove_state(self.get_pin())
+        '''
+        Return values:
+        0 or 1 are valid values
+        -1 may occur when there's a reading error
+        
+        On a reading error, a second attempt will be made before 
+        returning a -1 value
+        '''
+        try:
+            self.value = self.gpg.get_grove_state(self.get_pin())
+        except gopigo3.ValueError as e:
+            try: 
+                self.value = self.gpg.get_grove_state(self.get_pin())
+            except Exception as e:
+                print(e)
+                return -1
+            
         return self.value
 
     def write(self, power):
@@ -1160,7 +1193,14 @@ class AnalogSensor(Sensor):
         :rtype: int
 
         """
-        self.value = self.gpg.get_grove_analog(self.get_pin())
+        try:
+            self.value = self.gpg.get_grove_analog(self.get_pin())
+        except gopigo3.ValueError as e:
+            try: 
+                self.value = self.gpg.get_grove_analog(self.get_pin())
+            except Exception as e:
+                print("Value Error: {}".format(e))
+                return 0
         return self.value
 
     def percent_read(self):
@@ -1425,8 +1465,14 @@ class UltraSonicSensor(AnalogSensor):
 
 
         """
-        if self.gpg.get_grove_value(self.get_port_ID()) < \
-           self.get_safe_distance():
+        try:
+            val = self.gpg.get_grove_value(self.get_port_ID())
+        except gopigo3.SensorError as e:
+            print("Invalid Reading")
+            print(e)
+            return False
+            
+        if  val < self.get_safe_distance():
             return True
         return False
 
@@ -1481,16 +1527,23 @@ class UltraSonicSensor(AnalogSensor):
 
         while len(readings) < 3 and skip < 5:
             try:
-                print("taking a reading")
                 value = self.gpg.get_grove_value(self.get_port_ID())
-            except:
+                print ("raw {}".format(value))
+            except gopigo3.ValueError as e:
+                # print("Value Error")
+                # print(e)
+                value = 5010   # assume open road ahead
+                time.sleep(0.05)
+                
+            except Exception as e:
+                print(e)
                 skip += 1
                 time.sleep(0.05)
                 continue
 
-            if value < 4300 and value > 14:
+            if value <= 4300 and value >= 15:
                 readings.append(value)
-                debug (readings)
+                # debug (readings)
             else:
                 skip += 1
 
@@ -1505,7 +1558,7 @@ class UltraSonicSensor(AnalogSensor):
         for reading in readings:
             return_reading += reading
 
-        return_reading = int(return_reading // len(readings))
+        return_reading = int(return_reading / len(readings))
 
         return (return_reading)
 
@@ -1524,8 +1577,8 @@ class UltraSonicSensor(AnalogSensor):
         """
         # returns value in cm
         value = self.read_mm()
-        if value > 15 and value <= 5010:
-            return value // 10
+        if value >= 15 and value <= 5010:
+            return int(round(value / 10.0))
         return value
 
     def read_inches(self):
