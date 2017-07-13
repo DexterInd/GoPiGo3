@@ -112,6 +112,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
+        :raises IOError: When the GoPiGo3 is not detected. It also debugs a message in the terminal.
+        :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
+        :raises Exception: For any other kind of exceptions.
 
         """
         try:
@@ -198,7 +201,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         '''
 >>>>>>>
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        
+
 
     def backward(self):
         """
@@ -1534,7 +1537,7 @@ class UltraSonicSensor(AnalogSensor):
                 # print(e)
                 value = 5010   # assume open road ahead
                 time.sleep(0.05)
-                
+
             except Exception as e:
                 print(e)
                 skip += 1
