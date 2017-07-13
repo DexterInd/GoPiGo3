@@ -1,8 +1,8 @@
-.. _tutorials-chapter:
+.. _tutorials-advanced-chapter:
 
-#########
-Tutorials
-#########
+####################
+Tutorials - Advanced
+####################
 
 .. note::
 
