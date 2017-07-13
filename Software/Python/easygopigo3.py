@@ -1177,6 +1177,9 @@ class AnalogSensor(Sensor):
         self.freq = 24000
         Sensor.__init__(self, port, pinmode, gpg)
 
+        # select the outwards pin of the grove connector
+        self.set_pin(1)
+
         # this delay is at least needed by the Light sensor
         time.sleep(0.01)
 

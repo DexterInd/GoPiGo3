@@ -44,10 +44,6 @@ DigitalSensor
 AnalogSensor
 =====================================
 
-.. warning::
-
-   Class has some issues - not ready for general use.
-
 .. autoclass:: easygopigo3.AnalogSensor
   :members:
   :special-members:
