@@ -8,7 +8,7 @@ Tutorials - Basic
 Requirements
 ************
 
-Please make sure you have followed all the instructions found in :ref:`Getting Started <getting-started-chapter>`.
+Please make sure you have followed all the instructions found in :ref:`Getting Started <getting-started-chapter>` before jumping into tutorials.
 In all these tutorials, you will need:
 
   1. A `GoPiGo3`_ robot.
@@ -114,6 +114,10 @@ it's set to ``"AD1"``.
 
    b = easy.ButtonSensor("AD1", gpg)
 
+.. note::
+
+   For knowing where the ports are located on the robot (like port ``"AD1"``), see the following :ref:`graphical representation <hardware-ports-section>`.
+
 =================
 Setting variables
 =================
@@ -176,12 +180,6 @@ Then, on the Rasperry Pi, from within a terminal, type the following commands.
    python easy_Button.py
 
 
-
-
-
-
-
-From within a terminal, run the ``easy_codescript from our github repo``.
 
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
