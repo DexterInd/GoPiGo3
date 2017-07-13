@@ -127,7 +127,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             raise e
         except Exception as e:
             raise e
-                    
+
         self.sensor_1 = None
         self.sensor_2 = None
         self.set_speed(300)
@@ -178,7 +178,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
-<<<<<<<
         """
         | This method stops the `GoPiGo3`_ from moving.
         | It brings the `GoPiGo3`_ to a full stop.
@@ -193,13 +192,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.forward`
 
         """
-        # only one is needed, we're going overkill
-=======
-        '''
-        Stop the GoPiGo3 by setting the degrees per second speed 
-        of each motor to 0
-        '''
->>>>>>>
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
 
@@ -1106,19 +1098,19 @@ class DigitalSensor(Sensor):
         Return values:
         0 or 1 are valid values
         -1 may occur when there's a reading error
-        
-        On a reading error, a second attempt will be made before 
+
+        On a reading error, a second attempt will be made before
         returning a -1 value
         '''
         try:
             self.value = self.gpg.get_grove_state(self.get_pin())
         except gopigo3.ValueError as e:
-            try: 
+            try:
                 self.value = self.gpg.get_grove_state(self.get_pin())
             except Exception as e:
                 print(e)
                 return -1
-            
+
         return self.value
 
     def write(self, power):
@@ -1199,7 +1191,7 @@ class AnalogSensor(Sensor):
         try:
             self.value = self.gpg.get_grove_analog(self.get_pin())
         except gopigo3.ValueError as e:
-            try: 
+            try:
                 self.value = self.gpg.get_grove_analog(self.get_pin())
             except Exception as e:
                 print("Value Error: {}".format(e))
@@ -1474,7 +1466,7 @@ class UltraSonicSensor(AnalogSensor):
             print("Invalid Reading")
             print(e)
             return False
-            
+
         if  val < self.get_safe_distance():
             return True
         return False
