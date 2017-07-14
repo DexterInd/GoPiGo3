@@ -1,3 +1,5 @@
+.. _tutorials-basic-led:
+
 ***************
 Flashing an LED
 ***************
@@ -72,13 +74,13 @@ which is necessary for controlling the `Grove Led`_ device.
    gpg = easy.EasyGoPiGo3()
 
 Now that we have an :py:class:`~easygopigo3.EasyGoPiGo3` object, we can instantiate
-a :py:class:`~easygopigo3.Buzzer` object.
+a :py:class:`~easygopigo3.Led` object.
 The argument of the initializer method is the port to which we connect the `Grove Led`_ and
-it's set to ``"AD2"``.
+it's set to ``"AD1"``.
 
 .. code-block:: python
 
-   buzzer = gpg.init_led("AD1")
+   led = gpg.init_led("AD1")
 
 .. note::
 
@@ -119,7 +121,7 @@ For running the analyzed example program, within a terminal on your Raspberry Pi
 .. code-block:: console
 
     cd ~/Desktop/GoPiGo3/Software/Python/Examples
-    python easy_Buzzer.py
+    python easy_LED.py
 
 .. image:: http://i.imgur.com/OhqtJAO.gif
 
