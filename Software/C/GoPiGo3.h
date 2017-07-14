@@ -330,11 +330,11 @@ class GoPiGo3{
   // Reset the grove ports (unconfigure), motors (float with no limits), and LEDs.
     int     reset_all();
     
-    uint8_t GroveType[2];
-    
   private:
     // GoPiGo3 SPI address
     uint8_t Address;
+    
+    uint8_t GroveType[2];
     uint8_t GroveI2CInBytes[2];
     
     int spi_read_8 (uint8_t msg_type, uint8_t  &value);
@@ -345,83 +345,3 @@ class GoPiGo3{
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
