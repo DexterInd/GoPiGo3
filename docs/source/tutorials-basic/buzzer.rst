@@ -13,7 +13,7 @@ We start off with 3 musical notes and finish by playing the all-known *"Twinkle 
 The code we analyse
 ===================
 
-The code we're analysing in this tutorial is this.
+The code we're analyzing in this tutorial is this.
 
 .. code-block:: python
 
