@@ -1,3 +1,5 @@
+.. _tutorials-basic-buzzer:
+
 ****************
 Ringing a Buzzer
 ****************

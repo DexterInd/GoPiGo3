@@ -1,3 +1,5 @@
+.. _tutorials-basic-button:
+
 ****************
 Pushing a Button
 ****************
