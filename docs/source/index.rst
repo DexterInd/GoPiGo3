@@ -18,7 +18,7 @@ Dexter Industries GoPiGo3 Documentation!
    about
    quickstart
 
-   tutorials-basic/*
+   tutorials-basic/index
    tutorials-advanced/*
 
    api-basic
