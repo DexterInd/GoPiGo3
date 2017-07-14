@@ -179,6 +179,8 @@ Then, on the Rasperry Pi, from within a terminal, type the following commands.
    cd ~/Desktop/GoPiGo3/Software/Python/Examples
    python easy_Button.py
 
+.. image:: tutorials/button.gif
+
 
 
 
