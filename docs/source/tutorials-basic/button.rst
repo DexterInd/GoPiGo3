@@ -31,7 +31,7 @@ In the end the code should look like this.
   gpg = easy.EasyGoPiGo3()
 
   # Put a grove button in port AD1
-  b = easy.ButtonSensor("AD1",gpg)
+  button = gpg3.init_button_sensor("AD1")
 
   print("Ensure there's a button in port AD1")
   print("Press and release the button as often as you want")
@@ -46,11 +46,11 @@ In the end the code should look like this.
 
   while time.time() - start < 120:
 
-      if state == RELEASED and b.read() == 1:
+      if state == RELEASED and button.read() == 1:
           print("PRESSED")
           gpg.open_eyes()
           state = PRESSED
-      if state == PRESSED and b.read() == 0:
+      if state == PRESSED and button.read() == 0:
           print("RELEASED")
           gpg.close_eyes()
           state = RELEASED
@@ -90,12 +90,12 @@ The :py:class:`~easygopigo3.EasyGoPiGo3` object is used for 2 things:
 
 Now that we have an :py:class:`~easygopigo3.EasyGoPiGo3` object, we can instantiate
 a :py:class:`~easygopigo3.ButtonSensor` object.
-The 1st argument of the constructor is the port to which we connect the `Grove Button`_ and
+The argument of the initializer method is the port to which we connect the `Grove Button`_ and
 it's set to ``"AD1"``.
 
 .. code-block:: python
 
-   b = easy.ButtonSensor("AD1", gpg)
+   button = gpg3.init_button_sensor("AD1")
 
 .. note::
 
@@ -137,11 +137,11 @@ It only needs to call one of these 2 functions once.
 
     while time.time() - start < 120:
 
-    if state == RELEASED and b.read() == 1:
+    if state == RELEASED and button.read() == 1:
       print("PRESSED")
       gpg.open_eyes()
       state = PRESSED
-    if state == PRESSED and b.read() == 0:
+    if state == PRESSED and button.read() == 0:
       print("RELEASED")
       gpg.close_eyes()
       state = RELEASED

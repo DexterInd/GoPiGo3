@@ -52,6 +52,8 @@ AnalogSensor
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
+.. _shop: https://www.dexterindustries.com/shop/
+.. _infrared receiver: https://www.seeedstudio.com/Grove-Infrared-Receiver-p-994.html
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
