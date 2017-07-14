@@ -20,6 +20,7 @@ In all these tutorials, you will need:
    buzzer
    led
    light_sensor
+   distance_sensor
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
