@@ -10,7 +10,7 @@ Buying a GoPiGo3
 
 For buying a `GoPiGo3`_ robot, please head over to our online `shop`_ and search for the `GoPiGo3`_ robot. And don't forget to get some sensors - with them, everything is a lot more fun.
 
-.. image:: gopigo3.jpg
+.. image:: images/gopigo3.jpg
 
 ***********************
 Assembling GoPiGo3

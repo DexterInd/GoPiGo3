@@ -8,7 +8,7 @@ About Us
 Who are we and what we do.
 **************************
 
-.. image:: dexter-logo.jpg
+.. image:: images/dexter-logo.jpg
    :scale: 100
 
 `Dexter Industries`_ is an American educational robotics company that develops robot kits that make programming accessible for everyone.
@@ -27,7 +27,7 @@ We believe robots are the best way to do this. Rather than just seeing an error 
 
 We’re devoted to building great products to help everyone learn how to become a problem solver. Not everything that you make is important, but the process of making can improve your ability to build stuff that is important someday. Our goal is to enable you to make stuff that matters.
 
-.. image:: girl-and-gopigo.jpg
+.. image:: images/girl-and-gopigo.jpg
 
 ***********************
 The Founder, John Cole.
@@ -37,7 +37,7 @@ Founder & CEO of `Dexter Industries`_, John Cole, was inspired by the many engin
 
 Afterwards, he spent time in New York getting his Masters in Chemical Engineering from Columbia. From there he launched a biodiesel startup, worked for the State Department in East Baghdad, moved to Mexico City, followed by a stint in Afghanistan working for USAID, a few years in India, bounced back to D.C. and now, is based in Dubai with his wife and son.
 
-.. image:: john-cole.jpg
+.. image:: images/john-cole.jpg
 
 ********************************
 What's this documentation about.
@@ -50,7 +50,7 @@ Within this, you will find instructions on:
    * How to operate the `GoPiGo3`_ with our API. The user has a comprehensive documentation of all the modules/functions/classes that are needed for controlling the robot.
    * How to troubleshoot the `GoPiGo3`_ in case of unsuspected situations.
 
-.. image:: gopigo3.jpg
+.. image:: images/gopigo3.jpg
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _dexter industries: https://www.dexterindustries.com

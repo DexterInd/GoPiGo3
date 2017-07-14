@@ -480,7 +480,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         In order to better understand what does this method do, let's take a look at the following graphical representation.
 
-        .. image:: gpg3_robot.svg
+        .. image:: images/gpg3_robot.svg
 
         In the image, we have multiple identifiers:
 

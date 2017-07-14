@@ -7,7 +7,7 @@
 Dexter Industries GoPiGo3 Documentation!
 ########################################
 
-.. image:: gpg3_and_logo.jpg
+.. image:: images/gpg3_and_logo.jpg
 
 .. toctree::
    :maxdepth: 4
