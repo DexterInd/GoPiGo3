@@ -87,7 +87,7 @@ Main part
 =========
 
 There's a single while loop in the entire script. That loop is meant for printing the values that we're
-reading repeatedly, but in otder to do that, we need to define a function called ``get_sensorval()``.
+reading repeatedly, but in order to do that, we need to define a function called ``get_sensorval()``.
 ``get_sensorval()`` function returns the distance in millimeters from our target.
 
 .. code-block:: python

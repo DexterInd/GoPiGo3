@@ -137,7 +137,7 @@ It only needs to call one of these 2 functions once.
 
 .. code-block:: python
 
-    while time.time() - start < 120:
+  while time.time() - start < 120:
 
     if state == RELEASED and button.read() == 1:
       print("PRESSED")

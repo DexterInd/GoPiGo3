@@ -109,9 +109,9 @@ Let's make the LED behave in the following way.
    * When the light's intensity is above 50%, turn off the LED.
 
 To do this, we need to read the percentage value off of the light sensor - the variable responsible for holding the value is called ``percent_reading``.
-Depending on the read percentage we turn on or off the LED.
+Depending on the determined percentage, we turn the LED on or off.
 
-To do all this, check out the following code snipper.
+To do all this, check out the following code snippet.
 
 .. code-block:: python
 
