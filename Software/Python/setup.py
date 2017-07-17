@@ -11,17 +11,15 @@ import setuptools
 
 setuptools.setup(
     name = "gopigo3-test",
-    version = "0.0.3",
+    version = "1.0.0",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = " \
     Within this python package there 2 main modules we can develop with:\n \
-    1. gopigo3 - low-level module for controlling the GPG3\n \
-    2. easygopigo3 - higher-level module built on top of gopigo3 module which\
-    is more user-friendly - allows the user to easily control a GPG3.\n \
+    1. gopigo3 - This package is a low level module for controlling the GoPiGo3\n \
+    2. easygopigo3 - This package is a higher-level module built on top of the gopigo3 module which is more user friendly. \n \
     \n \
-    Among these 2 main modules, there is also a package which contains example programs\n \
-    Updated on 29th of June 2017.",
+    Among these 2 main modules, there is also a package which contains example programs",
 
     author = "Dexter Industries",
     author_email = "contact@dexterindustries.com",
@@ -40,7 +38,7 @@ setuptools.setup(
     ],
     url = "https://github.com/DexterInd/GoPiGo3",
 
-    keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning'],
+    keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning', 'education'],
 
     packages = ['Examples', 'Examples.Control_Panel', 'Examples.Line_Sensor'],
     py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
