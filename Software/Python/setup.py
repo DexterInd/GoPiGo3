@@ -7,19 +7,21 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 
-import setuptools
+try:
+	with open('package_description.rst', 'r') as file_description:
+		description = file_description.read()
 
+except IOError:
+	print(str(IOError))
+	print("make sure you have [package_description.rst] file in the same directory as [setup.py]")
+
+import setuptools
 setuptools.setup(
     name = "gopigo3",
     version = "1.0.0",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
-    long_description = " \
-    Within this python package there 2 main modules we can develop with:\n \
-    1. gopigo3 - This package is a low level module for controlling the GoPiGo3\n \
-    2. easygopigo3 - This package is a higher-level module built on top of the gopigo3 module which is more user friendly. \n \
-    \n \
-    Among these 2 main modules, there is also a package which contains example programs",
+    long_description = description,
 
     author = "Dexter Industries",
     author_email = "contact@dexterindustries.com",
