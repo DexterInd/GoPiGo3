@@ -1,5 +1,3 @@
-.. image:: gpg3_and_logo.jpg
-
 This is the python library for GoPiGo3, which is a robot car that can be programmed to do anything.
 
 Please visit:
