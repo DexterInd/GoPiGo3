@@ -6,7 +6,7 @@ Developer's Guide
 
 .. note::
 
-   Being developed!
+   Coming soon!
 
 ..
   ************************

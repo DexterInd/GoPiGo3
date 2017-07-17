@@ -38,7 +38,7 @@ DigitalSensor
 
 .. note::
 
-   Being developed!
+   Coming soon!
 
 =====================================
 AnalogSensor

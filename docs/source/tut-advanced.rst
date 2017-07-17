@@ -6,7 +6,7 @@ Tutorials - Advanced
 
 .. note::
 
-   Being developed!
+   Coming soon!
 
 ..
   ****************
