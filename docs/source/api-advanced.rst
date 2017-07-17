@@ -51,18 +51,9 @@ AnalogSensor
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
+.. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
 .. _shop: https://www.dexterindustries.com/shop/
 .. _infrared receiver: https://www.seeedstudio.com/Grove-Infrared-Receiver-p-994.html
-.. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
-.. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
-.. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
-.. _grove ultrasonic sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
-.. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
-.. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
-.. _grove button: https://www.dexterindustries.com/shop/grove-button/
-.. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
-.. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories

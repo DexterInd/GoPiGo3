@@ -33,7 +33,7 @@ Hardware Ports
 In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
 The quoted literals are to be used as pin identifiers inside the python scripts.
 
-.. image:: gpg3_ports.jpg
+.. image:: images/gpg3_ports.jpg
 
 These ports have the following functionalities:
 

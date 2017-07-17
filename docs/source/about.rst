@@ -8,7 +8,7 @@ About GoPiGo3
 Who are we and what we do.
 **************************
 
-.. image:: dexter-logo.jpg
+.. image:: images/dexter-logo.jpg
    :scale: 100
 
 `Dexter Industries`_ is an American educational robotics company that develops robot kits that make programming accessible for everyone.
@@ -25,7 +25,7 @@ Within this, you will find instructions on:
    * How to operate the `GoPiGo3`_ with our API. The user has a comprehensive documentation of all the modules/functions/classes that are needed for controlling the robot.
    * How to troubleshoot the `GoPiGo3`_ in case of unsuspected situations.
 
-.. image:: gopigo3.jpg
+.. image:: images/gopigo3.jpg
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _dexter industries: https://www.dexterindustries.com

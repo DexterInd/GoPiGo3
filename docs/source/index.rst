@@ -7,19 +7,23 @@
 Dexter Industries GoPiGo3 Documentation!
 ########################################
 
-.. image:: gpg3_and_logo.jpg
+.. image:: images/gpg3_and_logo.jpg
 
 .. toctree::
+   :glob:
    :maxdepth: 4
    :numbered:
    :caption: Contents:
 
    about
    quickstart
-   tut-basic
-   tut-advanced
+
+   tutorials-basic/index
+   tutorials-advanced/*
+
    api-basic
    api-advanced
+
    devguide
    faq
 
