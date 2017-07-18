@@ -68,7 +68,10 @@ class GoPiGo3WithKeyboard(object):
 
     def executeKeyboardJob(self, argument):
         method_prefix = "_gopigo3_command_"
-        method_suffix = str(self.keybindings[argument][self.KEY_FUNC_SUFFIX])
+        try:
+            method_suffix = str(self.keybindings[argument][self.KEY_FUNC_SUFFIX])
+        except KeyError:
+            method_suffix = ""
         method_name = method_prefix + method_suffix
 
         method = getattr(self, method_name, lambda : "nothing")
