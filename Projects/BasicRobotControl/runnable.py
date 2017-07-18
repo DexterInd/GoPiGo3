@@ -27,13 +27,14 @@ from time import sleep
 def Main():
 
     gopigo3 = GoPiGo3WithKeyboard()
-
     gopigo3.drawLogo()
     gopigo3.drawMenu()
 
-    """
+    kb = LiveKeyboard()
+    kb.start()
+
     while True:
-        key = getKey()
+        key = kb.getKey()
 
         if key is not None:
             result = gopigo3.executeKeyboardJob(key)
@@ -44,13 +45,7 @@ def Main():
                 pass
             elif result == "exit":
                 break
-    """
 
-    kb = LiveKeyboard()
-    kb.start()
-
-    while True:
-        print(str(kb.getKey()) + " aida")
         sleep(0.05)
 
 if __name__ == "__main__":
