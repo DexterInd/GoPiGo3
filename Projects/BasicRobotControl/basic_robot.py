@@ -130,24 +130,29 @@ class GoPiGo3WithKeyboard(object):
         return "done"
 
     def _gopigo3_command_blinkers(self):
-        if self.left_blinker_on is True and self.right_blinker_on is True:
-            self.gopigo3.led_off()
-        elif self.left_blinker_on is False and self.right_blinker_on is False:
-            self.gopigo3.led_on()
+        if self.left_blinker_on is False and self.right_blinker_on is False:
+            self.gopigo3.led_on(0)
+            self.gopigo3.led_on(1)
+            self.left_blinker_on = self.right_blinker_on = True
         else:
-            self.gopigo3.led_off()
+            self.gopigo3.led_off(0)
+            self.gopigo3.led_off(1)
+            self.left_blinker_on = self.right_blinker_on = False
 
         return "done"
 
     def _gopigo3_command_eyes(self):
-        if self.left_eye_on is True and self.right_eye_on is True:
-            self.gopigo3.close_eyes()
-        elif self.left_eye_on is False and self.right_eye_on is False:
+        if self.left_eye_on is False and self.right_eye_on is False:
             self.gopigo3.open_eyes()
+            self.left_eye_on = self.right_eye_on = True
         else:
             self.gopigo3.close_eyes()
+            self.left_eye_on = self.right_eye_on = False
 
         return "done"
+
+    def _gopigo3_command_exit(self):
+        return "exit"
 
 def Main():
     #printLogo()
