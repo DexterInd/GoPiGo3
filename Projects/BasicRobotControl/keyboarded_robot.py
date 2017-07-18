@@ -24,30 +24,38 @@ import select
 import tty
 import termios
 import easygopigo3 as easy
+import threading
+from time import sleep
 
-def isKeyboardData():
-    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
+class LiveKeyboard(threading.Thread):
+    MAX_BUFFER_SIZE = 3
 
-def getKey():
-    old_settings = termios.tcgetattr(sys.stdin)
-    try:
-        tty.setcbreak(sys.stdin.fileno())
-        if isKeyboardData():
-            ch = sys.stdin.read(1)
-        else:
-            ch = None
-    finally:
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    def __init__(self):
+        super(LiveKeyboard, self).__init__()
+        self.event = threading.Event()
+        self.lock = threading.Lock()
+        self.finished = False
+        self.buffer = []
 
-    return ch
+    def run(self):
+        while self.event.is_set() is False:
+            key = self.__getKey()
+            __add_to_buffer(key)
 
-    '''
-    import termios
-    import sys, tty
-    def _getch():
-        """
-        Blocking version of the [getKey] function
-        """
+        self.finished = True
+
+    def stop(self):
+        self.event.set()
+
+    def join(self):
+        self.stop()
+        while self.finished is False:
+            sleep(0.001)
+
+    def getKey(self):
+        return __get_from_buffer()
+
+    def __getKey(self):
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         try:
@@ -56,8 +64,26 @@ def getKey():
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
-    return _getch()
-    '''
+
+    def __add_to_buffer(self, element):
+        self.lock.acquire()
+
+        self.buffer.append(element)
+        if len(buffer) > self.MAX_BUFFER_SIZE:
+            excess_chars = len(buffer) - self.MAX_BUFFER_SIZE
+            self.buffer = self.buffer[excess_chars:]
+
+        self.lock.release()
+
+    def __get_from_buffer(self):
+        self.lock.acquire()
+
+        result = None
+        if len(self.buffer) > 0:
+            result = self.buffer.pop(0)
+
+        self.lock.release()
+        return result
 
 class GoPiGo3WithKeyboard(object):
 
