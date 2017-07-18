@@ -177,6 +177,17 @@ class GoPiGo3WithKeyboard(object):
 
         return "done"
 
+    def _gopigo3_command_eyescolor(self):
+        red = random.randint(0, 255)
+        green = random.randint(0, 255)
+        blue = random.randint(0, 255)
+
+        self.gopigo3.set_eye_color((red, green, blue))
+        if self.left_eye_on is True:
+            self.gopigo3.open_left_eye()
+        if self.right_eye_on is True:
+            self.gopigo3.open_right_eye()
+
     def _gopigo3_command_exit(self):
         return "exit"
 
