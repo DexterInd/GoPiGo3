@@ -40,7 +40,7 @@ class LiveKeyboard(threading.Thread):
     def run(self):
         while self.event.is_set() is False:
             key = self.__getKey()
-            __add_to_buffer(key)
+            self.__add_to_buffer(key)
 
         self.finished = True
 
