@@ -194,7 +194,7 @@ class GoPiGo3WithKeyboard(object):
             self.left_blinker_on = True
         else:
             self.gopigo3.led_off(1)
-            self.left_blinker_on = True
+            self.left_blinker_on = False
 
         return "done"
 
@@ -204,7 +204,7 @@ class GoPiGo3WithKeyboard(object):
             self.right_blinker_on = True
         else:
             self.gopigo3.led_off(0)
-            self.right_blinker_on = True
+            self.right_blinker_on = False
 
         return "done"
 
@@ -230,7 +230,7 @@ class GoPiGo3WithKeyboard(object):
 
         return "done"
 
-    def _gopigo3_command_righeye(self):
+    def _gopigo3_command_righteye(self):
         if self.right_eye_on is False:
             self.gopigo3.open_right_eye()
             self.right_eye_on = True
