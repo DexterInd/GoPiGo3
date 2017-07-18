@@ -20,19 +20,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 
 from __future__ import print_function
 from __future__ import division
-from builtins import input
 
+import sys
+import select
+import tty
+import termios
 import easygopigo3 as easy
 
-def isData():
+def isKeyboardData():
     return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-
-def getch():
+def getKey():
     old_settings = termios.tcgetattr(sys.stdin)
     try:
         tty.setcbreak(sys.stdin.fileno())
-        if isData():
+        if isKeyboardData():
             ch = sys.stdin.read(1)
         else:
             ch = None
