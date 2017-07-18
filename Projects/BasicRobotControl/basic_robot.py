@@ -47,6 +47,9 @@ def getKey():
     import termios
     import sys, tty
     def _getch():
+        """
+        Blocking version of the [getKey] function
+        """
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         try:
@@ -56,7 +59,6 @@ def getKey():
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
     return _getch()
-
     '''
 
 class GoPiGo3WithKeyboard(object):
