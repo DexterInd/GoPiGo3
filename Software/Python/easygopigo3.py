@@ -401,7 +401,7 @@ class Sensor(object):
                                         self.gpg.GROVE_TYPE.US)
             if pinmode == "IR":
                 self.gpg.set_grove_type(self.portID,
-                                        self.gpg.GROVE_TYPE.IR_GO_BOX)
+                                        self.gpg.GROVE_TYPE.IR_DI_REMOTE)
         except:
             pass
 

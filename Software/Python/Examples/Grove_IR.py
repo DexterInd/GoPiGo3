@@ -22,7 +22,7 @@ import gopigo3 # import the GoPiGo3 drivers
 GPG = gopigo3.GoPiGo3() # Create an instance of the GoPiGo3 class. GPG will be the GoPiGo3 object.
 
 try:
-    GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_GO_BOX)
+    GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_DI_REMOTE)
     
     while(True):
         try:
