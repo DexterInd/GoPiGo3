@@ -184,7 +184,7 @@ class GoPiGo3WithKeyboard(object):
         return "done"
 
     def _gopigo3_command_forwardturn(self):
-        self.gopigo3.drive_degrees(10)
+        self.gopigo3.drive_degrees(360)
 
         return "done"
 
