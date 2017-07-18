@@ -31,6 +31,7 @@ def Main():
     gopigo3.drawLogo()
     gopigo3.drawMenu()
 
+    """
     while True:
         key = getKey()
 
@@ -43,6 +44,14 @@ def Main():
                 pass
             elif result == "exit":
                 break
+    """
+
+    kb = LiveKeyboard()
+    kb.start()
+
+    while True:
+        print(str(kb.getKey()) + " aida")
+        sleep(0.05)
 
 if __name__ == "__main__":
     Main()
