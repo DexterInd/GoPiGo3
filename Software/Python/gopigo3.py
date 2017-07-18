@@ -153,6 +153,14 @@ class GoPiGo3(object):
         I2C,
     """)
     
+    GROVE_STATE = Enumeration("""
+        VALID_DATA,
+        NOT_CONFIGURED,
+        CONFIGURING,
+        NO_DATA,
+        I2C_ERROR,
+    """)
+    
     LED_EYE_LEFT      = 0x02
     LED_EYE_RIGHT     = 0x01
     LED_BLINKER_LEFT  = 0x04
@@ -736,23 +744,23 @@ class GoPiGo3(object):
         else:
             raise IOError("Port unsupported. Must get one at a time.")
         
-        if self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3:
-            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
-            reply = self.spi_transfer_array(outArray)
-            if(reply[3] == 0xA5):
-                if(reply[4] == self.GroveType[port_index] and reply[5] == 0):
-                    return [reply[6], reply[7], reply[8], reply[9]]
-                else:
-                    raise SensorError("get_grove_value error: Invalid value")
-            else:
-                raise IOError("get_grove_value error: No SPI response")
-            
-        elif self.GroveType[port_index] == self.GROVE_TYPE.IR_GO_BOX:
+        if self.GroveType[port_index] == self.GROVE_TYPE.IR_GO_BOX:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
                 if(reply[4] == self.GroveType[port_index] and reply[5] == 0):
                     return reply[6]
+                else:
+                    raise SensorError("get_grove_value error: Invalid value")
+            else:
+                raise IOError("get_grove_value error: No SPI response")
+            
+        elif self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3:
+            outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
+            reply = self.spi_transfer_array(outArray)
+            if(reply[3] == 0xA5):
+                if(reply[4] == self.GroveType[port_index] and reply[5] == 0):
+                    return [reply[6], reply[7], reply[8], reply[9]]
                 else:
                     raise SensorError("get_grove_value error: Invalid value")
             else:
@@ -767,7 +775,7 @@ class GoPiGo3(object):
                     if value == 0:
                         raise SensorError("get_grove_value error: Sensor not responding")
                     elif value == 1:
-                        raise SensorError("get_grove_value error: Object not detected within range")
+                        raise ValueError("get_grove_value error: Object not detected within range")
                     else:
                         return value
                 else:
@@ -781,9 +789,9 @@ class GoPiGo3(object):
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
                 if(reply[4] == self.GroveType[port_index]):
-                    if(reply[5] == 0):   # no error
+                    if(reply[5] == self.GROVE_STATE.VALID_DATA):  # no error
                         return reply[6:]
-                    elif(reply[5] == 4): # I2C bus error
+                    elif(reply[5] == self.GROVE_STATE.I2C_ERROR): # I2C bus error
                         raise I2CError("get_grove_value error: I2C bus error")
                     else:
                         raise ValueError("get_grove_value error: Invalid value")
@@ -815,7 +823,7 @@ class GoPiGo3(object):
         outArray = [self.SPI_Address, message_type, 0, 0, 0, 0]
         reply = self.spi_transfer_array(outArray)
         if(reply[3] == 0xA5):
-            if(reply[4] == 0): # no error
+            if(reply[4] == self.GROVE_STATE.VALID_DATA): # no error
                 return reply[5]
             else:
                 raise ValueError("get_grove_state error: Invalid value")
@@ -843,7 +851,7 @@ class GoPiGo3(object):
         outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
         reply = self.spi_transfer_array(outArray)
         if(reply[3] == 0xA5):
-            if(reply[4] == 0): # no error
+            if(reply[4] == self.GROVE_STATE.VALID_DATA): # no error
                 return ((((reply[5] << 8) & 0xFF00) | (reply[6] & 0xFF)) / 1000.0)
             else:
                 raise ValueError("get_grove_voltage error: Invalid value")
@@ -871,7 +879,7 @@ class GoPiGo3(object):
         outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
         reply = self.spi_transfer_array(outArray)
         if(reply[3] == 0xA5):
-            if(reply[4] == 0): # no error
+            if(reply[4] == self.GROVE_STATE.VALID_DATA): # no error
                 return (((reply[5] << 8) & 0xFF00) | (reply[6] & 0xFF))
             else:
                 raise ValueError("get_grove_analog error: Invalid value")
