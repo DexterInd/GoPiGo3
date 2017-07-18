@@ -69,8 +69,8 @@ class LiveKeyboard(threading.Thread):
         self.lock.acquire()
 
         self.buffer.append(element)
-        if len(buffer) > self.MAX_BUFFER_SIZE:
-            excess_chars = len(buffer) - self.MAX_BUFFER_SIZE
+        if len(self.buffer) > self.MAX_BUFFER_SIZE:
+            excess_chars = len(self.buffer) - self.MAX_BUFFER_SIZE
             self.buffer = self.buffer[excess_chars:]
 
         self.lock.release()
