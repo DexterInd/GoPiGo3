@@ -153,6 +153,11 @@ class GoPiGo3WithKeyboard(object):
 
         return "done"
 
+    def _gopigo3_command_backward(self):
+        self.gopigo3.backward()
+
+        return "done"
+
     def _gopigo3_command_stop(self):
         self.gopigo3.stop()
 

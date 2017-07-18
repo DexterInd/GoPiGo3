@@ -44,7 +44,10 @@ def Main():
             elif result == "nothing":
                 pass
             elif result == "exit":
+                kb.join()
                 break
+        else:
+            gopigo3.executeKeyboardJob("x")
 
         sleep(0.05)
 
