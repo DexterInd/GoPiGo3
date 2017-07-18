@@ -120,7 +120,7 @@ class GoPiGo3WithKeyboard(object):
         return "done"
 
     def _gopigo3_command_forward10in(self):
-        self.gopigo3.drive_in(10)
+        self.gopigo3.drive_inches(10)
 
         return "done"
 
