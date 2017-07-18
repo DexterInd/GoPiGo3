@@ -44,7 +44,7 @@ class GoPiGo3Switcher(object):
         self.gopigo3 = easy.EasyGoPiGo3()
 
     def executeJob(self, argument):
-        method_name = "__gopigo3_command_" + str(argument)
+        method_name = "_gopigo3_command_" + str(argument)
         method = getattr(self, method_name, lambda : "nothing")
 
         return method()
@@ -63,7 +63,7 @@ class GoPiGo3Switcher(object):
         print("[s key]     : Move the GoPiGo3 backward")
         print("[a key]     : Turn the GoPiGo3 to the left")
         print("[d key]     : Turn the GoPiGo3 to the right")
-        print("[x key] : Stop the GoPiGo3 from moving")
+        print("[x key]     : Stop the GoPiGo3 from moving")
         print("[c key]     : Drive forward for 10 centimeters)
         print("[i key]     : Drive forward for 10 inches")
         print("[e key]     : Drive forward for 360 degrees (aka 1 wheel rotation))
@@ -72,10 +72,10 @@ class GoPiGo3Switcher(object):
         print("[3 key]     : Change the eyes' color on the go")
         print("[z key]     : Exit")
 
-    def __gopigo3_command_w(self):
+    def _gopigo3_command_w(self):
         self.gopigo3.forward()
 
-    def __gopigo3_command_x(self):
+    def _gopigo3_command_x(self):
         self.gopigo3.stop()
 
 def Main():
