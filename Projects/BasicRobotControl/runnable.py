@@ -32,23 +32,24 @@ def Main():
 
     kb = LiveKeyboard()
     kb.start()
+    result = "nothing"
+    """
+    result can take the following values:
+    "nothing", "moving", "path", "static", "exit"
+    """
+    manual_mode = False
 
     while True:
         key = kb.getKey()
-        result = "nothing"
 
         if key is not None:
             result = gopigo3.executeKeyboardJob(key)
-            """
-            result can take the following values:
-            "nothing", "moving", "path", "static", "exit"
-            """
 
             if result == "exit":
                 kb.join()
                 break
         else:
-            if result == "moving":
+            if result == "moving" and manual_mode is True:
                 # "x" is for stopping the robot from moving
                 gopigo3.executeKeyboardJob("x")
 
