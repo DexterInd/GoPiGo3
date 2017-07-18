@@ -25,8 +25,11 @@ from keyboarded_robot import *
 from time import sleep
 
 def Main():
-    
+
     gopigo3 = GoPiGo3WithKeyboard()
+
+    gopigo3.drawLogo()
+    gopigo3.drawMenu()
 
     while True:
         key = getKey()
