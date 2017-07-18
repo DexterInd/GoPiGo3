@@ -81,12 +81,21 @@ class GoPiGo3WithKeyboard(object):
         "a" : ["Turn the GoPiGo3 to the left", "left"],
         "d" : ["Turn the GoPiGo3 to the right", "right"],
         "x" : ["Stop the GoPiGo3 from moving", "stop"],
+
         "c" : ["Drive forward for 10 centimeters", "forward10cm"],
         "i" : ["Drive forward for 10 inches", "forward10in"],
         "e" : ["Drive forward for 360 degrees (aka 1 wheel rotation)", "forwardturn"],
-        "1" : ["Turn ON/OFF both blinkers of the GoPiGo3","blinkers"],
-        "2" : ["Turn ON/OFF both eyes of the GoPiGo3", "eyes"],
-        "3" : ["Change the eyes' color on the go", "eyescolor"],
+
+        "1" : ["Turn ON/OFF left blinker of the GoPiGo3", "leftblinker"],
+        "2" : ["Turn ON/OFF right blinker of the GoPiGo3", "rightblinker"],
+        "3" : ["Turn ON/OFF both blinkers of the GoPiGo3", "blinkers"],
+
+        "8" : ["Turn ON/OFF left eye of the GoPiGo3", "lefteye"],
+        "9" : ["Turn ON/OFF right eye of the GoPiGo3", "righteye"],
+        "0" : ["Turn ON/OFF both eyes of the GoPiGo3", "eyes"],
+
+        "/" : ["Change the eyes' color on the go", "eyescolor"],
+
         "z" : ["Exit", "exit"],
         }
 
@@ -112,7 +121,7 @@ class GoPiGo3WithKeyboard(object):
         print("                                            ")
 
     def drawMenu(self):
-        order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "z"]
+        order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "8", "9", "0", "/", "z"]
         for key in order_of_keys:
             print("[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
 
@@ -156,6 +165,26 @@ class GoPiGo3WithKeyboard(object):
 
         return "done"
 
+    def _gopigo3_command_leftblinker(self):
+        if self.left_blinker_on is False:
+            self.gopigo3.led_on(1)
+            self.left_blinker_on = True
+        else:
+            self.gopigo3.led_off(1)
+            self.left_blinker_on = True
+
+        return "done"
+
+    def _gopigo3_command_rightblinker(self):
+        if self.right_blinker_on is False:
+            self.gopigo3.led_on(0)
+            self.right_blinker_on = True
+        else:
+            self.gopigo3.led_off(0)
+            self.right_blinker_on = True
+
+        return "done"
+
     def _gopigo3_command_blinkers(self):
         if self.left_blinker_on is False and self.right_blinker_on is False:
             self.gopigo3.led_on(0)
@@ -165,6 +194,26 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.led_off(0)
             self.gopigo3.led_off(1)
             self.left_blinker_on = self.right_blinker_on = False
+
+        return "done"
+
+    def _gopigo3_command_lefteye(self):
+        if self.left_eye_on is False:
+            self.gopigo3.open_left_eye()
+            self.left_eye_on = True
+        else:
+            self.gopigo3.close_left_eye()
+            self.left_eye_on = False
+
+        return "done"
+
+    def _gopigo3_command_righeye(self):
+        if self.right_eye_on is False:
+            self.gopigo3.open_right_eye()
+            self.right_eye_on = True
+        else:
+            self.gopigo3.close_right_eye()
+            self.right_eye_on = False
 
         return "done"
 
