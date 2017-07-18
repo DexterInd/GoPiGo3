@@ -24,7 +24,24 @@ from builtins import input
 
 import easygopigo3 as easy
 
+def isData():
+    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
+
+
 def getch():
+    old_settings = termios.tcgetattr(sys.stdin)
+    try:
+        tty.setcbreak(sys.stdin.fileno())
+        if isData():
+            ch = sys.stdin.read(1)
+        else:
+            ch = None
+    finally:
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+
+    return ch
+
+    '''
     import termios
     import sys, tty
     def _getch():
@@ -37,6 +54,8 @@ def getch():
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
     return _getch()
+
+    '''
 
 class GoPiGo3WithKeyboard(object):
 
