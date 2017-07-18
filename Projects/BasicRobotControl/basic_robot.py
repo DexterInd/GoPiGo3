@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 from __future__ import print_function
 from __future__ import division
 
+import random
 import sys
 import select
 import tty
