@@ -82,7 +82,7 @@ class GoPiGo3WithKeyboard(object):
     def drawMenu(self):
         order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "z"]
         for key in order_of_keys:
-            print("[key {}] :{:>" + str(self.MENU_PADDING) + "}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+            print(("[key {}] :{:>" + str(self.MENU_PADDING) + "}").format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
 
     def _gopigo3_command_forward(self):
         self.gopigo3.forward()
