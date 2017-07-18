@@ -89,7 +89,17 @@ def _release_read():
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     def __init__(self):
-        super(self.__class__, self).__init__()
+        try:
+            super(self.__class__, self).__init__()
+        except IOError as e:
+            print("FATAL ERROR:\nGoPiGo3 is not detected.")
+            raise e
+        except gopigo3.FirmwareVersionError as e:
+            print("FATAL ERROR:\nTo update the firmware on Raspbian for Robots you need to run DI Software Update and choose Update Robot")
+            raise e
+        except Exception as e:
+            raise e
+                    
         self.sensor_1 = None
         self.sensor_2 = None
         self.set_speed(300)
@@ -112,9 +122,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return int(self.speed)
 
     def stop(self):
-        # only one is needed, we're going overkill
+        '''
+        Stop the GoPiGo3 by setting the degrees per second speed 
+        of each motor to 0
+        '''
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        
 
     def backward(self):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -468,8 +481,22 @@ class DigitalSensor(Sensor):
 
     def read(self):
         '''
+        Return values:
+        0 or 1 are valid values
+        -1 may occur when there's a reading error
+        
+        On a reading error, a second attempt will be made before 
+        returning a -1 value
         '''
-        self.value = self.gpg.get_grove_state(self.get_pin())
+        try:
+            self.value = self.gpg.get_grove_state(self.get_pin())
+        except gopigo3.ValueError as e:
+            try: 
+                self.value = self.gpg.get_grove_state(self.get_pin())
+            except Exception as e:
+                print(e)
+                return -1
+            
         return self.value
 
     def write(self, power):
@@ -494,7 +521,20 @@ class AnalogSensor(Sensor):
         time.sleep(0.01)
 
     def read(self):
-        self.value = self.gpg.get_grove_analog(self.get_pin())
+        '''
+        Read an analog value from a sensor.
+        Will make up to two attempts to get a valid value
+        If it succeeds, the valid value is returned
+        Otherwise it prints an error statement and returns 0
+        '''
+        try:
+            self.value = self.gpg.get_grove_analog(self.get_pin())
+        except gopigo3.ValueError as e:
+            try: 
+                self.value = self.gpg.get_grove_analog(self.get_pin())
+            except Exception as e:
+                print("Value Error: {}".format(e))
+                return 0
         return self.value
 
     def percent_read(self):
@@ -564,8 +604,14 @@ class UltraSonicSensor(AnalogSensor):
             raise IOError(e)
 
     def is_too_close(self):
-        if self.gpg.get_grove_value(self.get_port_ID()) < \
-           self.get_safe_distance():
+        try:
+            val = self.gpg.get_grove_value(self.get_port_ID())
+        except gopigo3.SensorError as e:
+            print("Invalid Reading")
+            print(e)
+            return False
+            
+        if  val < self.get_safe_distance():
             return True
         return False
 
@@ -581,6 +627,11 @@ class UltraSonicSensor(AnalogSensor):
         Take 3 readings, discard any that's higher than 4300 or lower than 15
         If we discard 5 times, then assume there's nothing in front
             and return 501
+            
+        Possible returns:
+        0    :  sensor not found
+        5010 :  object not detected
+        between 15 and 4300 : actual distance read 
         '''
         return_reading = 0
         readings = []
@@ -589,16 +640,23 @@ class UltraSonicSensor(AnalogSensor):
 
         while len(readings) < 3 and skip < 5:
             try:
-                print("taking a reading")
                 value = self.gpg.get_grove_value(self.get_port_ID())
-            except:
+                print ("raw {}".format(value))
+            except gopigo3.ValueError as e:
+                # print("Value Error")
+                # print(e)
+                value = 5010   # assume open road ahead
+                time.sleep(0.05)
+                
+            except Exception as e:
+                print(e)
                 skip += 1
                 time.sleep(0.05)
                 continue
 
-            if value < 4300 and value > 14:
+            if value <= 4300 and value >= 15:
                 readings.append(value)
-                debug (readings)
+                # debug (readings)
             else:
                 skip += 1
 
@@ -613,15 +671,15 @@ class UltraSonicSensor(AnalogSensor):
         for reading in readings:
             return_reading += reading
 
-        return_reading = int(return_reading // len(readings))
+        return_reading = int(return_reading / len(readings))
 
         return (return_reading)
 
     def read(self):
         # returns value in cm
         value = self.read_mm()
-        if value > 15 and value <= 5010:
-            return value // 10
+        if value >= 15 and value <= 5010:
+            return int(round(value / 10.0))
         return value
 
     def read_inches(self):

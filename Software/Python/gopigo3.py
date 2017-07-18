@@ -754,7 +754,7 @@ class GoPiGo3(object):
                     raise SensorError("get_grove_value error: Invalid value")
             else:
                 raise IOError("get_grove_value error: No SPI response")
-            
+        
         elif self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
