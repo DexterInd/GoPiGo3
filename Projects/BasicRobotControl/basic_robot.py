@@ -38,12 +38,29 @@ def getch():
         return ch
     return _getch()
 
-class GoPiGo3Switcher(object):
+class GoPiGo3WithKeyboard(object):
+
+    KEY_FUNC_SUFFIX = 0
+    KEY_DESCRIPTION = 1
 
     def __init__(self):
         self.gopigo3 = easy.EasyGoPiGo3()
+        self.keybindings = {
+        "w" : ["Move the GoPiGo3 forward", "forward"],
+        "s" : ["Move the GoPiGo3 backward", "backward"],
+        "a" : ["Turn the GoPiGo3 to the left", "left"],
+        "d" : ["Turn the GoPiGo3 to the right", "right"],
+        "x" : ["Stop the GoPiGo3 from moving", "stop"],
+        "c" : ["Drive forward for 10 centimeters", "forward_10cm"],
+        "i" : ["Drive forward for 10 inches", "forward_10in"],
+        "e" : ["Drive forward for 360 degrees (aka 1 wheel rotation)", "forward_1turn"],
+        "1" : ["Turn ON/OFF both blinkers of the GoPiGo3","blinkers"],
+        "2" : ["Turn ON/OFF both eyes of the GoPiGo3", "eyes"],
+        "3" : ["Change the eyes' color on the go", "eyes_color"],
+        "z" : ["Exit", "exit"],
+        }
 
-    def executeJob(self, argument):
+    def executeKeyboardJob(self, argument):
         method_name = "_gopigo3_command_" + str(argument)
         method = getattr(self, method_name, lambda : "nothing")
 
@@ -59,23 +76,14 @@ class GoPiGo3Switcher(object):
         print("                                            ")
 
     def drawMenu(self):
-        print("[w key]     : Move the GoPiGo3 forward")
-        print("[s key]     : Move the GoPiGo3 backward")
-        print("[a key]     : Turn the GoPiGo3 to the left")
-        print("[d key]     : Turn the GoPiGo3 to the right")
-        print("[x key]     : Stop the GoPiGo3 from moving")
-        print("[c key]     : Drive forward for 10 centimeters")
-        print("[i key]     : Drive forward for 10 inches")
-        print("[e key]     : Drive forward for 360 degrees (aka 1 wheel rotation)")
-        print("[1 key]     : Turn ON/OFF both blinkers of the GoPiGo3")
-        print("[2 key]     : Turn ON/OFF both eyes of the GoPiGo3")
-        print("[3 key]     : Change the eyes' color on the go")
-        print("[z key]     : Exit")
+        order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "z"]
+        for key in order_of_keys:
+            print("[key {}] :{:>8}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
 
-    def _gopigo3_command_w(self):
+    def _gopigo3_command_forward(self):
         self.gopigo3.forward()
 
-    def _gopigo3_command_x(self):
+    def _gopigo3_command_stop(self):
         self.gopigo3.stop()
 
 def Main():
