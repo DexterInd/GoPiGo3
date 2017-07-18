@@ -374,7 +374,12 @@ int GoPiGo3::set_grove_state(uint8_t pin, uint8_t state){
 }
 
 int GoPiGo3::set_grove_pwm_duty(uint8_t pin, float duty){
-  uint16_t duty_value = duty * 10.0;
+  if(duty > 100){
+    duty = 100;
+  }else if(duty < 0){
+    duty = 0;
+  }
+  uint16_t duty_value = duty * 10;
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_GROVE_PWM_DUTY;
   spi_array_out[2] = pin;
@@ -502,10 +507,10 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   
   // Determine the SPI transaction byte length based on the grove type
   switch(GroveType[port_index]){
-    case GROVE_TYPE_IR_GO_BOX:
+    case GROVE_TYPE_IR_DI_REMOTE:
       spi_transfer_length = 7;
     break;
-    case GROVE_TYPE_IR_EV3:
+    case GROVE_TYPE_IR_EV3_REMOTE:
       spi_transfer_length = 10;
     break;
     case GROVE_TYPE_US:
@@ -538,10 +543,10 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
     return spi_array_in[5];
   }
   
-  if(GroveType[port_index] == GROVE_TYPE_IR_GO_BOX){
+  if(GroveType[port_index] == GROVE_TYPE_IR_DI_REMOTE){
     sensor_infrared_gobox_t *Value = (sensor_infrared_gobox_t*)value_ptr;
     Value->button = spi_array_in[6];
-  }else if(GroveType[port_index] == GROVE_TYPE_IR_EV3){
+  }else if(GroveType[port_index] == GROVE_TYPE_IR_EV3_REMOTE){
     sensor_infrared_ev3_t *Value = (sensor_infrared_ev3_t*)value_ptr;
     Value->remote[0] = spi_array_in[6];
     Value->remote[1] = spi_array_in[7];
@@ -695,6 +700,8 @@ int GoPiGo3::reset_all(){
   int res2 = set_motor_power(MOTOR_LEFT + MOTOR_RIGHT, MOTOR_FLOAT);
   int res3 = set_motor_limits(MOTOR_LEFT + MOTOR_RIGHT, 0, 0);
   int res4 = set_led((LED_EYE_LEFT + LED_EYE_RIGHT + LED_BLINKER_LEFT + LED_BLINKER_RIGHT), 0, 0, 0);
+  int res5 = set_grove_pwm_duty(GROVE_1 + GROVE_2, 0);
+  int res6 = set_grove_pwm_frequency(GROVE_1 + GROVE_2);
   if(res1){
     return res1;
   }else if(res2){
@@ -703,6 +710,10 @@ int GoPiGo3::reset_all(){
     return res3;
   }else if(res4){
     return res4;
+  }else if(res5){
+    return res5;
+  }else if(res6){
+    return res6;
   }
   return ERROR_NONE;
 }

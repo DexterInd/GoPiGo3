@@ -34,7 +34,7 @@ int main(){
   GPG.detect(); // Make sure that the GoPiGo3 is communicating and that the firmware is compatible with the drivers.
   
   GPG.set_grove_type(GROVE_1, GROVE_TYPE_US);
-  GPG.set_grove_type(GROVE_2, GROVE_TYPE_IR_GO_BOX);
+  GPG.set_grove_type(GROVE_2, GROVE_TYPE_IR_DI_REMOTE);
   sensor_ultrasonic_t US;
   sensor_infrared_gobox_t IR;
   

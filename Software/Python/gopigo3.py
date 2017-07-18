@@ -147,8 +147,8 @@ class GoPiGo3(object):
     
     GROVE_TYPE = Enumeration("""
         CUSTOM = 1,
-        IR_GO_BOX,
-        IR_EV3,
+        IR_DI_REMOTE,
+        IR_EV3_REMOTE,
         US,
         I2C,
     """)
@@ -744,7 +744,7 @@ class GoPiGo3(object):
         else:
             raise IOError("Port unsupported. Must get one at a time.")
         
-        if self.GroveType[port_index] == self.GROVE_TYPE.IR_GO_BOX:
+        if self.GroveType[port_index] == self.GROVE_TYPE.IR_DI_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
@@ -755,7 +755,7 @@ class GoPiGo3(object):
             else:
                 raise IOError("get_grove_value error: No SPI response")
             
-        elif self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3:
+        elif self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
             if(reply[3] == 0xA5):
