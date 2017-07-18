@@ -43,6 +43,12 @@ class GoPiGo3WithKeyboard(object):
     KEY_DESCRIPTION = 0
     KEY_FUNC_SUFFIX = 1
 
+    left_blinker_on = False
+    right_blinker_on = False
+
+    left_eye_on = False
+    right_eye_on = False
+
     def __init__(self):
         self.gopigo3 = easy.EasyGoPiGo3()
         self.keybindings = {
@@ -51,12 +57,12 @@ class GoPiGo3WithKeyboard(object):
         "a" : ["Turn the GoPiGo3 to the left", "left"],
         "d" : ["Turn the GoPiGo3 to the right", "right"],
         "x" : ["Stop the GoPiGo3 from moving", "stop"],
-        "c" : ["Drive forward for 10 centimeters", "forward_10cm"],
-        "i" : ["Drive forward for 10 inches", "forward_10in"],
-        "e" : ["Drive forward for 360 degrees (aka 1 wheel rotation)", "forward_1turn"],
+        "c" : ["Drive forward for 10 centimeters", "forward10cm"],
+        "i" : ["Drive forward for 10 inches", "forward10in"],
+        "e" : ["Drive forward for 360 degrees (aka 1 wheel rotation)", "forwardturn"],
         "1" : ["Turn ON/OFF both blinkers of the GoPiGo3","blinkers"],
         "2" : ["Turn ON/OFF both eyes of the GoPiGo3", "eyes"],
-        "3" : ["Change the eyes' color on the go", "eyes_color"],
+        "3" : ["Change the eyes' color on the go", "eyescolor"],
         "z" : ["Exit", "exit"],
         }
 
@@ -90,6 +96,56 @@ class GoPiGo3WithKeyboard(object):
 
     def _gopigo3_command_stop(self):
         self.gopigo3.stop()
+
+        return "done"
+
+    def _gopigo3_command_left(self):
+        self.gopigo3.left()
+
+        return "done"
+
+    def _gopigo3_command_right(self):
+        self.gopigo3.right()
+
+        return "done"
+
+    def _gopigo3_command_stop(self):
+        self.gopigo3.stop()
+
+        return "done"
+
+    def _gopigo3_command_forward10cm(self):
+        self.gopigo3.drive_cm(10)
+
+        return "done"
+
+    def _gopigo3_command_forward10in(self):
+        self.gopigo3.drive_in(10)
+
+        return "done"
+
+    def _gopigo3_command_forwardturn(self):
+        self.gopigo3.drive_degrees(10)
+
+        return "done"
+
+    def _gopigo3_command_blinkers(self):
+        if self.left_blinker_on is True and self.right_blinker_on is True:
+            self.gopigo3.led_off()
+        elif self.left_blinker_on is False and self.right_blinker_on is False:
+            self.gopigo3.led_on()
+        else:
+            self.gopigo3.led_off()
+
+        return "done"
+
+    def _gopigo3_command_eyes(self):
+        if self.left_eye_on is True and self.right_eye_on is True:
+            self.gopigo3.close_eyes()
+        elif self.left_eye_on is False and self.right_eye_on is False:
+            self.gopigo3.open_eyes()
+        else:
+            self.gopigo3.close_eyes()
 
         return "done"
 
