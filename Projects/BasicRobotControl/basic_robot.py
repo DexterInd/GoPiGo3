@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 GoPiGo3 for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
 Copyright (C) 2017  Dexter Industries
@@ -237,6 +236,8 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.open_left_eye()
         if self.right_eye_on is True:
             self.gopigo3.open_right_eye()
+
+        return "done"
 
     def _gopigo3_command_exit(self):
         return "exit"
