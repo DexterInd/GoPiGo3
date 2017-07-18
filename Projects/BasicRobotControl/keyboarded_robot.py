@@ -241,14 +241,3 @@ class GoPiGo3WithKeyboard(object):
 
     def _gopigo3_command_exit(self):
         return "exit"
-
-def Main():
-    #printLogo()
-    #printMenu()
-
-    read_character = getch()
-    #while not read_character == "z":
-
-
-if __name__ == "__main__":
-    Main()
