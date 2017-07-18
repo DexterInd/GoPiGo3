@@ -40,7 +40,7 @@ def getch():
 
 class GoPiGo3Switcher(object):
 
-    def __init__():
+    def __init__(self):
         self.gopigo3 = easy.EasyGoPiGo3()
 
     def executeJob(self, argument):
