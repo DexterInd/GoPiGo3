@@ -151,47 +151,42 @@ class GoPiGo3WithKeyboard(object):
     def _gopigo3_command_forward(self):
         self.gopigo3.forward()
 
-        return "done"
+        return "moving"
 
     def _gopigo3_command_backward(self):
         self.gopigo3.backward()
 
-        return "done"
-
-    def _gopigo3_command_stop(self):
-        self.gopigo3.stop()
-
-        return "done"
+        return "moving"
 
     def _gopigo3_command_left(self):
         self.gopigo3.left()
 
-        return "done"
+        return "moving"
 
     def _gopigo3_command_right(self):
         self.gopigo3.right()
 
-        return "done"
+        return "moving"
 
     def _gopigo3_command_stop(self):
         self.gopigo3.stop()
 
-        return "done"
+        return "moving"
 
     def _gopigo3_command_forward10cm(self):
         self.gopigo3.drive_cm(10)
 
-        return "done"
+        return "path"
 
     def _gopigo3_command_forward10in(self):
         self.gopigo3.drive_inches(10)
 
-        return "done"
+        return "path"
 
     def _gopigo3_command_forwardturn(self):
         self.gopigo3.drive_degrees(360)
 
-        return "done"
+        return "path"
 
     def _gopigo3_command_leftblinker(self):
         if self.left_blinker_on is False:
@@ -201,7 +196,7 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.led_off(1)
             self.left_blinker_on = False
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_rightblinker(self):
         if self.right_blinker_on is False:
@@ -211,7 +206,7 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.led_off(0)
             self.right_blinker_on = False
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_blinkers(self):
         if self.left_blinker_on is False and self.right_blinker_on is False:
@@ -223,7 +218,7 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.led_off(1)
             self.left_blinker_on = self.right_blinker_on = False
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_lefteye(self):
         if self.left_eye_on is False:
@@ -233,7 +228,7 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.close_left_eye()
             self.left_eye_on = False
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_righteye(self):
         if self.right_eye_on is False:
@@ -243,7 +238,7 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.close_right_eye()
             self.right_eye_on = False
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_eyes(self):
         if self.left_eye_on is False and self.right_eye_on is False:
@@ -253,7 +248,7 @@ class GoPiGo3WithKeyboard(object):
             self.gopigo3.close_eyes()
             self.left_eye_on = self.right_eye_on = False
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_eyescolor(self):
         red = random.randint(0, 255)
@@ -266,7 +261,7 @@ class GoPiGo3WithKeyboard(object):
         if self.right_eye_on is True:
             self.gopigo3.open_right_eye()
 
-        return "done"
+        return "static"
 
     def _gopigo3_command_exit(self):
         return "exit"

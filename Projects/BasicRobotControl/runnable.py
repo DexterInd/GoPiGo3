@@ -35,19 +35,22 @@ def Main():
 
     while True:
         key = kb.getKey()
+        result = "nothing"
 
         if key is not None:
             result = gopigo3.executeKeyboardJob(key)
+            """
+            result can take the following values:
+            "nothing", "moving", "path", "static", "exit"
+            """
 
-            if result == "done":
-                pass
-            elif result == "nothing":
-                pass
-            elif result == "exit":
+            if result == "exit":
                 kb.join()
                 break
         else:
-            gopigo3.executeKeyboardJob("x")
+            if result == "moving":
+                # "x" is for stopping the robot from moving
+                gopigo3.executeKeyboardJob("x")
 
         sleep(0.05)
 
