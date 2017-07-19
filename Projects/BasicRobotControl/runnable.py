@@ -26,7 +26,12 @@ from time import sleep
 
 def Main():
 
-    gopigo3 = GoPiGo3WithKeyboard()
+    try:
+        gopigo3 = GoPiGo3WithKeyboard()
+    except IOError as error:
+        print(str(error))
+        exit(1)
+
     gopigo3.drawLogo()
     gopigo3.drawDescription()
     gopigo3.drawMenu()
@@ -39,12 +44,20 @@ def Main():
     "nothing", "moving", "path", "static", "exit"
     """
     manual_mode = False
+    successful_exit = True
 
     while True:
         key = kb.getKey()
 
         if key is not None:
-            result = gopigo3.executeKeyboardJob(key)
+
+            try:
+                result = gopigo3.executeKeyboardJob(key)
+            except IOError as error:
+                print(str(error))
+                kb.join()
+                successful_exit = False
+                break
 
             if result == "exit":
                 kb.join()
@@ -55,6 +68,11 @@ def Main():
                 gopigo3.executeKeyboardJob("x")
 
         sleep(0.05)
+
+    if successful_exit is True:
+        exit(0)
+    else:
+        exit(1)
 
 if __name__ == "__main__":
     Main()
