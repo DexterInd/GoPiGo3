@@ -28,6 +28,7 @@ def Main():
 
     gopigo3 = GoPiGo3WithKeyboard()
     gopigo3.drawLogo()
+    gopigo3.drawDescription()
     gopigo3.drawMenu()
 
     kb = LiveKeyboard()
