@@ -712,12 +712,12 @@ class GoPiGo3(object):
         
         address = ((int(addr) & 0x7F) << 1)
         
-        if inBytes > GROVE_I2C_LENGTH_LIMIT:
-            raise RuntimeError("Read length error. Up to %d bytes can be read in a single transaction." % GROVE_I2C_LENGTH_LIMIT)
+        if inBytes > self.GROVE_I2C_LENGTH_LIMIT:
+            raise RuntimeError("Read length error. Up to %d bytes can be read in a single transaction." % self.GROVE_I2C_LENGTH_LIMIT)
         
         outBytes = len(outArr)
-        if outBytes > GROVE_I2C_LENGTH_LIMIT:
-            raise RuntimeError("Write length error. Up to %d bytes can be written in a single transaction." % GROVE_I2C_LENGTH_LIMIT)
+        if outBytes > self.GROVE_I2C_LENGTH_LIMIT:
+            raise RuntimeError("Write length error. Up to %d bytes can be written in a single transaction." % self.GROVE_I2C_LENGTH_LIMIT)
         
         outArray = [self.SPI_Address, message_type, address, inBytes, outBytes]
         outArray.extend(outArr)
