@@ -32,11 +32,11 @@ The code we're analyzing in this tutorial is the following one.
     import easygopigo3 as easy
 
     # Create an instance of the Distance Sensor class.
-    distance_Sensor = easy.DistanceSensor()     # Distance_Sensor will be the Line Follower object.
+    my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the Line Follower object.
 
     # Read the Distance Sensor
     def get_sensorval():
-        val = Distance_Sensor.read_mm()           # Read the distance sensor in mm.
+        val = my_distance_sensor.read_mm()           # Read the distance sensor in mm.
         # You can also read the sensor in cm or inches.  Uncomment the lines below to read in different units.
         # val=Distance_Sensor.read()            # Read the distance sensor in cm.
         # val=Distance_Sensor.read_inches()     # Read the distance sensor in inches.
@@ -80,7 +80,7 @@ We do it like in the following code snippet.
 
 .. code-block:: python
 
-   distance_sensor = easy.DistanceSensor()
+   my_distance_sensor = easy.DistanceSensor()
 
 =========
 Main part
@@ -94,7 +94,7 @@ reading repeatedly, but in order to do that, we need to define a function called
 
     # Read the Distance Sensor
     def get_sensorval():
-        val = Distance_Sensor.read_mm()           # Read the distance sensor in mm.
+        val = my_distance_sensor.read_mm()           # Read the distance sensor in mm.
         # You can also read the sensor in cm or inches.  Uncomment the lines below to read in different units.
         # val=Distance_Sensor.read()            # Read the distance sensor in cm.
         # val=Distance_Sensor.read_inches()     # Read the distance sensor in inches.

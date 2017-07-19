@@ -33,7 +33,7 @@ In the end the code should look like this.
   gpg = easy.EasyGoPiGo3()
 
   # Put a grove button in port AD1
-  button = gpg3.init_button_sensor("AD1")
+  my_button = gpg3.init_button_sensor("AD1")
 
   print("Ensure there's a button in port AD1")
   print("Press and release the button as often as you want")
@@ -48,11 +48,11 @@ In the end the code should look like this.
 
   while time.time() - start < 120:
 
-      if state == RELEASED and button.read() == 1:
+      if state == RELEASED and my_button.read() == 1:
           print("PRESSED")
           gpg.open_eyes()
           state = PRESSED
-      if state == PRESSED and button.read() == 0:
+      if state == PRESSED and my_button.read() == 0:
           print("RELEASED")
           gpg.close_eyes()
           state = RELEASED
@@ -97,7 +97,7 @@ it's set to ``"AD1"``.
 
 .. code-block:: python
 
-   button = gpg3.init_button_sensor("AD1")
+   my_button = gpg3.init_button_sensor("AD1")
 
 .. note::
 
@@ -139,11 +139,11 @@ It only needs to call one of these 2 functions once.
 
   while time.time() - start < 120:
 
-    if state == RELEASED and button.read() == 1:
+    if state == RELEASED and my_button.read() == 1:
       print("PRESSED")
       gpg.open_eyes()
       state = PRESSED
-    if state == PRESSED and button.read() == 0:
+    if state == PRESSED and my_button.read() == 0:
       print("RELEASED")
       gpg.close_eyes()
       state = RELEASED

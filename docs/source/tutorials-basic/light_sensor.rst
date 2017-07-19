@@ -38,21 +38,21 @@ The code we're analyzing in this tutorial is the following one.
     gpg = easy.EasyGoPiGo3()
 
     # Create an instance of the Light sensor
-    light_sensor = gpg.init_light_sensor("AD1")
-    led = gpg.init_led("AD2")
+    my_light_sensor = gpg.init_light_sensor("AD1")
+    my_led = gpg.init_led("AD2")
 
     # loop forever while polling the sensor
     while(True):
         # get absolute value
-        reading = light_sensor.read()
+        reading = my_light_sensor.read()
         # scale the reading to a 0-100 scale
-        percent_reading = light_sensor.percent_read()
+        percent_reading = my_light_sensor.percent_read()
 
         # check if the light's intensity is above 50%
         if percent_read >= 50:
-          led.light_off()
+          my_led.light_off()
         else:
-          led.light_max()
+          my_led.light_max()
         print("{}, {:.1f}%".format(reading, percent_reading))
 
         time.sleep(0.05)
@@ -92,8 +92,8 @@ The argument of each of the 2 initializer methods represents the port to which a
 
 .. code-block:: python
 
-    light_sensor = gpg.init_light_sensor("AD1")
-    led = gpg.init_led("AD2")
+    my_light_sensor = gpg.init_light_sensor("AD1")
+    my_led = gpg.init_led("AD2")
 
 .. note::
 
@@ -117,15 +117,15 @@ To do all this, check out the following code snippet.
 
     while(True):
         # get absolute value
-        reading = light_sensor.read()
+        reading = my_light_sensor.read()
         # scale the reading to a 0-100 scale
-        percent_reading = light_sensor.percent_read()
+        percent_reading = my_light_sensor.percent_read()
 
         # check if the light's intensity is above 50%
         if percent_read >= 50:
-          led.light_off()
+          my_led.light_off()
         else:
-          led.light_max()
+          my_led.light_max()
         print("{}, {:.1f}%".format(reading, percent_reading))
 
         time.sleep(0.05)

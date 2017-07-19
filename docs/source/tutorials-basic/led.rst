@@ -30,19 +30,19 @@ The code we're analyzing in this tutorial is the following one.
 
 
     # create the LED instance, passing the port and GPG
-    led = gpp.init_led("AD1")
+    my_led = gpp.init_led("AD1")
     # or
     # my_LED = easy.Led("AD1", GPG)
 
     # loop 100 times
     for i in range(100):
-        led.light_max() # turn LED at max power
+        my_led.light_max() # turn LED at max power
         time.sleep(0.5)
 
-        led.light_on(30)  # 30% power
+        my_led.light_on(30)  # 30% power
         time.sleep(0.5)
 
-        led.light_off() # turn LED off
+        my_led.light_off() # turn LED off
         time.sleep(0.5)
 
 The source code for this example program can be found `here on github <https://github.com/DexterInd/GoPiGo3/blob/master/Software/Python/Examples/easy_LED.py>`_.
@@ -80,7 +80,7 @@ it's set to ``"AD1"``.
 
 .. code-block:: python
 
-   led = gpg.init_led("AD1")
+   my_led = gpg.init_led("AD1")
 
 .. note::
 
@@ -102,13 +102,13 @@ and in the last it turns off the LED. The delay between all these 3 commands is 
 .. code-block:: python
 
     for i in range(100):
-        led.light_max() # turn LED at max power
+        my_led.light_max() # turn LED at max power
         time.sleep(0.5)
 
-        led.light_on(30)  # 30% power
+        my_led.light_on(30)  # 30% power
         time.sleep(0.5)
 
-        led.light_off() # turn LED off
+        my_led.light_off() # turn LED off
         time.sleep(0.5)
 
 ==========
