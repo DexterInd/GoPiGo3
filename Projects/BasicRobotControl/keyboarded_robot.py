@@ -118,6 +118,11 @@ class LiveKeyboard(threading.Thread):
         return result
 
 class GoPiGo3WithKeyboard(object):
+"""
+Class for interfacing with the GoPiGo3.
+It's functionality is to map different keys
+of the keyboard to different commands of the GoPiGo3.
+"""
 
     KEY_DESCRIPTION = 0
     KEY_FUNC_SUFFIX = 1
@@ -129,6 +134,10 @@ class GoPiGo3WithKeyboard(object):
     right_eye_on = False
 
     def __init__(self):
+        """
+        Instantiates the key-bindings between the GoPiGo3 and the keyboard's keys.
+        Sets the order of the keys in the menu.
+        """
         self.gopigo3 = easy.EasyGoPiGo3()
         self.keybindings = {
         "w" : ["Move the GoPiGo3 forward", "forward"],
@@ -153,8 +162,23 @@ class GoPiGo3WithKeyboard(object):
 
         "z" : ["Exit", "exit"],
         }
+        self.order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "8", "9", "0", "/", "z"]
 
     def executeKeyboardJob(self, argument):
+        """
+        Argument can be any of the strings stored in self.keybindings list.
+
+        For instance: if argument is "w", then the algorithm looks inside self.keybinds dict and finds
+        the "forward" value, which in turn calls the "_gopigo3_command_forward" method
+        for driving the gopigo3 forward.
+
+        The return values are:
+        * "nothing" - when no method could be found for the given argument.
+        * "moving" - when the robot has to move forward, backward, to the left or to the right for indefinite time.
+        * "path" - when the robot has to move in a direction for a certain amount of time/distance.
+        * "static" - when the robot doesn't move in any direction, but instead does static things, such as turning the LEDs ON.
+        * "exit" - when the key for exiting the program is pressed.
+        """
         method_prefix = "_gopigo3_command_"
         try:
             method_suffix = str(self.keybindings[argument][self.KEY_FUNC_SUFFIX])
@@ -167,6 +191,9 @@ class GoPiGo3WithKeyboard(object):
         return method()
 
     def drawLogo(self):
+        """
+        Draws the name of the GoPiGo3.
+        """
         print("   _____       _____ _  _____         ____  ")
         print("  / ____|     |  __ (_)/ ____|       |___ \ ")
         print(" | |  __  ___ | |__) || |  __  ___     __) |")
@@ -176,12 +203,17 @@ class GoPiGo3WithKeyboard(object):
         print("                                            ")
 
     def drawDescription(self):
+        """
+        Prints details related on how to operate the GoPiGo3.
+        """
         print("\nPress the following keys to run the features of the GoPiGo3.")
         print("To move the motors, make sure you have a fresh set of batteries powering the GoPiGo3.\n")
 
     def drawMenu(self):
-        order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "8", "9", "0", "/", "z"]
-        for key in order_of_keys:
+        """
+        Prints all the key-bindings between the keys and the GoPiGo3's commands on the screen.
+        """
+        for key in self.order_of_keys:
             print("\r[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
 
     def _gopigo3_command_forward(self):
