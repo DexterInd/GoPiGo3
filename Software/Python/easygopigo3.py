@@ -1957,7 +1957,7 @@ class ButtonSensor(DigitalSensor):
         """
         Checks if the `Grove Button`_ is pressed.
 
-        :returns: If the `Grove Button`_ is pressed.
+        :returns: True or False, if the `Grove Button`_ is pressed.
         :rtype: boolean
         """
         return self.read() == 1
