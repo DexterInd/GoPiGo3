@@ -25,6 +25,7 @@ from __future__ import division
 # a terminal with a keyboard
 from keyboarded_robot import GoPiGo3WithKeyboard
 from curtsies import Input
+import signal
 
 from time import sleep
 
@@ -81,4 +82,5 @@ def Main():
                 gopigo3.executeKeyboardJob("x")
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGSTP, lambda signum, frame : print("Press the appropriate key for closing the app."))
     Main()
