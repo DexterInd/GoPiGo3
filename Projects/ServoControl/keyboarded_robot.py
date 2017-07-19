@@ -24,11 +24,11 @@ import threading
 from time import sleep
 
 class GoPiGo3WithKeyboard(object):
-"""
-Class for interfacing with the GoPiGo3.
-It's functionality is to map different keys
-of the keyboard to different commands of the GoPiGo3.
-"""
+    """
+    Class for interfacing with the GoPiGo3.
+    It's functionality is to map different keys
+    of the keyboard to different commands of the GoPiGo3.
+    """
 
     KEY_DESCRIPTION = 0
     KEY_FUNC_SUFFIX = 1
