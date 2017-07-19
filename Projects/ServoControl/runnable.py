@@ -51,10 +51,6 @@ def Main():
     # key bindings are shown in here
     gopigo3.drawMenu()
 
-    # this class is used for detecting key presses on the keyboard
-    kb = LiveKeyboard()
-    # it's derived from threading.Thread class so we need to start it
-    kb.start()
     # result holds the exit string when we call a gopigo3 command
     # with the GoPiGo3WithKeyboard object
     result = "nothing"
