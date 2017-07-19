@@ -82,5 +82,5 @@ def Main():
                 gopigo3.executeKeyboardJob("x")
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGSTP, lambda signum, frame : print("Press the appropriate key for closing the app."))
+    signal.signal(signal.SIGTSTP, lambda signum, frame : print("Press the appropriate key for closing the app."))
     Main()
