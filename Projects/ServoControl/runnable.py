@@ -30,19 +30,10 @@ import signal
 from time import sleep
 
 def Main():
-
-    try:
-
-        # GoPiGo3WithKeyboard is used for mapping
-        # keyboard keys to actual GoPiGo3 commands
-        # the keys-to-gopigo3 bindings are defined inside the class
-        gopigo3 = GoPiGo3WithKeyboard()
-    except IOError as error:
-
-        # if the GoPiGo3 is not reachable
-        # then print the error and exit
-        print(str(error))
-        exit(1)
+    # GoPiGo3WithKeyboard is used for mapping
+    # keyboard keys to actual GoPiGo3 commands
+    # the keys-to-gopigo3 bindings are defined inside the class
+    gopigo3 = GoPiGo3WithKeyboard()
 
     # draws the GoPiGo3 logo
     gopigo3.drawLogo()
@@ -83,4 +74,10 @@ def Main():
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTSTP, lambda signum, frame : print("Press the appropriate key for closing the app."))
-    Main()
+    try:
+        Main()
+    except IOError as error:
+        # if the GoPiGo3 is not reachable
+        # then print the error and exit
+        print(str(error))
+        exit(1)
