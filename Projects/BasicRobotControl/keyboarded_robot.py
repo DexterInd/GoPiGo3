@@ -27,7 +27,15 @@ import easygopigo3 as easy
 import threading
 from time import sleep
 
+
 class LiveKeyboard(threading.Thread):
+    """
+    Class for detecting key presses.
+    This class disables typing and writing
+    so the user has to rely on this class for exiting the process.
+    """
+
+    #: the length of the buffer list where key presses are stored
     MAX_BUFFER_SIZE = 3
 
     def __init__(self):
@@ -45,17 +53,32 @@ class LiveKeyboard(threading.Thread):
         self.finished = True
 
     def stop(self):
+        """
+        Triggers the stopping process of the thread.
+        """
         self.event.set()
 
     def join(self):
+        """
+        Triggers the stopping process of the thread
+        and waits until it exits.
+        """
         self.stop()
         while self.finished is False:
             sleep(0.001)
 
     def getKey(self):
+        """
+        Returns the detected pressed key.
+        If nothing is pressed, it returns None.
+        """
         return self.__get_from_buffer()
 
     def __getKey(self):
+        """
+        Private method for reading the pressed key.
+        It's a blocking method, so it finishes when a character is read.
+        """
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         try:
@@ -66,6 +89,10 @@ class LiveKeyboard(threading.Thread):
         return ch
 
     def __add_to_buffer(self, element):
+        """
+        Private method for appending key presses
+        to a buffer list.
+        """
         self.lock.acquire()
 
         self.buffer.append(element)
@@ -76,6 +103,11 @@ class LiveKeyboard(threading.Thread):
         self.lock.release()
 
     def __get_from_buffer(self):
+        """
+        Private method for getting the read key presses
+        from a buffer list.
+        The buffer list is used for storing key presses.
+        """
         self.lock.acquire()
 
         result = None
