@@ -77,9 +77,8 @@ def Main():
                 if result == "exit":
                     break
 
-            elif manual_mode is True:
-                if result == "moving":
-                    gopigo3.executeKeyboardJob("x")
+            elif manual_mode is True and result == "moving":
+                gopigo3.executeKeyboardJob("x")
 
 if __name__ == "__main__":
     Main()
