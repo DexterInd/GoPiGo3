@@ -64,7 +64,7 @@ def Main():
     # to be pressed once in order for the robot to start moving
     manual_mode = False
     successful_exit = True
-    refresh_rate = 50.0
+    refresh_rate = 20.0
 
     with Input(keynames = "curtsies", sigint_event = True) as input_generator:
         while True:
