@@ -77,7 +77,11 @@ def Main():
             key = input_generator.send(period)
 
             if key is not None:
-                gopigo3.executeKeyboardJob(key)
+                result = gopigo3.executeKeyboardJob(key)
+
+                if result == "exit"
+                    break
+                    
             else if manual_mode is False:
                 gopigo3.executeKeyboardJob("x")
 
