@@ -21,9 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 from __future__ import print_function
 from __future__ import division
 
-# modules for interfacing with the GoPiGo3 from
+# module for interfacing with the GoPiGo3 from
 # a terminal with a keyboard
 from keyboarded_robot import GoPiGo3WithKeyboard
+# module for capturing input events from the keyboard
 from curtsies import Input
 import signal
 
@@ -61,19 +62,29 @@ def Main():
     with Input(keynames = "curtsies", sigint_event = True) as input_generator:
         while True:
             period = 1 / refresh_rate
+            # if nothing is captured in [period] seconds
+            # then send() function returns None
             key = input_generator.send(period)
 
+            # if we've captured something from the keyboard
             if key is not None:
                 result = gopigo3.executeKeyboardJob(key)
 
                 if result == "exit":
                     break
 
+            # if we haven't captured anything
+            # and if the robot is set to manual_mode
+            # then stop the robot from moving as soon as the key(s)
+            # for moving (the robot around) are released
             elif manual_mode is True and result == "moving":
                 gopigo3.executeKeyboardJob("x")
 
+
 if __name__ == "__main__":
+    # set up a handler for ignoring the Ctrl+Z commands
     signal.signal(signal.SIGTSTP, lambda signum, frame : print("Press the appropriate key for closing the app."))
+
     try:
         Main()
     except IOError as error:
@@ -81,3 +92,5 @@ if __name__ == "__main__":
         # then print the error and exit
         print(str(error))
         exit(1)
+        
+    exit(0)
