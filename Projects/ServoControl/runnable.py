@@ -23,7 +23,6 @@ from __future__ import division
 
 # modules for interfacing with the GoPiGo3 from
 # a terminal with a keyboard
-from keyboarded_robot import LiveKeyboard
 from keyboarded_robot import GoPiGo3WithKeyboard
 from curtsies import Input
 
@@ -79,10 +78,10 @@ def Main():
             if key is not None:
                 result = gopigo3.executeKeyboardJob(key)
 
-                if result == "exit"
+                if result == "exit":
                     break
-                    
-            else if manual_mode is False:
+
+            elif manual_mode is False:
                 gopigo3.executeKeyboardJob("x")
 
 if __name__ == "__main__":
