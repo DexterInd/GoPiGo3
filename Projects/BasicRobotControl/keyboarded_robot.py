@@ -144,10 +144,8 @@ class GoPiGo3WithKeyboard(object):
         print("                                            ")
 
     def drawDescription(self):
-        print("\n")
-        print("Press the following keys to run the features of the GoPiGo3.")
-        print("To move the motors, make sure you have a fresh set of batteries powering the GoPiGo3.")
-        print("\n")
+        print("\nPress the following keys to run the features of the GoPiGo3.")
+        print("To move the motors, make sure you have a fresh set of batteries powering the GoPiGo3.\n")
 
     def drawMenu(self):
         order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "8", "9", "0", "/", "z"]
