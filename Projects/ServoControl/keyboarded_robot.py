@@ -68,7 +68,7 @@ class GoPiGo3WithKeyboard(object):
 
         "<ESC>" : ["Exit", "exit"],
         }
-        self.order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "8", "9", "0", "/", "z"]
+        self.order_of_keys = ["w", "s", "a", "d", "<SPACE>", "<F1>c", "<F2>", "<F3>", "1", "2", "3", "8", "9", "0", "<INSERT>", "<ESC>"]
 
     def executeKeyboardJob(self, argument):
         """
@@ -119,8 +119,11 @@ class GoPiGo3WithKeyboard(object):
         """
         Prints all the key-bindings between the keys and the GoPiGo3's commands on the screen.
         """
-        for key in self.order_of_keys:
-            print("\r[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+        try:
+            for key in self.order_of_keys:
+                print("\r[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+        except KeyError:
+            print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with GoPiGo3WithKeyboard.keybindings.")
 
     def _gopigo3_command_forward(self):
         self.gopigo3.forward()
