@@ -50,7 +50,7 @@ print("The IR Receiver (remote sensor) should connected to port AD1")
 print("Ctrl-C to exit the program")
 
 
-GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_GO_BOX)
+GPG.set_grove_type(GPG.GROVE_1, GPG.GROVE_TYPE.IR_DI_REMOTE)
 while True:
     try:
         read_ir_keys()

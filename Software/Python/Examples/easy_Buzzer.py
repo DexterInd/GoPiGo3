@@ -10,7 +10,7 @@ gpg = easy.EasyGoPiGo3()
 
 # Create an instance of the Buzzer
 # connect a buzzer to port AD2
-buzzer = gpg.init_buzzer("AD2")
+my_buzzer = gpg.init_buzzer("AD2")
 
 twinkle = ["C4","C4","G4","G4","A4","A4","G4"]
 
@@ -27,7 +27,7 @@ time.sleep(1)
 
 for note in twinkle:
     print(note)
-    buzzer.sound(buzzer.scale[note])
+    my_buzzer.sound(buzzer.scale[note])
     time.sleep(0.5)
     buzzer.sound_off()
     time.sleep(0.25)
