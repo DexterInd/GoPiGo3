@@ -35,7 +35,7 @@ class GoPiGo3WithKeyboard(object):
 
     servo1_position = 0
     servo2_position = 0
-    servo_increment_step = 1
+    servo_increment_step = 5
 
 
     def __init__(self):
@@ -48,19 +48,19 @@ class GoPiGo3WithKeyboard(object):
         self.servo2 = self.gopigo3.init_servo("SERVO2")
 
         self.keybindings = {
-        "<F1>" : ["Turn SERVO1 completely to the left.", "leftservo1_immediately"],
-        "<F2>" : ["Turn SERVO1 completely to the right.", "rightservo1_immediately"],
+        "<F1>" : ["Turn SERVO1 completely to 0 degrees.", "leftservo1_immediately"],
+        "<F2>" : ["Turn SERVO1 completely to 180 degrees.", "rightservo1_immediately"],
 
-        "<F5>" : ["Turn SERVO2 completely to the left.", "leftservo1_immediately"],
-        "<F6>" : ["Turn SERVO2 completely to the right.", "rightservo2_immediately"],
+        "<F5>" : ["Turn SERVO2 completely to 0 degrees.", "leftservo2_immediately"],
+        "<F6>" : ["Turn SERVO2 completely to 180 degrees.", "rightservo2_immediately"],
 
         "<SPACE>" : ["Reset both servos to the original position.", "reset"],
 
-        "a" : ["Turn SERVO1 to the left incrementely.", "leftservo1_incrementally"],
-        "d" : ["Turn SERVO1 to the right incrementely.", "rightservo1_incrementally"],
+        "a" : ["Turn SERVO1 towards 0 degrees incrementely.", "leftservo1_incrementally"],
+        "d" : ["Turn SERVO1 towords 180 degrees incrementely.", "rightservo1_incrementally"],
 
-        "<LEFT>" : ["Turn SERVO2 to the left incrementely.", "leftservo2_incrementally"],
-        "<RIGHT>" : ["Turn SERVO2 to the right incrementely.", "rightservo2_incrementally"],
+        "<LEFT>" : ["Turn SERVO2 towards 0 degrees incrementely.", "leftservo2_incrementally"],
+        "<RIGHT>" : ["Turn SERVO2 towards 180 degrees incrementely.", "rightservo2_incrementally"],
 
         "<ESC>" : ["Exit", "exit"],
         }
@@ -121,37 +121,70 @@ class GoPiGo3WithKeyboard(object):
         except KeyError:
             print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with those in GoPiGo3WithKeyboard.keybindings.")
 
+    def _gopigo3_command_leftservo1_immediately(self):
+        self.servo1_position = 0
+        self.servo1.rotate_servo(self.servo1_position)
+
+        return "complete_turn_servo1"
+
+    def _gopigo3_command_rightservo1_immediately(self):
+        self.servo1_position = 180
+        self.servo1.rotate_servo(self.servo1_position)
+
+        return "complete_turn_servo1"
+
+
+    def _gopigo3_command_leftservo2_immediately(self):
+        self.servo2_position = 0
+        self.servo2.rotate_servo(self.servo2_position)
+
+        return "complete_turn_servo2"
+
+    def _gopigo3_command_rightservo2_immediately(self):
+        self.servo2_position = 180
+        self.servo2.rotate_servo(self.servo2_position)
+
+        return "complete_turn_servo2"
+
     def _gopigo3_command_reset(self):
         self.servo1_position = 0
         self.servo2_position = 0
         self.servo1.reset_servo()
         self.servo2.reset_servo()
 
-        return "servo"
+        return "reset_servo"
 
     def _gopigo3_command_leftservo1_incrementally(self):
         self.servo1_position -= self.servo_increment_step
+        if self.servo1_position < 0:
+            self.servo1_position = 0
         self.servo1.rotate_servo(self.servo1_position)
 
-        return "servo"
+        return "gradual_turn_servo1"
 
     def _gopigo3_command_rightservo1_incrementally(self):
         self.servo1_position += self.servo_increment_step
+        if self.servo1_position > 180:
+            self.servo1_position = 180
         self.servo1.rotate_servo(self.servo1_position)
 
-        return "servo"
+        return "gradual_turn_servo1"
 
     def _gopigo3_command_leftservo2_incrementally(self):
         self.servo2_position -= self.servo_increment_step
+        if self.servo2_position < 0:
+            self.servo2_position = 0
         self.servo2.rotate_servo(self.servo2_position)
 
-        return "servo"
+        return "gradual_turn_servo2"
 
     def _gopigo3_command_rightservo2_incrementally(self):
         self.servo2_position += self.servo_increment_step
+        if self.servo2_position > 180:
+            self.servo2_position = 180
         self.servo2.rotate_servo(self.servo2_position)
 
-        return "servo"
+        return "gradual_turn_servo2"
 
     def _gopigo3_command_exit(self):
         return "exit"
