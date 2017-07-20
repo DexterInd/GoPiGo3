@@ -4,9 +4,9 @@
 Pushing a Button
 ****************
 
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are going to control `GoPiGo3`_ Dex's eyes with a `Grove Button`_.
 
@@ -33,7 +33,7 @@ In the end the code should look like this.
   gpg = easy.EasyGoPiGo3()
 
   # Put a grove button in port AD1
-  my_button = gpg3.init_button_sensor("AD1")
+  my_button = gpg.init_button_sensor("AD1")
 
   print("Ensure there's a button in port AD1")
   print("Press and release the button as often as you want")
@@ -97,11 +97,11 @@ it's set to ``"AD1"``.
 
 .. code-block:: python
 
-   my_button = gpg3.init_button_sensor("AD1")
+   my_button = gpg.init_button_sensor("AD1")
 
 .. note::
 
-   For knowing where the ports are located on the robot (like port ``"AD1"``), see the following :ref:`graphical representation <hardware-ports-section>`.
+   See the following :ref:`graphical representation <hardware-ports-section>` as a reference to where the ports are.
 
 =================
 Setting variables
