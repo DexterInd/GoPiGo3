@@ -8,7 +8,7 @@ Getting Started
 Buying a GoPiGo3
 ****************
 
-For buying a `GoPiGo3`_ robot, please head over to our online `shop`_ and search for the `GoPiGo3`_ robot. From our `shop`_, you can get sensors for your robot such as the `Distance Sensor`_, the `Grove Light Sensor`_, etc.
+To buy a `GoPiGo3`_ robot, please head over to our online `shop`_ and search for the `GoPiGo3`_ robot. From our `shop`_, you can get sensors for your robot such as the `Distance Sensor`_, the `Grove Light Sensor`_, etc.
 
 .. image:: images/gopigo3.jpg
 

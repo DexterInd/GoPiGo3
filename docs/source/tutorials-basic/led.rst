@@ -4,10 +4,9 @@
 Flashing an LED
 ***************
 
-
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are making a `Grove Led`_ flash continuously, while it's being connected to a `GoPiGo3`_ robot.
 
@@ -84,7 +83,7 @@ it's set to ``"AD1"``.
 
 .. note::
 
-   For knowing where the ports are located on the robot (like port ``"AD2"``), see the following :ref:`graphical representation <hardware-ports-section>`.
+   See the following :ref:`graphical representation <hardware-ports-section>` as a reference to where the ports are.
 
 =========
 Main part
