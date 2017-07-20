@@ -121,7 +121,7 @@ class GoPiGo3WithKeyboard(object):
         """
         try:
             for key in self.order_of_keys:
-                print("\r[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+                print("\r[key {:8}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
         except KeyError:
             print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with those in GoPiGo3WithKeyboard.keybindings.")
 
