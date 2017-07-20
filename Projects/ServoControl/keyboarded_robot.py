@@ -48,23 +48,23 @@ class GoPiGo3WithKeyboard(object):
         self.servo2 = self.gopigo3.init_servo("SERVO2")
 
         self.keybindings = {
-        "<F1>" : ["Turn SERVO1 completely to 0 degrees.", "leftservo1_immediately"],
-        "<F2>" : ["Turn SERVO1 completely to 180 degrees.", "rightservo1_immediately"],
+        "<F1>" : ["Turn SERVO1 completely to 0 degrees", "leftservo1_immediately"],
+        "<F2>" : ["Turn SERVO1 completely to 180 degrees", "rightservo1_immediately"],
 
-        "<F5>" : ["Turn SERVO2 completely to 0 degrees.", "leftservo2_immediately"],
-        "<F6>" : ["Turn SERVO2 completely to 180 degrees.", "rightservo2_immediately"],
+        "<F5>" : ["Turn SERVO2 completely to 0 degrees", "leftservo2_immediately"],
+        "<F6>" : ["Turn SERVO2 completely to 180 degrees", "rightservo2_immediately"],
+
+        "a" : ["Turn SERVO1 towards 0 degrees incrementely", "leftservo1_incrementally"],
+        "d" : ["Turn SERVO1 towords 180 degrees incrementely", "rightservo1_incrementally"],
+
+        "<LEFT>" : ["Turn SERVO2 towards 0 degrees incrementely", "leftservo2_incrementally"],
+        "<RIGHT>" : ["Turn SERVO2 towards 180 degrees incrementely", "rightservo2_incrementally"],
 
         "<SPACE>" : ["Turn off power supply to both servos", "kill"],
 
-        "a" : ["Turn SERVO1 towards 0 degrees incrementely.", "leftservo1_incrementally"],
-        "d" : ["Turn SERVO1 towords 180 degrees incrementely.", "rightservo1_incrementally"],
-
-        "<LEFT>" : ["Turn SERVO2 towards 0 degrees incrementely.", "leftservo2_incrementally"],
-        "<RIGHT>" : ["Turn SERVO2 towards 180 degrees incrementely.", "rightservo2_incrementally"],
-
         "<ESC>" : ["Exit", "exit"],
         }
-        self.order_of_keys = ["<F1>", "<F2>", "<F5>", "<F6>", "<SPACE>", "a", "d", "<LEFT>", "<RIGHT>", "<ESC>"]
+        self.order_of_keys = ["<F1>", "<F2>", "<F5>", "<F6>", "a", "d", "<LEFT>", "<RIGHT>", "<SPACE>", "<ESC>"]
 
     def executeKeyboardJob(self, argument):
         """
