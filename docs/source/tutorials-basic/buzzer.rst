@@ -9,7 +9,7 @@ Our target
 ==========
 
 In this tutorial, we are making a `Grove Buzzer`_ play different musical tones on our `GoPiGo3`_ robot.
-We start off with 3 musical notes and finish by playing the all-known *"Twinkle Twinklle Little Star"* song.
+We start off with 3 musical notes and finish by playing the well-known *"Twinkle Twinklle Little Star"* song.
 
 ===================
 The code we analyse
@@ -77,7 +77,7 @@ The objects
 ===========
 
 After this, we need to instantiate an :py:class:`easygopigo3.EasyGoPiGo3` object.
-We are using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easygopigo3.Buzzer` class,
+We will be using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easygopigo3.Buzzer` class,
 which is necessary for controlling the `Grove Buzzer`_ device.
 
 .. code-block:: python
@@ -101,7 +101,7 @@ it's set to ``"AD2"``.
 Setting variables
 =================
 
-For playing *"Twinkle Twinkle Little Star"* song, we need to have a sequence of musical notes that describe this song.
+To play the *"Twinkle Twinkle Little Star"* song, we need to have a sequence of musical notes that describe this song.
 We're encoding the musical notes into a list (called ``twinkle``) of strings, where each string represents a musical note.
 
 .. code-block:: python
@@ -114,12 +114,12 @@ Main part
 
 The main zone of the code is divided into 2 sections:
 
-   1. The 1st section, where we only play 3 musical notes which are split apart by delays worth of 1 second (each).
+   1. The 1st section, where we only play 3 musical notes with a 1 second delay.
    2. The 2nd section, where we play the lovely *"Twinkle Twinkle Little Start"* song.
 
-In the 1st section we are using the :py:meth:`easygopigo3.Buzzer.sound` method, which takes as a paramater,
+In the 1st section, we use the :py:meth:`easygopigo3.Buzzer.sound` method, which takes as a paramater,
 an integer that represents the frequency of the emitted sound. As you can see in the following code snippet,
-each musical note corresponds with a certain frequency:
+each musical note corresponds to a certain frequency:
 
    * The frequency of *A4* musical note is *440Hz*.
    * The frequency of *A5* musical note is *880Hz*.
