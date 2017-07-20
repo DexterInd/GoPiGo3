@@ -4,9 +4,9 @@
 Detecting Light
 ***************
 
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are making a `Grove Light Sensor`_ light up a `Grove Led`_ depending on how strong the intensity
 of the light is. The `Grove Light Sensor`_ and the `Grove Led`_ are both connected to the `GoPiGo3`_ and use the following ports.
@@ -97,7 +97,7 @@ The argument of each of the 2 initializer methods represents the port to which a
 
 .. note::
 
-   For knowing where the ports are located on the robot (like ports ``"AD1"`` or ``"AD2"``), see the following :ref:`graphical representation <hardware-ports-section>`.
+   See the following :ref:`graphical representation <hardware-ports-section>` as a reference to where the ports are.
 
 =========
 Main part
