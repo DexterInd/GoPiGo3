@@ -4,9 +4,9 @@
 Pushing a Button
 ****************
 
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are going to control `GoPiGo3`_ Dex's eyes with a `Grove Button`_.
 

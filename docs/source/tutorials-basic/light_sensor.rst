@@ -4,9 +4,9 @@
 Detecting Light
 ***************
 
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are making a `Grove Light Sensor`_ light up a `Grove Led`_ depending on how strong the intensity
 of the light is. The `Grove Light Sensor`_ and the `Grove Led`_ are both connected to the `GoPiGo3`_ and use the following ports.

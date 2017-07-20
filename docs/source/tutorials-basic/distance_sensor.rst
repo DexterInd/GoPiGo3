@@ -4,9 +4,9 @@
 Measuring with the Distance Sensor
 **********************************
 
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are using a `Distance Sensor`_ for measuring the distance to a target with the `GoPiGo3`_ robot.
 We are going to print the values on a terminal.

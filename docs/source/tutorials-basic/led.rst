@@ -4,10 +4,9 @@
 Flashing an LED
 ***************
 
-
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are making a `Grove Led`_ flash continuously, while it's being connected to a `GoPiGo3`_ robot.
 

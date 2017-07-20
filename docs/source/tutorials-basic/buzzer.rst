@@ -4,9 +4,9 @@
 Ringing a Buzzer
 ****************
 
-==========
-Our target
-==========
+========
+Our goal
+========
 
 In this tutorial, we are making a `Grove Buzzer`_ play different musical tones on our `GoPiGo3`_ robot.
 We start off with 3 musical notes and finish by playing the well-known *"Twinkle Twinklle Little Star"* song.
