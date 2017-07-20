@@ -44,7 +44,8 @@ class GoPiGo3WithKeyboard(object):
         Sets the order of the keys in the menu.
         """
         self.gopigo3 = easy.EasyGoPiGo3()
-        self.servo = self.gopigo3.init_servo()
+        self.servo1 = self.gopigo3.init_servo("SERVO1")
+        self.servo2 = self.gopigo3.init_servo("SERVO2")
 
         self.keybindings = {
         "<F1>" : ["Turn SERVO1 completely to the left.", "leftservo1_immediately"],
@@ -58,8 +59,8 @@ class GoPiGo3WithKeyboard(object):
         "a" : ["Turn SERVO1 to the left incrementely.", "leftservo1_incrementally"],
         "d" : ["Turn SERVO1 to the right incrementely.", "rightservo1_incrementally"],
 
-        "<LEFT>" : ["Turn SERVO1 to the left incrementely.", "leftservo1_incrementally"],
-        "<RIGHT>" : ["Turn SERVO2 to the right incrementely.", "rightservo1_incrementally"],
+        "<LEFT>" : ["Turn SERVO2 to the left incrementely.", "leftservo2_incrementally"],
+        "<RIGHT>" : ["Turn SERVO2 to the right incrementely.", "rightservo2_incrementally"],
 
         "<ESC>" : ["Exit", "exit"],
         }
@@ -120,21 +121,35 @@ class GoPiGo3WithKeyboard(object):
         except KeyError:
             print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with those in GoPiGo3WithKeyboard.keybindings.")
 
-    def _gopigo3_command_leftservo2_incrementally(self):
+    def _gopigo3_command_reset(self):
+        self.servo1_position = 0
+        self.servo2_position = 0
+        self.servo1.reset_servo()
+        self.servo2.reset_servo()
+
+        return "servo"
+
+    def _gopigo3_command_leftservo1_incrementally(self):
         self.servo1_position -= self.servo_increment_step
-        self.servo.rotate_servo(self.servo1_position)
+        self.servo1.rotate_servo(self.servo1_position)
+
+        return "servo"
+
+    def _gopigo3_command_rightservo1_incrementally(self):
+        self.servo1_position += self.servo_increment_step
+        self.servo1.rotate_servo(self.servo1_position)
+
+        return "servo"
+
+    def _gopigo3_command_leftservo2_incrementally(self):
+        self.servo2_position -= self.servo_increment_step
+        self.servo2.rotate_servo(self.servo2_position)
+
+        return "servo"
 
     def _gopigo3_command_rightservo2_incrementally(self):
-        self.servo1_position += self.servo_increment_step
-        self.servo.rotate_servo(self.servo1_position)
-
-    def _gopigo3_command_leftservo2_incrementally(self):
-        self.servo1_position -= self.servo_increment_step
-        self.servo.rotate_servo(self.servo2_position)
-
-    def _gopigo3_command_rightservo2_incrementally(self):
-        self.servo1_position += self.servo_increment_step
-        self.servo.rotate_servo(self.servo2_position)
+        self.servo2_position += self.servo_increment_step
+        self.servo2.rotate_servo(self.servo2_position)
 
         return "servo"
 
