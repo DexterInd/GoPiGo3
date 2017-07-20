@@ -2245,7 +2245,6 @@ class Servo(Sensor):
 # under try/except in case the Distance Sensor is not installed
 #######################################################################
 try:
-    
     from di_sensors import distance_sensor
 
 except:
@@ -2287,7 +2286,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         try:
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
-            #print(e)
+            print(e)
             raise IOError("Distance Sensor not found")
 
         self.set_descriptor("Distance Sensor")
@@ -2318,7 +2317,9 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # if sensor insists on that value, then pass it on
         while (mm > 8000 or mm < 5) and attempt < 3:
             try:
+                _grab_read()
                 mm = self.read_range_single()
+                _release_read()
             except:
                 mm = 0
             attempt = attempt + 1
