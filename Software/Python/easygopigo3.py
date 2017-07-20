@@ -2175,7 +2175,7 @@ class Servo(Sensor):
         Constructor for instantiating a :py:class:`~easygopigo3.Servo` object for a (or multiple) `servo`_ (servos).
 
         :param str port = "SERVO1": The port to which we have connected the `servo`_.
-        :param easygopigo3.EasyGoPiGo3 = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
 
         The available ports that can be used for a `servo`_ are:
 
