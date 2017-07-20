@@ -49,7 +49,9 @@ def Main():
     result = "nothing"
     """
     result can take the following values:
-    "nothing", "moving", "path", "static", "exit"
+    "complete_turn_servo1", "complete_turn_servo2",
+    "gradual_turn_servo1", "gradual_turn_servo2",
+    "kill_servos", "exit"
     """
 
     successful_exit = True

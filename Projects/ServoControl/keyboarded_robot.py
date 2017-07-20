@@ -147,12 +147,6 @@ class GoPiGo3WithKeyboard(object):
 
         return "complete_turn_servo2"
 
-    def _gopigo3_command_kill(self):
-        self.servo1.reset_servo()
-        self.servo2.reset_servo()
-
-        return "reset_servo"
-
     def _gopigo3_command_leftservo1_incrementally(self):
         self.servo1_position -= self.servo_increment_step
         if self.servo1_position < 0:
@@ -184,6 +178,12 @@ class GoPiGo3WithKeyboard(object):
         self.servo2.rotate_servo(self.servo2_position)
 
         return "gradual_turn_servo2"
+
+    def _gopigo3_command_kill(self):
+        self.servo1.reset_servo()
+        self.servo2.reset_servo()
+
+        return "kill_servos"
 
     def _gopigo3_command_exit(self):
         return "exit"
