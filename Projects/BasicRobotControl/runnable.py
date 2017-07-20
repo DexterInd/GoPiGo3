@@ -21,27 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 from __future__ import print_function
 from __future__ import division
 
-# modules for interfacing with the GoPiGo3 from
+# module for interfacing with the GoPiGo3 from
 # a terminal with a keyboard
-from keyboarded_robot import LiveKeyboard
 from keyboarded_robot import GoPiGo3WithKeyboard
+# module for capturing input events from the keyboard
+from curtsies import Input
+import signal
 
 from time import sleep
 
 def Main():
-
-    try:
-
-        # GoPiGo3WithKeyboard is used for mapping
-        # keyboard keys to actual GoPiGo3 commands
-        # the keys-to-gopigo3 bindings are defined inside the class
-        gopigo3 = GoPiGo3WithKeyboard()
-    except IOError as error:
-
-        # if the GoPiGo3 is not reachable
-        # then print the error and exit
-        print(str(error))
-        exit(1)
+    # GoPiGo3WithKeyboard is used for mapping
+    # keyboard keys to actual GoPiGo3 commands
+    # the keys-to-gopigo3 bindings are defined inside the class
+    gopigo3 = GoPiGo3WithKeyboard()
 
     # draws the GoPiGo3 logo
     gopigo3.drawLogo()
@@ -51,10 +44,6 @@ def Main():
     # key bindings are shown in here
     gopigo3.drawMenu()
 
-    # this class is used for detecting key presses on the keyboard
-    kb = LiveKeyboard()
-    # it's derived from threading.Thread class so we need to start it
-    kb.start()
     # result holds the exit string when we call a gopigo3 command
     # with the GoPiGo3WithKeyboard object
     result = "nothing"
@@ -68,50 +57,40 @@ def Main():
     # to be pressed once in order for the robot to start moving
     manual_mode = False
     successful_exit = True
+    refresh_rate = 20.0
 
-    # do it indefinitely until we catch an "exit" string
-    while True:
-        # check what key is pressed at the given moment
-        key = kb.getKey()
+    with Input(keynames = "curtsies", sigint_event = True) as input_generator:
+        while True:
+            period = 1 / refresh_rate
+            # if nothing is captured in [period] seconds
+            # then send() function returns None
+            key = input_generator.send(period)
 
-        # if we caught a key
-        if key is not None:
-
-            try:
-                # then execute that particular key
-                # all key bindings are found in the GoPiGo3WithKeyboard's module
+            # if we've captured something from the keyboard
+            if key is not None:
                 result = gopigo3.executeKeyboardJob(key)
-            except IOError as error:
-                # if the GoPiGo3 is not reachable
-                # then exit the program
-                print(str(error))
-                kb.join()
-                successful_exit = False
-                break
 
-            # if result is equal to "exit"
-            # then exit the program
-            if result == "exit":
-                kb.join()
-                break
-        # if we didn't catch any key
-        else:
-            # "moving" refers to any gopigo3 command
-            # that's making the robot move around
-            if result == "moving" and manual_mode is True:
-                # "x" is for stopping the robot from moving
+                if result == "exit":
+                    break
+
+            # if we haven't captured anything
+            # and if the robot is set to manual_mode
+            # then stop the robot from moving as soon as the key(s)
+            # for moving (the robot around) are released
+            elif manual_mode is True and result == "moving":
                 gopigo3.executeKeyboardJob("x")
 
-        # wait some time before moving to the next loop
-        # keeps the CPU time low
-        sleep(0.05)
-
-    if successful_exit is True:
-        # on success
-        exit(0)
-    else:
-        # on failure
-        exit(1)
 
 if __name__ == "__main__":
-    Main()
+    # set up a handler for ignoring the Ctrl+Z commands
+    signal.signal(signal.SIGTSTP, lambda signum, frame : print("Press the appropriate key for closing the app."))
+
+    try:
+        Main()
+    except IOError as error:
+        # if the GoPiGo3 is not reachable
+        # then print the error and exit
+        print(str(error))
+        exit(1)
+
+    exit(0)

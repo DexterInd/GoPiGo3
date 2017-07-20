@@ -19,110 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 """
 
 import random
-import sys
-import select
-import tty
-import termios
 import easygopigo3 as easy
 import threading
 from time import sleep
 
-
-class LiveKeyboard(threading.Thread):
-    """
-    Class for detecting key presses.
-    This class disables typing and writing
-    so the user has to rely on this class for exiting the process.
-    """
-
-    #: the length of the buffer list where key presses are stored
-    MAX_BUFFER_SIZE = 3
-
-    def __init__(self):
-        super(LiveKeyboard, self).__init__()
-        self.event = threading.Event()
-        self.lock = threading.Lock()
-        self.finished = False
-        self.buffer = []
-
-    def run(self):
-        while self.event.is_set() is False:
-            key = self.__getKey()
-            self.__add_to_buffer(key)
-
-        self.finished = True
-
-    def stop(self):
-        """
-        Triggers the stopping process of the thread.
-        """
-        self.event.set()
-
-    def join(self):
-        """
-        Triggers the stopping process of the thread
-        and waits until it exits.
-        """
-        self.stop()
-        while self.finished is False:
-            sleep(0.001)
-
-    def getKey(self):
-        """
-        Returns the detected pressed key.
-        If nothing is pressed, it returns None.
-        """
-        return self.__get_from_buffer()
-
-    def __getKey(self):
-        """
-        Private method for reading the pressed key.
-        It's a blocking method, so it finishes when a character is read.
-        """
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
-
-    def __add_to_buffer(self, element):
-        """
-        Private method for appending key presses
-        to a buffer list.
-        """
-        self.lock.acquire()
-
-        self.buffer.append(element)
-        if len(self.buffer) > self.MAX_BUFFER_SIZE:
-            excess_chars = len(self.buffer) - self.MAX_BUFFER_SIZE
-            self.buffer = self.buffer[excess_chars:]
-
-        self.lock.release()
-
-    def __get_from_buffer(self):
-        """
-        Private method for getting the read key presses
-        from a buffer list.
-        The buffer list is used for storing key presses.
-        """
-        self.lock.acquire()
-
-        result = None
-        if len(self.buffer) > 0:
-            result = self.buffer.pop(0)
-
-        self.lock.release()
-        return result
-
 class GoPiGo3WithKeyboard(object):
-"""
-Class for interfacing with the GoPiGo3.
-It's functionality is to map different keys
-of the keyboard to different commands of the GoPiGo3.
-"""
+    """
+    Class for interfacing with the GoPiGo3.
+    It's functionality is to map different keys
+    of the keyboard to different commands of the GoPiGo3.
+    """
 
     KEY_DESCRIPTION = 0
     KEY_FUNC_SUFFIX = 1
@@ -144,11 +50,11 @@ of the keyboard to different commands of the GoPiGo3.
         "s" : ["Move the GoPiGo3 backward", "backward"],
         "a" : ["Turn the GoPiGo3 to the left", "left"],
         "d" : ["Turn the GoPiGo3 to the right", "right"],
-        "x" : ["Stop the GoPiGo3 from moving", "stop"],
+        "<SPACE>" : ["Stop the GoPiGo3 from moving", "stop"],
 
-        "c" : ["Drive forward for 10 centimeters", "forward10cm"],
-        "i" : ["Drive forward for 10 inches", "forward10in"],
-        "e" : ["Drive forward for 360 degrees (aka 1 wheel rotation)", "forwardturn"],
+        "<F1>" : ["Drive forward for 10 centimeters", "forward10cm"],
+        "<F2>" : ["Drive forward for 10 inches", "forward10in"],
+        "<F3>" : ["Drive forward for 360 degrees (aka 1 wheel rotation)", "forwardturn"],
 
         "1" : ["Turn ON/OFF left blinker of the GoPiGo3", "leftblinker"],
         "2" : ["Turn ON/OFF right blinker of the GoPiGo3", "rightblinker"],
@@ -158,11 +64,11 @@ of the keyboard to different commands of the GoPiGo3.
         "9" : ["Turn ON/OFF right eye of the GoPiGo3", "righteye"],
         "0" : ["Turn ON/OFF both eyes of the GoPiGo3", "eyes"],
 
-        "/" : ["Change the eyes' color on the go", "eyescolor"],
+        "<INSERT>" : ["Change the eyes' color on the go", "eyescolor"],
 
-        "z" : ["Exit", "exit"],
+        "<ESC>" : ["Exit", "exit"],
         }
-        self.order_of_keys = ["w", "s", "a", "d", "x", "c", "i", "e", "1", "2", "3", "8", "9", "0", "/", "z"]
+        self.order_of_keys = ["w", "s", "a", "d", "<SPACE>", "<F1>", "<F2>", "<F3>", "1", "2", "3", "8", "9", "0", "<INSERT>", "<ESC>"]
 
     def executeKeyboardJob(self, argument):
         """
@@ -213,8 +119,11 @@ of the keyboard to different commands of the GoPiGo3.
         """
         Prints all the key-bindings between the keys and the GoPiGo3's commands on the screen.
         """
-        for key in self.order_of_keys:
-            print("\r[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+        try:
+            for key in self.order_of_keys:
+                print("\r[key {}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+        except KeyError:
+            print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with those in GoPiGo3WithKeyboard.keybindings.")
 
     def _gopigo3_command_forward(self):
         self.gopigo3.forward()
