@@ -33,11 +33,10 @@ class GoPiGo3WithKeyboard(object):
     KEY_DESCRIPTION = 0
     KEY_FUNC_SUFFIX = 1
 
-    left_blinker_on = False
-    right_blinker_on = False
+    servo1_position = 0
+    servo2_position = 0
+    servo_increment_step = 1
 
-    left_eye_on = False
-    right_eye_on = False
 
     def __init__(self):
         """
@@ -45,11 +44,15 @@ class GoPiGo3WithKeyboard(object):
         Sets the order of the keys in the menu.
         """
         self.gopigo3 = easy.EasyGoPiGo3()
+        self.servo = self.gopigo3.init_servo()
+
         self.keybindings = {
         "<F1>" : ["Turn SERVO1 completely to the left.", "leftservo1_immediately"],
         "<F2>" : ["Turn SERVO1 completely to the right.", "rightservo1_immediately"],
+
         "<F5>" : ["Turn SERVO2 completely to the left.", "leftservo1_immediately"],
         "<F6>" : ["Turn SERVO2 completely to the right.", "rightservo2_immediately"],
+
         "<SPACE>" : ["Reset both servos to the original position.", "reset"],
 
         "a" : ["Turn SERVO1 to the left incrementely.", "leftservo1_incrementally"],
@@ -116,6 +119,24 @@ class GoPiGo3WithKeyboard(object):
                 print("\r[key {:8}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
         except KeyError:
             print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with those in GoPiGo3WithKeyboard.keybindings.")
+
+    def _gopigo3_command_leftservo2_incrementally(self):
+        self.servo1_position -= self.servo_increment_step
+        self.servo.rotate_servo(self.servo1_position)
+
+    def _gopigo3_command_rightservo2_incrementally(self):
+        self.servo1_position += self.servo_increment_step
+        self.servo.rotate_servo(self.servo1_position)
+
+    def _gopigo3_command_leftservo2_incrementally(self):
+        self.servo1_position -= self.servo_increment_step
+        self.servo.rotate_servo(self.servo2_position)
+
+    def _gopigo3_command_rightservo2_incrementally(self):
+        self.servo1_position += self.servo_increment_step
+        self.servo.rotate_servo(self.servo2_position)
+
+        return "servo"
 
     def _gopigo3_command_exit(self):
         return "exit"
