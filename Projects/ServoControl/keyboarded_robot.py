@@ -109,7 +109,8 @@ class GoPiGo3WithKeyboard(object):
         Prints details related on how to operate the GoPiGo3.
         """
         print("\nPress the following keys to run the features of the GoPiGo3.")
-        print("To move the motors, make sure you have a fresh set of batteries powering the GoPiGo3.\n")
+        print("To rotate the servos, make sure you have a fresh set of batteries powering the GoPiGo3.")
+        print("Use servos that can turn to 180 degrees as some have difficulties doing it.\n")
 
     def drawMenu(self):
         """
