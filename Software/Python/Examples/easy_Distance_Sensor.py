@@ -42,14 +42,6 @@ import easygopigo3 as easy
 # Create an instance of the Distance Sensor class.
 my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the Line Follower object.
 
-# Read the Distance Sensor
-def get_sensorval():
-    val = my_distance_sensor.read_mm()           # Read the distance sensor in mm.
-    # You can also read the sensor in cm or inches.  Uncomment the lines below to read in different units.
-    # val=Distance_Sensor.read()            # Read the distance sensor in cm.
-    # val=Distance_Sensor.read_inches()     # Read the distance sensor in inches.
-    return val
-
 while True:
     # Directly print the values of the sensor.
-    print ("Distance Sensor Reading (mm): " + str(get_sensorval()))
+    print("Distance Sensor Reading (mm): " + str(my_distance_sensor.read_mm()))
