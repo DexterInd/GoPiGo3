@@ -19,14 +19,6 @@ The code we're analyzing in this tutorial is the following one.
 
 .. code-block:: python
 
-    from __future__ import print_function
-    from __future__ import division
-    from builtins import input
-    # the above lines are meant for Python3 compatibility.
-    # they force the use of Python3 functionality for print(),
-    # the integer division and input()
-    # mind your parentheses!
-
     # import the GoPiGo3 drivers
     import time
     import easygopigo3 as easy
@@ -55,14 +47,6 @@ Start by importing 2 important modules:
 The :py:mod:`easygopigo3` module is used for interacting with the `GoPiGo3`_ robot, whilst
 the ``time`` module is generally used for delaying actions, commands, setting timers etc.
 
-We also import 3 other functions which are meant for python3 compatibility. We shouldn't care about them.
-
-.. code-block:: python
-
-    from __future__ import print_function
-    from __future__ import division
-    from builtins import input
-
 ===========
 The objects
 ===========
@@ -85,7 +69,7 @@ the distance in millimeters to the target.
 .. code-block:: python
 
     while True:
-      
+
         # Directly print the values of the sensor.
         print("Distance Sensor Reading (mm): " + str(my_distance_sensor.read_mm()))
 
