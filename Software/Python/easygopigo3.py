@@ -1957,8 +1957,9 @@ class ButtonSensor(DigitalSensor):
         """
         Checks if the `Grove Button`_ is pressed.
 
-        :returns: If the `Grove Button`_ is pressed.
+        :returns: ``True`` or ``False``, if the `Grove Button`_ is pressed.
         :rtype: boolean
+
         """
         return self.read() == 1
 ##########################
@@ -2248,127 +2249,132 @@ try:
 
 except Exception as e:
 
-    from mock_package import distance_sensor
+    try:
 
-class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
-    """
-    Class for the `Distance Sensor`_ device.
+        from mock_package import distance_sensor
 
-    We can create this :py:class:`~easygopigo3.DistanceSensor` object similar to how we create it in the following template.
+        class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
+            """
+            Class for the `Distance Sensor`_ device.
 
-    .. code-block:: python
+            We can create this :py:class:`~easygopigo3.DistanceSensor` object similar to how we create it in the following template.
 
-        # create an EasyGoPiGo3 object
-        gpg3_obj = EasyGoPiGo3()
+            .. code-block:: python
 
-        # and now let's instantiate a DistanceSensor object through the gpg3_obj object
-        distance_sensor = gpg3_obj.init_distance_sensor()
+                # create an EasyGoPiGo3 object
+                gpg3_obj = EasyGoPiGo3()
 
-        # read values continuously and print them in the terminal
-        while True:
-            distance = distance_sensor.read()
+                # and now let's instantiate a DistanceSensor object through the gpg3_obj object
+                distance_sensor = gpg3_obj.init_distance_sensor()
 
-            print(distance)
+                # read values continuously and print them in the terminal
+                while True:
+                    distance = distance_sensor.read()
 
-    """
-    def __init__(self, port="I2C",gpg=None):
-        """
-        Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
+                    print(distance)
 
-        :param str port = "I2C": Port to which the distance sensor is connected.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+            """
+            def __init__(self, port="I2C",gpg=None):
+                """
+                Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
 
-        To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`hardware-ports-section`.
+                :param str port = "I2C": Port to which the distance sensor is connected.
+                :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
 
-        """
-        Sensor.__init__(self, port, "OUTPUT", gpg)
-        try:
-            distance_sensor.DistanceSensor.__init__(self)
-        except Exception as e:
-            #print(e)
-            raise IOError("Distance Sensor not found")
+                To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`hardware-ports-section`.
 
-        self.set_descriptor("Distance Sensor")
+                """
+                Sensor.__init__(self, port, "OUTPUT", gpg)
+                try:
+                    distance_sensor.DistanceSensor.__init__(self)
+                except Exception as e:
+                    #print(e)
+                    raise IOError("Distance Sensor not found")
 
-    # Returns the values in cms
-    def read_mm(self):
-        """
-        Reads the distance in millimeters.
+                self.set_descriptor("Distance Sensor")
 
-        :returns: Distance from target in millimeters.
-        :rtype: int
+            # Returns the values in cms
+            def read_mm(self):
+                """
+                Reads the distance in millimeters.
 
-        .. note::
+                :returns: Distance from target in millimeters.
+                :rtype: int
 
-             1. Sensor's range is **5-8,000** millimeters.
-             2. When the values are out of the range, it returns **8190**.
+                .. note::
 
-        """
+                     1. Sensor's range is **5-8,000** millimeters.
+                     2. When the values are out of the range, it returns **8190**.
 
-        # 8190 is what the sensor sends when it's out of range
-        # we're just setting a default value
-        mm = 8190
-        readings = []
-        attempt = 0
+                """
 
-        # try 3 times to have a reading that is
-        # smaller than 8m or bigger than 5 mm.
-        # if sensor insists on that value, then pass it on
-        while (mm > 8000 or mm < 5) and attempt < 3:
-            try:
-                mm = self.readRangeSingleMillimeters()
-            except:
-                mm = 0
-            attempt = attempt + 1
-            time.sleep(0.001)
+                # 8190 is what the sensor sends when it's out of range
+                # we're just setting a default value
+                mm = 8190
+                readings = []
+                attempt = 0
 
-        # add the reading to our last 3 readings
-        # a 0 value is possible when sensor is not found
-        if (mm < 8000 and mm > 5) or mm == 0:
-            readings.append(mm)
-        if len(readings) > 3:
-            readings.pop(0)
+                # try 3 times to have a reading that is
+                # smaller than 8m or bigger than 5 mm.
+                # if sensor insists on that value, then pass it on
+                while (mm > 8000 or mm < 5) and attempt < 3:
+                    try:
+                        mm = self.readRangeSingleMillimeters()
+                    except:
+                        mm = 0
+                    attempt = attempt + 1
+                    time.sleep(0.001)
 
-        # calculate an average and limit it to 5 > X > 3000
-        if len(readings) > 1: # avoid division by 0
-            mm = round(sum(readings) / float(len(readings)))
-        if mm > 3000:
-            mm = 3000
+                # add the reading to our last 3 readings
+                # a 0 value is possible when sensor is not found
+                if (mm < 8000 and mm > 5) or mm == 0:
+                    readings.append(mm)
+                if len(readings) > 3:
+                    readings.pop(0)
 
-        return mm
+                # calculate an average and limit it to 5 > X > 3000
+                if len(readings) > 1: # avoid division by 0
+                    mm = round(sum(readings) / float(len(readings)))
+                if mm > 3000:
+                    mm = 3000
 
-    def read(self):
-        """
-        Reads the distance in centimeters.
+                return mm
 
-        :returns: Distance from target in centimeters.
-        :rtype: int
+            def read(self):
+                """
+                Reads the distance in centimeters.
 
-        .. note::
+                :returns: Distance from target in centimeters.
+                :rtype: int
 
-             1. Sensor's range is **0-800** centimeters.
-             2. When the values are out of the range, it returns **819**.
+                .. note::
 
-        """
+                     1. Sensor's range is **0-800** centimeters.
+                     2. When the values are out of the range, it returns **819**.
 
-        cm = self.read_mm()//10
-        return (cm)
+                """
 
-    def read_inches(self):
-        """
-        Reads the distance in inches.
+                cm = self.read_mm()//10
+                return (cm)
 
-        :returns: Distance from target in inches.
-        :rtype: int
+            def read_inches(self):
+                """
+                Reads the distance in inches.
 
-        .. note::
+                :returns: Distance from target in inches.
+                :rtype: int
 
-             1. Sensor's range is **0-314** inches.
-             2. Anything that's bigger than **314** inches is returned when the sensor can't detect any target/surface.
+                .. note::
 
-        """
-        cm = self.read()
-        return cm / 2.54
+                     1. Sensor's range is **0-314** inches.
+                     2. Anything that's bigger than **314** inches is returned when the sensor can't detect any target/surface.
+
+                """
+                cm = self.read()
+                return cm / 2.54
+
+    except Exception as e:
+        pass
 
 
 class DHTSensor(Sensor):
