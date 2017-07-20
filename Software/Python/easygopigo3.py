@@ -2316,7 +2316,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # if sensor insists on that value, then pass it on
         while (mm > 8000 or mm < 5) and attempt < 3:
             try:
-                mm = self.readRangeSingleMillimeters()
+                mm = self.read_range_single()
             except:
                 mm = 0
             attempt = attempt + 1
