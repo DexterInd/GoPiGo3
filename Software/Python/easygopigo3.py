@@ -1957,11 +1957,7 @@ class ButtonSensor(DigitalSensor):
         """
         Checks if the `Grove Button`_ is pressed.
 
-<<<<<<< HEAD
-        :returns: True or False, if the `Grove Button`_ is pressed.
-=======
         :returns: ``True`` or ``False``, if the `Grove Button`_ is pressed.
->>>>>>> 1ee84af5f2de42af2511e28081375dcc2f18058a
         :rtype: boolean
 
         """
