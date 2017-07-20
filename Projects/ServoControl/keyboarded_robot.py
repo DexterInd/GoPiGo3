@@ -54,7 +54,7 @@ class GoPiGo3WithKeyboard(object):
         "<F5>" : ["Turn SERVO2 completely to 0 degrees.", "leftservo2_immediately"],
         "<F6>" : ["Turn SERVO2 completely to 180 degrees.", "rightservo2_immediately"],
 
-        "<SPACE>" : ["Reset both servos to the original position.", "reset"],
+        "<SPACE>" : ["Turn off power supply to both servos", "kill"],
 
         "a" : ["Turn SERVO1 towards 0 degrees incrementely.", "leftservo1_incrementally"],
         "d" : ["Turn SERVO1 towords 180 degrees incrementely.", "rightservo1_incrementally"],
@@ -146,9 +146,7 @@ class GoPiGo3WithKeyboard(object):
 
         return "complete_turn_servo2"
 
-    def _gopigo3_command_reset(self):
-        self.servo1_position = 0
-        self.servo2_position = 0
+    def _gopigo3_command_kill(self):
         self.servo1.reset_servo()
         self.servo2.reset_servo()
 
