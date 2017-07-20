@@ -97,7 +97,7 @@ The argument of each of the 2 initializer methods represents the port to which a
 
 .. note::
 
-   For knowing where the ports are located on the robot (like ports ``"AD1"`` or ``"AD2"``), see the following :ref:`graphical representation <hardware-ports-section>`.
+   See the following :ref:`graphical representation <hardware-ports-section>` as a reference to where the ports are.
 
 =========
 Main part

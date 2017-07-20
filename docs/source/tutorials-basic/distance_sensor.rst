@@ -124,7 +124,7 @@ After the sensor is connected, on your Raspberry Pi, open up a terminal and type
 
 .. note::
 
-   For knowing where the ports are located on the robot (like port ``"I2C"``), see the following :ref:`graphical representation <hardware-ports-section>`.
+   See the following :ref:`graphical representation <hardware-ports-section>` as a reference to where the ports are.
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
