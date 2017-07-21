@@ -2143,7 +2143,7 @@ class Servo(Sensor):
 
     This class is derived from :py:class:`~easygopigo3.Sensor` class and because of this, it inherits all the attributes and methods.
 
-    For creating a :py:class:`~easygopigo3.Servo` object we need to call :py:meth:`~easygopigo3.Sensor.init_servo` method like in
+    For creating a :py:class:`~easygopigo3.Servo` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_servo` method like in
     the following examples.
 
     .. code-block:: python
@@ -2158,7 +2158,7 @@ class Servo(Sensor):
          # rotate the servo at 160 degrees
          servo.rotate_servo(160)
 
-    Or if we want to specify the port to which we connect the servo, we need to call :py:meth:`~easygopigo3.Sensor.init_servo` the following way.
+    Or if we want to specify the port to which we connect the servo, we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_servo` the following way.
 
     .. code-block:: python
 
@@ -2175,7 +2175,7 @@ class Servo(Sensor):
         Constructor for instantiating a :py:class:`~easygopigo3.Servo` object for a (or multiple) `servo`_ (servos).
 
         :param str port = "SERVO1": The port to which we have connected the `servo`_.
-        :param easygopigo3.EasyGoPiGo3 = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
 
         The available ports that can be used for a `servo`_ are:
 

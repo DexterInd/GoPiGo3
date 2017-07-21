@@ -27,13 +27,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 '''
-from __future__ import print_function
-from __future__ import division
-from builtins import input
-# the above lines are meant for Python3 compatibility.
-# they force the use of Python3 functionality for print(),
-# the integer division and input()
-# mind your parentheses!
 
 # import the GoPiGo3 drivers
 import time
@@ -42,14 +35,6 @@ import easygopigo3 as easy
 # Create an instance of the Distance Sensor class.
 my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the Line Follower object.
 
-# Read the Distance Sensor
-def get_sensorval():
-    val = my_distance_sensor.read_mm()           # Read the distance sensor in mm.
-    # You can also read the sensor in cm or inches.  Uncomment the lines below to read in different units.
-    # val=Distance_Sensor.read()            # Read the distance sensor in cm.
-    # val=Distance_Sensor.read_inches()     # Read the distance sensor in inches.
-    return val
-
 while True:
     # Directly print the values of the sensor.
-    print ("Distance Sensor Reading (mm): " + str(get_sensorval()))
+    print("Distance Sensor Reading (mm): " + str(my_distance_sensor.read_mm()))

@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root" 
+    echo "This script must be run as root"
     exit 1
 fi
 
@@ -95,6 +95,9 @@ echo ""
 cd $REPO_PATH/Software/Python/
 sudo python setup.py install
 sudo python3 setup.py install
+
+# module for interfacing with the keyboard
+sudo pip install curtsies
 
 echo ""
 echo "Installation complete"
