@@ -34,9 +34,10 @@ except:
 import os
 
 try:
-    sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
-    import line_sensor
-    import scratch_line
+    from line_follower import line_sensor
+    from line_follower import scratch_line
+    
+    # is_line_follower_accessible not really used, just in case
     is_line_follower_accessible = True
 except:
     try:
@@ -2228,15 +2229,15 @@ class Servo(Sensor):
 
     def reset_servo(self):
         """
-        Resets the `servo`_ at its default position.
+        Resets the `servo`_ straight ahead, in the middle position.
 
         .. tip::
 
-           | Same as calling ``rotate_servo(0)``.
+           | Same as calling ``rotate_servo(90)``.
            | Read more about :py:meth:`~easygopigo3.Servo.rotate_servo` method.
 
         """
-        self.gpg.set_servo(self.portID, 0)
+        self.gpg.set_servo(self.portID, 90)
 
 #######################################################################
 #
