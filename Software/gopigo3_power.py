@@ -10,13 +10,12 @@
 # GPIO 23 needs to remain low impedance (output) set to a HIGH state. If GPIO 23 gets left floating (high impedance) the GoPiGo3 assumes the RPi has shut down fully. SW should never write GPIO 23 to LOW or set it as an INPUT.
 
 
-
 import RPi.GPIO as GPIO
 import time
 import os
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(22, GPIO.IN)
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 GPIO.setup(23, GPIO.OUT)
 GPIO.output(23, True)
