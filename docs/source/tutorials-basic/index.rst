@@ -16,9 +16,9 @@ In all these tutorials, you will need:
    :maxdepth: 1
    :caption: Contents:
 
+   led
    button
    buzzer
-   led
    light_sensor
    distance_sensor
 

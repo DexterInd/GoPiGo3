@@ -34,28 +34,26 @@ def Main():
     # GoPiGo3WithKeyboard is used for mapping
     # keyboard keys to actual GoPiGo3 commands
     # the keys-to-gopigo3 bindings are defined inside the class
-    gopigo3 = GoPiGo3WithKeyboard()
+    gopigo3_servos = GoPiGo3WithKeyboard()
 
     # draws the GoPiGo3 logo
-    gopigo3.drawLogo()
+    gopigo3_servos.drawLogo()
     # writes some description on the GoPiGo3
-    gopigo3.drawDescription()
+    gopigo3_servos.drawDescription()
     # writes the menu for controlling the GoPiGo3 robot
     # key bindings are shown in here
-    gopigo3.drawMenu()
+    gopigo3_servos.drawMenu()
 
     # result holds the exit string when we call a gopigo3 command
     # with the GoPiGo3WithKeyboard object
     result = "nothing"
     """
     result can take the following values:
-    "nothing", "moving", "path", "static", "exit"
+    "complete_turn_servo1", "complete_turn_servo2",
+    "gradual_turn_servo1", "gradual_turn_servo2",
+    "kill_servos", "exit"
     """
-    # if manual_mode is set to true, then the robot
-    # moves for as long as the coresponding keys are pressed
-    # if manual_mode is set to false, then a key needs
-    # to be pressed once in order for the robot to start moving
-    manual_mode = False
+
     successful_exit = True
     refresh_rate = 20.0
 
@@ -68,17 +66,10 @@ def Main():
 
             # if we've captured something from the keyboard
             if key is not None:
-                result = gopigo3.executeKeyboardJob(key)
+                result = gopigo3_servos.executeKeyboardJob(key)
 
                 if result == "exit":
                     break
-
-            # if we haven't captured anything
-            # and if the robot is set to manual_mode
-            # then stop the robot from moving as soon as the key(s)
-            # for moving (the robot around) are released
-            elif manual_mode is True and result == "moving":
-                gopigo3.executeKeyboardJob("x")
 
 
 if __name__ == "__main__":
