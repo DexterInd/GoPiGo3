@@ -8,7 +8,7 @@ gpg = easy.EasyGoPiGo3()
 
 
 # create the LED instance, passing the port and GPG
-my_led = gpp.init_led("AD1")
+my_led = gpg.init_led("AD1")
 # or
 # my_LED = easy.Led("AD1", GPG)
 
