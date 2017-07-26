@@ -247,7 +247,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
 
-    def drive_cm(self, dist, blocking=False):
+    def drive_cm(self, dist, blocking=True):
         """
         | Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
 
@@ -255,7 +255,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
-        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+        :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
 
@@ -286,7 +286,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight + WheelTurnDegrees) is False:
                 time.sleep(0.1)
 
-    def drive_inches(self, dist, blocking=False):
+    def drive_inches(self, dist, blocking=True):
         """
         | Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
 
@@ -294,7 +294,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``inches`` the `GoPiGo3`_ has to move.
-        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+        :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
 
@@ -304,7 +304,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         self.drive_cm(dist * 2.54, blocking)
 
-    def drive_degrees(self, degrees, blocking=False):
+    def drive_degrees(self, degrees, blocking=True):
         """
         | Move the `GoPiGo3`_ forward / backward for ``degrees / 360`` wheel rotations.
 
@@ -312,7 +312,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``degrees`` parameter has to be *negative*.
 
         :param float degrees: Distance based on how many wheel rotations are made. Calculated by ``degrees / 360``.
-        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+        :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
 
