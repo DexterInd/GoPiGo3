@@ -18,7 +18,7 @@ except IOError:
 import setuptools
 setuptools.setup(
     name = "gopigo3",
-    version = "1.0.0",
+    version = "1.0.2",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
