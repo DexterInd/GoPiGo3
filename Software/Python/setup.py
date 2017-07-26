@@ -7,12 +7,42 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 
+try:
+	with open('package_description.rst', 'r') as file_description:
+		description = file_description.read()
+
+except IOError:
+	print(str(IOError))
+	print("make sure you have [package_description.rst] file in the same directory as [setup.py]")
+
 import setuptools
 setuptools.setup(
-    name="gopigo3",
-    description="Drivers and examples for using the GoPiGo3 in Python",
-    author="Dexter Industries",
-    url="http://www.dexterindustries.com/GoPiGo/",
-    py_modules=['gopigo3','easygopigo3','I2C_mutex'],
-    #install_requires=open('requirements.txt').readlines(),
+    name = "gopigo3",
+    version = "1.0.0",
+
+    description = "Drivers and Examples for using the GoPiGo3 in Python",
+    long_description = description,
+
+    author = "Dexter Industries",
+    author_email = "contact@dexterindustries.com",
+
+    license = 'MIT',
+    classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: POSIX :: Linux',
+    'Programming Language :: Python :: 2',
+    'Programming Language :: Python :: 3',
+    'Topic :: Software Development :: Embedded Systems',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
+    url = "https://github.com/DexterInd/GoPiGo3",
+
+    keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning', 'education'],
+
+    packages = ['Examples', 'Examples.Control_Panel', 'Examples.Line_Sensor'],
+    py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
+    install_requires = ['spidev']
 )
