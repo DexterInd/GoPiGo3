@@ -106,7 +106,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                                self.get_speed())
 
-    def drive_cm(self, dist, blocking=False):
+    def drive_cm(self, dist, blocking=True):
         # dist is in cm
         # if dist is negative, this becomes a backward move
 
@@ -130,10 +130,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight + WheelTurnDegrees) is False:
                 time.sleep(0.1)
 
-    def drive_inches(self, dist, blocking=False):
+    def drive_inches(self, dist, blocking=True):
         self.drive_cm(dist * 2.54, blocking)
 
-    def drive_degrees(self, degrees, blocking=False):
+    def drive_degrees(self, degrees, blocking=True):
         # these degrees are meant to be wheel rotations.
         # 360 degrees would be a full wheel rotation
         # not the same as turn_degrees() which is a robot rotation
@@ -256,7 +256,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-    def turn_degrees(self, degrees):
+    def turn_degrees(self, degrees, blocking=True):
         # this is the method to use if you want the robot to turn 90 degrees
         # or any other amount. This method is based on robot orientation
         # and not wheel rotation
@@ -276,7 +276,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                 (StartPositionLeft + WheelTurnDegrees))
         self.set_motor_position(self.MOTOR_RIGHT,
                                 (StartPositionRight - WheelTurnDegrees))
-
+        
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + WheelTurnDegrees,
+                    StartPositionRight - WheelTurnDegrees) is False:
+                time.sleep(0.1)
 
 # the following functions may be redundant
 my_gpg = EasyGoPiGo3()
