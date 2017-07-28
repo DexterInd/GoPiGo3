@@ -2249,8 +2249,11 @@ try:
     from di_sensors import distance_sensor
 
 except:
-    from mock_package import distance_sensor
-    print ("Distance Sensor NOT found")    
+    try:
+        from mock_package import distance_sensor
+        print ("Distance Sensor NOT found")    
+    except:
+        pass
       
 class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
