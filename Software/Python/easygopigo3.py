@@ -1990,7 +1990,7 @@ class ButtonSensor(DigitalSensor):
 
 class Remote(Sensor):
 
-    keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","star","0","hash"]
+    keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
     def __init__(self, port="AD1",gpg=None):
         try:
             Sensor.__init__(self, port, "IR", gpg)
