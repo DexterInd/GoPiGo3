@@ -34,9 +34,10 @@ except:
 import os
 
 try:
-    sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
-    import line_sensor
-    import scratch_line
+    from line_follower import line_sensor
+    from line_follower import scratch_line
+    
+    # is_line_follower_accessible not really used, just in case
     is_line_follower_accessible = True
 except:
     try:
@@ -812,6 +813,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return DHTSensor(port, self, sensor_type)
 
+    def init_remote(self,port="AD1"):
+        return Remote(port,self)
+
 # the following functions may be redundant
 
 
@@ -896,6 +900,9 @@ class Sensor(object):
 
         """
         debug("Sensor init")
+        
+        if gpg is None:
+            raise IOError("When instantiating a sensor, a valid GoPiGo parameter is required ")
         self.gpg = gpg
         debug(pinmode)
         self.set_port(port)
@@ -1091,7 +1098,10 @@ class Sensor(object):
 class DigitalSensor(Sensor):
     def __init__(self, port, pinmode, gpg):
         debug("DigitalSensor init")
-        Sensor.__init__(self, port, pinmode, gpg)
+        try:
+            Sensor.__init__(self, port, pinmode, gpg)
+        except:
+            raise
 
     def read(self):
         '''
@@ -1173,9 +1183,13 @@ class AnalogSensor(Sensor):
 
         """
         debug("AnalogSensor init")
+
         self.value = 0
         self.freq = 24000
-        Sensor.__init__(self, port, pinmode, gpg)
+        try:
+            Sensor.__init__(self, port, pinmode, gpg)
+        except:
+            raise
 
         # select the outwards pin of the grove connector
         self.set_pin(1)
@@ -1312,7 +1326,10 @@ class LightSensor(AnalogSensor):
 
         """
         debug("LightSensor init")
-        AnalogSensor.__init__(self, port, "INPUT", gpg)
+        try:
+            AnalogSensor.__init__(self, port, "INPUT", gpg)
+        except:
+            raise
         self.set_pin(1)
         self.set_descriptor("Light sensor")
 ##########################
@@ -1374,7 +1391,10 @@ class SoundSensor(AnalogSensor):
 
         """
         debug("Sound Sensor on port " + port)
-        AnalogSensor.__init__(self, port, "INPUT", gpg)
+        try:
+            AnalogSensor.__init__(self, port, "INPUT", gpg)
+        except:
+            raise
         self.set_pin(1)
         self.set_descriptor("Sound sensor")
 
@@ -1446,8 +1466,9 @@ class UltraSonicSensor(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Ultrasonic sensor")
 
-        except Exception as e:
-            raise IOError(e)
+        except: 
+            raise
+
 
     def is_too_close(self):
         """
@@ -1699,7 +1720,7 @@ class Buzzer(AnalogSensor):
             self.freq = 329
             self.sound_off()
         except:
-            raise AttributeError
+            raise
 
     def sound(self, freq):
         """
@@ -1833,10 +1854,9 @@ class Led(AnalogSensor):
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
             self.set_pin(1)
             self.set_descriptor("LED")
-        except Exception as e:
-            print(e)
-            raise ValueError
-
+        except:
+            raise 
+            
     def light_on(self, power):
         """
         Sets the duty cycle for the `Grove LED`_.
@@ -1949,9 +1969,12 @@ class ButtonSensor(DigitalSensor):
         The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
-        DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
-        self.set_pin(1)
-        self.set_descriptor("Button sensor")
+        try:
+            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+            self.set_pin(1)
+            self.set_descriptor("Button sensor")
+        except:
+            raise
 
     def is_button_pressed(self):
         """
@@ -1965,18 +1988,37 @@ class ButtonSensor(DigitalSensor):
 ##########################
 
 
-# class Remote(Sensor):
+class Remote(Sensor):
 
-#     def __init__(self, port="AD1", gpg=None):
-#         Sensor.__init__(self, port, "IR", gpg)
-#         self.set_descriptor("Remote Control")
+    keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","star","0","hash"]
+    def __init__(self, port="AD1",gpg=None):
+        try:
+            Sensor.__init__(self, port, "IR", gpg)
+            self.set_descriptor("Remote Control")
+        except:
+            raise
+    
+    def read(self):
+        try:
+            val = self.gpg.get_grove_value(self.get_port_ID())
+            return val
+        except gopigo3.SensorError as e:
+            print("Invalid Reading")
 
-#     def get_remote_code(self):
-#         '''
-#         Returns the keycode from the remote control
-#         '''
-#         self.get_grove_value(self.getPortID())
 
+    def get_remote_code(self):
+        '''
+        Returns the keycode from the remote control
+        No preprocessing
+        You have to check that length > 0
+            before handling the code value
+        if the IR Receiver is not enabled, this will return -1
+        '''
+        key = self.read()
+        if key > 0 and key < len(self.keycodes)+1:
+            return self.keycodes[self.read()-1]
+        
+        return ""
 ##########################
 
 
@@ -2020,12 +2062,14 @@ class LineFollower(Sensor):
         The I2C ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
+        if is_line_follower_accessible is False:
+            raise ImportError("Line Follower library not found")
+            
         try:
             Sensor.__init__(self, port, "INPUT", gpg)
             self.set_descriptor("Line Follower")
-        except Exception as e:
-            print (e)
-            raise ValueError("Line Follower Library not found")
+        except:
+            raise
 
     def read_raw_sensors(self):
         """
@@ -2189,7 +2233,7 @@ class Servo(Sensor):
             Sensor.__init__(self, port, "OUTPUT", gpg)
             self.set_descriptor("GoPiGo3 Servo")
         except:
-            raise ValueError("GoPiGo3 Servo not found")
+            raise
 
     def rotate_servo(self, servo_position):
         """
@@ -2228,15 +2272,15 @@ class Servo(Sensor):
 
     def reset_servo(self):
         """
-        Resets the `servo`_ at its default position.
+        Resets the `servo`_ straight ahead, in the middle position.
 
         .. tip::
 
-           | Same as calling ``rotate_servo(0)``.
+           | Same as calling ``rotate_servo(90)``.
            | Read more about :py:meth:`~easygopigo3.Servo.rotate_servo` method.
 
         """
-        self.gpg.set_servo(self.portID, 0)
+        self.gpg.set_servo(self.portID, 90)
 
 #######################################################################
 #
@@ -2248,8 +2292,12 @@ try:
     from di_sensors import distance_sensor
 
 except:
-    from mock_package import distance_sensor
-    print ("Distance Sensor NOT found")    
+    try:
+        from mock_package import distance_sensor
+        print ("Loading library without distance sensor")    
+    except:
+        pass
+
       
 class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
@@ -2282,7 +2330,11 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`hardware-ports-section`.
 
         """
-        Sensor.__init__(self, port, "OUTPUT", gpg)
+        try:
+            Sensor.__init__(self, port, "OUTPUT", gpg)
+        except:
+            raise
+            
         try:
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
@@ -2382,9 +2434,12 @@ class DHTSensor(Sensor):
     '''
     def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
         try:
-            import threading
-
             Sensor.__init__(self,port,"INPUT",gpg)
+        except:
+            raise
+
+        try:
+            import threading
 
             self.sensor_type = sensor_type
 
