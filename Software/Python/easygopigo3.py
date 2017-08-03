@@ -785,7 +785,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param Str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -813,7 +813,16 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return DHTSensor(port, self, sensor_type)
 
-    def init_remote(self,port="AD1"):
+    def init_remote(self, port="AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.Remote` object and then returns it.
+
+        :param str port: Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.Remote` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
+
+        """
         return Remote(port,self)
 
 # the following functions may be redundant
@@ -873,7 +882,7 @@ class Sensor(object):
         :param str port: Specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : :ref:`hardware-ports-section`.
         :param str pinmode: The mode of operation of the pin we're selecting.
         :param easygopigo3.EasyGoPiGo3 gpg: An instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
-        :raises TypeError: If the `gpg` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following string values:
 
@@ -1990,9 +1999,41 @@ class ButtonSensor(DigitalSensor):
 
 
 class Remote(Sensor):
+    """
+    Class for interfacing with the `Infrared Receiver`_.
 
+    With this sensor, you can command your `GoPiGo3`_ with an `Infrared Remote`_.
+
+    In order to create an object of this class, we would do it like in the following example.
+
+    .. code-block:: python
+
+        # initialize an EasyGoPiGo3 object
+        gpg3_obj = EasyGoPiGo3()
+
+        # now initialize a Remote object
+        remote_control = gpg3_obj.init_remote()
+
+        # read whatever command you want from the remote by using
+        # the [remote_control] object
+
+    """
+
+    #: List for mapping the codes we get with the :py:meth:`~easygopigo3.Remote.read` method to
+    #: the actual symbols we see on the `Infrared Remote`_.
     keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
+
     def __init__(self, port="AD1",gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.Remote` object.
+
+        :param str port = "AD1": The port to which we connect the `Infrared Receiver`_.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
+        :raises Exception: When the :py:class:`~easygopigo3.Sensor` couldn't be instantiated.
+
+        The ``"AD1"`` and ``"AD2"`` ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+
+        """
         try:
             Sensor.__init__(self, port, "IR", gpg)
             self.set_descriptor("Remote Control")
@@ -2008,6 +2049,8 @@ class Remote(Sensor):
 
 
     def get_remote_code(self):
+        """
+        """
         '''
         Returns the keycode from the remote control
         No preprocessing
