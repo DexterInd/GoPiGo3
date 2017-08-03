@@ -2029,7 +2029,7 @@ class Remote(Sensor):
 
         :param str port = "AD1": The port to which we connect the `Infrared Receiver`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
-        :raises Exception: When the :py:class:`~easygopigo3.Sensor` couldn't be instantiated.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``"AD1"`` and ``"AD2"`` ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
@@ -2041,11 +2041,32 @@ class Remote(Sensor):
             raise
 
     def read(self):
+        """
+        Reads the numeric code received by the `Infrared Receiver`_.
+
+        :return: The numeric code of the symbol that was pressed on the `Infrared Remote`_.
+        :rtype: int
+
+        The numeric code represents the index of the :py:attr:`~easygopigo3.Remote.keycodes` list.
+        By accessing the :py:attr:`~easygopigo3.Remote.keycodes` elements with the numeric code, you
+        get the symbol that was pressed on the `Infrared Remote`_.
+
+        For only getting the symbol that was pressed on the `Infrared Remote`_, please check the :py:meth:`~easygopigo3.Remote.get_remote_code` method.
+
+        .. warning::
+
+           On :py:class:`~gopigo3.SensorError` exception:
+
+            * ``"Invalid Reading"`` string is printed in the console.
+            * The value of *-1* is returned.
+
+        """
         try:
             val = self.gpg.get_grove_value(self.get_port_ID())
             return val
         except gopigo3.SensorError as e:
             print("Invalid Reading")
+            return -1
 
 
     def get_remote_code(self):
