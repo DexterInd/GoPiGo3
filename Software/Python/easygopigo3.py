@@ -36,7 +36,7 @@ import os
 try:
     from line_follower import line_sensor
     from line_follower import scratch_line
-    
+
     # is_line_follower_accessible not really used, just in case
     is_line_follower_accessible = True
 except:
@@ -873,6 +873,7 @@ class Sensor(object):
         :param str port: Specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : :ref:`hardware-ports-section`.
         :param str pinmode: The mode of operation of the pin we're selecting.
         :param easygopigo3.EasyGoPiGo3 gpg: An instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
+        :raises TypeError: If the `gpg` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following string values:
 
@@ -900,9 +901,9 @@ class Sensor(object):
 
         """
         debug("Sensor init")
-        
-        if gpg is None:
-            raise IOError("When instantiating a sensor, a valid GoPiGo parameter is required ")
+
+        if type(gpg) != EasyGoPiGo3:
+            raise TypeError("Use an EasyGoPiGo3 object for the gpg parameter.")
         self.gpg = gpg
         debug(pinmode)
         self.set_port(port)
@@ -1466,7 +1467,7 @@ class UltraSonicSensor(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Ultrasonic sensor")
 
-        except: 
+        except:
             raise
 
 
@@ -1855,8 +1856,8 @@ class Led(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("LED")
         except:
-            raise 
-            
+            raise
+
     def light_on(self, power):
         """
         Sets the duty cycle for the `Grove LED`_.
@@ -1997,7 +1998,7 @@ class Remote(Sensor):
             self.set_descriptor("Remote Control")
         except:
             raise
-    
+
     def read(self):
         try:
             val = self.gpg.get_grove_value(self.get_port_ID())
@@ -2017,7 +2018,7 @@ class Remote(Sensor):
         key = self.read()
         if key > 0 and key < len(self.keycodes)+1:
             return self.keycodes[self.read()-1]
-        
+
         return ""
 ##########################
 
@@ -2064,7 +2065,7 @@ class LineFollower(Sensor):
         """
         if is_line_follower_accessible is False:
             raise ImportError("Line Follower library not found")
-            
+
         try:
             Sensor.__init__(self, port, "INPUT", gpg)
             self.set_descriptor("Line Follower")
@@ -2294,11 +2295,11 @@ try:
 except:
     try:
         from mock_package import distance_sensor
-        print ("Loading library without distance sensor")    
+        print ("Loading library without distance sensor")
     except:
         pass
 
-      
+
 class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
     Class for the `Distance Sensor`_ device.
@@ -2334,7 +2335,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             Sensor.__init__(self, port, "OUTPUT", gpg)
         except:
             raise
-            
+
         try:
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
@@ -2358,10 +2359,10 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         """
 
-        # 8190 is what the sensor sends when it's out of range     
-        # we're just setting a default value      
-        mm = 8190     
-        readings = []     
+        # 8190 is what the sensor sends when it's out of range
+        # we're just setting a default value
+        mm = 8190
+        readings = []
         attempt = 0
 
         # try 3 times to have a reading that is
