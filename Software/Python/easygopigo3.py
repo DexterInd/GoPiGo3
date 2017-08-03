@@ -2071,19 +2071,22 @@ class Remote(Sensor):
 
     def get_remote_code(self):
         """
-        """
-        '''
-        Returns the keycode from the remote control
-        No preprocessing
-        You have to check that length > 0
-            before handling the code value
-        if the IR Receiver is not enabled, this will return -1
-        '''
-        key = self.read()
-        if key > 0 and key < len(self.keycodes)+1:
-            return self.keycodes[self.read()-1]
+        Returns the symbol of the pressed key in a string format.
 
-        return ""
+        :return: The symbol that was pressed on the `Infrared Remote`_.
+        :rtype: str
+
+        Check the :py:attr:`~easygopigo3.Remote.keycodes` list for seeing what strings this method can return.
+        On error or when nothing is read, an empty string is returned.
+
+        """
+        string = ""
+        key = self.read()
+
+        if key > 0 and key < len(self.keycodes)+1:
+            string = self.keycodes[self.read()-1]
+
+        return string
 ##########################
 
 
