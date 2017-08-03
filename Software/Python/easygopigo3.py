@@ -680,7 +680,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -692,7 +692,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.SoundSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -704,7 +704,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.UltraSonicSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -716,7 +716,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Buzzer` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -728,7 +728,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Led` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -740,7 +740,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.ButtonSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -752,7 +752,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.LineFollower` object and then returns it.
 
-        :param str port: The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
+        :param str port = "I2C": The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
         :returns: An instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -772,7 +772,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Servo` object and then returns it.
 
-        :param str port: Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
+        :param str port = "SERVO1": Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
 
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -785,7 +785,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param str port = "I2C": the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -805,7 +805,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
-        :param str port: The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
+        :param str port = "SERIAL": The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
         The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
@@ -817,7 +817,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Remote` object and then returns it.
 
-        :param str port: Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
+        :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Remote` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
