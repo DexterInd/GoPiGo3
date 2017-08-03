@@ -1178,6 +1178,7 @@ class AnalogSensor(Sensor):
         :param str port: The port to which the sensor/actuator is connected.
         :param str pinmode: The pin mode of the device that's connected to the `GoPiGo3`_.
         :param easygopigo3.EasyGoPiGo3 gpg: Required object for instantiating an :py:class:`~easygopigo3.AnalogSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The available ``port``'s for use are the following:
 
@@ -1326,6 +1327,7 @@ class LightSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Light Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LightSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1391,6 +1393,7 @@ class SoundSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Sound Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.SoundSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1459,7 +1462,7 @@ class UltraSonicSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.UltraSonicSensor` object.
-        :raises IOError: If there is a communication error with the `GoPiGo3`_ robot.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1710,9 +1713,9 @@ class Buzzer(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Buzzer`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Buzzer` object.
-        :raises AtrributeError: If an attribute couldn't be found - you shouldn't worry about this one.
         :var int power = 50: Duty cycle of the signal that's put on the buzzer.
         :var int freq = 329: Frequency of the signal that's put on the buzzer. 329Hz is synonymous to E4 musical note. See :py:attr:`~.easygopigo3.Buzzer.scale` for more musical notes.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1850,7 +1853,7 @@ class Led(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove LED`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Led` object.
-        :raises ValueError: If an inappropriate value was tried to be assigned - you shouldn't worry about this one.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1970,6 +1973,7 @@ class ButtonSensor(DigitalSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Button`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Button` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -2123,7 +2127,9 @@ class LineFollower(Sensor):
 
         :param str port = "I2C": The port to which we have connected the `Line Follower`_ sensor.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
-        :raises ValueError: If the ``line_sensor`` library couldn't be found.
+        :raises ImportError: If the :py:mod:`line_follower` module couldn't be found.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
 
         The only value the ``port`` parameter can take is ``"I2C"``.
 
@@ -2288,6 +2294,7 @@ class Servo(Sensor):
 
         :param str port = "SERVO1": The port to which we have connected the `servo`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The available ports that can be used for a `servo`_ are:
 
@@ -2394,6 +2401,8 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :raises IOError: If :py:class:`di_sensors.distance_sensor.DistanceSensor` can't be found. Probably the :py:mod:`di_sensors` module isn't installed.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`hardware-ports-section`.
 
