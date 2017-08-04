@@ -36,7 +36,6 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _programming your robot: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/
 .. _shop: https://www.dexterindustries.com/shop/
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
-.. _infrared receiver: https://www.seeedstudio.com/Grove-Infrared-Receiver-p-994.html
 .. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
 .. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
@@ -46,6 +45,8 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
+.. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
