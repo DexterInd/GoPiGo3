@@ -23,14 +23,8 @@ from easygopigo3 import *
 import threading
 import gopigo3
 
-debug = False # Print raw values when debugging
-
+debug = True # Print raw values when debugging
 signal_not_called = True
-left_button = 0
-middle_button = 0
-right_button = 0
-x_axis = 0
-y_axis = 0
 
 MOUSE_THRESH = 20 # How much you can move the mouse from its center before the robot starts moving
 
@@ -43,19 +37,19 @@ def signal_handler(signal, frame):
 # bRight is 1 if the right mouse button is pressed and 0 if it isn't
 # x is the position of the mouse on the x axis
 # y is the position of the mouse on the y axis
-def getMouseEvent(file_input):
+def getMouseValues(file_input):
 
-    global left_button, middle_button, right_button, x_axis, y_axis
+    buf = file_input.read(3)
+    button = ord(buf[0])
+    left_button = (button & 0x1) > 0
+    middle_button = (button & 0x4) > 0
+    right_button = (button & 0x2) > 0
+    x_axis, y_axis = struct.unpack("bb", buf[1:])
 
-	buf = file_input.read(3)
-	button = ord(buf[0])
-	left_button = button & 0x1
-	middle_button = (button & 0x4) > 0
-	right_button = (button & 0x2) > 0
-	x_axis, y_axis = struct.unpack("bb", buf[1:])
+    if debug is True:
+        print("Left but: {}, Middle but: {}, Right but: {}, x pos: {}, y pos: {}\n".format(left_button, middle_button, right_button, x_axis, y_axis))
 
-	if debug is True:
-		print("Left but: {}, Middle but: {}, Right but: {}, x pos: {}, y pos: {}\n".format(left_button, middle_button, right_button, x_axis, y_axis))
+    return (left_button, middle_button, right_button, x_axis, y_axis)
 
 
 def Main():
@@ -80,7 +74,7 @@ def Main():
         print("Invalid number entered")
         sys.exit(1)
 
-    print("With this script you can control your GoPiGo3 robot with nothing but a mouse.")
+    print("\nWith this script you can control your GoPiGo3 robot with nothing but a mouse.")
     if choice == 1:
         print("1. Left + Right buttons of the mouse - move the GoPiGo3 forward")
         print("2. Left button of the mouse - move the GoPiGo3 to the left")
@@ -110,26 +104,32 @@ def Main():
         print("Something went wrong")
         sys.exit(1)
 
+    print("\nIn order to stop the script, press CTRL-C and move your mouse a little bit")
+    print('This script has blocking-methods and moving the mouse will get the script "moving" ')
+
     with open("/dev/input/mice", "rb") as mouse_input:
 
-        threading.Thread(target = lambda : (while signal_not_called: getMouseEvent(mouse_input))).start()
+        left_button = 0
+        middle_button = 0
+        right_button = 0
+        x_axis = 0
+        y_axis = 0
 
         while signal_not_called:
-            print(signal_not_called)
+
+            (left_button, middle_button, right_button, x_axis, y_axis) = getMouseValues(mouse_input)
 
             if choice == 1:
 
-                if left_button == 1 and right_button == 1:
+                if left_button == True and right_button == True:
                     robot.forward()
-                elif left_button == 1 and right_button == 0:
+                elif left_button == True and right_button == False:
                     robot.left()
-                elif left_button == 0 and right_button == 1:
+                elif left_button == False and right_button == True:
                     robot.right()
-                elif left_button == 0 and right_button == 0:
-                    robot.stop()
-                elif middle_button == 1:
+                elif middle_button == True:
                     robot.backward()
-                elif middle_button == 0:
+                elif middle_button == False or (left_button == False and right_button == False):
                     robot.stop()
 
             else:
@@ -145,7 +145,7 @@ def Main():
                 else:
                     robot.stop()
 
-            sleep(0.020)
+            sleep(0.10)
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
