@@ -17,12 +17,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 
 import struct
 import sys
+import signal
 from time import sleep
 from easygopigo3 import *
+import threading
 import gopigo3
 
-debug = False #Print raw values when debugging
-MOUSE_THRESH = 20
+debug = False # Print raw values when debugging
+
+signal_not_called = True
+left_button = 0
+middle_button = 0
+right_button = 0
+x_axis = 0
+y_axis = 0
+
+MOUSE_THRESH = 20 # How much you can move the mouse from its center before the robot starts moving
+
+def signal_handler(signal, frame):
+    global signal_not_called
+    signal_not_called = False
 
 # bLeft is 1 if the left mouse button is pressed and 0 if it isn't
 # bMiddle is 1 if the middle mouse button is pressed and 0 if it isn't
@@ -31,16 +45,17 @@ MOUSE_THRESH = 20
 # y is the position of the mouse on the y axis
 def getMouseEvent(file_input):
 
+    global left_button, middle_button, right_button, x_axis, y_axis
+
 	buf = file_input.read(3)
 	button = ord(buf[0])
-	bLeft = button & 0x1
-	bMiddle = (button & 0x4) > 0
-	bRight = (button & 0x2) > 0
-	x,y = struct.unpack( "bb", buf[1:] )
-	if debug is True:
-		print("Left but: {}, Middle but: {}, Right but: {}, x pos: {}, y pos: {}\n".format(bLeft,bMiddle,bRight, x, y))
+	left_button = button & 0x1
+	middle_button = (button & 0x4) > 0
+	right_button = (button & 0x2) > 0
+	x_axis, y_axis = struct.unpack("bb", buf[1:])
 
-	return [bLeft, bMiddle, bRight, x, y]
+	if debug is True:
+		print("Left but: {}, Middle but: {}, Right but: {}, x pos: {}, y pos: {}\n".format(left_button, middle_button, right_button, x_axis, y_axis))
 
 
 def Main():
@@ -53,7 +68,7 @@ def Main():
     print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
     print("                                            ")
 
-    print("For moving the robot around using the mouse buttons press 1 and enter.)
+    print("For moving the robot around using the mouse buttons press 1 and enter.")
     print("For moving the robot around using the movements of the mouse press 2 and enter.")
     try:
         choice = int(raw_input("choice (1/2) = "))
@@ -96,9 +111,11 @@ def Main():
         sys.exit(1)
 
     with open("/dev/input/mice", "rb") as mouse_input:
-        while True:
-            # Get the inputs from the mouse
-        	[left_button, middle_button, right_button, x_axis, y_axis] = getMouseEvent(mouse_input)
+
+        threading.Thread(target = lambda : (while signal_not_called: getMouseEvent(mouse_input))).start()
+
+        while signal_not_called:
+            print(signal_not_called)
 
             if choice == 1:
 
@@ -129,3 +146,7 @@ def Main():
                     robot.stop()
 
             sleep(0.020)
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
+    Main()
