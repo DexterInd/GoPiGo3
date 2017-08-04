@@ -20,6 +20,7 @@ import sys
 import signal
 from time import sleep
 from easygopigo3 import *
+from builtins import input
 import threading
 import gopigo3
 
@@ -64,8 +65,9 @@ def Main():
 
     print("For moving the robot around using the mouse buttons press 1 and enter.")
     print("For moving the robot around using the movements of the mouse press 2 and enter.")
+
     try:
-        choice = int(raw_input("choice (1/2) = "))
+        choice = int(input("choice (1/2) = "))
     except ValueError:
         print("Invalid number read")
         sys.exit(1)
@@ -87,7 +89,7 @@ def Main():
         print("4. Move the mouse to the right - for rotating the GoPiGo3 to the right")
 
     # Wait for an input to start
-    raw_input("Press Enter to start")
+    input("Press Enter to start")
 
     try:
         robot = EasyGoPiGo3()
