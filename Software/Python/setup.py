@@ -15,10 +15,11 @@ except IOError:
 	print(str(IOError))
 	print("make sure you have [package_description.rst] file in the same directory as [setup.py]")
 
-import setuptools
-setuptools.setup(
+from setuptools import setup, find_packages
+
+setup(
     name = "gopigo3",
-    version = "1.0.0",
+    version = "1.0.2",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
@@ -42,7 +43,7 @@ setuptools.setup(
 
     keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning', 'education'],
 
-    packages = ['Examples', 'Examples.Control_Panel', 'Examples.Line_Sensor'],
+    packages=find_packages(),
     py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
     install_requires = ['spidev']
 )
