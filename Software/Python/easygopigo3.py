@@ -34,9 +34,10 @@ except:
 import os
 
 try:
-    sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
-    import line_sensor
-    import scratch_line
+    from line_follower import line_sensor
+    from line_follower import scratch_line
+
+    # is_line_follower_accessible not really used, just in case
     is_line_follower_accessible = True
 except:
     try:
@@ -679,7 +680,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -691,7 +692,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.SoundSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -703,7 +704,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.UltraSonicSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -715,7 +716,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Buzzer` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -727,7 +728,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Led` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -739,7 +740,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.ButtonSensor` object and then returns it.
 
-        :param str port: Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -751,7 +752,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.LineFollower` object and then returns it.
 
-        :param str port: The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
+        :param str port = "I2C": The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
         :returns: An instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -771,7 +772,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.Servo` object and then returns it.
 
-        :param str port: Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
+        :param str port = "SERVO1": Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
         :returns: An instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
 
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -784,7 +785,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param Str port: the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param str port = "I2C": the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -804,13 +805,25 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
-        :param str port: The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
+        :param str port = "SERIAL": The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
         The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
         return DHTSensor(port, self, sensor_type)
+
+    def init_remote(self, port="AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.Remote` object and then returns it.
+
+        :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.Remote` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
+
+        """
+        return Remote(port,self)
 
 # the following functions may be redundant
 
@@ -869,6 +882,7 @@ class Sensor(object):
         :param str port: Specifies the port with which we want to communicate / interact with. The string literals we can use for identifying a port are found in the following graphical drawing : :ref:`hardware-ports-section`.
         :param str pinmode: The mode of operation of the pin we're selecting.
         :param easygopigo3.EasyGoPiGo3 gpg: An instantiated object of the :py:class:`~easygopigo3.EasyGoPiGo3` class. We need this :py:class:`~easygopigo3.EasyGoPiGo3` class for setting up the `GoPiGo3`_ robot's pins.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following string values:
 
@@ -896,6 +910,9 @@ class Sensor(object):
 
         """
         debug("Sensor init")
+
+        if type(gpg) != EasyGoPiGo3:
+            raise TypeError("Use an EasyGoPiGo3 object for the gpg parameter.")
         self.gpg = gpg
         debug(pinmode)
         self.set_port(port)
@@ -1091,7 +1108,10 @@ class Sensor(object):
 class DigitalSensor(Sensor):
     def __init__(self, port, pinmode, gpg):
         debug("DigitalSensor init")
-        Sensor.__init__(self, port, pinmode, gpg)
+        try:
+            Sensor.__init__(self, port, pinmode, gpg)
+        except:
+            raise
 
     def read(self):
         '''
@@ -1158,6 +1178,7 @@ class AnalogSensor(Sensor):
         :param str port: The port to which the sensor/actuator is connected.
         :param str pinmode: The pin mode of the device that's connected to the `GoPiGo3`_.
         :param easygopigo3.EasyGoPiGo3 gpg: Required object for instantiating an :py:class:`~easygopigo3.AnalogSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The available ``port``'s for use are the following:
 
@@ -1173,9 +1194,13 @@ class AnalogSensor(Sensor):
 
         """
         debug("AnalogSensor init")
+
         self.value = 0
         self.freq = 24000
-        Sensor.__init__(self, port, pinmode, gpg)
+        try:
+            Sensor.__init__(self, port, pinmode, gpg)
+        except:
+            raise
 
         # select the outwards pin of the grove connector
         self.set_pin(1)
@@ -1302,6 +1327,7 @@ class LightSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Light Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LightSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1312,7 +1338,10 @@ class LightSensor(AnalogSensor):
 
         """
         debug("LightSensor init")
-        AnalogSensor.__init__(self, port, "INPUT", gpg)
+        try:
+            AnalogSensor.__init__(self, port, "INPUT", gpg)
+        except:
+            raise
         self.set_pin(1)
         self.set_descriptor("Light sensor")
 ##########################
@@ -1364,6 +1393,7 @@ class SoundSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Sound Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.SoundSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1374,7 +1404,10 @@ class SoundSensor(AnalogSensor):
 
         """
         debug("Sound Sensor on port " + port)
-        AnalogSensor.__init__(self, port, "INPUT", gpg)
+        try:
+            AnalogSensor.__init__(self, port, "INPUT", gpg)
+        except:
+            raise
         self.set_pin(1)
         self.set_descriptor("Sound sensor")
 
@@ -1429,7 +1462,7 @@ class UltraSonicSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.UltraSonicSensor` object.
-        :raises IOError: If there is a communication error with the `GoPiGo3`_ robot.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1446,8 +1479,9 @@ class UltraSonicSensor(AnalogSensor):
             self.set_pin(1)
             self.set_descriptor("Ultrasonic sensor")
 
-        except Exception as e:
-            raise IOError(e)
+        except:
+            raise
+
 
     def is_too_close(self):
         """
@@ -1679,9 +1713,9 @@ class Buzzer(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Buzzer`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Buzzer` object.
-        :raises AtrributeError: If an attribute couldn't be found - you shouldn't worry about this one.
         :var int power = 50: Duty cycle of the signal that's put on the buzzer.
         :var int freq = 329: Frequency of the signal that's put on the buzzer. 329Hz is synonymous to E4 musical note. See :py:attr:`~.easygopigo3.Buzzer.scale` for more musical notes.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1699,7 +1733,7 @@ class Buzzer(AnalogSensor):
             self.freq = 329
             self.sound_off()
         except:
-            raise AttributeError
+            raise
 
     def sound(self, freq):
         """
@@ -1819,7 +1853,7 @@ class Led(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove LED`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Led` object.
-        :raises ValueError: If an inappropriate value was tried to be assigned - you shouldn't worry about this one.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1833,9 +1867,8 @@ class Led(AnalogSensor):
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
             self.set_pin(1)
             self.set_descriptor("LED")
-        except Exception as e:
-            print(e)
-            raise ValueError
+        except:
+            raise
 
     def light_on(self, power):
         """
@@ -1940,6 +1973,7 @@ class ButtonSensor(DigitalSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Button`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Button` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
 
@@ -1949,9 +1983,12 @@ class ButtonSensor(DigitalSensor):
         The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
-        DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
-        self.set_pin(1)
-        self.set_descriptor("Button sensor")
+        try:
+            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+            self.set_pin(1)
+            self.set_descriptor("Button sensor")
+        except:
+            raise
 
     def is_button_pressed(self):
         """
@@ -1965,18 +2002,95 @@ class ButtonSensor(DigitalSensor):
 ##########################
 
 
-# class Remote(Sensor):
+class Remote(Sensor):
+    """
+    Class for interfacing with the `Infrared Receiver`_.
 
-#     def __init__(self, port="AD1", gpg=None):
-#         Sensor.__init__(self, port, "IR", gpg)
-#         self.set_descriptor("Remote Control")
+    With this sensor, you can command your `GoPiGo3`_ with an `Infrared Remote`_.
 
-#     def get_remote_code(self):
-#         '''
-#         Returns the keycode from the remote control
-#         '''
-#         self.get_grove_value(self.getPortID())
+    In order to create an object of this class, we would do it like in the following example.
 
+    .. code-block:: python
+
+        # initialize an EasyGoPiGo3 object
+        gpg3_obj = EasyGoPiGo3()
+
+        # now initialize a Remote object
+        remote_control = gpg3_obj.init_remote()
+
+        # read whatever command you want from the remote by using
+        # the [remote_control] object
+
+    """
+
+    #: List for mapping the codes we get with the :py:meth:`~easygopigo3.Remote.read` method to
+    #: the actual symbols we see on the `Infrared Remote`_.
+    keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
+
+    def __init__(self, port="AD1",gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.Remote` object.
+
+        :param str port = "AD1": The port to which we connect the `Infrared Receiver`_.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
+        The ``"AD1"`` and ``"AD2"`` ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+
+        """
+        try:
+            Sensor.__init__(self, port, "IR", gpg)
+            self.set_descriptor("Remote Control")
+        except:
+            raise
+
+    def read(self):
+        """
+        Reads the numeric code received by the `Infrared Receiver`_.
+
+        :return: The numeric code of the symbol that was pressed on the `Infrared Remote`_.
+        :rtype: int
+
+        The numeric code represents the index of the :py:attr:`~easygopigo3.Remote.keycodes` list.
+        By accessing the :py:attr:`~easygopigo3.Remote.keycodes` elements with the numeric code, you
+        get the symbol that was pressed on the `Infrared Remote`_.
+
+        For only getting the symbol that was pressed on the `Infrared Remote`_, please check the :py:meth:`~easygopigo3.Remote.get_remote_code` method.
+
+        .. warning::
+
+           On :py:class:`~gopigo3.SensorError` exception:
+
+            * ``"Invalid Reading"`` string is printed in the console.
+            * The value of **-1** is returned.
+
+        """
+        try:
+            val = self.gpg.get_grove_value(self.get_port_ID())
+            return val
+        except gopigo3.SensorError as e:
+            print("Invalid Reading")
+            return -1
+
+
+    def get_remote_code(self):
+        """
+        Returns the symbol of the pressed key in a string format.
+
+        :return: The symbol that was pressed on the `Infrared Remote`_.
+        :rtype: str
+
+        Check the :py:attr:`~easygopigo3.Remote.keycodes` list for seeing what strings this method can return.
+        On error or when nothing is read, an empty string is returned.
+
+        """
+        string = ""
+        key = self.read()
+
+        if key > 0 and key < len(self.keycodes)+1:
+            string = self.keycodes[self.read()-1]
+
+        return string
 ##########################
 
 
@@ -2013,19 +2127,23 @@ class LineFollower(Sensor):
 
         :param str port = "I2C": The port to which we have connected the `Line Follower`_ sensor.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
-        :raises ValueError: If the ``line_sensor`` library couldn't be found.
+        :raises ImportError: If the :py:mod:`line_follower` module couldn't be found.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
 
         The only value the ``port`` parameter can take is ``"I2C"``.
 
         The I2C ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
+        if is_line_follower_accessible is False:
+            raise ImportError("Line Follower library not found")
+
         try:
             Sensor.__init__(self, port, "INPUT", gpg)
             self.set_descriptor("Line Follower")
-        except Exception as e:
-            print (e)
-            raise ValueError("Line Follower Library not found")
+        except:
+            raise
 
     def read_raw_sensors(self):
         """
@@ -2176,6 +2294,7 @@ class Servo(Sensor):
 
         :param str port = "SERVO1": The port to which we have connected the `servo`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The available ports that can be used for a `servo`_ are:
 
@@ -2189,7 +2308,7 @@ class Servo(Sensor):
             Sensor.__init__(self, port, "OUTPUT", gpg)
             self.set_descriptor("GoPiGo3 Servo")
         except:
-            raise ValueError("GoPiGo3 Servo not found")
+            raise
 
     def rotate_servo(self, servo_position):
         """
@@ -2228,15 +2347,15 @@ class Servo(Sensor):
 
     def reset_servo(self):
         """
-        Resets the `servo`_ at its default position.
+        Resets the `servo`_ straight ahead, in the middle position.
 
         .. tip::
 
-           | Same as calling ``rotate_servo(0)``.
+           | Same as calling ``rotate_servo(90)``.
            | Read more about :py:meth:`~easygopigo3.Servo.rotate_servo` method.
 
         """
-        self.gpg.set_servo(self.portID, 0)
+        self.gpg.set_servo(self.portID, 90)
 
 #######################################################################
 #
@@ -2248,9 +2367,13 @@ try:
     from di_sensors import distance_sensor
 
 except:
-    from mock_package import distance_sensor
-    print ("Distance Sensor NOT found")    
-      
+    try:
+        from mock_package import distance_sensor
+        print ("Loading library without distance sensor")
+    except:
+        pass
+
+
 class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
     Class for the `Distance Sensor`_ device.
@@ -2278,11 +2401,17 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :raises IOError: If :py:class:`di_sensors.distance_sensor.DistanceSensor` can't be found. Probably the :py:mod:`di_sensors` module isn't installed.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`hardware-ports-section`.
 
         """
-        Sensor.__init__(self, port, "OUTPUT", gpg)
+        try:
+            Sensor.__init__(self, port, "OUTPUT", gpg)
+        except:
+            raise
+
         try:
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
@@ -2306,10 +2435,10 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         """
 
-        # 8190 is what the sensor sends when it's out of range     
-        # we're just setting a default value      
-        mm = 8190     
-        readings = []     
+        # 8190 is what the sensor sends when it's out of range
+        # we're just setting a default value
+        mm = 8190
+        readings = []
         attempt = 0
 
         # try 3 times to have a reading that is
@@ -2382,9 +2511,12 @@ class DHTSensor(Sensor):
     '''
     def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
         try:
-            import threading
-
             Sensor.__init__(self,port,"INPUT",gpg)
+        except:
+            raise
+
+        try:
+            import threading
 
             self.sensor_type = sensor_type
 
