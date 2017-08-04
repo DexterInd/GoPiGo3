@@ -2062,7 +2062,7 @@ class Remote(Sensor):
            On :py:class:`~gopigo3.SensorError` exception:
 
             * ``"Invalid Reading"`` string is printed in the console.
-            * The value of *-1* is returned.
+            * The value of **-1** is returned.
 
         """
         try:
