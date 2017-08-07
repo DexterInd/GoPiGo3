@@ -19,7 +19,7 @@ import struct
 import sys
 import signal
 from time import sleep
-from easygopigo3 import *
+from easygopigo3 import EasyGoPiGo3
 from builtins import input
 import threading
 import gopigo3
