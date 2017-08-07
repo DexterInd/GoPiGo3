@@ -182,7 +182,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         
     def reset_speed(self):
         """
-        | This method resets the speed to its original value
+        | This method resets the speed to its original value.
+
         """
         self.set_speed(self.DEFAULT_SPEED)
 
