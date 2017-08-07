@@ -50,7 +50,19 @@ def signal_handler(signal, frame):
 def getMouseValues(file_input):
 
     buf = file_input.read(3)
-    button = ord(buf[0])
+
+    # if ran with Python 3
+    # ord function will throw an exception, since
+    # buf[0] already is an integer, as opposed in Python 2
+    # where buf[0] is a string
+    try:
+        button = ord(buf[0])
+    except TypeError as msg:
+        button = buf[0]
+        if debug is True:
+            print(str(msg))
+
+    print(button)
     left_button = (button & 0x1) > 0
     middle_button = (button & 0x4) > 0
     right_button = (button & 0x2) > 0
