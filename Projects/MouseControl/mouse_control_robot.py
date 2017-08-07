@@ -84,8 +84,8 @@ def Main():
     print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
     print("                                            ")
 
-    print("For moving the robot around using the mouse buttons press 1 and enter.")
-    print("For moving the robot around using the movements of the mouse press 2 and enter.")
+    print("To move the robot around using the mouse buttons press 1 and enter.")
+    print("To move the robot around using the movements of the mouse press 2 and enter.")
 
     # read data from the keyboard
     # if it fails reading the right values, then the script exits
