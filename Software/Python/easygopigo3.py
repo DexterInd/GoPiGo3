@@ -113,7 +113,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
-        :var int DEFAULT_SPEED = 300: starting speed value. Not too fast, not too slow
+        :var int DEFAULT_SPEED = 300: Starting speed value: not too fast, not too slow.
         :raises IOError: When the GoPiGo3 is not detected. It also debugs a message in the terminal.
         :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
         :raises Exception: For any other kind of exceptions.
