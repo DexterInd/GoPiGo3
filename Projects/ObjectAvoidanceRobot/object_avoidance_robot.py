@@ -69,24 +69,24 @@ def Main():
             print("Debug: " + str(msg))
         sys.exit(1)
 
-    gopigo3_stopped = True
+    gopigo3_stationary = True
     while robot_operating:
         current_distance = distance_sensor.read_mm()
         determined_speed = 0
 
         if current_distance < MIN_DISTANCE:
-            gopigo3_stopped = True
+            gopigo3_stationary = True
             gopigo3.stop()
 
         else:
-            gopigo3_stopped = False
+            gopigo3_stationary = False
             percent_speed = (current_distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE)
             determined_speed = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * percent_speed
 
             gopigo3.set_speed(determined_speed)
             gopigo3.forward()
 
-        print("Current distance : {:4} Current speed: {:4} mm Stopped: {}".format(current_distance, int(determined_speed), gopigo3_stopped is True ))
+        print("Current distance : {:4} Current speed: {:4} mm Stopped: {}".format(current_distance, int(determined_speed), gopigo3_stationary is True ))
 
         sleep(0.08)
 
