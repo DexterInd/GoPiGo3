@@ -2422,7 +2422,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
             Scripts that use this method require procedures for gracefully-exiting the script, otherwise the connection to the `Distance Sensor`_ can be lost.
             Signal handlers need to be used.
 
-            In case the connection to the `Distance Sensor`_ is lost, replug the sensor into the `GoPiGo3`_ to get work again.
+            In case the connection to the `Distance Sensor`_ is lost, replug the `Distance Sensor`_ and restart the script or reinstatiate the :py:class:`~easygopigo3.DistanceSensor` object.
 
         """
 
