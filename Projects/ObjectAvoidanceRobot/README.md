@@ -1,6 +1,6 @@
 # Obstacle Avoidance Robot
 
-In this project, we use a [DistanceSensor](https://www.dexterindustries.com/shop/distance-sensor/) for detecting obstacles with a [GoPiGo3](https://www.dexterindustries.com/shop/gopigo3-robot-base-kit/). The robot's speed is proportional we read.
+In this project, we use a [DistanceSensor](https://www.dexterindustries.com/shop/distance-sensor/) for detecting obstacles with a [GoPiGo3](https://www.dexterindustries.com/shop/gopigo3-robot-base-kit/). The robot's speed is proportional to the distance from the target.
 When the target is too close to the robot, the GoPiGo3 robot stops. The robot will start moving again once the obstacle is removed from the robot's path.
 
 This project can run with Python 2 and 3.
