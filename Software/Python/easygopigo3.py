@@ -28,8 +28,6 @@ try:
 except:
     mutex = False
     pass
-#import DHT
-#import grove_rgb_lcd
 
 import os
 
@@ -48,37 +46,11 @@ except:
     except:
         is_line_follower_accessible = False
 
-old_settings = ''
-fd = ''
 ##########################
-
-read_is_open = True
-
 
 def debug(in_str):
     if False:
         print(in_str)
-
-
-def _grab_read():
-    global read_is_open
-    try:
-        I2C_Mutex_Acquire()
-    except:
-        pass
-    # thread safe doesn't seem to be required so
-    # commented out
-    # while read_is_open is False:
-    #     time.sleep(0.01)
-    read_is_open = False
-    # print("acquired")
-
-
-def _release_read():
-    global read_is_open
-    I2C_Mutex_Release()
-    read_is_open = True
-    # print("released")
 
 #####################################################################
 #
@@ -2383,7 +2355,7 @@ except:
         pass
 
 
-class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
+class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
     """
     Class for the `Distance Sensor`_ device.
 
@@ -2427,6 +2399,8 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             print(e)
             raise IOError("Distance Sensor not found")
 
+        Mutex.__init__(self)
+
         self.set_descriptor("Distance Sensor")
 
     # Returns the values in cms
@@ -2463,12 +2437,12 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # if sensor insists on that value, then pass it on
 
         while (mm > 8000 or mm < 5) and attempt < 3:
-            _grab_read()
+            self.acquire()
             try:
                 mm = self.read_range_single()
             except:
                 mm = -1
-            _grab_release()
+            self.release()
             attempt = attempt + 1
             time.sleep(0.001)
 
@@ -2578,6 +2552,8 @@ class DHTSensor(Sensor):
             print("DHTSensor: {}".format(e))
             raise ValueError("DHT Sensor not found")
 
+        Mutex.__init__(self)
+
     def read_temperature(self):
         '''
         Return values may be a float, or error strings
@@ -2587,9 +2563,9 @@ class DHTSensor(Sensor):
 
         from di_sensors import DHT
 
-        _grab_read()
+        self.acquire()
         temp = DHT.dht(self.sensor_type)[0]
-        _release_read()
+        self.release()
 
         if temp == -2:
             return "Bad reading, trying again"
@@ -2607,9 +2583,9 @@ class DHTSensor(Sensor):
         import threading
         from di_sensors import DHT
 
-        _grab_read()
+        self.acquire()
         humidity = DHT.dht(self.sensor_type)[1]
-        _release_read()
+        self.release()
 
         if humidity == -2:
             return "Bad reading, trying again"
@@ -2622,9 +2598,9 @@ class DHTSensor(Sensor):
     def read_dht(self):
         from di_sensors import DHT
 
-        _grab_read()
+        self.acquire()
         [temp , humidity]=DHT.dht(self.sensor_type)
-        _release_read()
+        self.release()
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
@@ -2670,12 +2646,12 @@ class DHTSensor(Sensor):
                 temp = None
                 humidity = None
 
-                _grab_read()
+                self.acquire()
                 try:
                     [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
-                _release_read()
+                self.release()
 
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
                     values.append({"temp" : temp, "hum" : humidity})
