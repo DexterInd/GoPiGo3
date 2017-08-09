@@ -2504,7 +2504,6 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
             The :py:meth:`~easygopigo3.DistanceSensor.read_mm`'s warning is valid for this method too.
 
-
         """
         cm = self.read()
         if cm == -1:
@@ -2518,7 +2517,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
             return inches
 
 
-class DHTSensor(Sensor):
+class DHTSensor(Sensor, Mutex):
     '''
     Support for the Adafruit DHT sensor, blue or white
     All imports are done internally so it's done on a as needed basis only
