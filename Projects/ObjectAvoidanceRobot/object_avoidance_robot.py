@@ -24,7 +24,7 @@ import sys
 import signal
 from time import sleep
 
-DEBUG = True
+DEBUG = False
 MAX_DISTANCE = 2300 # measured in mm
 MIN_DISTANCE = 150 # measured in mm
 NO_OBSTACLE = 3000
@@ -70,6 +70,9 @@ def Main():
         if DEBUG is True:
             print("Debug: " + str(msg))
         sys.exit(1)
+
+    if DEBUG is True:
+        distance_sensor.enableDebug()
 
     gopigo3_stationary = True
     global robot_operating
