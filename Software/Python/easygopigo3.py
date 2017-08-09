@@ -2413,7 +2413,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         .. note::
 
-             1. Sensor's range starts at **5** millimeters and goes up to **2200-2300** millimeters.
+             1. Sensor's range starts at **20** millimeters and goes up to **2200-2300** millimeters.
              2. Returns **3000** when the values are out of the range.
              3. Returns **-1** when the sensor isn't detected.
 
@@ -2470,7 +2470,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         .. note::
 
-             1. Sensor's range starts at **0** centimeters and goes up to **220-230** centimeters.
+             1. Sensor's range starts at **2** centimeters and goes up to **220-230** centimeters.
              2. Returns **300** when the values are out of the range.
              3. Returns **-1** when the sensor isn't detected.
 
@@ -2480,7 +2480,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         """
 
-        mm = self.read_mm
+        mm = self.read_mm()
         if mm == -1:
             return mm
         else:
@@ -2496,7 +2496,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         .. note::
 
-             1. Sensor's range starts at **0** inches and goes up to **86-90** inches.
+             1. Sensor's range starts at **1** inches and goes up to **86-90** inches.
              2. Returns **118** when the values are out of the range.
              3. Returns **-1** when the sensor isn't detected.
 
