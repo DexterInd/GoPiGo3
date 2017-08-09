@@ -179,7 +179,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return int(self.speed)
-        
+
     def reset_speed(self):
         """
         | This method resets the speed to its original value.
@@ -2439,8 +2439,16 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         .. note::
 
-             1. Sensor's range is **5-8,000** millimeters.
-             2. When the values are out of the range, it returns **8190**.
+             1. Sensor's range starts at **5** millimeters and goes up to **2200-2300** millimeters.
+             2. Returns **3000** when the values are out of the range.
+             3. Returns **-1** when the sensor isn't detected.
+
+        .. warning::
+
+            Scripts that use this method require procedures for gracefully-exiting the script, otherwise the connection to the `Distance Sensor`_ can be lost.
+            Signal handlers need to be used.
+
+            In case the connection to the `Distance Sensor`_ is lost, replug the sensor into the `GoPiGo3`_ to get work again.
 
         """
 
@@ -2488,13 +2496,22 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         .. note::
 
-             1. Sensor's range is **0-800** centimeters.
-             2. When the values are out of the range, it returns **819**.
+             1. Sensor's range starts at **0** centimeters and goes up to **220-230** centimeters.
+             2. Returns **300** when the values are out of the range.
+             3. Returns **-1** when the sensor isn't detected.
+
+        .. warning::
+
+            The :py:meth:`~easygopigo3.DistanceSensor.read_mm`'s warning is valid for this method too.
 
         """
 
-        cm = self.read_mm()//10
-        return (cm)
+        mm = self.read_mm
+        if mm == -1:
+            return mm
+        else:
+            cm = mm // 10
+            return cm
 
     def read_inches(self):
         """
@@ -2505,12 +2522,26 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         .. note::
 
-             1. Sensor's range is **0-314** inches.
-             2. Anything that's bigger than **314** inches is returned when the sensor can't detect any target/surface.
+             1. Sensor's range starts at **0** inches and goes up to **86-90** inches.
+             2. Returns **118** when the values are out of the range.
+             3. Returns **-1** when the sensor isn't detected.
+
+        .. warning::
+
+            The :py:meth:`~easygopigo3.DistanceSensor.read_mm`'s warning is valid for this method too.
+
 
         """
         cm = self.read()
-        return cm / 2.54
+        if cm == -1:
+            return cm
+        else:
+            if cm == 300:
+                inches = cm // 2.54
+            else:
+                inches = cm / 2.54
+
+            return inches
 
 
 class DHTSensor(Sensor):
