@@ -24,7 +24,7 @@ import sys
 import signal
 from time import sleep
 
-DEBUG = True # if set to True, any exception that's encountered is debugged
+DEBUG = False # if set to True, any exception that's encountered is debugged
 MAX_DISTANCE = 2300 # measured in mm
 MIN_DISTANCE = 150 # measured in mm
 NO_OBSTACLE = 3000
