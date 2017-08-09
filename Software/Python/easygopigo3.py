@@ -767,7 +767,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :param boolean use_mutex = False: Set ``use_mutex`` to ``True`` when the ``Distance Sensor``_ is used in multi-threaded applications. By default, the multi-threaded support is disabled.
+        :param boolean use_mutex = False: Set ``use_mutex`` to ``True`` when the `Distance Sensor`_ is used in multi-threaded applications. By default, the multi-threaded support is disabled.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -788,7 +788,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
         :param str port = "SERIAL": The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
-        :param sensor_type = 0: Select **0** for the `Blue DHT Sensor`_ and **1** for the `White DHT Sensor`_.
+        :param int sensor_type = 0: Select **0** for the `Blue DHT Sensor`_ and **1** for the `White DHT Sensor`_.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
         The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
@@ -2384,7 +2384,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
-        :param boolean use_mutex = False: Set ``use_mutex`` to ``True`` when the ``Distance Sensor``_ is used in multi-threaded applications. By default, the multi-threaded support is disabled.
+        :param boolean use_mutex = False: Set ``use_mutex`` to ``True`` when the `Distance Sensor`_ is used in multi-threaded applications. By default, the multi-threaded support is disabled.
         :raises IOError: If :py:class:`di_sensors.distance_sensor.DistanceSensor` can't be found. Probably the :py:mod:`di_sensors` module isn't installed.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
