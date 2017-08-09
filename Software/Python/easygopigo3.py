@@ -761,7 +761,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Servo(port, self)
 
-    def init_distance_sensor(self, port = "I2C"):
+    def init_distance_sensor(self, port = "I2C", use_mutex = False):
         """
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
@@ -780,9 +780,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return DistanceSensor(port, self)
+        return DistanceSensor(port, self, use_mutex)
 
-    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0, use_mutex = False):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
@@ -792,9 +792,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return DHTSensor(port, self, sensor_type)
+        return DHTSensor(port, self, sensor_type, use_mutex)
 
-    def init_remote(self, port="AD1"):
+    def init_remote(self, port = "AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.Remote` object and then returns it.
 
@@ -2376,7 +2376,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
             print(distance)
 
     """
-    def __init__(self, port="I2C",gpg=None):
+    def __init__(self, port="I2C", gpg=None, use_mutex = False):
         """
         Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
 
@@ -2399,7 +2399,9 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
             print(e)
             raise IOError("Distance Sensor not found")
 
-        Mutex.__init__(self)
+        self.use_mutex = use_mutex
+        if self.use_mutex is True:
+            Mutex.__init__(self)
 
         self.set_descriptor("Distance Sensor")
 
@@ -2415,7 +2417,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
              1. Sensor's range starts at **20** millimeters and goes up to **2200-2300** millimeters.
              2. Returns **3000** when the values are out of the range.
-             3. Returns **-1** when the sensor isn't detected.
+             3. Returns **0** when the sensor isn't detected.
 
         .. warning::
 
@@ -2437,18 +2439,20 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
         # if sensor insists on that value, then pass it on
 
         while (mm > 8000 or mm < 5) and attempt < 3:
-            self.acquire()
+            if self.use_mutex is True:
+                self.acquire()
             try:
                 mm = self.read_range_single()
             except:
-                mm = -1
-            self.release()
+                mm = 0
+            if self.use_mutex is True:
+                self.release()
             attempt = attempt + 1
             time.sleep(0.001)
 
         # add the reading to our last 3 readings
         # a 0 value is possible when sensor is not found
-        if (mm < 8000 and mm > 5) or mm == -1:
+        if (mm < 8000 and mm > 5) or mm == 0:
             readings.append(mm)
         if len(readings) > 3:
             readings.pop(0)
@@ -2472,7 +2476,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
              1. Sensor's range starts at **2** centimeters and goes up to **220-230** centimeters.
              2. Returns **300** when the values are out of the range.
-             3. Returns **-1** when the sensor isn't detected.
+             3. Returns **0** when the sensor isn't detected.
 
         .. warning::
 
@@ -2481,7 +2485,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
         """
 
         mm = self.read_mm()
-        if mm == -1:
+        if mm == 0:
             return mm
         else:
             cm = mm // 10
@@ -2498,7 +2502,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
              1. Sensor's range starts at **1** inches and goes up to **86-90** inches.
              2. Returns **118** when the values are out of the range.
-             3. Returns **-1** when the sensor isn't detected.
+             3. Returns **0** when the sensor isn't detected.
 
         .. warning::
 
@@ -2506,7 +2510,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         """
         cm = self.read()
-        if cm == -1:
+        if cm == 0:
             return cm
         else:
             if cm == 300:
@@ -2523,7 +2527,7 @@ class DHTSensor(Sensor, Mutex):
     All imports are done internally so it's done on a as needed basis only
         as in many cases the DHT sensor is not connected.
     '''
-    def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
+    def __init__(self, port="SERIAL",gpg=None, sensor_type=0, use_mutex=False):
         try:
             Sensor.__init__(self,port,"INPUT",gpg)
         except:
@@ -2551,7 +2555,9 @@ class DHTSensor(Sensor, Mutex):
             print("DHTSensor: {}".format(e))
             raise ValueError("DHT Sensor not found")
 
-        Mutex.__init__(self)
+        self.use_mutex = use_mutex
+        if self.use_mutex is True:
+            Mutex.__init__(self)
 
     def read_temperature(self):
         '''
@@ -2562,9 +2568,11 @@ class DHTSensor(Sensor, Mutex):
 
         from di_sensors import DHT
 
-        self.acquire()
+        if self.use_mutex is True:
+            self.acquire()
         temp = DHT.dht(self.sensor_type)[0]
-        self.release()
+        if self.use_mutex is True:
+            self.release()
 
         if temp == -2:
             return "Bad reading, trying again"
@@ -2582,9 +2590,11 @@ class DHTSensor(Sensor, Mutex):
         import threading
         from di_sensors import DHT
 
-        self.acquire()
+        if self.use_mutex is True:
+            self.acquire()
         humidity = DHT.dht(self.sensor_type)[1]
-        self.release()
+        if self.use_mutex is True:
+            self.release()
 
         if humidity == -2:
             return "Bad reading, trying again"
@@ -2597,9 +2607,11 @@ class DHTSensor(Sensor, Mutex):
     def read_dht(self):
         from di_sensors import DHT
 
-        self.acquire()
+        if self.use_mutex is True:
+            self.acquire()
         [temp , humidity]=DHT.dht(self.sensor_type)
-        self.release()
+        if self.use_mutex is True:
+            self.release()
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
@@ -2644,13 +2656,14 @@ class DHTSensor(Sensor, Mutex):
             while counter < seconds_window and not self.event.is_set():
                 temp = None
                 humidity = None
-
-                self.acquire()
+                if self.use_mutex is True:
+                    self.acquire()
                 try:
                     [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
-                self.release()
+                if self.use_mutex is True:
+                    self.release()
 
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
                     values.append({"temp" : temp, "hum" : humidity})

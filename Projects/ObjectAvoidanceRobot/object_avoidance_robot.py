@@ -24,11 +24,11 @@ import sys
 import signal
 from time import sleep
 
-DEBUG = False
+DEBUG = True
 MAX_DISTANCE = 2300 # measured in mm
 MIN_DISTANCE = 150 # measured in mm
 NO_OBSTACLE = 3000
-ERROR = -1
+ERROR = 0
 MAX_SPEED = 300
 MIN_SPEED = 100
 
@@ -38,6 +38,10 @@ def signal_handler(signal, frame):
     global robot_operating
     print("CTRL-C combination pressed")
     robot_operating = False
+
+def debug(string):
+    if DEBUG is True:
+        print("Debug: " + str(string))
 
 def Main():
 
@@ -55,20 +59,17 @@ def Main():
 
     except IOError as msg:
         print("GoPiGo3 robot not detected or DistanceSensor not installed.")
-        if DEBUG is True:
-            print("Debug: " + str(msg))
+        debug(msg)
         sys.exit(1)
 
     except FirmwareVersionError as msg:
         print("GoPiGo3 firmware needs to updated.")
-        if DEBUG is True:
-            print("Debug: " + str(msg))
+        debug(msg)
         sys.exit(1)
 
     except Exception as msg:
         print("Error occurred. Set debug = True to see more.")
-        if DEBUG is True:
-            print("Debug: " + str(msg))
+        debug(msg)
         sys.exit(1)
 
     if DEBUG is True:
