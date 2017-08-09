@@ -3,7 +3,7 @@
 In this project, we use a [DistanceSensor](https://www.dexterindustries.com/shop/distance-sensor/) for detecting obstacles with a [GoPiGo3](https://www.dexterindustries.com/shop/gopigo3-robot-base-kit/).
 
 The robot's speed is proportional to the distance from the target.
-When the target is too close to the robot, the GoPiGo3 robot stops. The robot will start moving again once the obstacle is removed from the robot's path.
+When the target is too close to the robot, the GoPiGo3 robot stops. The robot will start moving again once the obstacle is removed from the robot's trajectory.
 
 This project can run with Python 2 and 3.
 
@@ -18,6 +18,9 @@ There are a couple of constants that can be set within the script:
 * `ERROR` : Don't modify this constant. When the sensor can't be detected, it returns a value equal to this constant.
 * `MAX_SPEED` : Through tests it has been proven that this constant's value is the optimum speed for the GoPiGo3.
 * `MIN_SPEED` : The minimum speed for the GoPiGo3. Can be set way lower.
+
+more information docs
+low battery warning
 
 
 ![GoPiGo3 with DistanceSensor](http://i.imgur.com/FlHrteg.gif)
