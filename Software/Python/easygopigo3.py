@@ -2424,8 +2424,6 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
 
         .. warning::
 
-            Take this warning into consideration if the ``use_mutex`` parameter of the constructor is set to ``True``.
-            
             Scripts that use this method require procedures for gracefully-exiting the script, otherwise the connection to the `Distance Sensor`_ can be lost.
             Signal handlers need to be used.
 
