@@ -26,7 +26,7 @@ from time import sleep
 
 DEBUG = True
 MAX_DISTANCE = 2300 # measured in mm
-MIN_DISTANCE = 50 # measured in mm
+MIN_DISTANCE = 150 # measured in mm
 NO_OBSTACLE = 3000
 ERROR = -1
 MAX_SPEED = 300
@@ -78,8 +78,8 @@ def Main():
         determined_speed = 0
 
         if current_distance == ERROR:
-            robot_operating = False
             print("Cannot reach DistanceSensor. Stopping the process.")
+            robot_operating = False
 
         elif current_distance < MIN_DISTANCE:
             gopigo3_stationary = True
@@ -91,7 +91,7 @@ def Main():
             if current_distance == NO_OBSTACLE:
                 determined_speed = MAX_SPEED
             else:
-                percent_speed = (current_distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE)
+                percent_speed = float(current_distance - MIN_DISTANCE) / (MAX_DISTANCE - MIN_DISTANCE)
                 determined_speed = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * percent_speed
 
             gopigo3.set_speed(determined_speed)
