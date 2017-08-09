@@ -2453,19 +2453,20 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # try 3 times to have a reading that is
         # smaller than 8m or bigger than 5 mm.
         # if sensor insists on that value, then pass it on
+
         while (mm > 8000 or mm < 5) and attempt < 3:
+            _grab_read()
             try:
-                _grab_read()
                 mm = self.read_range_single()
-                _release_read()
             except:
-                mm = 0
+                mm = -1
+            _grab_release()
             attempt = attempt + 1
             time.sleep(0.001)
 
         # add the reading to our last 3 readings
         # a 0 value is possible when sensor is not found
-        if (mm < 8000 and mm > 5) or mm == 0:
+        if (mm < 8000 and mm > 5) or mm == -1:
             readings.append(mm)
         if len(readings) > 3:
             readings.pop(0)
