@@ -2357,7 +2357,7 @@ except:
         pass
 
 
-class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
+class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
     """
     Class for the `Distance Sensor`_ device.
 
@@ -2402,9 +2402,9 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
             print(e)
             raise IOError("Distance Sensor not found")
 
-        self.use_mutex = use_mutex
-        if self.use_mutex is True:
-            Mutex.__init__(self)
+        self.mutex = None
+        if use_mutex is True:
+            self.mutex = Mutex()
 
         self.set_descriptor("Distance Sensor")
 
@@ -2442,14 +2442,14 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
         # if sensor insists on that value, then pass it on
 
         while (mm > 8000 or mm < 5) and attempt < 3:
-            if self.use_mutex is True:
-                self.acquire()
+            if self.mutex:
+                self.mutex.acquire()
             try:
                 mm = self.read_range_single()
             except:
                 mm = 0
-            if self.use_mutex is True:
-                self.release()
+            if self.mutex:
+                self.mutex.release()
             attempt = attempt + 1
             time.sleep(0.001)
 
@@ -2524,7 +2524,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor, Mutex):
             return inches
 
 
-class DHTSensor(Sensor, Mutex):
+class DHTSensor(Sensor):
     '''
     Support for the Adafruit DHT sensor, blue or white
     All imports are done internally so it's done on a as needed basis only
@@ -2558,9 +2558,9 @@ class DHTSensor(Sensor, Mutex):
             print("DHTSensor: {}".format(e))
             raise ValueError("DHT Sensor not found")
 
-        self.use_mutex = use_mutex
-        if self.use_mutex is True:
-            Mutex.__init__(self)
+        self.mutex = None
+        if use_mutex is True:
+            self.mutex = Mutex()
 
     def read_temperature(self):
         '''
@@ -2571,11 +2571,11 @@ class DHTSensor(Sensor, Mutex):
 
         from di_sensors import DHT
 
-        if self.use_mutex is True:
-            self.acquire()
+        if self.mutex:
+            self.mutex.acquire()
         temp = DHT.dht(self.sensor_type)[0]
-        if self.use_mutex is True:
-            self.release()
+        if self.mutex:
+            self.mutex.release()
 
         if temp == -2:
             return "Bad reading, trying again"
@@ -2593,11 +2593,11 @@ class DHTSensor(Sensor, Mutex):
         import threading
         from di_sensors import DHT
 
-        if self.use_mutex is True:
-            self.acquire()
+        if self.mutex:
+            self.mutex.acquire()
         humidity = DHT.dht(self.sensor_type)[1]
-        if self.use_mutex is True:
-            self.release()
+        if self.mutex:
+            self.mutex.release()
 
         if humidity == -2:
             return "Bad reading, trying again"
@@ -2610,11 +2610,11 @@ class DHTSensor(Sensor, Mutex):
     def read_dht(self):
         from di_sensors import DHT
 
-        if self.use_mutex is True:
-            self.acquire()
+        if self.mutex:
+            self.mutex.acquire()
         [temp , humidity]=DHT.dht(self.sensor_type)
-        if self.use_mutex is True:
-            self.release()
+        if self.mutex:
+            self.mutex.release()
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
@@ -2659,14 +2659,14 @@ class DHTSensor(Sensor, Mutex):
             while counter < seconds_window and not self.event.is_set():
                 temp = None
                 humidity = None
-                if self.use_mutex is True:
-                    self.acquire()
+                if self.mutex:
+                    self.mutex.acquire()
                 try:
                     [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
-                if self.use_mutex is True:
-                    self.release()
+                if self.mutex:
+                    self.mutex.release()
 
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
                     values.append({"temp" : temp, "hum" : humidity})
