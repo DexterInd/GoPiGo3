@@ -184,5 +184,3 @@ Remote
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
-.. _blue dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
-.. _white dht sensor: https://www.seeedstudio.com/Grove-Temperature%26Humidity-Sensor-Pro-p-838.html

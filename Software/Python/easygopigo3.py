@@ -28,6 +28,8 @@ try:
 except:
     mutex = False
     pass
+#import DHT
+#import grove_rgb_lcd
 
 import os
 
@@ -46,11 +48,37 @@ except:
     except:
         is_line_follower_accessible = False
 
+old_settings = ''
+fd = ''
 ##########################
+
+read_is_open = True
+
 
 def debug(in_str):
     if False:
         print(in_str)
+
+
+def _grab_read():
+    global read_is_open
+    try:
+        I2C_Mutex_Acquire()
+    except:
+        pass
+    # thread safe doesn't seem to be required so
+    # commented out
+    # while read_is_open is False:
+    #     time.sleep(0.01)
+    read_is_open = False
+    # print("acquired")
+
+
+def _release_read():
+    global read_is_open
+    I2C_Mutex_Release()
+    read_is_open = True
+    # print("released")
 
 #####################################################################
 #
@@ -85,7 +113,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
-        :var int DEFAULT_SPEED = 300: Starting speed value: not too fast, not too slow.
         :raises IOError: When the GoPiGo3 is not detected. It also debugs a message in the terminal.
         :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
         :raises Exception: For any other kind of exceptions.
@@ -104,8 +131,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         self.sensor_1 = None
         self.sensor_2 = None
-        self.DEFAULT_SPEED=300
-        self.set_speed(self.DEFAULT_SPEED)
+        self.set_speed(300)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
 
@@ -129,7 +155,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. warning::
 
-             **0-1000** DPS are the *preferred* speeds for the `GoPiGo3`_ robot.
+             **0-1000** DPS are the *preffered* speeds for the `GoPiGo3`_ robot.
              The speed variable can be basically set to any positive value, but factors like *voltage*, *load*, *battery amp rating*, etc, will determine the effective speed of the motors.
 
              Experiments should be run by every user, as each case is unique.
@@ -138,7 +164,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         try:
             self.speed = int(in_speed)
         except:
-            self.speed = self.DEFAULT_SPEED
+            self.speed = 300
         self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                               dps=self.speed)
 
@@ -151,13 +177,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return int(self.speed)
-
-    def reset_speed(self):
-        """
-        | This method resets the speed to its original value.
-
-        """
-        self.set_speed(self.DEFAULT_SPEED)
 
     def stop(self):
         """
@@ -776,13 +795,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Servo(port, self)
 
-    def init_distance_sensor(self, port = "I2C", use_mutex = False):
+    def init_distance_sensor(self, port = "I2C"):
         """
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :param boolean use_mutex = False: Set ``use_mutex`` to ``True`` when the `Distance Sensor`_ is used in multi-threaded applications. By default, the multi-threaded support is disabled.
+        :param str port = "I2C": the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -796,22 +814,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return DistanceSensor(port, self, use_mutex)
+        return DistanceSensor(port, self)
 
-    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0, use_mutex = False):
+    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
         :param str port = "SERIAL": The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
-        :param int sensor_type = 0: Select **0** for the `Blue DHT Sensor`_ and **1** for the `White DHT Sensor`_.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
         The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return DHTSensor(port, self, sensor_type, use_mutex)
+        return DHTSensor(port, self, sensor_type)
 
-    def init_remote(self, port = "AD1"):
+    def init_remote(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.Remote` object and then returns it.
 
@@ -2393,13 +2410,12 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             print(distance)
 
     """
-    def __init__(self, port="I2C", gpg=None, use_mutex = False):
+    def __init__(self, port="I2C",gpg=None):
         """
         Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
 
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
-        :param boolean use_mutex = False: Set ``use_mutex`` to ``True`` when the `Distance Sensor`_ is used in multi-threaded applications. By default, the multi-threaded support is disabled.
         :raises IOError: If :py:class:`di_sensors.distance_sensor.DistanceSensor` can't be found. Probably the :py:mod:`di_sensors` module isn't installed.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -2417,10 +2433,6 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             print(e)
             raise IOError("Distance Sensor not found")
 
-        self.mutex = None
-        if use_mutex is True:
-            self.mutex = Mutex()
-
         self.set_descriptor("Distance Sensor")
 
     # Returns the values in cms
@@ -2433,16 +2445,8 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         .. note::
 
-             1. Sensor's range starts at **20** millimeters and goes up to **2200-2300** millimeters.
-             2. Returns **3000** when the values are out of the range.
-             3. Returns **0** when the sensor isn't detected.
-
-        .. warning::
-
-            Scripts that use this method require procedures for gracefully-exiting the script, otherwise the connection to the `Distance Sensor`_ can be lost.
-            Signal handlers need to be used.
-
-            In case the connection to the `Distance Sensor`_ is lost, replug the `Distance Sensor`_ and restart the script or reinstatiate the :py:class:`~easygopigo3.DistanceSensor` object.
+             1. Sensor's range is **5-8,000** millimeters.
+             2. When the values are out of the range, it returns **8190**.
 
         """
 
@@ -2455,16 +2459,13 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # try 3 times to have a reading that is
         # smaller than 8m or bigger than 5 mm.
         # if sensor insists on that value, then pass it on
-
         while (mm > 8000 or mm < 5) and attempt < 3:
-            if self.mutex:
-                self.mutex.acquire()
             try:
+                _grab_read()
                 mm = self.read_range_single()
+                _release_read()
             except:
                 mm = 0
-            if self.mutex:
-                self.mutex.release()
             attempt = attempt + 1
             time.sleep(0.001)
 
@@ -2492,22 +2493,13 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         .. note::
 
-             1. Sensor's range starts at **2** centimeters and goes up to **220-230** centimeters.
-             2. Returns **300** when the values are out of the range.
-             3. Returns **0** when the sensor isn't detected.
-
-        .. warning::
-
-            The :py:meth:`~easygopigo3.DistanceSensor.read_mm`'s warning is valid for this method too.
+             1. Sensor's range is **0-800** centimeters.
+             2. When the values are out of the range, it returns **819**.
 
         """
 
-        mm = self.read_mm()
-        if mm == 0:
-            return mm
-        else:
-            cm = mm // 10
-            return cm
+        cm = self.read_mm()//10
+        return (cm)
 
     def read_inches(self):
         """
@@ -2518,25 +2510,12 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         .. note::
 
-             1. Sensor's range starts at **1** inches and goes up to **86-90** inches.
-             2. Returns **118** when the values are out of the range.
-             3. Returns **0** when the sensor isn't detected.
-
-        .. warning::
-
-            The :py:meth:`~easygopigo3.DistanceSensor.read_mm`'s warning is valid for this method too.
+             1. Sensor's range is **0-314** inches.
+             2. Anything that's bigger than **314** inches is returned when the sensor can't detect any target/surface.
 
         """
         cm = self.read()
-        if cm == 0:
-            return cm
-        else:
-            if cm == 300:
-                inches = cm // 2.54
-            else:
-                inches = cm / 2.54
-
-            return inches
+        return cm / 2.54
 
 
 class DHTSensor(Sensor):
@@ -2545,7 +2524,7 @@ class DHTSensor(Sensor):
     All imports are done internally so it's done on a as needed basis only
         as in many cases the DHT sensor is not connected.
     '''
-    def __init__(self, port="SERIAL",gpg=None, sensor_type=0, use_mutex=False):
+    def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
         try:
             Sensor.__init__(self,port,"INPUT",gpg)
         except:
@@ -2573,10 +2552,6 @@ class DHTSensor(Sensor):
             print("DHTSensor: {}".format(e))
             raise ValueError("DHT Sensor not found")
 
-        self.mutex = None
-        if use_mutex is True:
-            self.mutex = Mutex()
-
     def read_temperature(self):
         '''
         Return values may be a float, or error strings
@@ -2586,11 +2561,9 @@ class DHTSensor(Sensor):
 
         from di_sensors import DHT
 
-        if self.mutex:
-            self.mutex.acquire()
+        _grab_read()
         temp = DHT.dht(self.sensor_type)[0]
-        if self.mutex:
-            self.mutex.release()
+        _release_read()
 
         if temp == -2:
             return "Bad reading, trying again"
@@ -2608,11 +2581,9 @@ class DHTSensor(Sensor):
         import threading
         from di_sensors import DHT
 
-        if self.mutex:
-            self.mutex.acquire()
+        _grab_read()
         humidity = DHT.dht(self.sensor_type)[1]
-        if self.mutex:
-            self.mutex.release()
+        _release_read()
 
         if humidity == -2:
             return "Bad reading, trying again"
@@ -2625,11 +2596,9 @@ class DHTSensor(Sensor):
     def read_dht(self):
         from di_sensors import DHT
 
-        if self.mutex:
-            self.mutex.acquire()
+        _grab_read()
         [temp , humidity]=DHT.dht(self.sensor_type)
-        if self.mutex:
-            self.mutex.release()
+        _release_read()
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
@@ -2674,14 +2643,13 @@ class DHTSensor(Sensor):
             while counter < seconds_window and not self.event.is_set():
                 temp = None
                 humidity = None
-                if self.mutex:
-                    self.mutex.acquire()
+
+                _grab_read()
                 try:
                     [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
-                if self.mutex:
-                    self.mutex.release()
+                _release_read()
 
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
                     values.append({"temp" : temp, "hum" : humidity})
