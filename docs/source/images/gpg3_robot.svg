@@ -1,0 +1,23 @@
+<svg width="580" height="400.00000000000006" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="#fff" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <ellipse stroke="#000" transform="rotate(0.23507215082645416 268.473724365249,242.97465515136528) " ry="137.86202" rx="150.358263" id="svg_2" cy="242.974661" cx="268.473714" stroke-opacity="null" stroke-width="10" fill="#FFDFB8"/>
+  <rect id="svg_5" height="87.85709" width="54.642824" y="199.642846" x="93.750123" stroke-opacity="null" stroke-width="2" stroke="#000" fill="#482816"/>
+  <rect id="svg_6" height="87.85709" width="54.642824" y="199.99999" x="388.749933" stroke-opacity="null" stroke-width="2" stroke="#000" fill="#482816"/>
+  <text stroke="#000" transform="matrix(1.1573678255081177,0,0,1.25286865234375,-29.196649376302958,-57.25894546508789) " xml:space="preserve" text-anchor="start" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-size="24" id="svg_8" y="251.215553" x="174.118255" stroke-opacity="null" stroke-width="0" fill="#000000">GoPiGo3 Robot</text>
+  <path stroke="#000" transform="rotate(-91.20732879638672 267.6506042480469,157.36508178710938) " id="svg_9" d="m292.646597,169.428928c1.986918,-2.161791 3.887181,-4.654051 5.56118,-6.891265l-50.158877,-1.026563l-6.880069,8.840658l-21.796208,-0.759306c2.731091,-4.025043 5.722902,-8.753384 7.941065,-12.304835l-7.890415,-11.939236l23.256065,0l4.731872,7.459719l51.210985,0l-6.352326,-7.443024c1.960413,-2.34558 4.861714,-5.475802 6.435568,-7.117024l17.223108,18.969901l-17.262282,19.264177l-6.019673,-7.053206l0.000006,0.000004z" stroke-opacity="null" stroke-width="2" fill="#FFDFB8"/>
+  <text stroke="#000" transform="matrix(1.5582937758268827,0,0,1.5147605013289862,-124.96699030522092,-47.51746733998438) " xml:space="preserve" text-anchor="start" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-size="24" id="svg_10" y="84.796137" x="211.087968" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000">Heading</text>
+  <path transform="rotate(63 76.03990936279297,163.53721618652344) " id="svg_12" d="m73.21504,171.595648l9.852646,-4.977269l-19.049611,0l-19.049569,0l0,-3.081165l0,-3.081168l18.831032,0c10.357053,0 18.831017,-0.156168 18.831017,-0.347041c0,-0.190869 -4.12311,-2.430641 -9.162457,-4.977268l-9.162486,-4.630231l8.468937,0l8.468905,0l12.933937,6.524097l12.933931,6.524094l-12.958742,6.511611l-12.958737,6.511611l-8.91573,0l-8.915751,0l9.852673,-4.977271l0.000004,0.000001z" fill-opacity="null" stroke-opacity="null" stroke="#000" fill="#FFDFB8"/>
+  <text stroke="#000" transform="matrix(0.8481758236885071,0,0,0.769119918346405,3.8762610014528036,22.388152917847037) " xml:space="preserve" text-anchor="start" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-size="24" id="svg_13" y="130.679806" x="27.641236" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000">Wheel(s)</text>
+  <path stroke="#000" transform="rotate(131 419.16036987304693,124.28677368164062) " id="svg_15" d="m415.95253,132.34521l11.18833,-4.977268l-21.632088,0l-21.632041,0l0,-3.081165l0,-3.081168l21.383877,0c11.761116,0 21.38386,-0.156169 21.38386,-0.347042c0,-0.190869 -4.682063,-2.430641 -10.404572,-4.977267l-10.404606,-4.630232l9.617036,0l9.617,0l14.687338,6.524097l14.68733,6.524093l-14.715504,6.511611l-14.715501,6.511611l-10.124399,0l-10.124423,0l11.188359,-4.977271l0.000005,0.000001z" fill-opacity="null" stroke-opacity="null" fill="#FFDFB8"/>
+  <text style="cursor: move;" stroke="#000" transform="matrix(0.6469032764434813,0,0,0.90105140209198,143.5176278911531,11.182737980037928) " xml:space="preserve" text-anchor="start" font-family="'Palatino Linotype', 'Book Antiqua', Palatino, serif" font-size="24" id="svg_16" y="86.869235" x="350.92556" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000">Wheel Circle Circumference</text>
+ </g>
+</svg>
