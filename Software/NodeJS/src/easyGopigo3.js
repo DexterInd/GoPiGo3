@@ -22,6 +22,7 @@ const LineThresholdSet = require('./components/lineFollower/lineThresholdSet');
 const Servo = require('./components/servo');
 const DHTSensor = require('./components/dhtSensor');
 const DistanceSensor = require('./components/distanceSensor');
+const Remote = require('./components/remote');
 
 const Gopigo = require('./gopigo3');
 
@@ -329,7 +330,7 @@ class EasyGoPiGo3 extends Gopigo {
         return new DHTSensor(this, sensorType);
     }
     initRemote(port = 'AD1') {
-        // new Remote(port, this);
+        return new Remote(port, this);
     }
 
     calibrateLineFollower() {
