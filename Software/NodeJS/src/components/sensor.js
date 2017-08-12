@@ -65,7 +65,7 @@ class Sensor {
                 break;
             case 'IR':
                 this.gpg.setGroveType(this.portId,
-                                    this.gpg.GROVE_TYPE.IR_GO_BOX);
+                                    this.gpg.GROVE_TYPE.IR_DI_REMOTE);
                 break;
             }
         } catch (err) {

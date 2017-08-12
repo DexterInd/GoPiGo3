@@ -21,11 +21,13 @@ const LineFollow = require('./components/lineFollower/lineFollow');
 const LineThresholdSet = require('./components/lineFollower/lineThresholdSet');
 const Servo = require('./components/servo');
 const DHTSensor = require('./components/dhtSensor');
+const DistanceSensor = require('./components/distanceSensor');
 
 const Gopigo = require('./gopigo3');
 
 class EasyGoPiGo3 extends Gopigo {
     gopigo;
+    DEFAULT_SPEED = 300;
 
     constructor() {
         try {
@@ -39,7 +41,7 @@ class EasyGoPiGo3 extends Gopigo {
 
         this.sensor1 = null;
         this.sensor2 = null;
-        this.setSpeed(300);
+        this.setSpeed(this.DEFAULT_SPEED);
         this.leftEyeColor = [0, 255, 255];
         this.rightEyeColor = [0, 255, 255];
     }
@@ -48,7 +50,7 @@ class EasyGoPiGo3 extends Gopigo {
         return this.getVoltageBattery();
     }
     setSpeed(inSpeed) {
-        this.speed = !isNaN(inSpeed) ? parseInt(inSpeed, 0) : 300;
+        this.speed = !isNaN(inSpeed) ? parseInt(inSpeed, 0) : this.DEFAULT_SPEED;
         this.setMotorLimits(
             this.MOTOR_LEFT + this.MOTOR_RIGHT,
             0,
@@ -57,6 +59,9 @@ class EasyGoPiGo3 extends Gopigo {
     }
     getSpeed() {
         return parseInt(this.speed, 0);
+    }
+    resetSpeed() {
+        this.setSpeed(this.DEFAULT_SPEED);
     }
     /**
      * Stop the GoPiGo3 by setting the degrees per second speed
@@ -79,7 +84,7 @@ class EasyGoPiGo3 extends Gopigo {
     forward() {
         this.setMotorDps(this.MOTOR_LEFT + this.MOTOR_RIGHT, this.getSpeed());
     }
-    driveCm(dist, blocking = false) {
+    driveCm(dist, blocking = true) {
         // dist is in cm
         // if dist is negative, this becomes a backward move
         const distMm = dist * 10;
@@ -112,7 +117,7 @@ class EasyGoPiGo3 extends Gopigo {
             }
         }
     }
-    driveInches(dist, blocking = false) {
+    driveInches(dist, blocking = true) {
         this.driveCm(dist * 2.54, blocking);
     }
     /**
@@ -293,32 +298,38 @@ class EasyGoPiGo3 extends Gopigo {
     }
 
     //
-    initLightSensor(port) {
+    initLightSensor(port = 'AD1') {
         return new LightSensor(port, this);
     }
-    initSoundSensor(port) {
+    initSoundSensor(port = 'AD1') {
         return new SoundSensor(port, this);
     }
-    initUltrasonicSensor(port) {
+    initUltrasonicSensor(port = 'AD1') {
         return new UltrasonicSensor(port, this);
     }
-    initBuzzer(port) {
+    initBuzzer(port = 'AD1') {
         return new Buzzer(port, this);
     }
-    initLed(port) {
+    initLed(port = 'AD1') {
         return new Led(port, this);
     }
-    initButtonSensor(port) {
+    initButtonSensor(port = 'AD1') {
         return new ButtonSensor(port, this);
     }
     initLineFollower() {
         return new LineFollow('I2C', this);
     }
-    initServo(port) {
+    initServo(port = 'SERVO1') {
         return new Servo(port, this);
+    }
+    initDistanceSensor() {
+        return new DistanceSensor('I2C', this);
     }
     initDhtSensor(sensorType = 0) {
         return new DHTSensor(this, sensorType);
+    }
+    initRemote(port = 'AD1') {
+        // new Remote(port, this);
     }
 
     calibrateLineFollower() {
