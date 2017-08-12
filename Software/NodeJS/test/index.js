@@ -1,8 +1,9 @@
 import { assert } from 'chai';
-import awesomeFunction from '../src/awesomeModule';
+const EasyGopigo = require('../lib/easyGopigo3');
+const gpg = new EasyGopigo();
 
-describe('Awesome test.', () => {
-  it('should test awesome function', () => {
-    assert(awesomeFunction(1, 1) === 2, 'Not awesome :(');
+describe('GoPiGo test.', () => {
+  it('should test GoPiGo manufacturer', () => {
+    assert(gpg.getManufacturer() === '', 'Empty manufacturer');
   });
 });
