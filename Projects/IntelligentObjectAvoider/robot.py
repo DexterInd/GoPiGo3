@@ -1,6 +1,5 @@
 from easygopigo3 import *
 from time import sleep
-from time import time
 import queue
 import threading
 import sys
@@ -9,6 +8,14 @@ import signal
 KEEP_HEADING = -1
 MINIMUM_VOLTAGE = 7.0
 
+# Thread-launched function for polling the data from the distance sensor.
+# It calculates the best path for the robot and then sends the data
+# through a queue to the  thread-launched [robotController] function.
+#
+# [trigger] is used for stopping the thread when CTRL-C is pressed.
+# [put_on_hold] is an Event object called by the other thread when needed.
+# [simultaneous_launcher] is a Barrier object used for synchronizing the 2 threads.
+# [sensor_queue] is a Queue object used for inter-thread communications
 def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     leftmost_degrees = 30
     rightmost_degrees = 150
@@ -21,14 +28,17 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     how_much_to_rotate = 150
     to_the_right = True
 
+    # try to connect to the GoPiGo3
     try:
         gopigo3_robot = EasyGoPiGo3()
     except IOError:
         print("GoPiGo3 robot not detected")
         simultaneous_launcher.abort()
 
+    # initialize a Servo object
     servo = gopigo3_robot.init_servo("SERVO1")
 
+    # try to connect to the distance sensor
     try:
         distance_sensor = gopigo3_robot.init_distance_sensor()
     except IOError:
@@ -41,9 +51,11 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
         print("Something imprevisible happened to GoPiGo3")
         simultaneous_launcher.abort()
 
+    # rotate the servo to the desired start-up position
     servo.rotate_servo(leftmost_degrees)
     sleep(wait_before_it_starts)
 
+    # check if an error has occurred during all the above processes
     try:
         simultaneous_launcher.wait()
     except threading.BrokenBarrierError:
@@ -52,14 +64,22 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     if not simultaneous_launcher.broken:
         print("[obstacleFinder] thread fully active")
 
+    # and if everything is okay
+    # start collecting, interpreting and sending messages
+    # to the thread-launched [robotController] function
     while not trigger.is_set() and not simultaneous_launcher.broken:
         anterior_distance = 0
         possible_routes = 0
         deadends = 0
 
+        # if the thread is put on hold by [robotController]
+        # then wait until it's allowed to proceed
         if not put_on_hold.is_set():
 
+            # when the servo is rotating to the right
             if to_the_right is True:
+                # read the distance to the target at every specific orientation of the servo
+                # and go with the best greedy-like solution
                 while current_servo_position <= rightmost_degrees:
                     servo.rotate_servo(current_servo_position)
                     sleep(servo_delay)
@@ -79,13 +99,18 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                         sensor_queue.put([0, 0])
                         deadends += 1
 
+                # if the distance sensor couldn't found a route
                 if deadends == possible_routes:
+                    # then rotate a lot in order to find a new spot
                     sensor_queue.put([0, how_much_to_rotate])
 
                 to_the_right = False
                 current_servo_position = rightmost_degrees
 
+            # when the servo is rotating to the left
             elif to_the_right is False:
+                # read the distance to the target at every specific orientation of the servo
+                # and go with the best greedy-like solution
                 while current_servo_position >= leftmost_degrees:
                     servo.rotate_servo(current_servo_position)
                     sleep(servo_delay)
@@ -105,7 +130,9 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                         sensor_queue.put([0, 0])
                         deadends += 1
 
+                # if the distance sensor couldn't found a route
                 if deadends == possible_routes:
+                    # then rotate a lot in order to find a new spot
                     sensor_queue.put([0, how_much_to_rotate])
 
                 to_the_right = True
@@ -114,10 +141,12 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
         else:
             sleep(0.01)
 
+    # move the servo to the middle when the thread is being stopped
     servo.rotate_servo(middle)
 
 
 def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
+    # try to connect to the GoPiGo3
     try:
         gopigo3_robot = EasyGoPiGo3()
     except IOError:
@@ -130,15 +159,20 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
         print("Something imprevisible happened to GoPiGo3")
         simultaneous_launcher.abort()
 
+    # set a lower speed of the GoPiGo3
     gopigo3_robot.set_speed(200)
-    gopigo3_robot.stop()
-    previous = 0
-    how_much_of_distance = 0.30
+    gopigo3_robot.stop() # in case the GoPiGo3 is moving, stop it
+    previous = 0 # see the following instructions
+    how_much_of_distance = 0.30 # measured in percentage
 
+    # if the robot is unplugged from the battery pack
+    # or if the batteries are low
+    # then abort everything
     if gopigo3_robot.volt() <= MINIMUM_VOLTAGE:
         print("Voltage too low")
         simultaneous_launcher.abort()
 
+    # check if an error has occurred during all the above processes
     try:
         simultaneous_launcher.wait()
     except threading.BrokenBarrierError:
@@ -147,6 +181,8 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     if not simultaneous_launcher.broken:
         print("[robotController] thread fully active")
 
+    # if everything is fine
+    # start polling messages from [obstacleFinder] function (which is thread-launched)
     while not trigger.is_set() and not simultaneous_launcher.broken:
         try:
             (distance_to_walk, rotation) = sensor_queue.get_nowait()
@@ -155,19 +191,24 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
             sleep(0.001)
             continue
 
+        # if we need to rotate the GoPiGo3
         if rotation > 0:
-            if rotation == 120:
-                put_on_hold.set()
-                gopigo3_robot.turn_degrees(rotation, blocking = True)
+            put_on_hold.set()
+            gopigo3_robot.turn_degrees(rotation, blocking = True)
             put_on_hold.clear()
 
+        # if we need to move the GoPiGo3 around
         if previous != 0 and distance_to_walk >= 0:
             gopigo3_robot.drive_cm(distance_to_walk * how_much_of_distance)
 
+        # keep the previous distance we read
+        # if it's 0 now and the next time is still 0
+        # then the drive method won't be called
         previous = distance_to_walk
 
         sleep(0.001)
 
+    # stop the motors when the thread is being stopped
     gopigo3_robot.stop()
 
 
@@ -184,8 +225,12 @@ def Main(trigger):
     print("Pay attention to how your GoPiGo3 moves around.")
     print("Avoid sharp corners / edges as the algorithm wasn't made for advanced stuff.")
 
+    # Event object for letting one thread
+    # control the other thread's flow control
     put_on_hold = threading.Event()
+    # used for synchronizing the threads
     simultaneous_launcher = threading.Barrier(2)
+    # for exchanging messages between threads
     sensor_queue = queue.Queue()
 
     print("\nWaiting threads to fire up")
@@ -193,21 +238,30 @@ def Main(trigger):
     path_finder = threading.Thread(target=obstacleFinder, args=(trigger, put_on_hold, simultaneous_launcher, sensor_queue))
     controller = threading.Thread(target=robotController, args=(trigger, put_on_hold, simultaneous_launcher, sensor_queue))
 
+    # start the threads
     path_finder.start()
     controller.start()
 
+    # wait for the user to press CTRL-C
+    # or to have an error while firing up the threads
     while not trigger.is_set() and not simultaneous_launcher.broken:
         sleep(0.001)
+    # if an error was encountered
     if simultaneous_launcher.broken:
+        # then exit the script
         sys.exit(1)
 
+    # otherwise, just wait for the threads to finish
     path_finder.join()
     controller.join()
 
+    # and then exit successfully
     sys.exit(0)
 
 if __name__ == "__main__":
     exit_trigger = threading.Event()
+    # CTRL-C signal handler
+    # used a lambda, because a proper function is too much code
     signal.signal(signal.SIGINT, lambda signum, frame: exit_trigger.set())
     Main(exit_trigger)
 
