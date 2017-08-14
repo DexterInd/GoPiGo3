@@ -448,6 +448,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
         self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
 
+    def read_encoders(self):
+        """
+        | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+
+        :returns: A tuple containing the position in degrees of each encoder. The 1st element is for the left motor and the 2nd is for the right motor.
+        :rtype: tuple(int,int)
+        
+        """
+
+        left_encoder = self.get_motor_encoder(self.MOTOR_LEFT)
+        right_encoder = self.get_motor_encoder(self.MOTOR_RIGHT)
+        encoders = (left_encoder, right_encoder)
+
+        return encoders
+
     def turn_degrees(self, degrees, blocking=False):
         """
         | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
