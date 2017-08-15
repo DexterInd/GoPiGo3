@@ -2223,11 +2223,11 @@ class LineFollower(Sensor):
 
         The strings this method can return are the following:
 
-            * ``"Center"`` - when the line is found in the middle.
-            * ``"Black"`` - when the line follower sensor only detects black surfaces.
-            * ``"White"`` - when the line follower sensor only detects white surfaces.
-            * ``"Left"`` - when the black line is located on the left of the sensor.
-            * ``"Right"`` - when the black line is located on the right of the sensor.
+            * ``"center"`` - when the line is found in the middle.
+            * ``"black"`` - when the line follower sensor only detects black surfaces.
+            * ``"white"`` - when the line follower sensor only detects white surfaces.
+            * ``"left"`` - when the black line is located on the left of the sensor.
+            * ``"right"`` - when the black line is located on the right of the sensor.
 
         .. note::
 
@@ -2240,26 +2240,26 @@ class LineFollower(Sensor):
         five_vals = self.read()
 
         if five_vals == [0, 0, 1, 0, 0] or five_vals == [0, 1, 1, 1, 0]:
-            return "Center"
+            return "center"
         if five_vals == [1, 1, 1, 1, 1]:
-            return "Black"
+            return "black"
         if five_vals == [0, 0, 0, 0, 0]:
-            return "White"
+            return "white"
         if five_vals == [0, 1, 1, 0, 0] or \
            five_vals == [0, 1, 0, 0, 0] or \
            five_vals == [1, 0, 0, 0, 0] or \
            five_vals == [1, 1, 0, 0, 0] or \
            five_vals == [1, 1, 1, 0, 0] or \
            five_vals == [1, 1, 1, 1, 0]:
-            return "Left"
+            return "left"
         if five_vals == [0, 0, 0, 1, 0] or \
            five_vals == [0, 0, 1, 1, 0] or \
            five_vals == [0, 0, 0, 0, 1] or \
            five_vals == [0, 0, 0, 1, 1] or \
            five_vals == [0, 0, 1, 1, 1] or \
            five_vals == [0, 1, 1, 1, 1]:
-            return "Right"
-        return "Unknown"
+            return "right"
+        return "unknown"
 ##########################
 
 
