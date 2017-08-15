@@ -44,10 +44,9 @@ while True:
     gpg.open_right_eye()
     time.sleep(1)
 
-    # Set the eye color to red.
+    # Set BOTH eye color to red.
 
-    gpg.set_left_eye_color((125,1,1))
-    gpg.set_right_eye_color((125,1,1))
+    gpg.set_eye_color((125,1,1))
 
     # Change the left eye to red.
     gpg.open_left_eye()
@@ -59,3 +58,12 @@ while True:
 
     # Close both eyes.
     gpg.close_eyes()
+    time.sleep(1)
+
+    # Set the left eye to red, the right eye to blue.
+    gpg.set_left_eye_color((125,1,1))
+    gpg.set_right_eye_color((1,1,125))
+
+    # Open both eyes at once
+    gpg.open_eyes()
+    time.sleep(1)

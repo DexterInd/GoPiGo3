@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# https://www.dexterindustries.com/GoPiGo3/
+# https://www.dexterindustries.com/GoPiGo/
 # https://github.com/DexterInd/GoPiGo3
 #
 # Copyright (c) 2017 Dexter Industries
@@ -10,13 +10,12 @@
 # For more information see
 # https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 #
-# This code is an example for controlling the GoPiGo3 blinkers.  This uses
+# This code is an example for controlling the GoPiGo3 motors.  This uses
 # the EasyGoPiGo3 library.  You can find more information on the library
 # here:  http://gopigo3.readthedocs.io/en/latest/api-basic.html#easygopigo3
-# These "Blinkers" are the LED's are located under the I2C ports on the GoPiGo3
 #
-# Results:  The GoPiGo3 will turn the LED's on, then the left LED off, and then
-# the right LED off.
+# Results:  The GoPiGo3 will move forward for 2 seconds, and then
+# backward for 2 second.
 
 
 # import the time library for the sleep function
@@ -28,17 +27,28 @@ import easygopigo3 as easy
 # GPG will be the GoPiGo3 object.
 gpg = easy.EasyGoPiGo3()
 
-while True:
-    # Turn both LEDs on
-    # These LED's are located under the I2C ports on the GoPiGo3
-    gpg.led_on(0)
-    gpg.led_on(1)
-    time.sleep(1)
+print("Move the motors forward freely for 1 second.")
+gpg.forward()
+time.sleep(1)
 
-    # Turn the left LED off
-    gpg.led_off(1)
-    time.sleep(1)
+print("Stop the motors for 1 second.")
+gpg.stop()
+time.sleep(1)
 
-    # Turn the right LED Off
-    gpg.led_off(0)
-    time.sleep(1)
+print("Drive the motors 50 cm and then stop.")
+gpg.drive_cm(50, True)
+
+print("Wait 1 second.")
+time.sleep(1)
+
+print("Turn right 1 second.")
+gpg.right()
+time.sleep(1)
+
+print("Turn left 1 second.")
+gpg.left()
+time.sleep(1)
+
+print("Stop!")
+gpg.stop()
+print("Done!")
