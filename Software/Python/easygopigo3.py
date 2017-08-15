@@ -834,6 +834,18 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Remote(port,self)
 
+    def init_motion_sensor(self, port="AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.MotionSensor` object and then returns it
+        
+        :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.MotionSensor` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
+        """
+                
+        return MotionSensor(port,self)
+        
 # the following functions may be redundant
 
 
@@ -1925,10 +1937,11 @@ class Led(AnalogSensor):
 ##########################
 
 
-# class MotionSensor(DigitalSensor):
-#     def __init__(self, port="D11", gpg=None):
-#         DigitalSensor.__init__(self, port, "INPUT", gpg)
-#         self.set_descriptor("Motion Sensor")
+class MotionSensor(DigitalSensor):
+    def __init__(self, port="D11", gpg=None):
+        DigitalSensor.__init__(self, port, "INPUT", gpg)
+        self.set_pin(1)
+        self.set_descriptor("Motion Sensor")
 ##########################
 
 
