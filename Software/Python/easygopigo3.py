@@ -1939,9 +1939,12 @@ class Led(AnalogSensor):
 
 class MotionSensor(DigitalSensor):
     def __init__(self, port="D11", gpg=None):
-        DigitalSensor.__init__(self, port, "INPUT", gpg)
-        self.set_pin(1)
-        self.set_descriptor("Motion Sensor")
+        try:
+            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+            self.set_pin(1)
+            self.set_descriptor("Motion Sensor")
+        except:
+            raise
 ##########################
 
 
