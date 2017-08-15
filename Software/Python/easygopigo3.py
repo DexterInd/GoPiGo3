@@ -1938,7 +1938,7 @@ class Led(AnalogSensor):
 
 
 class MotionSensor(DigitalSensor):
-    def __init__(self, port="D11", gpg=None):
+    def __init__(self, port="AD1", gpg=None):
         try:
             DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
             self.set_pin(1)
