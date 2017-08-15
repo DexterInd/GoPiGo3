@@ -157,7 +157,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. warning::
 
-             **0-1000** DPS are the *prefferred* speeds for the `GoPiGo3`_ robot.
+             **0-1000** DPS are the *preferred* speeds for the `GoPiGo3`_ robot.
              The speed variable can be basically set to any positive value, but factors like *voltage*, *load*, *battery amp rating*, etc, will determine the effective speed of the motors.
 
              Experiments should be run by every user, as each case is unique.
@@ -166,7 +166,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         try:
             self.speed = int(in_speed)
         except:
-            self.speed = 300
+            self.speed = self.DEFAULT_SPEED
         self.set_motor_limits(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                               dps=self.speed)
 
