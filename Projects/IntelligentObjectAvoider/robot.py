@@ -64,7 +64,7 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
         print("GoPiGo3 board needs to be updated")
         simultaneous_launcher.abort()
     except Exception:
-        print("Something imprevisible happened to GoPiGo3")
+        print("Unknown error occurred while instantiating GoPiGo3")
         simultaneous_launcher.abort()
 
     # rotate the servo to the desired start-up position
@@ -172,7 +172,7 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
         print("GoPiGo3 board needs to be updated")
         simultaneous_launcher.abort()
     except Exception:
-        print("Something imprevisible happened to GoPiGo3")
+        print("Unknown error occurred while instantiating GoPiGo3")
         simultaneous_launcher.abort()
 
     # set a lower speed of the GoPiGo3
@@ -290,6 +290,7 @@ if __name__ == "__main__":
 """
 def offset_movement(values):
     # distanta maxima de intoarcere permisa pe o intoarcere completa a servomoturlui este limitata la 40 de grade.
+    # the maximum number of degrees the robot can turn on a full turn of the servomotor is 40 degrees.
 
     DEGREE = 0
     DIST = 1
@@ -298,19 +299,22 @@ def offset_movement(values):
     print("=========================")
     for step in range(1, len(values)):
         # aici se calculeaza proiectia vectorului pe traiectoria normala a robotului
+        # here is the vector's projection on the normal (original) trajectory of the robot
         a = values[step - 1][DIST]
         b = values[step][DIST]
         degrees = values[step][DEGREE]
         values[step][DIST] = sqrt(pow(a, 2) + pow(b, 2) - 2 * a * b * cos(degrees * pi / 180))
         values[step][DEGREE] += values[step - 1][DEGREE]
 
-        # se calculeaza proiectia vectorului catre obstacol
+        # se calculeaza proiectia vectorului a obstacolului
+        # calculate the obstacle vector's projection
         target_orientation_degrees = values[step][ORIENTATION] - 90
         target_orientation_radians = target_orientation_degrees * pi / 180
         target_projection = (values[step][TARGET] / 100) * cos(target_orientation_radians)
 
-        # aici este calculate proiectiile unghiului de vizibilitate
+        # aici sunt calculate proiectiile unghiului de vizibilitate
         # interiorul se refera la latura mai apropriata de traiectoria normala a robotului
+        # here you can find the projections of the viewing angle
         robot_path_projection_interior = values[step][DIST] * sin(120 * pi / 180) / sin((180 - 120 - abs(values[step][DEGREE])) * pi / 180)
         y1 = values[step][DIST] * sin(values[step][DEGREE] * pi / 180) / sin((180 - 120 - abs(values[step][DEGREE])) * pi / 180)
         y2 = 2.20 # max measure-able distance
@@ -319,6 +323,7 @@ def offset_movement(values):
         A = (90 - (180 - 120 - abs(values[step][DEGREE]))) * pi / 180 - acos((pow(y1, 2) + pow(b, 2) - pow(y2,2)) / (y1 * b))
         B = (180 - 90) * pi / 180 - A
         # exteriorul se refera la latura mai departata de traiectoria normala a robotului (horizontala)
+        # the exterior refers to the edge that's further from the normal trajectory of the robot
         robot_path_projection_exterior = robot_path_projection_interior - b * sin(A) / sin(B)
 
         print(robot_path_projection_interior)
