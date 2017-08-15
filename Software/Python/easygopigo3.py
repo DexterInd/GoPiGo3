@@ -1938,13 +1938,79 @@ class Led(AnalogSensor):
 
 
 class MotionSensor(DigitalSensor):
+    """
+    | Class for the `Grove Motion Sensor`_.
+
+    | This class derives from :py:class:`~easygopigo3.DigitalSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a Motion Sensor object through the gpg3_obj object on default port AD1
+         motion_sensor = gpg3_obj.init_motion_sensor()
+
+         while True:
+             if motion_sensor.motion_detected():
+                 print("motion detected")
+             else:
+                 print("no motion")
+
+         # take a look at DigitalSensor class for more methods and attributes
+
+    | If we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the motion sensor connected to
+         port = "AD2"
+
+         motion_sensor = gpg3_obj.init_motion_sensor(port)
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+
+    """
+   
     def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.MotionSensor` object for the `Grove Motion Sensor`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Motion Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.MotionSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+
+        """
         try:
             DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
             self.set_pin(1)
             self.set_descriptor("Motion Sensor")
         except:
             raise
+            
+    def motion_detected(self,port="AD1"):
+        """
+        Checks if the `Grove Motion Sensor`_ detects a motion.
+
+        :returns: ``True`` or ``False``, if the `Grove Motion Sensor`_ detects a motion or not
+        :rtype: boolean
+
+        """
+        return self.read() == 1
 ##########################
 
 
@@ -1952,7 +2018,7 @@ class ButtonSensor(DigitalSensor):
     """
     | Class for the `Grove Button`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | This class derives from :py:class:`~easygopigo3.DigitalSensor` class, so all of its attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
 
     .. code-block:: python
@@ -1969,7 +2035,7 @@ class ButtonSensor(DigitalSensor):
              else:
                  print("button released")
 
-         # take a look at AnalogSensor class for more methods and attributes
+         # take a look at DigitalSensor class for more methods and attributes
 
     | If we need to specify the port we want to use, we might do it like in the following example.
 
