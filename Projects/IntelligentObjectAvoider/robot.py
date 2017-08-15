@@ -289,6 +289,7 @@ if __name__ == "__main__":
 ##################################
 """
 def offset_movement(values):
+
     # distanta maxima de intoarcere permisa pe o intoarcere completa a servomoturlui este limitata la 40 de grade.
     # the maximum number of degrees the robot can turn on a full turn of the servomotor is 40 degrees.
 
@@ -298,6 +299,7 @@ def offset_movement(values):
     TARGET = 3
     print("=========================")
     for step in range(1, len(values)):
+
         # aici se calculeaza proiectia vectorului pe traiectoria normala a robotului
         # here is the vector's projection on the normal (original) trajectory of the robot
         a = values[step - 1][DIST]
