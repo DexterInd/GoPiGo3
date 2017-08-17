@@ -1941,7 +1941,7 @@ class MotionSensor(DigitalSensor):
     """
     | Class for the `Grove Motion Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.DigitalSensor` class, so all of its attributes and methods are inherited.
+    | This class derives from :py:class:`~easygopigo3.Sensor` (check for throwable exceptions) and :py:class:`~easygopigo3.DigitalSensor` classes, so all attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
 
     .. code-block:: python
@@ -2001,12 +2001,12 @@ class MotionSensor(DigitalSensor):
             self.set_descriptor("Motion Sensor")
         except:
             raise
-            
+
     def motion_detected(self,port="AD1"):
         """
         Checks if the `Grove Motion Sensor`_ detects a motion.
 
-        :returns: ``True`` or ``False``, if the `Grove Motion Sensor`_ detects a motion or not
+        :returns: ``True`` or ``False``, if the `Grove Motion Sensor`_ detects a motion or not.
         :rtype: boolean
 
         """
@@ -2018,7 +2018,7 @@ class ButtonSensor(DigitalSensor):
     """
     | Class for the `Grove Button`_.
 
-    | This class derives from :py:class:`~easygopigo3.DigitalSensor` class, so all of its attributes and methods are inherited.
+    | This class derives from :py:class:`~easygopigo3.Sensor` (check for throwable exceptions) and :py:class:`~easygopigo3.DigitalSensor` classes, so all attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
 
     .. code-block:: python
