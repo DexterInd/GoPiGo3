@@ -2035,7 +2035,7 @@ class ButtonSensor(DigitalSensor):
              else:
                  print("button released")
 
-         # take a look at DigitalSensor class for more methods and attributes
+         # take a look at DigitalSensor & Sensor class for more methods and attributes
 
     | If we need to specify the port we want to use, we might do it like in the following example.
 
