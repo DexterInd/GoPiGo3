@@ -45,7 +45,7 @@ The geographical location of the North pole is never static and it constantly ch
 This means the North pole doesn't have to be exactly at the North pole of Earth - that's just a general convention. Right now, the North pole is situated somewhere near Canada, so that's pretty far away from what we consider the North pole.
 
 In order to determine where that should be, engineers use the actual geographical location of the North pole along with a GPS. With these 2, the so-called [*magnetic declination*](https://en.wikipedia.org/wiki/Magnetic_declination) is calculated and then added to the determined heading.
-In this project, we haven't used a `GPS` and so, we don't know what's the *magnetic declination*. Therefore, the heading we are getting actually represents the direction of the [Earth's magnetic field lines](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field).
+In this project, we haven't used a `GPS` and so, we don't know what's the *magnetic declination*. Therefore, the heading we are getting actually represents the direction of the [Earth's magnetic field lines](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field) in that geographical location.
 
 Here's a visual representation of the Earth's magnetic field. The direction of these lines determine the robot's heading.
 
