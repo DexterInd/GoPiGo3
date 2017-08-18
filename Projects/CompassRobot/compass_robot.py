@@ -28,6 +28,7 @@ from easygopigo3 import *
 
 MINIMUM_VOLTAGE = 7.0
 DEBUG = False
+MOTORS_SPEED = 250 # see documentation
 
 
 def getNorthPoint(imu):
@@ -201,7 +202,6 @@ def robotControl(trigger, simultaneous_launcher, motor_command_queue, sensor_que
     """
 
     time_to_wait_in_queue = 0.1 # measured in
-    default_motors_speed = 100 # see documentation
 
     # try to connect to the GoPiGo3
     try:
@@ -227,7 +227,7 @@ def robotControl(trigger, simultaneous_launcher, motor_command_queue, sensor_que
     # then set the GoPiGo3 appropriately
     if not simultaneous_launcher.broken:
         gopigo3_robot.stop()
-        gopigo3_robot.set_speed(default_motors_speed)
+        gopigo3_robot.set_speed(MOTORS_SPEED)
 
     direction_degrees = None
     move = False
