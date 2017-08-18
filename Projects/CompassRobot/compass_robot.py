@@ -29,6 +29,7 @@ from easygopigo3 import *
 MINIMUM_VOLTAGE = 7.0
 DEBUG = False
 MOTORS_SPEED = 250 # see documentation
+MAGNETIC_DECLINATION = 0
 
 
 def getNorthPoint(imu):
@@ -57,6 +58,8 @@ def getNorthPoint(imu):
     # when the heading is towards the east the heading is positive
     if 180 < heading <= 360:
         heading -= 360
+
+    heading += MAGNETIC_DECLINATION
 
     return heading
 

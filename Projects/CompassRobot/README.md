@@ -39,6 +39,8 @@ After the calibration is done, your terminal should look like this.
 
 Now, play with it!
 
+#### Warning: the compass (DI IMU) is very sensitive to any electronic/electric devices (laptops, PCs, smartphones, LCDs, etc). This devices will affect the determined heading of the robot.
+
 ## Compass considerations
 
 The geographical location of the North pole is never static and it constantly changes as times passes.
@@ -47,8 +49,18 @@ This means the North pole doesn't have to be exactly at the North pole of Earth 
 In order to determine where that should be, engineers use the actual geographical location of the North pole along with a GPS. With these 2, the so-called [*magnetic declination*](https://en.wikipedia.org/wiki/Magnetic_declination) is calculated and then added to the determined heading.
 In this project, we haven't used a `GPS` and so, we don't know what's the *magnetic declination*. Therefore, the heading we are getting actually represents the direction of the [Earth's magnetic field lines](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field) in that geographical location.
 
-Here's a visual representation of the Earth's magnetic field. The direction of these lines determine the robot's heading.
+For setting up the magnetic declination, do the following 2 steps:
 
-![Imgur](http://i.imgur.com/PM8fJyN.png)
+1. Go to [magnetic-declination](http://www.magnetic-declination.com/) website and find out the declination in your geographical region.
+
+1. Assign your location's magnetic declination to `MAGNETIC_DECLINATION` constant. The constant is found in the `compass_robot.py` script. By default, `MAGNETIC_DECLINATION` is set to `0`.
+
+Here's a visual representation of the Earth's variation of the magnetic field (as of 2015).
+
+* The **red** lines indicate a **negative** variation between the real North pole's location and the compass' heading.
+* The **blue** lines indicate a **positive** variation between the real North pole's location and the compass' heading.
+* The **green** lines indicate **0** variation between real North pole's location and the compass' heading.
+
+![Imgur](http://i.imgur.com/cLaPxFV.png)
 
 For more information, please checkout the [NOAA(National Centers For Environmental Information)](https://maps.ngdc.noaa.gov/viewers/historical_declination/).
