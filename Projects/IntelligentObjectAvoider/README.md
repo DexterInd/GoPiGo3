@@ -16,4 +16,4 @@ Don't try to run it with `Python 2` or otherwise, it will fail. Run it with the 
 
 In order to stop, you need to press the `CTRL-C` combination of keyboard keys. Wait a couple of seconds until it finishes exiting.
 
-## INSERT GIF HERE. I NEED TO BUY SOME BATTERIES.
+![Imgur](http://i.imgur.com/LbuFTMd.jpg)
