@@ -114,7 +114,7 @@ def orientate(trigger, simultaneous_launcher, sensor_queue):
     try:
         compass = imu.BNO055.get_calibration_status()[3]
     except Exception as msg:
-        pass
+        compass = 0
     values_already_printed = []
     max_conseq_errors = 3
 
@@ -285,6 +285,8 @@ def robotControl(trigger, simultaneous_launcher, motor_command_queue, sensor_que
             gopigo3_robot.stop()
         else:
             gopigo3_robot.forward()
+
+        sleep(0.001)
 
     # if the synchronization wasn't broken
     # then stop the motors in case they were running
