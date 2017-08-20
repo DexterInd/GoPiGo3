@@ -6,17 +6,6 @@
 // For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 //
 
-//
-// UNSTABLE CLASS
-//
-
-/*
-// NOTE: Before to use this class be sure to create the
-// DistanceSensor node modules
-
-TODO: require distance_Sensor
-*/
-
 const _ = require('lodash');
 const sleep = require('sleep');
 const utils = require('../utils/misc');

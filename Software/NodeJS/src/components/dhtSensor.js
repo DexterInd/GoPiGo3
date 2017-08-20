@@ -6,11 +6,6 @@
 // For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 //
 
-//
-// UNSTABLE CLASS
-// NOTE: Before using this class please implement the DHT Class
-//
-
 const ValueError = require('../errors/valueError');
 const utils = require('../utils/misc');
 const DHT = require('di-sensors').sensors.DHT;
