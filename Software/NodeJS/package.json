@@ -10,7 +10,8 @@
     "cover": "cross-env BABEL_ENV=commonjs istanbul cover _mocha -- --compilers js:babel-register --recursive",
     "lint": "eslint src test",
     "build": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
-    "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
+    "prepublish": "npm run clean && npm run lint && npm run test && npm run build",
+    "postinstall": "mkdir DI_Sensors; cd DI_Sensors; git init; git remote add -f origin git@github.com:marcellobarile/DI_Sensors.git; git config core.sparseCheckout true; echo \"NodeJS/*\" >> .git/info/sparse-checkout; git checkout develop; cd ..; npm i ./DI_Sensors/NodeJS/"
   },
   "files": [
     "lib",
@@ -63,12 +64,13 @@
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "spi-device": "^0.2.6",
+    "di-sensors": "file:DI_Sensors/NodeJS",
     "i2c-bus": "^1.2.2",
-    "sleep": "^5.1.1",
-    "mathjs": "^3.14.2",
-    "lodash": "^4.17.4",
     "lock-me": "^1.0.2",
-    "readline-sync": "^1.4.7"
+    "lodash": "^4.17.4",
+    "mathjs": "^3.14.2",
+    "readline-sync": "^1.4.7",
+    "sleep": "^5.1.1",
+    "spi-device": "^0.2.6"
   }
 }
