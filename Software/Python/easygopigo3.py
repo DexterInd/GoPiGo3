@@ -179,7 +179,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return int(self.speed)
-        
+
     def reset_speed(self):
         """
         | This method resets the speed to its original value.
@@ -475,6 +475,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
         self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
+
+    def read_encoders(self):
+        """
+        | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+
+        :returns: A tuple containing the position in degrees of each encoder. The 1st element is for the left motor and the 2nd is for the right motor.
+        :rtype: tuple(int,int)
+
+        """
+
+        left_encoder = self.get_motor_encoder(self.MOTOR_LEFT)
+        right_encoder = self.get_motor_encoder(self.MOTOR_RIGHT)
+        encoders = (left_encoder, right_encoder)
+
+        return encoders
 
     def turn_degrees(self, degrees, blocking=False):
         """
