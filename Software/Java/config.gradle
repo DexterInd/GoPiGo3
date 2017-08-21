@@ -1,0 +1,8 @@
+
+remotes {
+    gopigo3 {
+        host = '192.168.1.190'
+        user = 'pi'
+        password = 'robots1234'
+    }
+}

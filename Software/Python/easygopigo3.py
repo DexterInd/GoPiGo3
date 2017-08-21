@@ -834,6 +834,18 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Remote(port,self)
 
+    def init_motion_sensor(self, port="AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.MotionSensor` object and then returns it
+        
+        :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.MotionSensor` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
+        """
+                
+        return MotionSensor(port,self)
+        
 # the following functions may be redundant
 
 
@@ -1925,10 +1937,80 @@ class Led(AnalogSensor):
 ##########################
 
 
-# class MotionSensor(DigitalSensor):
-#     def __init__(self, port="D11", gpg=None):
-#         DigitalSensor.__init__(self, port, "INPUT", gpg)
-#         self.set_descriptor("Motion Sensor")
+class MotionSensor(DigitalSensor):
+    """
+    | Class for the `Grove Motion Sensor`_.
+
+    | This class derives from :py:class:`~easygopigo3.Sensor` (check for throwable exceptions) and :py:class:`~easygopigo3.DigitalSensor` classes, so all attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a Motion Sensor object through the gpg3_obj object on default port AD1
+         motion_sensor = gpg3_obj.init_motion_sensor()
+
+         while True:
+             if motion_sensor.motion_detected():
+                 print("motion detected")
+             else:
+                 print("no motion")
+
+         # take a look at DigitalSensor & Sensor class for more methods and attributes
+
+    | If we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the motion sensor connected to
+         port = "AD2"
+
+         motion_sensor = gpg3_obj.init_motion_sensor(port)
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+
+    """
+   
+    def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.MotionSensor` object for the `Grove Motion Sensor`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Motion Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.MotionSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+
+        """
+        try:
+            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+            self.set_pin(1)
+            self.set_descriptor("Motion Sensor")
+        except:
+            raise
+
+    def motion_detected(self,port="AD1"):
+        """
+        Checks if the `Grove Motion Sensor`_ detects a motion.
+
+        :returns: ``True`` or ``False``, if the `Grove Motion Sensor`_ detects a motion or not.
+        :rtype: boolean
+
+        """
+        return self.read() == 1
 ##########################
 
 
@@ -1936,7 +2018,7 @@ class ButtonSensor(DigitalSensor):
     """
     | Class for the `Grove Button`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | This class derives from :py:class:`~easygopigo3.Sensor` (check for throwable exceptions) and :py:class:`~easygopigo3.DigitalSensor` classes, so all attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
 
     .. code-block:: python
@@ -1953,7 +2035,7 @@ class ButtonSensor(DigitalSensor):
              else:
                  print("button released")
 
-         # take a look at AnalogSensor class for more methods and attributes
+         # take a look at DigitalSensor & Sensor class for more methods and attributes
 
     | If we need to specify the port we want to use, we might do it like in the following example.
 
@@ -2223,11 +2305,11 @@ class LineFollower(Sensor):
 
         The strings this method can return are the following:
 
-            * ``"Center"`` - when the line is found in the middle.
-            * ``"Black"`` - when the line follower sensor only detects black surfaces.
-            * ``"White"`` - when the line follower sensor only detects white surfaces.
-            * ``"Left"`` - when the black line is located on the left of the sensor.
-            * ``"Right"`` - when the black line is located on the right of the sensor.
+            * ``"center"`` - when the line is found in the middle.
+            * ``"black"`` - when the line follower sensor only detects black surfaces.
+            * ``"white"`` - when the line follower sensor only detects white surfaces.
+            * ``"left"`` - when the black line is located on the left of the sensor.
+            * ``"right"`` - when the black line is located on the right of the sensor.
 
         .. note::
 
@@ -2240,26 +2322,26 @@ class LineFollower(Sensor):
         five_vals = self.read()
 
         if five_vals == [0, 0, 1, 0, 0] or five_vals == [0, 1, 1, 1, 0]:
-            return "Center"
+            return "center"
         if five_vals == [1, 1, 1, 1, 1]:
-            return "Black"
+            return "black"
         if five_vals == [0, 0, 0, 0, 0]:
-            return "White"
+            return "white"
         if five_vals == [0, 1, 1, 0, 0] or \
            five_vals == [0, 1, 0, 0, 0] or \
            five_vals == [1, 0, 0, 0, 0] or \
            five_vals == [1, 1, 0, 0, 0] or \
            five_vals == [1, 1, 1, 0, 0] or \
            five_vals == [1, 1, 1, 1, 0]:
-            return "Left"
+            return "left"
         if five_vals == [0, 0, 0, 1, 0] or \
            five_vals == [0, 0, 1, 1, 0] or \
            five_vals == [0, 0, 0, 0, 1] or \
            five_vals == [0, 0, 0, 1, 1] or \
            five_vals == [0, 0, 1, 1, 1] or \
            five_vals == [0, 1, 1, 1, 1]:
-            return "Right"
-        return "Unknown"
+            return "right"
+        return "unknown"
 ##########################
 
 
