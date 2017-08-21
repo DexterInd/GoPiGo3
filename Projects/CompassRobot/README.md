@@ -7,6 +7,8 @@ a set of keyboard combinations will be displayed in the terminal. The 6 availabl
 * `<DOWN>` key - to move the robot towards *South*.
 * `<LEFT>` key - to move the robot towards *West*.
 * `<RIGHT>` key - to move the robot towards *East*.
+* `w` key - make the robot move towards a given direction (select one of the above cardinal points).
+* `<SPACE>` key - stops the robot (still allows you to use the `<LEFT>`, `<RIGHT>`, etc commands).
 
 ## Required components
 
