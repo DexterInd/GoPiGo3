@@ -1434,6 +1434,72 @@ class SoundSensor(AnalogSensor):
 
 ##########################
 
+class LoudnessSensor(AnalogSensor):
+    """
+    | Class for the `Grove Loudness Sensor`_.
+
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a LoudnessSensor object through the gpg3_obj object
+         loudness_sensor = gpg3_obj.init_loudness_sensor()
+
+         # do the usual stuff, like read the data of the sensor
+         value = loudness_sensor.read()
+         value_percentage = loudness_sensor.percent_read()
+
+         # take a look at AnalogSensor class for more methods and attributes
+
+    | Or if we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the sound sensor connected to
+         port = "AD1"
+
+         loudness_sensor = gpg3_obj.init_loudness_sensor(port)
+
+         # read the sensor the same way as in the previous example
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+    """
+    def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.LoudnessSensor` object for the `Grove Loudness Sensor`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Loudness Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LoudnessSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+
+        """
+        debug("Loudness Sensor on port " + port)
+        try:
+            AnalogSensor.__init__(self, port, "INPUT", gpg)
+        except:
+            raise
+        self.set_pin(1)
+        self.set_descriptor("Loudness sensor")
+
+##########################        
+
 
 class UltraSonicSensor(AnalogSensor):
     """
