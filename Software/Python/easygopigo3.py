@@ -2408,7 +2408,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         self.set_descriptor("Distance Sensor")
 
-    def __ifMutexAcquire():
+    def __ifMutexAcquire(self):
         """
         Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
 
@@ -2416,7 +2416,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         if self.mutex:
             self.mutex.acquire()
 
-    def __ifMutexRelease():
+    def __ifMutexRelease(self):
         """
         Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
 
@@ -2576,7 +2576,7 @@ class DHTSensor(Sensor):
         if use_mutex is True:
             self.mutex = Mutex()
 
-    def __ifMutexAcquire():
+    def __ifMutexAcquire(self):
         """
         Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
 
@@ -2584,7 +2584,7 @@ class DHTSensor(Sensor):
         if self.mutex:
             self.mutex.acquire()
 
-    def __ifMutexRelease():
+    def __ifMutexRelease(self):
         """
         Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
 
