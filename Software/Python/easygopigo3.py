@@ -2408,6 +2408,22 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         self.set_descriptor("Distance Sensor")
 
+    def __ifMutexAcquire():
+        """
+        Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.acquire()
+
+    def __ifMutexRelease():
+        """
+        Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.release()
+
     # Returns the values in cms
     def read_mm(self):
         """
@@ -2442,14 +2458,12 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # if sensor insists on that value, then pass it on
 
         while (mm > 8000 or mm < 5) and attempt < 3:
-            if self.mutex:
-                self.mutex.acquire()
+            self.__ifMutexAcquire()
             try:
                 mm = self.read_range_single()
             except:
                 mm = 0
-            if self.mutex:
-                self.mutex.release()
+            self.__ifMutexRelease()
             attempt = attempt + 1
             time.sleep(0.001)
 
@@ -2562,6 +2576,22 @@ class DHTSensor(Sensor):
         if use_mutex is True:
             self.mutex = Mutex()
 
+    def __ifMutexAcquire():
+        """
+        Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.acquire()
+
+    def __ifMutexRelease():
+        """
+        Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.release()
+
     def read_temperature(self):
         '''
         Return values may be a float, or error strings
@@ -2571,11 +2601,9 @@ class DHTSensor(Sensor):
 
         from di_sensors import DHT
 
-        if self.mutex:
-            self.mutex.acquire()
+        self.__ifMutexAcquire()
         temp = DHT.dht(self.sensor_type)[0]
-        if self.mutex:
-            self.mutex.release()
+        self.__ifMutexRelease()
 
         if temp == -2:
             return "Bad reading, trying again"
@@ -2593,11 +2621,9 @@ class DHTSensor(Sensor):
         import threading
         from di_sensors import DHT
 
-        if self.mutex:
-            self.mutex.acquire()
+        self.__ifMutexAcquire()
         humidity = DHT.dht(self.sensor_type)[1]
-        if self.mutex:
-            self.mutex.release()
+        self.__ifMutexRelease()
 
         if humidity == -2:
             return "Bad reading, trying again"
@@ -2610,11 +2636,9 @@ class DHTSensor(Sensor):
     def read_dht(self):
         from di_sensors import DHT
 
-        if self.mutex:
-            self.mutex.acquire()
+        self.__ifMutexAcquire()
         [temp , humidity]=DHT.dht(self.sensor_type)
-        if self.mutex:
-            self.mutex.release()
+        self.__ifMutexRelease()
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
@@ -2659,14 +2683,12 @@ class DHTSensor(Sensor):
             while counter < seconds_window and not self.event.is_set():
                 temp = None
                 humidity = None
-                if self.mutex:
-                    self.mutex.acquire()
+                self.__ifMutexAcquire()
                 try:
                     [temp, humidity] = DHT.dht(sensor_type)
                 except IOError:
                     print("we've got IO error")
-                if self.mutex:
-                    self.mutex.release()
+                self.__ifMutexRelease()
 
                 if math.isnan(temp) == False and math.isnan(humidity) == False:
                     values.append({"temp" : temp, "hum" : humidity})
