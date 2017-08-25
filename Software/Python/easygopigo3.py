@@ -1659,7 +1659,7 @@ class UltraSonicSensor(AnalogSensor):
         Measures the distance from a target in inches.
 
         :returns: The distance from a target in inches.
-        :rtype: int
+        :rtype: float (one decimal)
 
         .. important::
 
@@ -2599,7 +2599,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         Reads the distance in inches.
 
         :returns: Distance from target in inches.
-        :rtype: int
+        :rtype: float  (one decimal)
 
         .. note::
 
