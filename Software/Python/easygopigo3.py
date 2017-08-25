@@ -136,6 +136,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
+        self.sensors = {}
 
     def volt(self):
         """
@@ -967,6 +968,7 @@ class Sensor(object):
         debug(pinmode)
         self.set_port(port)
         self.set_pin_mode(pinmode)
+        self.gpg.sensors[self.descriptor] = self
 
         try:
             # I2C sensors don't need a valid gpg
@@ -1389,12 +1391,12 @@ class LightSensor(AnalogSensor):
 
         """
         debug("LightSensor init")
+        self.set_descriptor("Light sensor")
         try:
             AnalogSensor.__init__(self, port, "INPUT", gpg)
         except:
             raise
         self.set_pin(1)
-        self.set_descriptor("Light sensor")
 ##########################
 
 
@@ -1455,12 +1457,13 @@ class SoundSensor(AnalogSensor):
 
         """
         debug("Sound Sensor on port " + port)
+        self.set_descriptor("Sound sensor")
         try:
             AnalogSensor.__init__(self, port, "INPUT", gpg)
         except:
             raise
         self.set_pin(1)
-        self.set_descriptor("Sound sensor")
+
 
 ##########################
 
@@ -1521,13 +1524,14 @@ class LoudnessSensor(AnalogSensor):
 
         """
         debug("Loudness Sensor on port " + port)
+        self.set_descriptor("Loudness sensor")
         try:
             AnalogSensor.__init__(self, port, "INPUT", gpg)
         except:
             raise
         self.set_pin(1)
         self._max_value = 1024  # based on empirical tests
-        self.set_descriptor("Loudness sensor")
+
 
 ##########################        
 
@@ -1590,13 +1594,13 @@ class UltraSonicSensor(AnalogSensor):
         The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
-        try:
-            debug("Ultrasonic Sensor on port " + port)
-            AnalogSensor.__init__(self, port, "US", gpg)
-            self.safe_distance = 500
-            self.set_pin(1)
-            self.set_descriptor("Ultrasonic sensor")
 
+        debug("Ultrasonic Sensor on port " + port)
+        self.set_descriptor("Ultrasonic sensor")
+        self.safe_distance = 500
+        self.set_pin(1)
+        try:
+            AnalogSensor.__init__(self, port, "US", gpg)
         except:
             raise
 
@@ -1843,13 +1847,13 @@ class Buzzer(AnalogSensor):
         The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
+        self.set_descriptor("Buzzer")
+        self.set_pin(1)
+        self.power = 50
+        self.freq = 329
+        self.sound_off()
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
-            self.set_pin(1)
-            self.set_descriptor("Buzzer")
-            self.power = 50
-            self.freq = 329
-            self.sound_off()
         except:
             raise
 
@@ -1982,9 +1986,9 @@ class Led(AnalogSensor):
 
         """
         try:
+            self.set_descriptor("LED")
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
             self.set_pin(1)
-            self.set_descriptor("LED")
         except:
             raise
 
@@ -2093,9 +2097,9 @@ class MotionSensor(DigitalSensor):
 
         """
         try:
+            self.set_descriptor("Motion Sensor")
             DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
             self.set_pin(1)
-            self.set_descriptor("Motion Sensor")
         except:
             raise
 
@@ -2172,9 +2176,9 @@ class ButtonSensor(DigitalSensor):
 
         """
         try:
+            self.set_descriptor("Button sensor")
             DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
             self.set_pin(1)
-            self.set_descriptor("Button sensor")
         except:
             raise
 
@@ -2227,8 +2231,8 @@ class Remote(Sensor):
 
         """
         try:
-            Sensor.__init__(self, port, "IR", gpg)
             self.set_descriptor("Remote Control")
+            Sensor.__init__(self, port, "IR", gpg)
         except:
             raise
 
@@ -2328,8 +2332,8 @@ class LineFollower(Sensor):
             raise ImportError("Line Follower library not found")
 
         try:
-            Sensor.__init__(self, port, "INPUT", gpg)
             self.set_descriptor("Line Follower")
+            Sensor.__init__(self, port, "INPUT", gpg)
         except:
             raise
 
@@ -2493,8 +2497,8 @@ class Servo(Sensor):
 
         """
         try:
-            Sensor.__init__(self, port, "OUTPUT", gpg)
             self.set_descriptor("GoPiGo3 Servo")
+            Sensor.__init__(self, port, "OUTPUT", gpg)
         except:
             raise
 
@@ -2595,6 +2599,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         To see where the ports are located on the `GoPiGo3`_ robot, please take a look at the following diagram: :ref:`hardware-ports-section`.
 
         """
+        self.set_descriptor("Distance Sensor")
         try:
             Sensor.__init__(self, port, "OUTPUT", gpg)
         except:
@@ -2604,9 +2609,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
             print(e)
-            raise IOError("Distance Sensor not found")
-
-        self.set_descriptor("Distance Sensor")
+            raise
 
     # Returns the values in cms
     def read_mm(self):
@@ -2688,7 +2691,8 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         """
         cm = self.read()
-        return cm / 2.54
+        inches = round(cm / 2.54, 1)
+        return inches
 
 
 class DHTSensor(Sensor):
@@ -2698,22 +2702,18 @@ class DHTSensor(Sensor):
         as in many cases the DHT sensor is not connected.
     '''
     def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
+
+        self.sensor_type = sensor_type
+
+        if self.sensor_type == 0:
+            self.set_descriptor("Blue DHT Sensor")
+        else:
+            self.set_descriptor("White DHT Sensor")
+
         try:
             Sensor.__init__(self,port,"INPUT",gpg)
         except:
             raise
-
-        try:
-            self.sensor_type = sensor_type
-
-            if self.sensor_type == 0:
-                self.set_descriptor("Blue DHT Sensor")
-            else:
-                self.set_descriptor("White DHT Sensor")
-
-        except Exception as e:
-            print("DHTSensor: {}".format(e))
-            raise ValueError("DHT Sensor not found")
 
     def read_temperature(self):
         '''
