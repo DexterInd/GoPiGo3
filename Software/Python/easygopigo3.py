@@ -1659,7 +1659,7 @@ class UltraSonicSensor(AnalogSensor):
         Measures the distance from a target in inches.
 
         :returns: The distance from a target in inches.
-        :rtype: int
+        :rtype: float with one decimal
 
         .. important::
 
@@ -1670,7 +1670,7 @@ class UltraSonicSensor(AnalogSensor):
         value = self.read()   # cm reading
         if value == 501:
             return 501
-        return (int(value / 2.54))
+        return (round(value / 2.54, 1))
 ##########################
 
 
@@ -2599,7 +2599,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         Reads the distance in inches.
 
         :returns: Distance from target in inches.
-        :rtype: int
+        :rtype: float with one decimal
 
         .. note::
 
@@ -2608,7 +2608,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         """
         cm = self.read()
-        return int(cm / 2.54)
+        return round(cm / 2.54, 1)
 
 
 class DHTSensor(Sensor):
