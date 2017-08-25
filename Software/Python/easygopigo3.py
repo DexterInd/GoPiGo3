@@ -2519,7 +2519,9 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             raise
 
         try:
+            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
+            _release_read()
         except Exception as e:
             print(e)
             raise IOError("Distance Sensor not found")
