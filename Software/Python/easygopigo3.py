@@ -2606,7 +2606,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         """
         cm = self.read()
-        return cm / 2.54
+        return int(cm / 2.54)
 
 
 class DHTSensor(Sensor):
