@@ -39,11 +39,11 @@ class AnalogSensor extends Sensor {
         try {
             this.value = getValue();
         } catch (err) {
-            console.log('Error', err);
+            console.log(err);
             try {
                 this.value = getValue();
             } catch (err2) {
-                console.log('Error', err2);
+                console.log(err2);
                 return 0;
             }
         }

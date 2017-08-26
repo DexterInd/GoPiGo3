@@ -6,51 +6,48 @@
 // For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 //
 
-const Lock = require('lock-me');
+const Lock = require('lockfile');
 const sleep = require('sleep');
 
 class I2cMutex {
-    DexterLockI2CHandle = false
+    isAcquired = false;
+    lockFile = '/run/lock/DexterLockI2C';
 
     I2CMutexAcquire() {
-        let acquired;
+        const _this = this;
 
-        while (this.DexterLockI2CHandle) {
+        while (this.isAcquired) {
             sleep(0.001);
         }
 
-        this.DexterLockI2CHandle = true;
-        acquired = false;
+        this.isAcquired = false;
 
-        const isAcquired = (err) => {
-            if (err) {
-                // already locked by a different process
-                sleep(0.001);
-            }
-            // lock
-            acquired = true;
-        };
-
-        while (!acquired) {
-            this.DexterLockI2CHandle = new Lock();
-            const lockfile = '/run/lock/DexterLockI2C';
-            this.DexterLockI2CHandle(lockfile, isAcquired);
+        while (!this.isAcquired) {
+            Lock.lock(this.lockFile, (err) => {
+                if (err) {
+                    // already locked by a different process
+                    sleep(0.001);
+                }
+                // lock
+                console.log('I2C Acquired');
+                _this.isAcquired = true;
+            });
         }
 
-        return acquired;
+        return this.isAcquired;
     }
 
     I2CMutexRelease() {
-        if (this.DexterLockI2CHandle) {
-            this.DexterLockI2CHandle.close((err) => {
-                if (err) {
-                    throw err;
-                }
-                // unlocked
-                this.DexterLockI2C_handle = false;
-                sleep(0.001);
-            });
-        }
+        const _this = this;
+
+        Lock.unlock(this.lockFile, (err) => {
+            if (err) {
+                throw err;
+            }
+            // unlocked
+            _this.isAcquired = false;
+            sleep(0.001);
+        });
     }
 }
 

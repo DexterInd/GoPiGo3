@@ -25,6 +25,7 @@ class UltraSonicSensor extends AnalogSensor {
             this.setPin(1);
             this.setDescriptor('Ultrasonic sensor');
         } catch (err) {
+            console.log(err);
             throw new Error(err);
         }
     }
@@ -38,7 +39,7 @@ class UltraSonicSensor extends AnalogSensor {
         try {
             value = this.gpg.getGroveValue(this.getPortId());
         } catch (err) {
-            console.log('Error', err);
+            console.log(err);
             value = 0;
         }
 
@@ -100,7 +101,7 @@ class UltraSonicSensor extends AnalogSensor {
                     value = 5010; // assume open road ahead
                     sleep.msleep(50);
                 } else {
-                    console.log('Error', err);
+                    console.log(err);
 
                     skip++;
                     sleep.msleep(50);

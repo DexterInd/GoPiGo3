@@ -58,6 +58,7 @@ class Buzzer extends AnalogSensor {
             this.freq = 329;
             this.soundOff();
         } catch (err) {
+            console.log(err);
             throw new Error(err);
         }
     }

@@ -1,6 +1,6 @@
 {
   "name": "node-gopigo3",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "GoPiGo3 library for Node.js",
   "scripts": {
     "clean": "rimraf lib",
@@ -10,9 +10,9 @@
     "cover": "cross-env BABEL_ENV=commonjs istanbul cover _mocha -- --compilers js:babel-register --recursive",
     "lint": "eslint src test",
     "build": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
-    "prepublish": "npm run clean && npm run lint && npm run test && npm run build",
-    "postinstall": "mkdir DI_Sensors; cd DI_Sensors; git init; git remote add -f origin git@github.com:marcellobarile/DI_Sensors.git; git config core.sparseCheckout true; echo \"NodeJS/*\" >> .git/info/sparse-checkout; git checkout develop; cd ..; npm i ./DI_Sensors/NodeJS/"
+    "prepublish": "npm run-script clean && npm run-script lint && npm run-script build && npm run-script test"
   },
+  "main": "lib/index.js",
   "files": [
     "lib",
     "src"
@@ -64,13 +64,13 @@
     "rimraf": "^2.5.4"
   },
   "dependencies": {
-    "di-sensors": "file:DI_Sensors/NodeJS",
     "i2c-bus": "^1.2.2",
-    "lock-me": "^1.0.2",
+    "lockfile": "^1.0.3",
     "lodash": "^4.17.4",
     "mathjs": "^3.14.2",
     "readline-sync": "^1.4.7",
     "sleep": "^5.1.1",
-    "spi-device": "^0.2.6"
+    "spi-device": "^0.2.6",
+    "di-sensors": "../../DI_Sensors/NodeJS/"
   }
 }

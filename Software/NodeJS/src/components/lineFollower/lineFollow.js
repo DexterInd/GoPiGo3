@@ -70,6 +70,7 @@ class LineFollow {
             const val = this.bus.i2cWriteSync(addr, buffer.length, buffer);
             ret = val > 0;
         } catch (err) {
+            console.log(err);
             ret = false;
         }
         return ret;

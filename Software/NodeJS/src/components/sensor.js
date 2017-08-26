@@ -69,7 +69,7 @@ class Sensor {
                 break;
             }
         } catch (err) {
-            console.log('Error', err);
+            console.log(err);
         }
     }
 
@@ -105,11 +105,11 @@ class Sensor {
             break;
 
         case 'SERIAL':
-            this.portId = 1;
+            this.portId = -1;
             break;
 
         case 'I2C':
-            this.portId = 2;
+            this.portId = -2;
             break;
 
         case 'SERVO1':

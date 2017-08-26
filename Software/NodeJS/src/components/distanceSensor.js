@@ -11,7 +11,7 @@ const sleep = require('sleep');
 const utils = require('../utils/misc');
 
 const Sensor = require('./sensor');
-const DistanceSensorLib = require('di-sensors').sensors.DistanceSensor; 
+const DistanceSensorLib = require('di-sensors').DistanceSensor;
 
 /**
  * Wrapper to measure the distance in cms from the DI distance sensor.
@@ -22,11 +22,14 @@ class DistanceSensor extends Sensor {
     constructor(port = 'I2C', bus = 'GPG3_AD1', gpg) {
         super(port, 'OUTPUT', gpg);
 
+        this.gpg = gpg;
+
         try {
             this.distanceSensor = new DistanceSensorLib(bus, null, {
                 device: gpg
             });
         } catch (err) {
+            console.log(err);
             throw new Error('Distance Sensor not found');
         }
 
@@ -53,6 +56,7 @@ class DistanceSensor extends Sensor {
                 mm = this.distanceSensor.readRangeSingleMillimeters();
                 utils.releaseI2CRead();
             } catch (err) {
+                console.log(err);
                 mm = 0;
             }
             attempt++;

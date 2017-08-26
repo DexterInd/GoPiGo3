@@ -29,9 +29,11 @@ class DigitalSensor extends Sensor {
         try {
             this.value = getValue();
         } catch (err) {
+            console.log(err);
             try {
                 this.value = getValue();
             } catch (err2) {
+                console.log(err2);
                 throw new Error(err2);
             }
         }

@@ -6,21 +6,32 @@
 // For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 //
 
-const ValueError = require('../errors/valueError');
-const utils = require('../utils/misc');
-const DHT = require('di-sensors').sensors.DHT;
+const DHT = require('di-sensors').DHT;
 
 class DHTSensor {
-    constructor(gpg = null, sensorType = DHT.DHT11) {
-        try {
-            const pin = 0;
-            const address = null;
-            this.dhtSensor = new DHT(pin, address, 'GPG3_AD1', sensorType, DHT.SCALE_C, {
-                device: gpg
-            });
-        } catch (err) {
-            throw new ValueError('DHT Sensor not found');
+    constructor(port, sensorType = 0, gpg) {
+        this.gpg = gpg;
+        const pin = this.getPinByPort(port, 1);
+        const scale = 'c';
+        this.dhtSensor = new DHT(pin, sensorType, scale);
+    }
+
+    getPinByPort(port, pin) {
+        let output = 0;
+        if (port === 'AD1') {
+            if (pin === 1) {
+                output = this.gpg.GROVE_1_1;
+            } else {
+                output = this.gpg.GROVE_1_2;
+            }
+        } else if (port === 'AD2') {
+            if (pin === 1) {
+                output = this.gpg.GROVE_2_1;
+            } else {
+                output = this.gpg.GROVE_2_2;
+            }
         }
+        return output;
     }
 
     /**
@@ -29,10 +40,7 @@ class DHTSensor {
         import done internally so it's done on a as needed basis only
      */
     readTemperature() {
-        utils.grabI2CRead();
         const temp = this.dhtSensor.read()[0];
-        utils.releaseI2CRead();
-
         return temp;
     }
 
@@ -41,10 +49,7 @@ class DHTSensor {
         TODO: raise errors instead of returning strings
      */
     readHumidity() {
-        utils.grabI2CRead();
         const humidity = this.dhtSensor.read()[1];
-        utils.releaseI2CRead();
-
         return humidity;
     }
 
@@ -52,10 +57,7 @@ class DHTSensor {
      *
      */
     readDht() {
-        utils.grabI2CRead();
         const data = this.dhtSensor.read();
-        utils.releaseI2CRead();
-
         return data;
     }
 }

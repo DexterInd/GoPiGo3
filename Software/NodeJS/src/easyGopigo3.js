@@ -7,6 +7,8 @@
 //
 // Node.js interface for the GoPiGo3
 
+const utils = require('./utils/misc');
+
 const sleep = require('sleep');
 
 const FirmwareVersionError = require('./errors/firmwareVersionError');
@@ -36,9 +38,13 @@ class EasyGoPiGo3 extends Gopigo {
         } catch (err) {
             if (err instanceof FirmwareVersionError) {
                 console.log('FATAL ERROR:\nTo update the firmware on Raspbian for Robots you need to run DI Software Update and choose Update Robot');
+            } else { 
+                console.log(err);
             }
             throw new Error(err);
         }
+
+        utils.releaseI2CRead();
 
         this.sensor1 = null;
         this.sensor2 = null;
@@ -326,8 +332,8 @@ class EasyGoPiGo3 extends Gopigo {
     initDistanceSensor() {
         return new DistanceSensor('I2C', this);
     }
-    initDhtSensor(sensorType = 0) {
-        return new DHTSensor(this, sensorType);
+    initDhtSensor(port = 'AD1', sensorType = 11) {
+        return new DHTSensor(port, sensorType, this);
     }
     initRemote(port = 'AD1') {
         return new Remote(port, this);

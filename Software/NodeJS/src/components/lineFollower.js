@@ -34,6 +34,7 @@ class LineFollower extends Sensor {
             super(port, 'INPUT', gpg);
             this.setDescriptor('Line Follower');
         } catch (err) {
+            console.log(err);
             throw new ValueError('Line Follower Library not found');
         }
     }

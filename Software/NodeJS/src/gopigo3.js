@@ -168,6 +168,7 @@ class Gopigo3 {
                 'bitsPerWord': this.SPI_BITS_PER_WORD
             });
         } catch (err) {
+            console.log(err);
             throw new Error(err);
         }
 
@@ -192,7 +193,7 @@ class Gopigo3 {
                 vfw = this.getVersionFirmware();
                 console.log(manufacturer, board, vfw);
             } catch (err) {
-                console.log('Initing error', err);
+                console.log(err);
                 throw new Error(`No SPI response. GoPiGo3 with address ${addr} not connected.`);
             }
 
@@ -227,6 +228,7 @@ class Gopigo3 {
         try {
             this.GPG_SPI.transferSync(message);
         } catch (err) {
+            console.log(err);
             throw new Error(err);
         }
         // console.log(message);
@@ -709,7 +711,7 @@ class Gopigo3 {
     groveI2cTransfer(port, addr, outArr, inBytes = 0) {
         // Start an I2C transaction as soon as the bus is available
 
-        let timeout = new Date().getSeconds() + 0.005;
+        let timeout = new Date().getTime() + 5; // + 0.005;
         // Timeout after 5ms of failed attempted starts
         let check = false;
         let delayTime = 0;
@@ -720,8 +722,9 @@ class Gopigo3 {
                 this.groveI2cStart(port, addr, outArr, inBytes);
                 check = true;
             } catch (err) {
-                const nowSeconds = new Date().getSeconds();
-                if (nowSeconds > timeout) {
+                console.log(err);
+                const now = new Date().getTime();
+                if (now > timeout) {
                     throw new I2CError('groveI2cTransfer error: Timeout trying to start transaction');
                 }
             }
@@ -733,13 +736,13 @@ class Gopigo3 {
         if (inBytes) {
             delayTime += 1 + inBytes;
         }
-        delayTime *= (0.000115);
+        delayTime *= 115; // (0.000115);
         // Each I2C byte takes about 115uS at full speed (about 100kbps)
         // No point trying to read the values before they are ready.
-        sleep.msleep(delayTime);
+        sleep.usleep(delayTime);
         // Delay for as long as it will take to do the I2C transaction.
 
-        timeout = new Date().getSeconds() + 0.005;
+        timeout = new Date().getTime() + 5; // 0.005;
         // Timeout after 5ms of failed attempted reads
 
         while (true) {
@@ -747,7 +750,8 @@ class Gopigo3 {
                 // Read the results as soon as they are available
                 values = this.getGroveValue(port);
             } catch (err) {
-                if (new Date().getSeconds() > timeout) {
+                console.log(err);
+                if (new Date().getTime() > timeout) {
                     throw new ValueError('groveI2cTransfer error: Timeout waiting for data');
                 }
             }
@@ -831,6 +835,7 @@ class Gopigo3 {
                 if (dataIn[4] === this.GroveType[portIndex] && dataIn[5] === 0) {
                     output = dataIn[6];
                 } else {
+                    console.log('IR DI REMOTE', dataIn);
                     throw new SensorError('getGroveValue error: Invalid value');
                 }
             } else {
@@ -847,6 +852,7 @@ class Gopigo3 {
                         dataIn[6], dataIn[7], dataIn[8], dataIn[9]
                     ];
                 } else {
+                    console.log('IR EV3 REMOTE', dataIn);
                     throw new SensorError('getGroveValue error: Invalid value');
                 }
             } else {
@@ -868,6 +874,7 @@ class Gopigo3 {
                         output = value;
                     }
                 } else {
+                    console.log('US', dataIn);
                     throw new SensorError('getGroveValue error: Invalid value');
                 }
             } else {
@@ -889,6 +896,10 @@ class Gopigo3 {
                     } else if (dataIn[5] === this.GROVE_STATE.I2C_ERROR) {
                         throw new I2CError('getGroveValue error: I2C bus error');
                     } else {
+                        console.log('I2C', dataIn);
+                        console.log('check type', dataIn[4], this.GroveType[portIndex]);
+                        console.log('valid data', dataIn[5], this.GROVE_STATE.VALID_DATA);
+                        console.log('I2C error', dataIn[5], this.GROVE_STATE.I2C_ERROR);
                         throw new ValueError('getGroveValue error: Invalid value');
                     }
                 } else {
@@ -930,6 +941,7 @@ class Gopigo3 {
             if (dataIn[4] === this.GROVE_STATE.VALID_DATA) {
                 output = dataIn[5];
             } else {
+                console.log('GROVE STATE', dataIn);
                 throw new ValueError('getGroveState error: Invalid value');
             }
         } else {
@@ -967,6 +979,7 @@ class Gopigo3 {
             if (dataIn[4] === this.GROVE_STATE.VALID_DATA) {
                 output = ((((dataIn[5] << 8) & 0xFF00) | (dataIn[6] & 0xFF)) / 1000.0);
             } else {
+                console.log('GROVE VOLTAGE', dataIn);
                 throw new ValueError('getGroveVoltage error: Invalid value');
             }
         } else {
@@ -1004,6 +1017,7 @@ class Gopigo3 {
             if (dataIn[4] === this.GROVE_STATE.VALID_DATA) {
                 output = (((dataIn[5] << 8) & 0xFF00) | (dataIn[6] & 0xFF));
             } else {
+                console.log('GROVE ANALOG', dataIn);
                 throw new ValueError('getGroveAnalog error: Invalid value');
             }
         } else {

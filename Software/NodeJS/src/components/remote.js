@@ -27,7 +27,7 @@ class Remote extends Sensor {
         try {
             value = this.gpg.getGroveValue(this.getPortId());
         } catch (err) {
-            console.log('Error', err);
+            console.log(err);
             value = -1;
         }
 
