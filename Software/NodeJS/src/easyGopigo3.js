@@ -29,8 +29,7 @@ const Remote = require('./components/remote');
 const Gopigo = require('./gopigo3');
 
 class EasyGoPiGo3 extends Gopigo {
-    gopigo;
-    DEFAULT_SPEED = 300;
+    static DEFAULT_SPEED = 300;
 
     constructor() {
         try {
@@ -38,7 +37,7 @@ class EasyGoPiGo3 extends Gopigo {
         } catch (err) {
             if (err instanceof FirmwareVersionError) {
                 console.log('FATAL ERROR:\nTo update the firmware on Raspbian for Robots you need to run DI Software Update and choose Update Robot');
-            } else { 
+            } else {
                 console.log(err);
             }
             throw new Error(err);
@@ -48,7 +47,7 @@ class EasyGoPiGo3 extends Gopigo {
 
         this.sensor1 = null;
         this.sensor2 = null;
-        this.setSpeed(this.DEFAULT_SPEED);
+        this.setSpeed(EasyGoPiGo3.DEFAULT_SPEED);
         this.leftEyeColor = [0, 255, 255];
         this.rightEyeColor = [0, 255, 255];
     }
@@ -57,9 +56,9 @@ class EasyGoPiGo3 extends Gopigo {
         return this.getVoltageBattery();
     }
     setSpeed(inSpeed) {
-        this.speed = !isNaN(inSpeed) ? parseInt(inSpeed, 0) : this.DEFAULT_SPEED;
+        this.speed = !isNaN(inSpeed) ? parseInt(inSpeed, 0) : EasyGoPiGo3.DEFAULT_SPEED;
         this.setMotorLimits(
-            this.MOTOR_LEFT + this.MOTOR_RIGHT,
+            EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT,
             0,
             this.speed
         );
@@ -68,28 +67,28 @@ class EasyGoPiGo3 extends Gopigo {
         return parseInt(this.speed, 0);
     }
     resetSpeed() {
-        this.setSpeed(this.DEFAULT_SPEED);
+        this.setSpeed(EasyGoPiGo3.DEFAULT_SPEED);
     }
     /**
      * Stop the GoPiGo3 by setting the degrees per second speed
         of each motor to 0
      */
     stop() {
-        this.setMotorDps(this.MOTOR_LEFT + this.MOTOR_RIGHT, 0);
+        this.setMotorDps(EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT, 0);
     }
     backward() {
-        this.setMotorDps(this.MOTOR_LEFT + this.MOTOR_RIGHT, this.getSpeed() * -1);
+        this.setMotorDps(EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT, this.getSpeed() * -1);
     }
     right() {
-        this.setMotorDps(this.MOTOR_LEFT, this.getSpeed());
-        this.setMotorDps(this.MOTOR_RIGHT, 0);
+        this.setMotorDps(EasyGoPiGo3.MOTOR_LEFT, this.getSpeed());
+        this.setMotorDps(EasyGoPiGo3.MOTOR_RIGHT, 0);
     }
     left() {
-        this.setMotorDps(this.MOTOR_LEFT, 0);
-        this.setMotorDps(this.MOTOR_RIGHT, this.getSpeed());
+        this.setMotorDps(EasyGoPiGo3.MOTOR_LEFT, 0);
+        this.setMotorDps(EasyGoPiGo3.MOTOR_RIGHT, this.getSpeed());
     }
     forward() {
-        this.setMotorDps(this.MOTOR_LEFT + this.MOTOR_RIGHT, this.getSpeed());
+        this.setMotorDps(EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT, this.getSpeed());
     }
     driveCm(dist, blocking = true) {
         // dist is in cm
@@ -97,21 +96,21 @@ class EasyGoPiGo3 extends Gopigo {
         const distMm = dist * 10;
 
         // the number of degrees each wheel needs to turn
-        const wheelTurnDegrees = ((distMm / this.WHEEL_CIRCUMFERENCE) * 360);
+        const wheelTurnDegrees = ((distMm / EasyGoPiGo3.WHEEL_CIRCUMFERENCE) * 360);
 
         // get the starting position of each motor
-        const startPositionLeft = this.getMotorEncoder(this.MOTOR_LEFT);
-        const startPositionRight = this.getMotorEncoder(this.MOTOR_RIGHT);
+        const startPositionLeft = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
+        const startPositionRight = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
 
         const destPositionLeft = startPositionLeft + wheelTurnDegrees;
         const destPositionRight = startPositionRight + wheelTurnDegrees;
 
         this.setMotorPosition(
-            this.MOTOR_LEFT,
+            EasyGoPiGo3.MOTOR_LEFT,
             destPositionLeft
         );
         this.setMotorPosition(
-            this.MOTOR_RIGHT,
+            EasyGoPiGo3.MOTOR_RIGHT,
             destPositionRight
         );
 
@@ -139,18 +138,18 @@ class EasyGoPiGo3 extends Gopigo {
      */
     driveDegrees(degrees, blocking = false) {
         // get the starting position of each motor
-        const startPositionLeft = this.getMotorEncoder(this.MOTOR_LEFT);
-        const startPositionRight = this.getMotorEncoder(this.MOTOR_RIGHT);
+        const startPositionLeft = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
+        const startPositionRight = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
 
         const destPositionLeft = startPositionLeft + degrees;
         const destPositionRight = startPositionRight + degrees;
 
         this.setMotorPosition(
-            this.MOTOR_LEFT,
+            EasyGoPiGo3.MOTOR_LEFT,
             destPositionLeft
         );
         this.setMotorPosition(
-            this.MOTOR_RIGHT,
+            EasyGoPiGo3.MOTOR_RIGHT,
             destPositionRight
         );
 
@@ -175,8 +174,8 @@ class EasyGoPiGo3 extends Gopigo {
         const minRightTarget = rightTargetDegrees - tolerance;
         const maxRighTarget = rightTargetDegrees + tolerance;
 
-        const currentLeftPosition = this.getMotorEncoder(this.MOTOR_LEFT);
-        const currentRightPosition = this.getMotorEncoder(this.MOTOR_RIGHT);
+        const currentLeftPosition = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
+        const currentRightPosition = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
 
         if (
             currentLeftPosition > minLefTarget
@@ -190,24 +189,24 @@ class EasyGoPiGo3 extends Gopigo {
         return false;
     }
     resetEncoders() {
-        this.setMotorPower(this.MOTOR_LEFT + this.MOTOR_RIGHT, 0);
-        this.offsetMotorEncoder(this.MOTOR_LEFT, this.getMotorEncoder(this.MOTOR_LEFT));
-        this.offsetMotorEncoder(this.MOTOR_RIGHT, this.getMotorEncoder(this.MOTOR_RIGHT));
+        this.setMotorPower(EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT, 0);
+        this.offsetMotorEncoder(EasyGoPiGo3.MOTOR_LEFT, this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT));
+        this.offsetMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT, this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT));
     }
     blinkerOn(id) {
         if (id === 1 || id === 'left') {
-            this.setLed(this.LED_LEFT_BLINKER, 255);
+            this.setLed(EasyGoPiGo3.LED_LEFT_BLINKER, 255);
         }
         if (id === 0 || id === 'right') {
-            this.setLed(this.LED_RIGHT_BLINKER, 255);
+            this.setLed(EasyGoPiGo3.LED_RIGHT_BLINKER, 255);
         }
     }
     blinkerOff(id) {
         if (id === 1 || id === 'left') {
-            this.setLed(this.LED_LEFT_BLINKER, 0);
+            this.setLed(EasyGoPiGo3.LED_LEFT_BLINKER, 0);
         }
         if (id === 0 || id === 'right') {
-            this.setLed(this.LED_RIGHT_BLINKER, 0);
+            this.setLed(EasyGoPiGo3.LED_RIGHT_BLINKER, 0);
         }
     }
     ledOn(id) {
@@ -236,7 +235,7 @@ class EasyGoPiGo3 extends Gopigo {
     }
     openLeftEye() {
         this.setLed(
-            this.LED_LEFT_EYE,
+            EasyGoPiGo3.LED_LEFT_EYE,
             this.leftEyeColor[0],
             this.leftEyeColor[1],
             this.leftEyeColor[2],
@@ -244,7 +243,7 @@ class EasyGoPiGo3 extends Gopigo {
     }
     openRightEye() {
         this.setLed(
-            this.LED_RIGHT_EYE,
+            EasyGoPiGo3.LED_RIGHT_EYE,
             this.rightEyeColor[0],
             this.rightEyeColor[1],
             this.rightEyeColor[2],
@@ -255,10 +254,10 @@ class EasyGoPiGo3 extends Gopigo {
         this.openRightEye();
     }
     closeLeftEye() {
-        this.setLed(this.LED_LEFT_EYE, 0, 0, 0);
+        this.setLed(EasyGoPiGo3.LED_LEFT_EYE, 0, 0, 0);
     }
     closeRightEye() {
-        this.setLed(this.LED_RIGHT_EYE, 0, 0, 0);
+        this.setLed(EasyGoPiGo3.LED_RIGHT_EYE, 0, 0, 0);
     }
     closeEyes() {
         this.closeLeftEye();
@@ -273,24 +272,24 @@ class EasyGoPiGo3 extends Gopigo {
      * @param {*} blocking
      */
     turnDegrees(degrees, blocking = false) {
-        const wheelTravelDistance = ((this.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360);
+        const wheelTravelDistance = ((EasyGoPiGo3.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360);
 
         // the number of degrees each wheel needs to turn
-        const wheelTurnDegrees = ((wheelTravelDistance / this.WHEEL_CIRCUMFERENCE) * 360);
+        const wheelTurnDegrees = ((wheelTravelDistance / EasyGoPiGo3.WHEEL_CIRCUMFERENCE) * 360);
 
         // get the starting position of each motor
-        const startPositionLeft = this.getMotorEncoder(this.MOTOR_LEFT);
-        const startPositionRight = this.getMotorEncoder(this.MOTOR_RIGHT);
+        const startPositionLeft = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
+        const startPositionRight = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
 
         const destPositionLeft = startPositionLeft + wheelTurnDegrees;
         const destPositionRight = startPositionRight - wheelTurnDegrees;
 
         this.setMotorPosition(
-            this.MOTOR_LEFT,
+            EasyGoPiGo3.MOTOR_LEFT,
             destPositionLeft
         );
         this.setMotorPosition(
-            this.MOTOR_RIGHT,
+            EasyGoPiGo3.MOTOR_RIGHT,
             destPositionRight
         );
 

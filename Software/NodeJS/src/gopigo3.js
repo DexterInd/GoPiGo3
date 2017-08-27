@@ -18,32 +18,32 @@ const SPIDevice = require('spi-device');
 const sleep = require('sleep');
 
 class Gopigo3 {
-    FIRMWARE_VERSION_REQUIRED   = '0.3.x';
+    static FIRMWARE_VERSION_REQUIRED   = '0.3.x';
     // Make sure the top 2 of 3 numbers match
-    SPI_MAX_SPEED_HZ            = 500000;
-    SPI_MODE                    = 0b00;
-    SPI_BITS_PER_WORD           = 8;
-    WHEEL_BASE_WIDTH            = 117;
+    static SPI_MAX_SPEED_HZ            = 500000;
+    static SPI_MODE                    = 0b00;
+    static SPI_BITS_PER_WORD           = 8;
+    static WHEEL_BASE_WIDTH            = 117;
     // distance (mm) from left wheel to right wheel. This works with
     // the initial GPG3 prototype. Will need to be adjusted.
-    WHEEL_DIAMETER              = 66.5;
+    static WHEEL_DIAMETER              = 66.5;
     // wheel diameter (mm)
-    WHEEL_BASE_CIRCUMFERENCE    = this.WHEEL_BASE_WIDTH * Math.PI;
+    static WHEEL_BASE_CIRCUMFERENCE    = Gopigo3.WHEEL_BASE_WIDTH * Math.PI;
     // The circumference of the circle the wheels will trace while turning (mm)
-    WHEEL_CIRCUMFERENCE         = this.WHEEL_DIAMETER * Math.PI;
+    static WHEEL_CIRCUMFERENCE         = Gopigo3.WHEEL_DIAMETER * Math.PI;
     // The circumference of the wheels (mm)
-    MOTOR_GEAR_RATIO            = 120;
+    static MOTOR_GEAR_RATIO            = 120;
     // Motor gear ratio # 220 for Nicole's prototype
-    ENCODER_TICKS_PER_ROTATION  = 6;
+    static ENCODER_TICKS_PER_ROTATION  = 6;
     // Encoder ticks per motor rotation (number of magnet positions) # 16 for early prototypes
-    MOTOR_TICKS_PER_DEGREE = ((this.MOTOR_GEAR_RATIO * this.ENCODER_TICKS_PER_ROTATION) / 360.0);
+    static MOTOR_TICKS_PER_DEGREE = ((Gopigo3.MOTOR_GEAR_RATIO * Gopigo3.ENCODER_TICKS_PER_ROTATION) / 360.0);
     // encoder ticks per output shaft rotation degree
 
-    GROVE_I2C_LENGTH_LIMIT      = 16;
+    static GROVE_I2C_LENGTH_LIMIT      = 16;
 
-    GPG_SPI;
+    static GPG_SPI;
 
-    SPI_MESSAGE_TYPE = new Enumeration(`
+    static SPI_MESSAGE_TYPE = new Enumeration(`
         NONE,
         
         GET_MANUFACTURER,
@@ -102,7 +102,7 @@ class Gopigo3 {
         START_GROVE_I2C_2,
     `)
 
-    GROVE_TYPE = new Enumeration(`
+    static GROVE_TYPE = new Enumeration(`
         CUSTOM = 1,
         IR_DI_REMOTE,
         IR_EV3_REMOTE,
@@ -110,7 +110,7 @@ class Gopigo3 {
         I2C,
     `)
 
-    GROVE_STATE = new Enumeration(`
+    static GROVE_STATE = new Enumeration(`
         VALID_DATA,
         NOT_CONFIGURED,
         CONFIGURING,
@@ -118,54 +118,54 @@ class Gopigo3 {
         I2C_ERROR,
     `)
 
-    LED_EYE_LEFT        = 0x02;
-    LED_EYE_RIGHT       = 0x01;
-    LED_BLINKER_LEFT    = 0x04;
-    LED_BLINKER_RIGHT   = 0x08;
-    LED_LEFT_EYE        = this.LED_EYE_LEFT;
-    LED_RIGHT_EYE       = this.LED_EYE_RIGHT;
-    LED_LEFT_BLINKER    = this.LED_BLINKER_LEFT;
-    LED_RIGHT_BLINKER   = this.LED_BLINKER_RIGHT;
-    LED_WIFI            = 0x80;
+    static LED_EYE_LEFT        = 0x02;
+    static LED_EYE_RIGHT       = 0x01;
+    static LED_BLINKER_LEFT    = 0x04;
+    static LED_BLINKER_RIGHT   = 0x08;
+    static LED_LEFT_EYE        = Gopigo3.LED_EYE_LEFT;
+    static LED_RIGHT_EYE       = Gopigo3.LED_EYE_RIGHT;
+    static LED_LEFT_BLINKER    = Gopigo3.LED_BLINKER_LEFT;
+    static LED_RIGHT_BLINKER   = Gopigo3.LED_BLINKER_RIGHT;
+    static LED_WIFI            = 0x80;
     // Used to indicate WiFi status. Should not be controlled by the user.
 
-    SERVO_1             = 0x01;
-    SERVO_2             = 0x02;
+    static SERVO_1             = 0x01;
+    static SERVO_2             = 0x02;
 
-    MOTOR_LEFT          = 0x01;
-    MOTOR_RIGHT         = 0x02;
+    static MOTOR_LEFT          = 0x01;
+    static MOTOR_RIGHT         = 0x02;
 
-    MOTOR_FLOAT         = -128;
+    static MOTOR_FLOAT         = -128;
 
-    GROVE_1_1           = 0x01;
-    GROVE_1_2           = 0x02;
-    GROVE_2_1           = 0x04;
-    GROVE_2_2           = 0x08;
+    static GROVE_1_1           = 0x01;
+    static GROVE_1_2           = 0x02;
+    static GROVE_2_1           = 0x04;
+    static GROVE_2_2           = 0x08;
 
-    GROVE_1             = this.GROVE_1_1 + this.GROVE_1_2;
-    GROVE_2             = this.GROVE_2_1 + this.GROVE_2_2;
+    static GROVE_1             = Gopigo3.GROVE_1_1 + Gopigo3.GROVE_1_2;
+    static GROVE_2             = Gopigo3.GROVE_2_1 + Gopigo3.GROVE_2_2;
 
-    GROVE_INPUT_DIGITAL          = 0;
-    GROVE_OUTPUT_DIGITAL         = 1;
-    GROVE_INPUT_DIGITAL_PULLUP   = 2;
-    GROVE_INPUT_DIGITAL_PULLDOWN = 3;
-    GROVE_INPUT_ANALOG           = 4;
-    GROVE_OUTPUT_PWM             = 5;
-    GROVE_INPUT_ANALOG_PULLUP    = 6;
-    GROVE_INPUT_ANALOG_PULLDOWN  = 7;
+    static GROVE_INPUT_DIGITAL          = 0;
+    static GROVE_OUTPUT_DIGITAL         = 1;
+    static GROVE_INPUT_DIGITAL_PULLUP   = 2;
+    static GROVE_INPUT_DIGITAL_PULLDOWN = 3;
+    static GROVE_INPUT_ANALOG           = 4;
+    static GROVE_OUTPUT_PWM             = 5;
+    static GROVE_INPUT_ANALOG_PULLUP    = 6;
+    static GROVE_INPUT_ANALOG_PULLDOWN  = 7;
 
-    GROVE_LOW  = 0;
-    GROVE_HIGH = 1;
+    static GROVE_LOW  = 0;
+    static GROVE_HIGH = 1;
 
     GroveType = [0, 0];
     GroveI2CInBytes = [0, 0];
 
     constructor(addr = 8, detect = true) {
         try {
-            this.GPG_SPI = SPIDevice.openSync(0, 1, {
-                'maxSpeedHz': this.SPI_MAX_SPEED_HZ,
-                'mode': this.SPI_MODE,
-                'bitsPerWord': this.SPI_BITS_PER_WORD
+            Gopigo3.GPG_SPI = SPIDevice.openSync(0, 1, {
+                'maxSpeedHz': Gopigo3.SPI_MAX_SPEED_HZ,
+                'mode': Gopigo3.SPI_MODE,
+                'bitsPerWord': Gopigo3.SPI_BITS_PER_WORD
             });
         } catch (err) {
             console.log(err);
@@ -180,7 +180,7 @@ class Gopigo3 {
             and testing when the GoPiGo3 would otherwise not pass the detection tests.
         */
 
-        this.SPI_Address = addr;
+        Gopigo3.SPI_Address = addr;
 
         let manufacturer;
         let board;
@@ -202,9 +202,9 @@ class Gopigo3 {
             }
 
             if (
-                vfw.split('.')[0] !== this.FIRMWARE_VERSION_REQUIRED.split('.')[0]
+                vfw.split('.')[0] !== Gopigo3.FIRMWARE_VERSION_REQUIRED.split('.')[0]
                 ||
-                vfw.split('.')[1] !== this.FIRMWARE_VERSION_REQUIRED.split('.')[1]
+                vfw.split('.')[1] !== Gopigo3.FIRMWARE_VERSION_REQUIRED.split('.')[1]
             ) {
                 throw new FirmwareVersionError(`GoPiGo3 firmware needs to be version ${this.FIRMWARE_VERSION_REQUIRED} but is currently version ${vfw}`);
             }
@@ -226,7 +226,7 @@ class Gopigo3 {
         }];
 
         try {
-            this.GPG_SPI.transferSync(message);
+            Gopigo3.GPG_SPI.transferSync(message);
         } catch (err) {
             console.log(err);
             throw new Error(err);
@@ -242,7 +242,7 @@ class Gopigo3 {
      */
     spiRead8(messageType) {
         let output;
-        const dataOut = [this.SPI_Address, messageType, 0, 0, 0];
+        const dataOut = [Gopigo3.SPI_Address, messageType, 0, 0, 0];
         const dataIn = this.spiTransferArray(dataOut);
         if (dataIn[3] === 0xA5) {
             output = parseInt(dataIn[4], 0);
@@ -259,7 +259,7 @@ class Gopigo3 {
      */
     spiRead16(messageType) {
         let output;
-        const dataOut = [this.SPI_Address, messageType, 0, 0, 0, 0];
+        const dataOut = [Gopigo3.SPI_Address, messageType, 0, 0, 0, 0];
         const dataIn = this.spiTransferArray(dataOut);
         if (dataIn[3] === 0xA5) {
             output = parseInt((dataIn[4] << 8) | dataIn[5], 0);
@@ -274,7 +274,7 @@ class Gopigo3 {
      */
     spiRead32(messageType) {
         let out;
-        const dataOut = [this.SPI_Address, messageType, 0, 0, 0, 0, 0, 0];
+        const dataOut = [Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0, 0];
         const dataIn = this.spiTransferArray(dataOut);
         if (dataIn[3] === 0xA5) {
             out = parseInt(
@@ -292,7 +292,7 @@ class Gopigo3 {
      */
     spiWrite32(messageType, value) {
         const dataOut = [
-            this.SPI_Address, messageType,
+            Gopigo3.SPI_Address, messageType,
             ((value >> 24) & 0xFF),
             ((value >> 16) & 0xFF),
             ((value >> 8) & 0xFF),
@@ -308,7 +308,7 @@ class Gopigo3 {
      */
     getManufacturer() {
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.GET_MANUFACTURER,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.GET_MANUFACTURER,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
@@ -335,7 +335,7 @@ class Gopigo3 {
      */
     getBoard() {
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.GET_NAME,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.GET_NAME,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
@@ -361,7 +361,7 @@ class Gopigo3 {
      * hardware version, error
      */
     getVersionHardware() {
-        const version = this.spiRead32(this.SPI_MESSAGE_TYPE.GET_HARDWARE_VERSION);
+        const version = this.spiRead32(Gopigo3.SPI_MESSAGE_TYPE.GET_HARDWARE_VERSION);
         const major = parseInt(version / 1000000, 0);
         const minor = parseInt((version / 1000) % 1000, 0);
         const patch = parseInt(version % 1000, 0);
@@ -373,7 +373,7 @@ class Gopigo3 {
      * firmware version, error
      */
     getVersionFirmware() {
-        const version = this.spiRead32(this.SPI_MESSAGE_TYPE.GET_FIRMWARE_VERSION);
+        const version = this.spiRead32(Gopigo3.SPI_MESSAGE_TYPE.GET_FIRMWARE_VERSION);
         const major = parseInt(version / 1000000, 0);
         const minor = parseInt((version / 1000) % 1000, 0);
         const patch = parseInt(version % 1000, 0);
@@ -386,7 +386,7 @@ class Gopigo3 {
      */
     getId() {
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.GET_ID,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.GET_ID,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
@@ -423,7 +423,7 @@ class Gopigo3 {
         blue = blue < 0 ? 0 : blue;
 
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_LED,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_LED,
             led, red, green, blue
         ];
         this.spiTransferArray(dataOut);
@@ -435,7 +435,7 @@ class Gopigo3 {
      * 5v circuit voltage, error
      */
     getVoltage5v() {
-        const value = this.spiRead16(this.SPI_MESSAGE_TYPE.GET_VOLTAGE_5V);
+        const value = this.spiRead16(Gopigo3.SPI_MESSAGE_TYPE.GET_VOLTAGE_5V);
         return (value / 1000.0);
     }
     /**
@@ -444,7 +444,7 @@ class Gopigo3 {
      * battery voltage, error
      */
     getVoltageBattery() {
-        const value = this.spiRead16(this.SPI_MESSAGE_TYPE.GET_VOLTAGE_VCC);
+        const value = this.spiRead16(Gopigo3.SPI_MESSAGE_TYPE.GET_VOLTAGE_VCC);
         return (value / 1000.0);
     }
     /**
@@ -454,7 +454,7 @@ class Gopigo3 {
      */
     setServo(servo, us) {
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_SERVO,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_SERVO,
             servo, ((us >> 8) & 0xFF), (us & 0xFF)
         ];
         this.spiTransferArray(dataOut);
@@ -468,7 +468,7 @@ class Gopigo3 {
         power = power > 127 ? 127 : power;
         power = power < 128 ? 128 : power;
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_MOTOR_PWM,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_PWM,
             port, parseInt(power, 0)
         ];
         this.spiTransferArray(dataOut);
@@ -479,9 +479,9 @@ class Gopigo3 {
      * @param {*} position The target position
      */
     setMotorPosition(port, position) {
-        const positionRaw = parseInt(position * this.MOTOR_TICKS_PER_DEGREE, 0);
+        const positionRaw = parseInt(position * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_MOTOR_POSITION,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_POSITION,
             parseInt(port, 0),
             ((positionRaw >> 24) & 0xFF), ((positionRaw >> 16) & 0xFF),
             ((positionRaw >> 8) & 0xFF), (positionRaw & 0xFF)
@@ -494,9 +494,9 @@ class Gopigo3 {
      * @param {*} dps The target speed in degrees per second
      */
     setMotorDps(port, dps) {
-        dps = parseInt(dps * this.MOTOR_TICKS_PER_DEGREE, 0);
+        dps = parseInt(dps * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_MOTOR_DPS,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_DPS,
             parseInt(port, 0),
             ((dps >> 8) & 0xFF),
             (dps & 0xFF)
@@ -510,9 +510,9 @@ class Gopigo3 {
      * @param {*} dps The speed limit in degrees per second, with 0 being no limit
      */
     setMotorLimits(port, power = 0, dps = 0) {
-        dps = parseInt(dps * this.MOTOR_TICKS_PER_DEGREE, 0);
+        dps = parseInt(dps * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_MOTOR_LIMITS,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_LIMITS,
             parseInt(port, 0),
             power,
             ((dps >> 8) & 0xFF),
@@ -540,16 +540,16 @@ class Gopigo3 {
         let dps;
         let power;
 
-        if (port === this.MOTOR_LEFT) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_LEFT;
-        } else if (port === this.MOTOR_RIGHT) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_RIGHT;
+        if (port === Gopigo3.MOTOR_LEFT) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_LEFT;
+        } else if (port === Gopigo3.MOTOR_RIGHT) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_RIGHT;
         } else {
             throw new Error('getMotorStatus error. Must be one motor port at a time. MOTOR_LEFT or MOTOR_RIGHT.');
         }
 
         const dataOut = [
-            this.SPI_Address, messageType, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
 
@@ -573,8 +573,8 @@ class Gopigo3 {
 
             output = [
                 dataIn[4], power,
-                parseInt(encoder / this.MOTOR_TICKS_PER_DEGREE, 0),
-                parseInt(dps / this.MOTOR_TICKS_PER_DEGREE, 0)
+                parseInt(encoder / Gopigo3.MOTOR_TICKS_PER_DEGREE, 0),
+                parseInt(dps / Gopigo3.MOTOR_TICKS_PER_DEGREE, 0)
             ];
         } else {
             throw new Error('No SPI response');
@@ -590,10 +590,10 @@ class Gopigo3 {
     getMotorEncoder(port) {
         let messageType;
 
-        if (port === this.MOTOR_LEFT) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_LEFT;
-        } else if (port === this.MOTOR_RIGHT) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_RIGHT;
+        if (port === Gopigo3.MOTOR_LEFT) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_LEFT;
+        } else if (port === Gopigo3.MOTOR_RIGHT) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_RIGHT;
         } else {
             throw new Error('getMotorEncoder error. Must be one motor port at a time. MOTOR_LEFT or MOTOR_RIGHT.');
         }
@@ -603,7 +603,7 @@ class Gopigo3 {
             encoder = parseInt(encoder - 0x100000000, 0);
         }
 
-        return parseInt(encoder / this.MOTOR_TICKS_PER_DEGREE, 0);
+        return parseInt(encoder / Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
     }
     /**
      * Offset a motor encoder
@@ -611,9 +611,9 @@ class Gopigo3 {
      * @param {*} offset The encoder offset
      */
     offsetMotorEncoder(port, offset) {
-        offset = parseInt(offset * this.MOTOR_TICKS_PER_DEGREE, 0);
+        offset = parseInt(offset * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.OFFSET_MOTOR_ENCODER,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.OFFSET_MOTOR_ENCODER,
             parseInt(port, 0),
             ((offset >> 24) & 0xFF),
             ((offset >> 16) & 0xFF),
@@ -634,7 +634,7 @@ class Gopigo3 {
             }
         }
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_GROVE_TYPE,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_GROVE_TYPE,
             parseInt(port, 0), type
         ];
         this.spiTransferArray(dataOut);
@@ -648,7 +648,7 @@ class Gopigo3 {
      */
     setGroveMode(pin, mode) {
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_GROVE_MODE,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_GROVE_MODE,
             pin, mode
         ];
         this.spiTransferArray(dataOut);
@@ -660,7 +660,7 @@ class Gopigo3 {
      */
     setGroveState(pin, state) {
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_GROVE_STATE,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_GROVE_STATE,
             pin, state
         ];
         this.spiTransferArray(dataOut);
@@ -675,7 +675,7 @@ class Gopigo3 {
         duty = duty > 100 ? 100 : duty;
         const dutyValue = parseInt(duty * 10.0, 0);
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_GROVE_PWM_DUTY, pin,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_GROVE_PWM_DUTY, pin,
             ((dutyValue >> 8) & 0xFF), (dutyValue & 0xFF)
         ];
         this.spiTransferArray(dataOut);
@@ -692,7 +692,7 @@ class Gopigo3 {
         // Limit to 48000, which is the highest frequency supported for 0.1% resolution.
         const freqValue = parseInt(freq, 0);
         const dataOut = [
-            this.SPI_Address, this.SPI_MESSAGE_TYPE.SET_GROVE_PWM_FREQUENCY,
+            Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_GROVE_PWM_FREQUENCY,
             parseInt(port, 0),
             ((freqValue >> 8) & 0xFF),
             (freqValue & 0xFF)
@@ -769,28 +769,28 @@ class Gopigo3 {
         let messageType;
         let portIndex;
 
-        if (port === this.GROVE_1) {
-            messageType = this.SPI_MESSAGE_TYPE.START_GROVE_I2C_1;
+        if (port === Gopigo3.GROVE_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.START_GROVE_I2C_1;
             portIndex = 0;
-        } else if (port === this.GROVE_2) {
-            messageType = this.SPI_MESSAGE_TYPE.START_GROVE_I2C_2;
+        } else if (port === Gopigo3.GROVE_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.START_GROVE_I2C_2;
             portIndex = 1;
         } else {
             throw new Error('Port unsupported. Must get one at a time.');
         }
 
         const address = ((parseInt(addr, 0) & 0x7F) << 1);
-        if (inBytes > this.GROVE_I2C_LENGTH_LIMIT) {
+        if (inBytes > Gopigo3.GROVE_I2C_LENGTH_LIMIT) {
             throw new Error(`Read length error. Up to ${this.GROVE_I2C_LENGTH_LIMIT} bytes can be read in a single transaction.`);
         }
 
         const outBytes = outArr.length;
-        if (outBytes > this.GROVE_I2C_LENGTH_LIMIT) {
+        if (outBytes > Gopigo3.GROVE_I2C_LENGTH_LIMIT) {
             throw new Error(`Write length error. Up to ${this.GROVE_I2C_LENGTH_LIMIT} bytes can be read in a single transaction.`);
         }
 
         const dataOut = [
-            this.SPI_Address, messageType, address, inBytes, outBytes
+            Gopigo3.SPI_Address, messageType, address, inBytes, outBytes
         ];
         dataOut.concat(outArr);
 
@@ -816,19 +816,19 @@ class Gopigo3 {
         let dataOut;
         let dataIn;
 
-        if (port === this.GROVE_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_VALUE_1;
+        if (port === Gopigo3.GROVE_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_VALUE_1;
             portIndex = 0;
-        } else if (port === this.GROVE_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_VALUE_2;
+        } else if (port === Gopigo3.GROVE_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_VALUE_2;
             portIndex = 1;
         } else {
             throw new Error('Port unsupported. Must get one at a time.');
         }
 
-        if (this.GroveType[portIndex] === this.GROVE_TYPE.IR_DI_REMOTE) {
+        if (this.GroveType[portIndex] === Gopigo3.GROVE_TYPE.IR_DI_REMOTE) {
             dataOut = [
-                this.SPI_Address, messageType, 0, 0, 0, 0, 0
+                Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0
             ];
             dataIn = this.spiTransferArray(dataOut);
             if (dataIn[3] === 0xA5) {
@@ -841,9 +841,9 @@ class Gopigo3 {
             } else {
                 throw new Error('getGroveValue error: No SPI response');
             }
-        } else if (this.GroveType[portIndex] === this.GROVE_TYPE.IR_EV3_REMOTE) {
+        } else if (this.GroveType[portIndex] === Gopigo3.GROVE_TYPE.IR_EV3_REMOTE) {
             dataOut = [
-                this.SPI_Address, messageType, 0, 0, 0, 0, 0, 0, 0, 0
+                Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0, 0, 0, 0
             ];
             dataIn = this.spiTransferArray(dataOut);
             if (dataIn[3] === 0xA5) {
@@ -858,9 +858,9 @@ class Gopigo3 {
             } else {
                 throw new Error('getGroveValue error: No SPI response');
             }
-        } else if (this.GroveType[portIndex] === this.GROVE_TYPE.US) {
+        } else if (this.GroveType[portIndex] === Gopigo3.GROVE_TYPE.US) {
             dataOut = [
-                this.SPI_Address, messageType, 0, 0, 0, 0, 0, 0
+                Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0, 0
             ];
             dataIn = this.spiTransferArray(dataOut);
             if (dataIn[3] === 0xA5) {
@@ -880,9 +880,9 @@ class Gopigo3 {
             } else {
                 throw new Error('getGroveValue error: No SPI response');
             }
-        } else if (this.GroveType[portIndex] === this.GROVE_TYPE.I2C) {
+        } else if (this.GroveType[portIndex] === Gopigo3.GROVE_TYPE.I2C) {
             dataOut = [
-                this.SPI_Address, messageType, 0, 0, 0, 0
+                Gopigo3.SPI_Address, messageType, 0, 0, 0, 0
             ];
             for (let i = 0, len = this.GroveI2CInBytes[portIndex]; i < len; i++) {
                 dataOut.push(0);
@@ -891,15 +891,15 @@ class Gopigo3 {
             dataIn = this.spiTransferArray(dataOut);
             if (dataIn[3] === 0xA5) {
                 if (dataIn[4] === this.GroveType[portIndex]) {
-                    if (dataIn[5] === this.GROVE_STATE.VALID_DATA) {
+                    if (dataIn[5] === Gopigo3.GROVE_STATE.VALID_DATA) {
                         output = dataIn[6];
-                    } else if (dataIn[5] === this.GROVE_STATE.I2C_ERROR) {
+                    } else if (dataIn[5] === Gopigo3.GROVE_STATE.I2C_ERROR) {
                         throw new I2CError('getGroveValue error: I2C bus error');
                     } else {
                         console.log('I2C', dataIn);
                         console.log('check type', dataIn[4], this.GroveType[portIndex]);
-                        console.log('valid data', dataIn[5], this.GROVE_STATE.VALID_DATA);
-                        console.log('I2C error', dataIn[5], this.GROVE_STATE.I2C_ERROR);
+                        console.log('valid data', dataIn[5], Gopigo3.GROVE_STATE.VALID_DATA);
+                        console.log('I2C error', dataIn[5], Gopigo3.GROVE_STATE.I2C_ERROR);
                         throw new ValueError('getGroveValue error: Invalid value');
                     }
                 } else {
@@ -919,26 +919,26 @@ class Gopigo3 {
     getGroveState(pin) {
         let messageType;
 
-        if (pin === this.GROVE_1_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_STATE_1_1;
-        } else if (pin === this.GROVE_1_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_STATE_1_2;
-        } else if (pin === this.GROVE_2_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_STATE_2_1;
-        } else if (pin === this.GROVE_2_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_STATE_2_2;
+        if (pin === Gopigo3.GROVE_1_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_STATE_1_1;
+        } else if (pin === Gopigo3.GROVE_1_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_STATE_1_2;
+        } else if (pin === Gopigo3.GROVE_2_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_STATE_2_1;
+        } else if (pin === Gopigo3.GROVE_2_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_STATE_2_2;
         } else {
             throw new Error('Pin(s) unsupported. Must get one at a time.');
         }
 
         const dataOut = [
-            this.SPI_Address, messageType, 0, 0, 0, 0
+            Gopigo3.SPI_Address, messageType, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
         let output;
 
         if (dataIn[3] === 0xA5) {
-            if (dataIn[4] === this.GROVE_STATE.VALID_DATA) {
+            if (dataIn[4] === Gopigo3.GROVE_STATE.VALID_DATA) {
                 output = dataIn[5];
             } else {
                 console.log('GROVE STATE', dataIn);
@@ -957,26 +957,26 @@ class Gopigo3 {
     getGroveVoltage(pin) {
         let messageType;
 
-        if (pin === this.GROVE_1_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_1_1;
-        } else if (pin === this.GROVE_1_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_1_2;
-        } else if (pin === this.GROVE_2_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_2_1;
-        } else if (pin === this.GROVE_2_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_2_2;
+        if (pin === Gopigo3.GROVE_1_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_1_1;
+        } else if (pin === Gopigo3.GROVE_1_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_1_2;
+        } else if (pin === Gopigo3.GROVE_2_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_2_1;
+        } else if (pin === Gopigo3.GROVE_2_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_VOLTAGE_2_2;
         } else {
             throw new Error('Pin(s) unsupported. Must get one at a time.');
         }
 
         const dataOut = [
-            this.SPI_Address, messageType, 0, 0, 0, 0, 0
+            Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
         let output;
 
         if (dataIn[3] === 0xA5) {
-            if (dataIn[4] === this.GROVE_STATE.VALID_DATA) {
+            if (dataIn[4] === Gopigo3.GROVE_STATE.VALID_DATA) {
                 output = ((((dataIn[5] << 8) & 0xFF00) | (dataIn[6] & 0xFF)) / 1000.0);
             } else {
                 console.log('GROVE VOLTAGE', dataIn);
@@ -995,26 +995,26 @@ class Gopigo3 {
     getGroveAnalog(pin) {
         let messageType;
 
-        if (pin === this.GROVE_1_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_1_1;
-        } else if (pin === this.GROVE_1_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_1_2;
-        } else if (pin === this.GROVE_2_1) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_2_1;
-        } else if (pin === this.GROVE_2_2) {
-            messageType = this.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_2_2;
+        if (pin === Gopigo3.GROVE_1_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_1_1;
+        } else if (pin === Gopigo3.GROVE_1_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_1_2;
+        } else if (pin === Gopigo3.GROVE_2_1) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_2_1;
+        } else if (pin === Gopigo3.GROVE_2_2) {
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_GROVE_ANALOG_2_2;
         } else {
             throw new Error('Pin(s) unsupported. Must get one at a time.');
         }
 
         const dataOut = [
-            this.SPI_Address, messageType, 0, 0, 0, 0, 0
+            Gopigo3.SPI_Address, messageType, 0, 0, 0, 0, 0
         ];
         const dataIn = this.spiTransferArray(dataOut);
         let output;
 
         if (dataIn[3] === 0xA5) {
-            if (dataIn[4] === this.GROVE_STATE.VALID_DATA) {
+            if (dataIn[4] === Gopigo3.GROVE_STATE.VALID_DATA) {
                 output = (((dataIn[5] << 8) & 0xFF00) | (dataIn[6] & 0xFF));
             } else {
                 console.log('GROVE ANALOG', dataIn);
@@ -1031,21 +1031,21 @@ class Gopigo3 {
      */
     resetAll() {
         // Reset all sensors
-        this.setGroveType(this.GROVE_1 + this.GROVE_2, this.GROVE_TYPE.CUSTOM);
-        this.setGroveMode(this.GROVE_1 + this.GROVE_2, this.GROVE_INPUT_DIGITAL);
+        this.setGroveType(Gopigo3.GROVE_1 + Gopigo3.GROVE_2, Gopigo3.GROVE_TYPE.CUSTOM);
+        this.setGroveMode(Gopigo3.GROVE_1 + Gopigo3.GROVE_2, Gopigo3.GROVE_INPUT_DIGITAL);
 
         // Turn off the motors
-        this.setMotorPower(this.MOTOR_LEFT + this.MOTOR_RIGHT, this.MOTOR_FLOAT);
+        this.setMotorPower(Gopigo3.MOTOR_LEFT + Gopigo3.MOTOR_RIGHT, Gopigo3.MOTOR_FLOAT);
 
         // Reset the motor limits
-        this.setMotorLimits(this.MOTOR_LEFT + this.MOTOR_RIGHT, 0, 0);
+        this.setMotorLimits(Gopigo3.MOTOR_LEFT + Gopigo3.MOTOR_RIGHT, 0, 0);
 
         // Turn off the servos
-        this.setServo(this.SERVO_1 + this.SERVO_2, 0);
+        this.setServo(Gopigo3.SERVO_1 + Gopigo3.SERVO_2, 0);
 
         // Turn off the LEDs
         this.setLed(
-            this.LED_EYE_LEFT + this.LED_EYE_RIGHT + this.LED_BLINKER_LEFT + this.LED_BLINKER_RIGHT,
+            Gopigo3.LED_EYE_LEFT + Gopigo3.LED_EYE_RIGHT + Gopigo3.LED_BLINKER_LEFT + Gopigo3.LED_BLINKER_RIGHT,
             0, 0, 0
         );
     }

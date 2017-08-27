@@ -16,7 +16,7 @@ const Sensor = require('./sensor');
     Connect the Servo to the Servo1 and Servo2 ports of GPG3.
  */
 class Servo extends Sensor {
-    PULSE_WIDTH_RANGE = 1850;
+    static PULSE_WIDTH_RANGE = 1850;
     // Pulse width range in us corresponding to 0 to 180 degrees
 
     constructor(port = 'SERVO1', gpg) {
@@ -44,8 +44,8 @@ class Servo extends Sensor {
         servoPosition = servoPosition < 0 ? 0 : servoPosition;
 
         const pulseWidth = Math.round(
-            (1500 - (this.PULSE_WIDTH_RANGE / 2)) +
-            ((this.PULSE_WIDTH_RANGE / 180) * servoPosition)
+            (1500 - (Servo.PULSE_WIDTH_RANGE / 2)) +
+            ((Servo.PULSE_WIDTH_RANGE / 180) * servoPosition)
         );
         this.gpg.setServo(this.getPortId(), parseInt(pulseWidth, 0));
     }

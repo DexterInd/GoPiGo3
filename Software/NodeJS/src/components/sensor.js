@@ -20,9 +20,10 @@ Class methods:
     setPort / getPort
     setPinMode / getPinMode
  */
-class Sensor {
-    PORTS = {};
 
+const Gopigo3 = require('../gopigo3');
+
+class Sensor {
     constructor(port, pinMode, gpg) {
         console.log('Sensor init');
         console.log('Pin mode', pinMode);
@@ -37,35 +38,35 @@ class Sensor {
             default:
             case 'INPUT':
                 this.gpg.setGroveType(this.portId,
-                                        this.gpg.GROVE_TYPE.CUSTOM);
+                    Gopigo3.GROVE_TYPE.CUSTOM);
                 this.gpg.setGroveMode(this.portId,
-                                        this.gpg.GROVE_INPUT_ANALOG);
+                    Gopigo3.GROVE_INPUT_ANALOG);
                 break;
             case 'DIGITAL_INPUT':
                 this.gpg.setGroveType(this.portId,
-                                        this.gpg.GROVE_TYPE.CUSTOM);
+                    Gopigo3.GROVE_TYPE.CUSTOM);
                 this.gpg.setGroveMode(this.portId,
-                                        this.gpg.GROVE_INPUT_DIGITAL);
+                    Gopigo3.GROVE_INPUT_DIGITAL);
                 break;
             case 'OUTPUT':
                 this.gpg.setGroveType(this.portId,
-                                        this.gpg.GROVE_TYPE.CUSTOM);
+                    Gopigo3.GROVE_TYPE.CUSTOM);
                 this.gpg.setGroveMode(this.portId,
-                                        this.gpg.GROVE_OUTPUT_PWM);
+                    Gopigo3.GROVE_OUTPUT_PWM);
                 break;
             case 'DIGITAL_OUTPUT':
                 this.gpg.setGroveType(this.portId,
-                                        this.gpg.GROVE_TYPE.CUSTOM);
+                    Gopigo3.GROVE_TYPE.CUSTOM);
                 this.gpg.setGroveMode(this.portId,
-                                        this.gpg.GROVE_OUTPUT_DIGITAL);
+                    Gopigo3.GROVE_OUTPUT_DIGITAL);
                 break;
             case 'US':
                 this.gpg.setGroveType(this.portId,
-                                        this.gpg.GROVE_TYPE.US);
+                    Gopigo3.GROVE_TYPE.US);
                 break;
             case 'IR':
                 this.gpg.setGroveType(this.portId,
-                                    this.gpg.GROVE_TYPE.IR_DI_REMOTE);
+                    Gopigo3.GROVE_TYPE.IR_DI_REMOTE);
                 break;
             }
         } catch (err) {
@@ -76,15 +77,15 @@ class Sensor {
     setPin(pin) {
         if (this.port === 'AD1') {
             if (pin === 1) {
-                this.pin = this.gpg.GROVE_1_1;
+                this.pin = Gopigo3.GROVE_1_1;
             } else {
-                this.pin = this.gpg.GROVE_1_2;
+                this.pin = Gopigo3.GROVE_1_2;
             }
         } else if (this.port === 'AD2') {
             if (pin === 1) {
-                this.pin = this.gpg.GROVE_2_1;
+                this.pin = Gopigo3.GROVE_2_1;
             } else {
-                this.pin = this.gpg.GROVE_2_2;
+                this.pin = Gopigo3.GROVE_2_2;
             }
         }
         console.log('Setting pin to', this.pin);
@@ -97,11 +98,11 @@ class Sensor {
 
         switch (port) {
         case 'AD1':
-            this.portId = this.gpg.GROVE_1;
+            this.portId = Gopigo3.GROVE_1;
             break;
 
         case 'AD2':
-            this.portId = this.gpg.GROVE_2;
+            this.portId = Gopigo3.GROVE_2;
             break;
 
         case 'SERIAL':
@@ -113,11 +114,11 @@ class Sensor {
             break;
 
         case 'SERVO1':
-            this.portId = this.gpg.SERVO_1;
+            this.portId = Gopigo3.SERVO_1;
             break;
 
         case 'SERVO2':
-            this.portId = this.gpg.SERVO_2;
+            this.portId = Gopigo3.SERVO_2;
             break;
 
         default:

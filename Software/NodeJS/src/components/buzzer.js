@@ -18,7 +18,7 @@ const AnalogSensor = require('./analogSensor');
  */
 class Buzzer extends AnalogSensor {
 
-    scale = {
+    static SCALE = {
         'A3': 220,
         'A3#': 233,
         'B3': 247,
