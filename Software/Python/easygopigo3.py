@@ -1670,7 +1670,7 @@ class UltraSonicSensor(AnalogSensor):
         value = self.read()   # cm reading
         if value == 501:
             return 501
-        return (rount(value / 2.54, 1))
+        return (round(value / 2.54, 1))
 ##########################
 
 
