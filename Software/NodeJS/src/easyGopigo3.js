@@ -25,6 +25,7 @@ const Servo = require('./components/servo');
 const DHTSensor = require('./components/dhtSensor');
 const DistanceSensor = require('./components/distanceSensor');
 const Remote = require('./components/remote');
+const MotionSensor = require('./components/motionSensor');
 
 const Gopigo = require('./gopigo3');
 
@@ -193,6 +194,11 @@ class EasyGoPiGo3 extends Gopigo {
         this.offsetMotorEncoder(EasyGoPiGo3.MOTOR_LEFT, this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT));
         this.offsetMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT, this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT));
     }
+    readEncoders() {
+        const leftEncoder = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
+        const rightEncoder = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
+        return [leftEncoder, rightEncoder];
+    }
     blinkerOn(id) {
         if (id === 1 || id === 'left') {
             this.setLed(EasyGoPiGo3.LED_LEFT_BLINKER, 255);
@@ -336,6 +342,9 @@ class EasyGoPiGo3 extends Gopigo {
     }
     initRemote(port = 'AD1') {
         return new Remote(port, this);
+    }
+    initMotionSensor(port = 'AD1') {
+        return new MotionSensor(port, this);
     }
 
     calibrateLineFollower() {

@@ -138,7 +138,7 @@ class UltraSonicSensor extends AnalogSensor {
      */
     readInches() {
         const output = this.read(); // cm reading
-        return output === 501 ? output : parseInt(output / 2.54, 0);
+        return output === 501 ? output : _.round(output / 2.54, 1);
     }
 }
 

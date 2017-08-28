@@ -81,8 +81,8 @@ class LineFollower extends Sensor {
     /**
      * Returns a string telling where the black line is, compared to
             the GoPiGo
-        Returns: "Left", "Right", "Center", "Black", "White"
-        May return "Unknown"
+        Returns: "left", "right", "center", "black", "white"
+        May return "unknown"
         This method is not intelligent enough to handle intersections.
      */
     readPosition() {
@@ -93,19 +93,19 @@ class LineFollower extends Sensor {
             ||
             _.isEqual(fiveVals, [0, 1, 1, 1, 0])
         ) {
-            return 'Center';
+            return 'center';
         }
 
         if (
             _.isEqual(fiveVals, [1, 1, 1, 1, 1])
         ) {
-            return 'Black';
+            return 'black';
         }
 
         if (
             _.isEqual(fiveVals, [0, 0, 0, 0, 0])
         ) {
-            return 'White';
+            return 'white';
         }
 
         if (
@@ -116,7 +116,7 @@ class LineFollower extends Sensor {
             || _.isEqual(fiveVals, [1, 1, 1, 0, 0])
             || _.isEqual(fiveVals, [1, 1, 1, 1, 0])
         ) {
-            return 'Left';
+            return 'left';
         }
 
         if (
@@ -127,10 +127,10 @@ class LineFollower extends Sensor {
             || _.isEqual(fiveVals, [0, 0, 1, 1, 1])
             || _.isEqual(fiveVals, [0, 1, 1, 1, 1])
         ) {
-            return 'Right';
+            return 'right';
         }
 
-        return 'Unknown';
+        return 'unknown';
     }
 }
 
