@@ -25,7 +25,13 @@ Developer's Guide
 Our contributors
 ****************
 
-   1. Matt Richardson - `Github Account <https://github.com/mattallen37/>`_
-   2. Nicole Parrot - `Github Account <https://github.com/cleoqc/>`_
-   3. Robert Lucian Chiriac - `Github Account <https://github.com/RobertLucian/>`_
-   4. John Cole - `Github Account <https://github.com/johnisanerd/>`_
+   1. Matt Richardson - `Github Account <https://github.com/mattallen37/>`__
+   2. Nicole Parrot - `Github Account <https://github.com/cleoqc/>`__
+   3. Robert Lucian Chiriac - `Github Account <https://github.com/RobertLucian/>`__
+
+      * Wrote GoPiGo3's documentation.
+      * Made GoPiGo3 projects.
+      * Wrote tutorials.
+      * Did bug-fixes.
+
+   4. John Cole - `Github Account <https://github.com/johnisanerd/>`__
