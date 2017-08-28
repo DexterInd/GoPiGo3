@@ -1287,7 +1287,13 @@ class AnalogSensor(Sensor):
         :rtype: int
 
         """
-        reading_percent = self.read() * 100 // self._max_value
+        reading_percent = round(self.read() * 100 // self._max_value)
+        
+        # Some sensors - like the loudness_sensor - 
+        # can actually return higher than 100% so let's clip it
+        # and keep classrooms within an acceptable noise level
+        if reading_percent > 100:
+            reading_percent = 100
         return reading_percent
 
     def write(self, power):
