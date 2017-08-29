@@ -136,7 +136,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
-        self.sensors = {}
 
     def volt(self):
         """
@@ -968,7 +967,6 @@ class Sensor(object):
         debug(pinmode)
         self.set_port(port)
         self.set_pin_mode(pinmode)
-        self.gpg.sensors[self.descriptor] = self
 
         try:
             # I2C sensors don't need a valid gpg
@@ -1601,12 +1599,12 @@ class UltraSonicSensor(AnalogSensor):
 
         """
 
-        debug("Ultrasonic Sensor on port " + port)
-        self.set_descriptor("Ultrasonic sensor")
-        self.safe_distance = 500
-        self.set_pin(1)
         try:
+            debug("Ultrasonic Sensor on port " + port)
             AnalogSensor.__init__(self, port, "US", gpg)
+            self.set_descriptor("Ultrasonic sensor")
+            self.safe_distance = 500
+            self.set_pin(1)
         except:
             raise
 
@@ -1853,13 +1851,14 @@ class Buzzer(AnalogSensor):
         The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
-        self.set_descriptor("Buzzer")
-        self.set_pin(1)
-        self.power = 50
-        self.freq = 329
-        self.sound_off()
+
         try:
             AnalogSensor.__init__(self, port, "OUTPUT", gpg)
+            self.set_pin(1)
+            self.set_descriptor("Buzzer")
+            self.power = 50
+            self.freq = 329
+            self.sound_off()
         except:
             raise
 
