@@ -39,6 +39,7 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
 .. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
+.. _grove loudness sensor: http://wiki.seeed.cc/Grove-Loudness_Sensor/
 .. _grove ultrasonic sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
