@@ -17,7 +17,7 @@ class I2cMutex {
         const _this = this;
 
         while (this.isAcquired) {
-            sleep(0.001);
+            sleep.msleep(1);
         }
 
         this.isAcquired = false;
@@ -26,7 +26,7 @@ class I2cMutex {
             Lock.lock(this.lockFile, (err) => {
                 if (err) {
                     // already locked by a different process
-                    sleep(0.001);
+                    sleep.msleep(1);
                 }
                 // lock
                 console.log('I2C Acquired');
@@ -46,7 +46,7 @@ class I2cMutex {
             }
             // unlocked
             _this.isAcquired = false;
-            sleep(0.001);
+            sleep.msleep(1);
         });
     }
 }

@@ -16,6 +16,6 @@ module.exports = {
         return hex.length === 1 ? `0${hex}` : hex;
     },
 
-    grabI2CRead: () => true, // i2cMutex.I2CMutexAcquire(),
-    releaseI2CRead: () => true // i2cMutex.I2CMutexRelease()
+    grabI2CRead: () => i2cMutex.I2CMutexAcquire(),
+    releaseI2CRead: () => i2cMutex.I2CMutexRelease()
 };

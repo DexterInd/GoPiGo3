@@ -337,7 +337,7 @@ class EasyGoPiGo3 extends Gopigo {
     initDistanceSensor() {
         return new DistanceSensor('I2C', this);
     }
-    initDhtSensor(port = 'AD1', sensorType = 11) {
+    initDhtSensor(port = 'SERIAL', sensorType = 11) {
         return new DHTSensor(port, sensorType, this);
     }
     initRemote(port = 'AD1') {
