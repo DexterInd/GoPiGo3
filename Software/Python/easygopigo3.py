@@ -59,27 +59,6 @@ def debug(in_str):
     if False:
         print(in_str)
 
-
-def _grab_read():
-    global read_is_open
-    try:
-        I2C_Mutex_Acquire()
-    except:
-        pass
-    # thread safe doesn't seem to be required so
-    # commented out
-    # while read_is_open is False:
-    #     time.sleep(0.01)
-    read_is_open = False
-    # print("acquired")
-
-
-def _release_read():
-    global read_is_open
-    I2C_Mutex_Release()
-    read_is_open = True
-    # print("released")
-
 #####################################################################
 #
 # EASYGOPIGO3
@@ -723,7 +702,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return SoundSensor(port, self)
-        
+
     def init_loudness_sensor(self, port = "AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
@@ -735,7 +714,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return LoudnessSensor(port, self)
-               
+
 
     def init_ultrasonic_sensor(self, port = "AD1"):
         """
@@ -865,15 +844,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def init_motion_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.MotionSensor` object and then returns it
-        
+
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.MotionSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
-                
+
         return MotionSensor(port,self)
-        
+
 # the following functions may be redundant
 
 
@@ -1288,8 +1267,8 @@ class AnalogSensor(Sensor):
 
         """
         reading_percent = round(self.read() * 100 // self._max_value)
-        
-        # Some sensors - like the loudness_sensor - 
+
+        # Some sensors - like the loudness_sensor -
         # can actually return higher than 100% so let's clip it
         # and keep classrooms within an acceptable noise level
         if reading_percent > 100:
@@ -1535,7 +1514,7 @@ class LoudnessSensor(AnalogSensor):
         self._max_value = 1024  # based on empirical tests
         self.set_descriptor("Loudness sensor")
 
-##########################        
+##########################
 
 
 class UltraSonicSensor(AnalogSensor):
@@ -2081,7 +2060,7 @@ class MotionSensor(DigitalSensor):
 
 
     """
-   
+
     def __init__(self, port="AD1", gpg=None):
         """
         Constructor for initializing a :py:class:`~easygopigo3.MotionSensor` object for the `Grove Motion Sensor`_.
@@ -2607,9 +2586,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             raise
 
         try:
-            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
-            _release_read()
         except Exception as e:
             print(e)
             raise IOError("Distance Sensor not found")
@@ -2659,9 +2636,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         while (mm > 8000 or mm < 5) and attempt < 3:
             self.__ifMutexAcquire()
             try:
-                _grab_read()
                 mm = self.read_range_single()
-                _release_read()
             except:
                 mm = 0
             self.__ifMutexRelease()
