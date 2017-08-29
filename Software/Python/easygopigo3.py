@@ -723,6 +723,19 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return SoundSensor(port, self)
+        
+    def init_loudness_sensor(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
+
+        :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
+        :returns: An instance of the :py:class:`~easygopigo3.LoudnessSensor` class and with the port set to ``port``'s value.
+
+        The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        """
+        return LoudnessSensor(port, self)
+               
 
     def init_ultrasonic_sensor(self, port = "AD1"):
         """
@@ -898,6 +911,7 @@ class Sensor(object):
 
             * :py:class:`~easygopigo3.LightSensor`
             * :py:class:`~easygopigo3.SoundSensor`
+            * :py:class:`~easygopigo3.LoudnessSensor`
             * :py:class:`~easygopigo3.UltraSonicSensor`
             * :py:class:`~easygopigo3.Buzzer`
             * :py:class:`~easygopigo3.Led`
@@ -1233,6 +1247,7 @@ class AnalogSensor(Sensor):
 
         self.value = 0
         self.freq = 24000
+        self._max_value = 4096
         try:
             Sensor.__init__(self, port, pinmode, gpg)
         except:
@@ -1272,7 +1287,13 @@ class AnalogSensor(Sensor):
         :rtype: int
 
         """
-        reading_percent = self.read() * 100 // 4096
+        reading_percent = round(self.read() * 100 // self._max_value)
+        
+        # Some sensors - like the loudness_sensor - 
+        # can actually return higher than 100% so let's clip it
+        # and keep classrooms within an acceptable noise level
+        if reading_percent > 100:
+            reading_percent = 100
         return reading_percent
 
     def write(self, power):
@@ -1448,6 +1469,73 @@ class SoundSensor(AnalogSensor):
         self.set_descriptor("Sound sensor")
 
 ##########################
+
+class LoudnessSensor(AnalogSensor):
+    """
+    | Class for the `Grove Loudness Sensor`_.
+
+    | This class derives from :py:class:`~easygopigo3.Sensor` and :py:class:`~easygopigo3.AnalogSensor` class, so all of their attributes and methods are inherited.
+    | For creating a :py:class:`~easygopigo3.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # and now instantiate a LoudnessSensor object through the gpg3_obj object
+         loudness_sensor = gpg3_obj.init_loudness_sensor()
+
+         # do the usual stuff, like read the data of the sensor
+         value = loudness_sensor.read()
+         value_percentage = loudness_sensor.percent_read()
+
+         # take a look at AnalogSensor class and Sensor class for more methods and attributes
+
+    | Or if we need to specify the port we want to use, we might do it like in the following example.
+
+    .. code-block:: python
+
+         # create an EasyGoPiGo3 object
+         gpg3_obj = EasyGoPiGo3()
+
+         # variable for holding the port to which we have the sound sensor connected to
+         port = "AD1"
+
+         loudness_sensor = gpg3_obj.init_loudness_sensor(port)
+
+         # read the sensor the same way as in the previous example
+
+    .. seealso::
+
+         For more sensors, please see our Dexter Industries `shop`_.
+
+    """
+    def __init__(self, port="AD1", gpg=None):
+        """
+        Constructor for initializing a :py:class:`~easygopigo3.LoudnessSensor` object for the `Grove Loudness Sensor`_.
+
+        :param str port = "AD1": Port to which we have the `Grove Loudness Sensor`_ connected to.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LoudnessSensor` object.
+        :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+
+        The ``port`` parameter can take the following values:
+
+             * ``"AD1"`` - general purpose input/output port.
+             * ``"AD2"`` - general purpose input/output port.
+
+        The ports' locations can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+
+        """
+        debug("Loudness Sensor on port " + port)
+        try:
+            AnalogSensor.__init__(self, port, "INPUT", gpg)
+        except:
+            raise
+        self.set_pin(1)
+        self._max_value = 1024  # based on empirical tests
+        self.set_descriptor("Loudness sensor")
+
+##########################        
 
 
 class UltraSonicSensor(AnalogSensor):
@@ -1659,7 +1747,7 @@ class UltraSonicSensor(AnalogSensor):
         Measures the distance from a target in inches.
 
         :returns: The distance from a target in inches.
-        :rtype: int
+        :rtype: float (one decimal)
 
         .. important::
 
@@ -1670,7 +1758,7 @@ class UltraSonicSensor(AnalogSensor):
         value = self.read()   # cm reading
         if value == 501:
             return 501
-        return (int(value / 2.54))
+        return (round(value / 2.54, 1))
 ##########################
 
 
@@ -2519,7 +2607,9 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             raise
 
         try:
+            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
+            _release_read()
         except Exception as e:
             print(e)
             raise IOError("Distance Sensor not found")
@@ -2597,7 +2687,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         Reads the distance in inches.
 
         :returns: Distance from target in inches.
-        :rtype: int
+        :rtype: float  (one decimal)
 
         .. note::
 
@@ -2606,6 +2696,7 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
         """
         cm = self.read()
+        inches = round (cm / 2.54, 1)
         return cm / 2.54
 
 
@@ -2622,18 +2713,8 @@ class DHTSensor(Sensor):
             raise
 
         try:
-            import threading
-
             self.sensor_type = sensor_type
 
-            # here we keep the temperature values after removing outliers
-            self.filtered_temperature = []
-
-            # here we keep the filtered humidity values after removing the outliers
-            self.filtered_humidity = []
-
-            # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
-            self.event = threading.Event()
             if self.sensor_type == 0:
                 self.set_descriptor("Blue DHT Sensor")
             else:
@@ -2669,7 +2750,6 @@ class DHTSensor(Sensor):
         Return values may be a float, or error strings
         TBD: raise errors instead of returning strins
         '''
-        import threading
         from di_sensors import DHT
 
         _grab_read()
@@ -2684,7 +2764,7 @@ class DHTSensor(Sensor):
             # print("Humidity = %.02f%%"%humidity)
             return humidity
 
-    def read_dht(self):
+    def read(self):
         from di_sensors import DHT
 
         _grab_read()
@@ -2699,91 +2779,6 @@ class DHTSensor(Sensor):
             print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
             return [temp, humidity]
 
-    def _eliminateNoise(self, values, std_factor = 2):
-        """
-        function which eliminates the noise by using a statistical model we determine the standard normal deviation and we exclude anything that goes beyond a threshold think of a probability distribution plot - we remove the extremes the greater the std_factor, the more "forgiving" is the algorithm with the extreme values
-        """
-        import numpy
-
-        mean = numpy.mean(values)
-        standard_deviation = numpy.std(values)
-
-        if standard_deviation == 0:
-            return values
-
-        final_values = [element for element in values if element > mean - std_factor * standard_deviation]
-
-        final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
-
-        return final_values
-
-    def _readingValues(self,sensor_type=0):
-        """function for processing the data filtering, periods of time, yada yada
-        """
-
-        import threading
-        from di_sensors import DHT
-        import numpy
-        import math
-        # after this many second we make a record
-        seconds_window = 10
-
-        values = []
-        while not self.event.is_set():
-            counter = 0
-            while counter < seconds_window and not self.event.is_set():
-                temp = None
-                humidity = None
-
-                _grab_read()
-                try:
-                    [temp, humidity] = DHT.dht(sensor_type)
-                except IOError:
-                    print("we've got IO error")
-                _release_read()
-
-                if math.isnan(temp) == False and math.isnan(humidity) == False:
-                    values.append({"temp" : temp, "hum" : humidity})
-                    counter += 1
-                #else:
-                    #print("we've got NaN")
-                time.sleep(1)
-
-        self.filtered_temperature.append(numpy.mean(self._eliminateNoise([x["temp"] for x in values])))
-        self.filtered_humidity.append(numpy.mean(self._eliminateNoise([x["hum"] for x in values])))
-
-        values = []
-
-    def continuous_read_dht(self):
-        """
-        Function used to Read the values continuously and displays values after normalising them
-        """
-        import threading
-
-        try:
-            # here we start the thread we use a thread in order to gather/process the data separately from the printing process
-            data_collector = threading.Thread(target = self._readingValues)
-            data_collector.start()
-
-            while not self.event.is_set():
-                if len(self.filtered_temperature) > 0:
-                # or we could have used filtered_humidity instead
-
-                    temperature = self.filtered_temperature.pop()
-                    humidity = self.filtered_humidity.pop()
-
-            # here you can do whatever you want with the variables: print them, file them out, anything
-            print('{},Temperature:{:.01f}C, Humidity:{:.01f}%' .format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),temperature,humidity))
-
-            # wait a second before the next check
-            time.sleep(1)
-
-            # wait until the thread is finished
-            data_collector.join()
-
-        except Exception as e:
-            self.event.set()
-            print ("continuous_read_dht: {}".format(e))
 
 
 # class RgbLcd(Sensor):
