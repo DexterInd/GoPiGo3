@@ -7,6 +7,7 @@
 //
 
 const DHT = require('di-sensors').DHT;
+const utils = require('../utils/misc');
 
 class DHTSensor {
     constructor(port, sensorType = 0, gpg) {
@@ -21,7 +22,7 @@ class DHTSensor {
         import done internally so it's done on a as needed basis only
      */
     readTemperature() {
-        const temp = this.dhtSensor.read()[0];
+        const temp = this.readDht()[0];
         return temp;
     }
 
@@ -30,7 +31,7 @@ class DHTSensor {
         TODO: raise errors instead of returning strings
      */
     readHumidity() {
-        const humidity = this.dhtSensor.read()[1];
+        const humidity = this.readDht()[1];
         return humidity;
     }
 
@@ -38,7 +39,9 @@ class DHTSensor {
      *
      */
     readDht() {
+        utils.grabI2CRead();
         const data = this.dhtSensor.read();
+        utils.releaseI2CRead();
         return data;
     }
 }

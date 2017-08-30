@@ -18,6 +18,7 @@ class AnalogSensor extends Sensor {
 
         this.value = 0;
         this.freq = 24000;
+        this.maxValue = 4096;
 
         // select the outwards pin of the grove connector
         this.setPin(1);
@@ -55,7 +56,13 @@ class AnalogSensor extends Sensor {
      * Brings the sensor read to a percent scale
      */
     percentRead() {
-        return parseInt((this.read() * 100) / 4096, 0);
+        let percent = Math.round(this.read() * 100 / this.maxValue);
+
+        if (percent > 100) {
+            percent = 100;
+        }
+
+        return percent;
     }
 
     /**

@@ -29,10 +29,11 @@ class DistanceSensor extends Sensor {
             this.distanceSensor = new DistanceSensorLib(bus, null, {
                 device: gpg
             });
-            utils.releaseI2CRead();
         } catch (err) {
             console.log(err);
             throw new Error('Distance Sensor not found');
+        } finally {
+            utils.releaseI2CRead();
         }
 
         this.setDescriptor('Distance Sensor');
@@ -56,10 +57,11 @@ class DistanceSensor extends Sensor {
             try {
                 utils.grabI2CRead();
                 mm = this.distanceSensor.readRangeSingleMillimeters();
-                utils.releaseI2CRead();
             } catch (err) {
                 console.log(err);
                 mm = 0;
+            } finally {
+                utils.releaseI2CRead();
             }
             attempt++;
             sleep.msleep(1000);

@@ -21,9 +21,9 @@ class UltraSonicSensor extends AnalogSensor {
 
         try {
             super(port, 'US', gpg);
+            this.setDescriptor('Ultrasonic sensor');
             this.safeDistance = 500;
             this.setPin(1);
-            this.setDescriptor('Ultrasonic sensor');
         } catch (err) {
             console.log(err);
             throw new Error(err);

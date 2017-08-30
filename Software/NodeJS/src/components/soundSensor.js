@@ -15,8 +15,8 @@ class SoundSensor extends AnalogSensor {
     constructor(port = 'AD1', gpg = null) {
         console.log('SoundSensor init');
         super(port, 'INPUT', gpg);
-        this.setPin(1);
         this.setDescriptor('Sound sensor');
+        this.setPin(1);
     }
 }
 

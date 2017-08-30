@@ -26,6 +26,7 @@ const DHTSensor = require('./components/dhtSensor');
 const DistanceSensor = require('./components/distanceSensor');
 const Remote = require('./components/remote');
 const MotionSensor = require('./components/motionSensor');
+const LoudnessSensor = require('./components/loudnessSensor');
 
 const Gopigo = require('./gopigo3');
 
@@ -44,6 +45,8 @@ class EasyGoPiGo3 extends Gopigo {
             throw new Error(err);
         }
 
+        // Test
+        // utils.grabI2CRead();
         utils.releaseI2CRead();
 
         this.sensor1 = null;
@@ -345,6 +348,9 @@ class EasyGoPiGo3 extends Gopigo {
     }
     initMotionSensor(port = 'AD1') {
         return new MotionSensor(port, this);
+    }
+    initLoudnessSensor(port = 'AD1') {
+        return new LoudnessSensor(port, this);
     }
 
     calibrateLineFollower() {

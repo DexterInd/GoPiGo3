@@ -17,8 +17,8 @@ class Led extends AnalogSensor {
 
         try {
             super(port, 'OUTPUT', gpg);
-            this.setPin(1);
             this.setDescriptor('LED');
+            this.setPin(1);
         } catch (err) {
             console.log(err);
             throw new Error(err);

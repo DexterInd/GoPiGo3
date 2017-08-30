@@ -8,19 +8,14 @@
 
 const AnalogSensor = require('./analogSensor');
 
-class LightSensor extends AnalogSensor {
-    /**
-     * Creates a light sensor from which we can read.
-     *  Light sensor is by default on pin A1(A-one)
-     *  self.pin takes a value of 0 when on analog pin (default value)
-     *      takes a value of 1 when on digital pin
-     */
+class LoudnessSensor extends AnalogSensor {
     constructor(port = 'AD1', gpg = null) {
-        console.log('LightSensor init');
+        console.log('LoudnessSensor init');
         super(port, 'INPUT', gpg);
-        this.setDescriptor('Light sensor');
+        this.setDescriptor('Loudness sensor');
         this.setPin(1);
+        this.maxValue = 1024; // based on empirical tests
     }
 }
 
-module.exports = LightSensor;
+module.exports = LoudnessSensor;

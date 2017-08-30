@@ -12,8 +12,8 @@ class ButtonSensor extends DigitalSensor {
     constructor(port = 'AD1', gpg = null) {
         console.log('ButtonSensor init');
         super(port, 'DIGITAL_INPUT', gpg);
-        this.setPin(1);
         this.setDescriptor('Button sensor');
+        this.setPin(1);
     }
 
     /**
