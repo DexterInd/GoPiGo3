@@ -23,15 +23,8 @@ class I2cMutex {
         this.isAcquired = false;
 
         while (!this.isAcquired) {
-            Lock.lock(this.lockFile, (err) => {
-                if (err) {
-                    // already locked by a different process
-                    sleep.msleep(1);
-                }
-                // lock
-                console.log('I2C Acquired');
-                _this.isAcquired = true;
-            });
+            Lock.lockSync(this.lockFile);
+            _this.isAcquired = true;
         }
 
         return this.isAcquired;
