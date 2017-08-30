@@ -739,7 +739,7 @@ class Gopigo3 {
         delayTime *= 115; // (0.000115);
         // Each I2C byte takes about 115uS at full speed (about 100kbps)
         // No point trying to read the values before they are ready.
-        sleep.usleep(delayTime);
+        sleep.msleep(delayTime);
         // Delay for as long as it will take to do the I2C transaction.
 
         timeout = new Date().getTime() + 5; // 0.005;
