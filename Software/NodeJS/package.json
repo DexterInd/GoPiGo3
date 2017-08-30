@@ -71,6 +71,6 @@
     "readline-sync": "^1.4.7",
     "sleep": "^5.1.1",
     "spi-device": "^0.2.6",
-    "di-sensors": "../../DI_Sensors/NodeJS/"
+    "di-sensors": "^0.0.2"
   }
 }
