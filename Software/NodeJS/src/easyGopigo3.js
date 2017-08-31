@@ -123,7 +123,7 @@ class EasyGoPiGo3 extends Gopigo {
                 destPositionLeft,
                 destPositionRight
             )) {
-                sleep.sleep(0.1);
+                sleep.msleep(100);
             }
         }
     }
@@ -162,7 +162,7 @@ class EasyGoPiGo3 extends Gopigo {
                 destPositionLeft,
                 destPositionRight
             )) {
-                sleep.sleep(0.1);
+                sleep.msleep(100);
             }
         }
     }
@@ -307,7 +307,7 @@ class EasyGoPiGo3 extends Gopigo {
                 destPositionLeft,
                 destPositionRight
             )) {
-                sleep.sleep(0.1);
+                sleep.msleep(100);
             }
         }
     }
