@@ -955,8 +955,6 @@ if __name__ == '__main__':
             arbitrary_delay = 10  # no need to issue error statement if at least 10 seconds haven't gone by.
             if (time.time() - startTime > arbitrary_delay):
                 print ("GoPiGo3 Scratch: Scratch is either not opened or remote sensor connections aren't enabled")
-        except Exception as e:
-            print ("Attempting to connect gives: {}".format(e))
 
     try:
         setup_default_broadcasts()
