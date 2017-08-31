@@ -22,8 +22,9 @@ echo "Updating repository"
 apt-get update > /dev/null
 
 echo "Installing UV4L drivers"
-apt-get install uv4l uv4l-raspicam
-apt-get install uv4l-raspicam-extras
+apt-get -y install uv4l uv4l-raspicam
+apt-get -y install uv4l-raspicam-extras
+apt-get -y install uv4l-server
 
 echo "Copying configs for UV4L drivers"
 cp uv4l-raspicam.conf /etc/uv4l/uv4l-raspicam.conf
@@ -32,4 +33,4 @@ echo "Restarting UV4L service"
 service uv4l_raspicam restart
 
 echo "Installing Flask"
-apt-get install python3-flask
+apt-get -y install python3-flask
