@@ -1,6 +1,6 @@
 from __future__ import print_function
 from __future__ import division
-from builtins import input
+# from builtins import input
 
 import scratch
 import re
@@ -78,7 +78,7 @@ except:
     pivotpi_available=False
     
 try:
-    distance_sensor = easy.DistanceSensor(gpg)
+    distance_sensor = easy.DistanceSensor(gpg=gpg)
 except Exception as e:
     distance_sensor = None
     
@@ -955,6 +955,8 @@ if __name__ == '__main__':
             arbitrary_delay = 10  # no need to issue error statement if at least 10 seconds haven't gone by.
             if (time.time() - startTime > arbitrary_delay):
                 print ("GoPiGo3 Scratch: Scratch is either not opened or remote sensor connections aren't enabled")
+        except Exception as e:
+            print ("Attempting to connect gives: {}".format(e))
 
     try:
         setup_default_broadcasts()
