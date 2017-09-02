@@ -1,4 +1,4 @@
-const Gopigo = require('../lib/gopigo3');
+const Gopigo = require('../../lib/gopigo3');
 
 const gpg = new Gopigo();
 

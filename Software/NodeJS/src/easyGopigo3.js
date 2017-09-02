@@ -94,13 +94,13 @@ class EasyGoPiGo3 extends Gopigo {
     forward() {
         this.setMotorDps(EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT, this.getSpeed());
     }
-    driveCm(dist, blocking = true) {
+    driveCm(dist, cb) {
         // dist is in cm
         // if dist is negative, this becomes a backward move
         const distMm = dist * 10;
 
         // the number of degrees each wheel needs to turn
-        const wheelTurnDegrees = ((distMm / EasyGoPiGo3.WHEEL_CIRCUMFERENCE) * 360);
+        const wheelTurnDegrees = Math.trunc((distMm / EasyGoPiGo3.WHEEL_CIRCUMFERENCE) * 360);
 
         // get the starting position of each motor
         const startPositionLeft = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
@@ -109,23 +109,37 @@ class EasyGoPiGo3 extends Gopigo {
         const destPositionLeft = startPositionLeft + wheelTurnDegrees;
         const destPositionRight = startPositionRight + wheelTurnDegrees;
 
+        console.log('-------------------------');
+        console.log('DRIVE CM');
+        console.log('-------------------------');
+
+        console.log('Start position left', startPositionLeft);
+        console.log('Destination position left', destPositionLeft);
         this.setMotorPosition(
             EasyGoPiGo3.MOTOR_LEFT,
             destPositionLeft
         );
+        console.log('-------------------------');
+        console.log('Start position right', startPositionRight);
+        console.log('Destination position right', destPositionRight);
         this.setMotorPosition(
             EasyGoPiGo3.MOTOR_RIGHT,
             destPositionRight
         );
 
-        if (blocking) {
-            while (!this.targetReached(
+        let interval;
+        const checkTarget = () => {
+            if (this.targetReached(
                 destPositionLeft,
                 destPositionRight
             )) {
-                sleep.msleep(100);
+                clearInterval(interval);
+                if (typeof cb === 'function') {
+                    cb();
+                }
             }
-        }
+        };
+        interval = setInterval(checkTarget, 100);
     }
     driveInches(dist, blocking = true) {
         this.driveCm(dist * 2.54, blocking);
@@ -138,9 +152,8 @@ class EasyGoPiGo3 extends Gopigo {
        if degrees is negative, this becomes a backward move
      *
      * @param {*} degrees
-     * @param {*} blocking
      */
-    driveDegrees(degrees, blocking = false) {
+    driveDegrees(degrees, cb) {
         // get the starting position of each motor
         const startPositionLeft = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
         const startPositionRight = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
@@ -157,14 +170,19 @@ class EasyGoPiGo3 extends Gopigo {
             destPositionRight
         );
 
-        if (blocking) {
-            while (!this.targetReached(
+        let interval;
+        const checkTarget = () => {
+            if (this.targetReached(
                 destPositionLeft,
                 destPositionRight
             )) {
-                sleep.msleep(100);
+                clearInterval(interval);
+                if (typeof cb === 'function') {
+                    cb();
+                }
             }
-        }
+        };
+        interval = setInterval(checkTarget, 100);
     }
     /**
      * check if both wheels have reached their target
@@ -181,16 +199,15 @@ class EasyGoPiGo3 extends Gopigo {
         const currentLeftPosition = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
         const currentRightPosition = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
 
-        if (
-            currentLeftPosition > minLefTarget
-            && currentLeftPosition < maxLeftTarget
-            && currentRightPosition > minRightTarget
-            && currentRightPosition < maxRighTarget
-        ) {
-            return true;
-        }
+        console.log('------------------------------------------');
+        console.log('Enc, Current, Min, Max');
+        console.log('Left', currentLeftPosition, minLefTarget, maxLeftTarget);
+        console.log('Right', currentRightPosition, minRightTarget, maxRighTarget);
 
-        return false;
+        return  currentLeftPosition > minLefTarget
+                && currentLeftPosition < maxLeftTarget
+                && currentRightPosition > minRightTarget
+                && currentRightPosition < maxRighTarget;
     }
     resetEncoders() {
         this.setMotorPower(EasyGoPiGo3.MOTOR_LEFT + EasyGoPiGo3.MOTOR_RIGHT, 0);
@@ -278,9 +295,8 @@ class EasyGoPiGo3 extends Gopigo {
        and not wheel rotation
        the distance in mm that each wheel needs to travel
      * @param {*} degrees
-     * @param {*} blocking
      */
-    turnDegrees(degrees, blocking = false) {
+    turnDegrees(degrees, cb) {
         const wheelTravelDistance = ((EasyGoPiGo3.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360);
 
         // the number of degrees each wheel needs to turn
@@ -302,14 +318,19 @@ class EasyGoPiGo3 extends Gopigo {
             destPositionRight
         );
 
-        if (blocking) {
-            while (!this.targetReached(
+        let interval;
+        const checkTarget = () => {
+            if (this.targetReached(
                 destPositionLeft,
                 destPositionRight
             )) {
-                sleep.msleep(100);
+                clearInterval(interval);
+                if (typeof cb === 'function') {
+                    cb();
+                }
             }
-        }
+        };
+        interval = setInterval(checkTarget, 100);
     }
 
     //

@@ -479,7 +479,8 @@ class Gopigo3 {
      * @param {*} position The target position
      */
     setMotorPosition(port, position) {
-        const positionRaw = parseInt(position * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
+        const positionRaw = Math.trunc(position * Gopigo3.MOTOR_TICKS_PER_DEGREE);
+        console.log('Set motor position', position, 'Ticks per degree', Gopigo3.MOTOR_TICKS_PER_DEGREE, 'Position raw', positionRaw);
         const dataOut = [
             Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_POSITION,
             parseInt(port, 0),
@@ -510,7 +511,7 @@ class Gopigo3 {
      * @param {*} dps The speed limit in degrees per second, with 0 being no limit
      */
     setMotorLimits(port, power = 0, dps = 0) {
-        dps = parseInt(dps * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
+        dps = Math.trunc(dps * Gopigo3.MOTOR_TICKS_PER_DEGREE);
         const dataOut = [
             Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_LIMITS,
             parseInt(port, 0),
@@ -573,8 +574,8 @@ class Gopigo3 {
 
             output = [
                 dataIn[4], power,
-                parseInt(encoder / Gopigo3.MOTOR_TICKS_PER_DEGREE, 0),
-                parseInt(dps / Gopigo3.MOTOR_TICKS_PER_DEGREE, 0)
+                Math.trunc(encoder / Gopigo3.MOTOR_TICKS_PER_DEGREE),
+                Math.trunc(dps / Gopigo3.MOTOR_TICKS_PER_DEGREE)
             ];
         } else {
             throw new Error('No SPI response');
@@ -603,7 +604,7 @@ class Gopigo3 {
             encoder = parseInt(encoder - 0x100000000, 0);
         }
 
-        return parseInt(encoder / Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
+        return Math.trunc(encoder / Gopigo3.MOTOR_TICKS_PER_DEGREE);
     }
     /**
      * Offset a motor encoder
@@ -611,7 +612,7 @@ class Gopigo3 {
      * @param {*} offset The encoder offset
      */
     offsetMotorEncoder(port, offset) {
-        offset = parseInt(offset * Gopigo3.MOTOR_TICKS_PER_DEGREE, 0);
+        offset = Math.trunc(offset * Gopigo3.MOTOR_TICKS_PER_DEGREE);
         const dataOut = [
             Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.OFFSET_MOTOR_ENCODER,
             parseInt(port, 0),
@@ -673,7 +674,7 @@ class Gopigo3 {
     setGrovePwmDuty(pin, duty) {
         duty = duty < 0 ? 0 : duty;
         duty = duty > 100 ? 100 : duty;
-        const dutyValue = parseInt(duty * 10.0, 0);
+        const dutyValue = Math.trunc(duty * 10.0);
         const dataOut = [
             Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_GROVE_PWM_DUTY, pin,
             ((dutyValue >> 8) & 0xFF), (dutyValue & 0xFF)
