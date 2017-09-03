@@ -19,7 +19,6 @@ class LightSensor extends AnalogSensor {
         console.log('LightSensor init');
         super(port, 'INPUT', gpg);
         this.setDescriptor('Light sensor');
-        this.setPin(1);
     }
 }
 

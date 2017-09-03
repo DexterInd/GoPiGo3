@@ -13,7 +13,6 @@ class ButtonSensor extends DigitalSensor {
         console.log('ButtonSensor init');
         super(port, 'DIGITAL_INPUT', gpg);
         this.setDescriptor('Button sensor');
-        this.setPin(1);
     }
 
     /**

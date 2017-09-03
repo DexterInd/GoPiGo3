@@ -23,7 +23,6 @@ class UltraSonicSensor extends AnalogSensor {
             super(port, 'US', gpg);
             this.setDescriptor('Ultrasonic sensor');
             this.safeDistance = 500;
-            this.setPin(1);
         } catch (err) {
             console.log(err);
             throw new Error(err);
@@ -47,7 +46,9 @@ class UltraSonicSensor extends AnalogSensor {
             return true;
         }
 
-        return value;
+        // return value;
+        // The returned value should be always consistent.
+        return false;
     }
 
     /**
@@ -84,7 +85,7 @@ class UltraSonicSensor extends AnalogSensor {
      *  Possible returns:
      *  0    :  sensor not found
      *  5010 :  object not detected
-     *  between 15 and 4300 : actual distvarance read
+     *  between 15 and 4300 : actual distance read
      */
     readMm() {
         let output = 0;
@@ -95,7 +96,6 @@ class UltraSonicSensor extends AnalogSensor {
         while (readings.length < 3 && skip < 5) {
             try {
                 value = this.gpg.getGroveValue(this.getPortId());
-                console.log('Raw Value', value);
             } catch (err) {
                 if (err instanceof ValueError) {
                     value = 5010; // assume open road ahead
@@ -119,6 +119,7 @@ class UltraSonicSensor extends AnalogSensor {
         if (skip >= 5) {
             // if value = 0 it means Ultrasonic Sensor wasn't found
             if (value === 0) {
+                console.log('Sensor not found');
                 return 0;
             }
 

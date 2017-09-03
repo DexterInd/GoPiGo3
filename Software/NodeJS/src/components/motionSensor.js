@@ -12,7 +12,6 @@ class MotionSensor extends DigitalSensor {
     constructor(port = 'AD1', gpg = null) {
         console.log('MotionSensor init');
         super(port, 'DIGITAL_INPUT', gpg);
-        this.setPin(1);
         this.setDescriptor('Motion sensor');
     }
 

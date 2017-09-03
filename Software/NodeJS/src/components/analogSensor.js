@@ -25,7 +25,7 @@ class AnalogSensor extends Sensor {
 
         // this delay is at least needed by the Light sensor
         // TODO: Why don't move it in the light sensor class then?
-        sleep.msleep(100);
+        sleep.msleep(1000);
     }
 
     /**

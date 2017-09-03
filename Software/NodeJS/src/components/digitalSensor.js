@@ -13,6 +13,7 @@ class DigitalSensor extends Sensor {
     constructor(port, pinMode, gpg) {
         console.log('DigitalSensor init');
         super(port, pinMode, gpg);
+        this.setPin(1);
     }
 
     /**

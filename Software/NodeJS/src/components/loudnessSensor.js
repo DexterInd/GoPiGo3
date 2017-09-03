@@ -13,7 +13,6 @@ class LoudnessSensor extends AnalogSensor {
         console.log('LoudnessSensor init');
         super(port, 'INPUT', gpg);
         this.setDescriptor('Loudness sensor');
-        this.setPin(1);
         this.maxValue = 1024; // based on empirical tests
     }
 }

@@ -52,7 +52,6 @@ class Buzzer extends AnalogSensor {
         console.log('Buzzer init');
         try {
             super(port, 'OUTPUT', gpg);
-            this.setPin(1);
             this.setDescriptor('Buzzer');
             this.power = 50;
             this.freq = 329;
