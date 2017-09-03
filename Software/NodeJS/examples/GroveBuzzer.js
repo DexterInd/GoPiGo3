@@ -15,19 +15,19 @@
 *
 */
 
-const Gopigo = require('../lib/gopigo3');
+const Gopigo3 = require('../lib/gopigo3');
 const sleep = require('sleep');
 
-const gpg = new Gopigo();
+const gpg = new Gopigo3();
 const scale = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
 
-gpg.setGroveType(Gopigo.GROVE_1, Gopigo.GROVE_TYPE.CUSTOM);
-gpg.setGroveMode(Gopigo.GROVE_1_1, Gopigo.GROVE_OUTPUT_PWM);
-gpg.setGrovePwmDuty(Gopigo.GROVE_1_1, 50);
+gpg.setGroveType(Gopigo3.GROVE_1, Gopigo3.GROVE_TYPE.CUSTOM);
+gpg.setGroveMode(Gopigo3.GROVE_1_1, Gopigo3.GROVE_OUTPUT_PWM);
+gpg.setGrovePwmDuty(Gopigo3.GROVE_1_1, 50);
 
 let note = 0;
 const interval = setInterval(() => {
-    gpg.setGrovePwmFrequency(Gopigo.GROVE_1, scale[note]);
+    gpg.setGrovePwmFrequency(Gopigo3.GROVE_1, scale[note]);
     note++;
     if (note >= scale.length) {
         note = 0;

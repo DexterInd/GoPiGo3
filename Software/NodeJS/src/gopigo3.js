@@ -480,7 +480,6 @@ class Gopigo3 {
      */
     setMotorPosition(port, position) {
         const positionRaw = Math.trunc(position * Gopigo3.MOTOR_TICKS_PER_DEGREE);
-        console.log('Set motor position', position, 'Ticks per degree', Gopigo3.MOTOR_TICKS_PER_DEGREE, 'Position raw', positionRaw);
         const dataOut = [
             Gopigo3.SPI_Address, Gopigo3.SPI_MESSAGE_TYPE.SET_MOTOR_POSITION,
             parseInt(port, 0),
@@ -592,9 +591,9 @@ class Gopigo3 {
         let messageType;
 
         if (port === Gopigo3.MOTOR_LEFT) {
-            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_LEFT;
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_ENCODER_LEFT;
         } else if (port === Gopigo3.MOTOR_RIGHT) {
-            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_STATUS_RIGHT;
+            messageType = Gopigo3.SPI_MESSAGE_TYPE.GET_MOTOR_ENCODER_RIGHT;
         } else {
             throw new Error('getMotorEncoder error. Must be one motor port at a time. MOTOR_LEFT or MOTOR_RIGHT.');
         }

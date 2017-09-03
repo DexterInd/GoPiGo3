@@ -1,7 +1,7 @@
 const sleep = require('sleep');
-const EasyGopigo = require('../../lib/easyGopigo3');
+const EasyGopigo3 = require('../../lib/easyGopigo3');
 
-const gpg = new EasyGopigo();
+const gpg = new EasyGopigo3();
 const myServo = gpg.initServo('SERVO2');
 
 gpg.openLeftEye();

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-const EasyGopigo = require('../lib/easyGopigo3');
-const gpg = new EasyGopigo();
+const EasyGopigo3 = require('../lib/easyGopigo3');
+const gpg = new EasyGopigo3();
 
 /*
 describe('GoPiGo test.', () => {

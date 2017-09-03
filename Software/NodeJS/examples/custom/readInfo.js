@@ -1,6 +1,6 @@
-const Gopigo = require('../../lib/gopigo3');
+const Gopigo3 = require('../../lib/gopigo3');
 
-const gpg = new Gopigo();
+const gpg = new Gopigo3();
 
 try {
     console.log('Manufacturer               :', gpg.getManufacturer());

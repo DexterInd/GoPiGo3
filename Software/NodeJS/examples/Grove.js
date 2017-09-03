@@ -15,16 +15,16 @@
 *
 */
 
-const Gopigo = require('../lib/gopigo3');
+const Gopigo3 = require('../lib/gopigo3');
 const sleep = require('sleep');
 
-const gpg = new Gopigo();
+const gpg = new Gopigo3();
 
-gpg.setGroveType(Gopigo.GROVE_1, Gopigo.GROVE_TYPE_CUSTOM);
-gpg.setGroveType(Gopigo.GROVE_2, Gopigo.GROVE_TYPE_CUSTOM);
+gpg.setGroveType(Gopigo3.GROVE_1, Gopigo3.GROVE_TYPE_CUSTOM);
+gpg.setGroveType(Gopigo3.GROVE_2, Gopigo3.GROVE_TYPE_CUSTOM);
 
-gpg.setGroveMode(Gopigo.GROVE_1_1, Gopigo.GROVE_OUTPUT_PWM);
-gpg.setGroveMode(Gopigo.GROVE_2, Gopigo.GROVE_INPUT_ANALOG);
+gpg.setGroveMode(Gopigo3.GROVE_1_1, Gopigo3.GROVE_OUTPUT_PWM);
+gpg.setGroveMode(Gopigo3.GROVE_2, Gopigo3.GROVE_INPUT_ANALOG);
 
 let duty = 10;
 // let freq = 0;
@@ -34,8 +34,8 @@ const interval = setInterval(() => {
     if (duty > 90) {
         duty = 10;
     }
-    gpg.setGrovePwmDuty(Gopigo.GROVE_1_1, duty);
-    gpg.setGrovePwmFrequency(Gopigo.GROVE_1, gpg.getGroveAnalog(Gopigo.GROVE_2_1));
+    gpg.setGrovePwmDuty(Gopigo3.GROVE_1_1, duty);
+    gpg.setGrovePwmFrequency(Gopigo3.GROVE_1, gpg.getGroveAnalog(Gopigo3.GROVE_2_1));
 }, 100);
 
 console.log('Press any key to exit');

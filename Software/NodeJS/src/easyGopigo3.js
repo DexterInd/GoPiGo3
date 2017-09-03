@@ -9,8 +9,6 @@
 
 const utils = require('./utils/misc');
 
-const sleep = require('sleep');
-
 const FirmwareVersionError = require('./errors/firmwareVersionError');
 
 const LightSensor = require('./components/lightSensor');
@@ -28,9 +26,9 @@ const Remote = require('./components/remote');
 const MotionSensor = require('./components/motionSensor');
 const LoudnessSensor = require('./components/loudnessSensor');
 
-const Gopigo = require('./gopigo3');
+const Gopigo3 = require('./gopigo3');
 
-class EasyGoPiGo3 extends Gopigo {
+class EasyGoPiGo3 extends Gopigo3 {
     static DEFAULT_SPEED = 300;
 
     constructor() {
@@ -45,12 +43,8 @@ class EasyGoPiGo3 extends Gopigo {
             throw new Error(err);
         }
 
-        // Test
-        // utils.grabI2CRead();
         utils.releaseI2CRead();
 
-        this.sensor1 = null;
-        this.sensor2 = null;
         this.setSpeed(EasyGoPiGo3.DEFAULT_SPEED);
         this.leftEyeColor = [0, 255, 255];
         this.rightEyeColor = [0, 255, 255];
@@ -109,19 +103,11 @@ class EasyGoPiGo3 extends Gopigo {
         const destPositionLeft = startPositionLeft + wheelTurnDegrees;
         const destPositionRight = startPositionRight + wheelTurnDegrees;
 
-        console.log('-------------------------');
-        console.log('DRIVE CM');
-        console.log('-------------------------');
-
-        console.log('Start position left', startPositionLeft);
-        console.log('Destination position left', destPositionLeft);
         this.setMotorPosition(
             EasyGoPiGo3.MOTOR_LEFT,
             destPositionLeft
         );
-        console.log('-------------------------');
-        console.log('Start position right', startPositionRight);
-        console.log('Destination position right', destPositionRight);
+
         this.setMotorPosition(
             EasyGoPiGo3.MOTOR_RIGHT,
             destPositionRight
@@ -191,7 +177,7 @@ class EasyGoPiGo3 extends Gopigo {
      */
     targetReached(leftTargetDegrees, rightTargetDegrees) {
         const tolerance = 5;
-        const minLefTarget = leftTargetDegrees - tolerance;
+        const minLeftTarget = leftTargetDegrees - tolerance;
         const maxLeftTarget = leftTargetDegrees + tolerance;
         const minRightTarget = rightTargetDegrees - tolerance;
         const maxRighTarget = rightTargetDegrees + tolerance;
@@ -199,12 +185,7 @@ class EasyGoPiGo3 extends Gopigo {
         const currentLeftPosition = this.getMotorEncoder(EasyGoPiGo3.MOTOR_LEFT);
         const currentRightPosition = this.getMotorEncoder(EasyGoPiGo3.MOTOR_RIGHT);
 
-        console.log('------------------------------------------');
-        console.log('Enc, Current, Min, Max');
-        console.log('Left', currentLeftPosition, minLefTarget, maxLeftTarget);
-        console.log('Right', currentRightPosition, minRightTarget, maxRighTarget);
-
-        return  currentLeftPosition > minLefTarget
+        return  currentLeftPosition > minLeftTarget
                 && currentLeftPosition < maxLeftTarget
                 && currentRightPosition > minRightTarget
                 && currentRightPosition < maxRighTarget;

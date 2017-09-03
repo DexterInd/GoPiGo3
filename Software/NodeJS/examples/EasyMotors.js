@@ -1,17 +1,7 @@
 const sleep = require('sleep');
-const EasyGopigo = require('../lib/easyGopigo3');
+const EasyGopigo3 = require('../lib/easyGopigo3');
 
-const gpg = new EasyGopigo();
-
-/*
-console.log('Move the motors forward freely for 1 second.');
-gpg.forward();
-sleep.sleep(1);
-
-console.log('Stop the motors for 1 second.');
-gpg.stop();
-sleep.sleep(1);
-*/
+const gpg = new EasyGopigo3();
 
 console.log('Press any key to exit');
 
@@ -22,6 +12,14 @@ process.stdin.on('data', () => {
     gpg.resetAll();
     process.exit(0);
 });
+
+console.log('Move the motors forward freely for 1 second.');
+gpg.forward();
+sleep.sleep(1);
+
+console.log('Stop the motors for 1 second.');
+gpg.stop();
+sleep.sleep(1);
 
 console.log('Drive the motors 50 cm and then stop.');
 gpg.driveCm(50, () => {
