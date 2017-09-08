@@ -7,7 +7,7 @@
  *  For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
  *
  *  C++ drivers for the GoPiGo3
- *  Version 1.1 Test
+ *  Version 1.1 Test 
  */
 
 #ifndef GoPiGo3_h_
