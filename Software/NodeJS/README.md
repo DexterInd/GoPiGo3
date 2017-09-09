@@ -1,5 +1,3 @@
-# Why? [![Build Status](https://travis-ci.org/Travelport-Ukraine/npm-module-boilerplate.svg?branch=master)](https://travis-ci.org/Travelport-Ukraine/npm-module-boilerplate)
-
 # GoPiGo3 for Node.js
 
 The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo3 is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo) 
@@ -21,6 +19,23 @@ You can install the GoPiGo3 on your own operating system with the following comm
         `sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3`
 2. Run the install script: `sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
 3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
+
+## Install/Update Node.js
+This library supports Node.js 8.x version, we provide a couple of bash scripts to install/uninstall the proper Node.js version.
+To install NVM (Node Version Manager), Node.js and NPM:
+1. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/install.sh`
+2. Follow the instructions
+
+To uninstall NVM, Node.js and NPM:
+1. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/uninstall.sh`
+2. Follow the instructions
+
+# Use in your application
+This library is published as a NPM package.
+1. Add it to your project: `npm install node-gopigo3 --save`
+2. Use it in your code: `const EasyGopigo3 = require('node-gopigo3')`
+
+For any initial hint please check the "examples" folder. Feel free to use the forum for any extra help.
 
 # License
 
@@ -51,4 +66,3 @@ Notes for developers
 - `npm run lint` - We recommend using [airbnb-config](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb). It's fantastic.
 - `npm run test:examples` - We recommend writing examples on pure JS for better understanding module usage.
 - `npm run build` - Do some magic with ES6 to create ES5 code.
-- `npm run prepublish` - Hook for npm. Do all the checks before publishing you module.
