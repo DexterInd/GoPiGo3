@@ -9,6 +9,6 @@ const Gopigo3 = require('./gopigo3');
 const EasyGopigo3 = require('./easyGopigo3');
 
 module.exports = {
-    'Gopigo': Gopigo3,
-    'EasyGopigo': EasyGopigo3
+    'Gopigo3': Gopigo3,
+    'EasyGopigo3': EasyGopigo3
 };
