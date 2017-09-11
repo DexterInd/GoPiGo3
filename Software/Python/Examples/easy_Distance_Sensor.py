@@ -33,7 +33,7 @@ import time
 import easygopigo3 as easy
 
 # Create an instance of the Distance Sensor class.
-my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the Line Follower object.
+my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the object.
 
 while True:
     # Directly print the values of the sensor.
