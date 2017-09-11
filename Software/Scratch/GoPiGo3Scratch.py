@@ -1,6 +1,6 @@
 from __future__ import print_function
 from __future__ import division
-from builtins import input
+# from builtins import input
 
 import scratch
 import re
@@ -78,7 +78,7 @@ except:
     pivotpi_available=False
     
 try:
-    distance_sensor = easy.DistanceSensor(gpg)
+    distance_sensor = easy.DistanceSensor(gpg=gpg)
 except Exception as e:
     distance_sensor = None
     
@@ -148,15 +148,18 @@ DRIVE_TURN_AMOUNT = DRIVE_TURN_RIGHT+2
 DRIVE_TURN_DEGREES = DRIVE_TURN_AMOUNT+2
 DRIVE_TURN_ROTATIONS = DRIVE_TURN_DEGREES+1
 DRIVE_TURN_SECONDS = DRIVE_TURN_ROTATIONS+1
-STOP_GROUP = 23
-EYES_GROUP = 24
+STOP_GROUP = 21
+SPEED_GROUP = 22
+SPEED_GROUP_NEW_SPEED = SPEED_GROUP +1
+SPEED_GROUP_PERCENT = SPEED_GROUP + 2
+EYES_GROUP = 25
 EYES_OPEN_GROUP = EYES_GROUP+2
 EYES_CLOSE_GROUP = EYES_GROUP+3
 EYES_WHICH_GROUP = EYES_GROUP+4
 EYES_BOTH_GROUP = EYES_GROUP+5
 EYES_LEFT_GROUP = EYES_GROUP+6
 EYES_RIGHT_GROUP = EYES_GROUP+7
-EYE_COLOR_GROUP = 32
+EYE_COLOR_GROUP = 33
 EYE_COLOR_LEFT_GROUP = EYE_COLOR_GROUP+2
 EYE_COLOR_RIGHT_GROUP = EYE_COLOR_GROUP+3
 EYE_COLOR_SETTING_GROUP = EYE_COLOR_GROUP+4
@@ -165,13 +168,13 @@ EYE_COLOR_G_GROUP = EYE_COLOR_GROUP+6
 EYE_COLOR_B_GROUP = EYE_COLOR_GROUP+7
 EYE_COLOR_HTML_GROUP = EYE_COLOR_GROUP+8
 EYE_COLOR_STRING_GROUP = EYE_COLOR_GROUP+9
-BLINKER_GROUP = 42
+BLINKER_GROUP = 43
 BLINKER_LEFT_GROUP = BLINKER_GROUP+2
 BLINKER_RIGHT_GROUP = BLINKER_GROUP+3
 BLINKER_SELECTION_GROUP = BLINKER_GROUP+4
 BLINKER_STATUS_GROUP = BLINKER_GROUP+5
-RESET_GROUP = 48
-ENCODER_GROUP = 49
+RESET_GROUP = 49
+ENCODER_GROUP = 50
 ENCODER_LEFT_GROUP = ENCODER_GROUP+3
 ENCODER_RIGHT_GROUP = ENCODER_GROUP+4
 ENCODER_LEFT2_GROUP = ENCODER_GROUP+6
@@ -241,7 +244,7 @@ def set_regex_string():
     
     regex_stop = "(STOP)"
     
-    regex_speed = "(SPE(?:E)?D)\s*[0-9.]+\s*(%)?"
+    regex_speed = "(SPE(?:E)?D)\s*([0-9.]+)\s*(%)?"
 
     # second one:
     # (turn) left/right (x degrees/seconds)
@@ -263,8 +266,8 @@ def set_regex_string():
     
     full_regex = ("^"+regex_drive + "$|" +
             regex_turn + "$|^" +
-            regex_speed + "$|^" +
             regex_stop + "$|^" +
+            regex_speed + "$|^" +
             regex_eyes + "$|^" +
             regex_eyes_color + "$|^" +
             regex_blinkers + "$|^" +
@@ -380,9 +383,13 @@ def handle_GoPiGo3_msg(msg):
         # Drive forward/Backward (for X Units)
     
     elif regObj.group(STOP_GROUP):
-        # print('stop')
+        print('stop')
         sensors = gpg.stop()
     
+    elif regObj.group(SPEED_GROUP):
+        # print ("change speed")
+        set_speed(regObj)
+
     elif regObj.group(DRIVE_TURN):
         # print('turn')
         sensors = turn_gpg(regObj)
@@ -788,6 +795,32 @@ def handle_eyes(regObj):
     
     return None
 
+def set_speed(regObj):
+    '''
+    change GoPigo3 speed where 300 is 50%, 700 is 100% and 100 is 10%
+    '''
+    if regObj.group(SPEED_GROUP_NEW_SPEED):
+        try:
+            new_speed = int(regObj.group(SPEED_GROUP_NEW_SPEED))
+        except Exception as e:
+            print("Set Speed: {}".format(e))
+
+        # put some cap onto the new speed values
+        if new_speed < 10 and new_speed > 0:
+            # 0 meeans stop but anything between 0 and 10 is a 10
+            new_speed = 10
+        if new_speed > 100:
+            new_speed = 100
+
+        # basic algebra to match 10-100 to 100-700 approximately
+        real_new_speed = (new_speed * 20 // 3) + 40
+        print ("percent speed is {}, actual speed is {}".format(new_speed, real_new_speed))
+        if new_speed == 0:
+            gpg.stop()
+        else:
+            gpg.set_speed(real_new_speed)
+
+    return None
 
 def turn_gpg(regObj):
     '''
