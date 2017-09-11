@@ -27,7 +27,7 @@ time.sleep(1)
 
 for note in twinkle:
     print(note)
-    my_buzzer.sound(buzzer.scale[note])
+    my_buzzer.sound(my_buzzer.scale[note])
     time.sleep(0.5)
     my_buzzer.sound_off()
     time.sleep(0.25)
