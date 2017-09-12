@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Implementation-Title: GoPiGo3-Java // Template project
+Implementation-Version: 0.1.0
+Implementation-Vendor: Juan Antonio Breña Moral
+Main-Class: Demo
+
+

@@ -6,11 +6,13 @@ import easygopigo3 as easy
 
 # Create an instance of the GoPiGo3 class.
 # GPG will be the GoPiGo3 object.
-GPG = easy.EasyGoPiGo3()
+gpg = easy.EasyGoPiGo3()
 
 # Create an instance of the Buzzer
 # connect a buzzer to port AD2
-my_buzzer = easy.Buzzer("AD2", GPG)
+my_buzzer = gpg.init_buzzer("AD2")
+
+twinkle = ["C4","C4","G4","G4","A4","A4","G4"]
 
 print("Expecting a buzzer on Port AD2")
 print("A4")
@@ -22,9 +24,6 @@ time.sleep(1)
 print("A3")
 my_buzzer.sound(220)
 time.sleep(1)
-
-
-twinkle = ["C4","C4","G4","G4","A4","A4","G4"]
 
 for note in twinkle:
     print(note)

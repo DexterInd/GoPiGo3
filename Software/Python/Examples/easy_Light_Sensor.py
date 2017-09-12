@@ -26,16 +26,24 @@ import easygopigo3 as easy
 
 # Create an instance of the GoPiGo3 class.
 # GPG will be the GoPiGo3 object.
-GPG = easy.EasyGoPiGo3()
+gpg = easy.EasyGoPiGo3()
 
 # Create an instance of the Light sensor
-my_light_sensor = easy.LightSensor("AD1", GPG)
+my_light_sensor = gpg.init_light_sensor("AD1")
+my_led = gpg.init_led("AD2")
 
 # loop forever while polling the sensor
 while(True):
+    # get absolute value
     reading = my_light_sensor.read()
     # scale the reading to a 0-100 scale
     percent_reading = my_light_sensor.percent_read()
-    print("{}, {:.1f}%".format(reading, percent_reading))
-    time.sleep(0.05)
 
+    # check if the light's intensity is above 50%
+    if percent_reading >= 50:
+        my_led.light_off()
+    else:
+        my_led.light_max()
+    print("{}, {:.1f}%".format(reading, percent_reading))
+
+    time.sleep(0.05)
