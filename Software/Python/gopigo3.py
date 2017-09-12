@@ -211,6 +211,11 @@ class GoPiGo3(object):
           and testing when the GoPiGo3 would otherwise not pass the detection tests.
         """
         
+        # Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
+        subprocess.call('gpio mode 12 ALT0', shell=True)
+        subprocess.call('gpio mode 13 ALT0', shell=True)
+        subprocess.call('gpio mode 14 ALT0', shell=True)
+        
         self.SPI_Address = addr
         if detect == True:
             try:
