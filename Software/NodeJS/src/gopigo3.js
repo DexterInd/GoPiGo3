@@ -7,6 +7,7 @@
 //
 // Node.js drivers for the GoPiGo3
 
+const { exec } = require('child_process');
 const Utils = require('./utils/misc');
 const Enumeration = require('./utils/enumeration');
 const FirmwareVersionError = require('./errors/firmwareVersionError');
@@ -179,6 +180,13 @@ class Gopigo3 {
             * This can be used for debugging
             and testing when the GoPiGo3 would otherwise not pass the detection tests.
         */
+
+        // Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
+        exec('gpio mode 12 ALT0 && gpio mode 13 ALT0 && gpio mode 14 ALT0', (error) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+            }
+        });
 
         Gopigo3.SPI_Address = addr;
 
