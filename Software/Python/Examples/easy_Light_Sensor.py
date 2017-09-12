@@ -40,7 +40,7 @@ while(True):
     percent_reading = my_light_sensor.percent_read()
 
     # check if the light's intensity is above 50%
-    if percent_read >= 50:
+    if percent_reading >= 50:
         my_led.light_off()
     else:
         my_led.light_max()
