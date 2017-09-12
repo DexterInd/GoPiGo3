@@ -23,12 +23,20 @@ The code we're analyzing in this tutorial is the following one.
     import time
     import easygopigo3 as easy
 
+    # This example shows how to read values from the Distance Sensor
+
+    # Create an instance of the GoPiGo3 class.
+    # GPG will be the GoPiGo3 object.
+    gpg = easy.EasyGoPiGo3()
+
     # Create an instance of the Distance Sensor class.
-    my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the Line Follower object.
+    # I2C1 and I2C2 are just labels used for identifyng the port on the GoPiGo3 board.
+    # But technically, I2C1 and I2C2 are the same thing, so we don't have to pass any port to the constructor.
+    my_distance_sensor = gpg.init_distance_sensor()
 
     while True:
         # Directly print the values of the sensor.
-        print ("Distance Sensor Reading (mm): " + str(my_distance_sensor.read_mm()))
+        print("Distance Sensor Reading (mm): " + str(my_distance_sensor.read_mm()))
 
 The source code for this example program can be found `here on github <https://github.com/DexterInd/GoPiGo3/blob/master/Software/Python/Examples/easy_Distance_Sensor.py>`_.
 
@@ -51,12 +59,13 @@ the ``time`` module is generally used for delaying actions, commands, setting ti
 The objects
 ===========
 
-For interfacing with the `Distance Sensor`_ we need to instantiate an object of the :py:class:`easygopigo3.DistanceSensor` class.
+For interfacing with the `Distance Sensor`_ we need to instantiate an object of the :py:class:`easygopigo3.EasyGoPiGo3` class so in return, we can instantiate an object of the :py:class:`easygopigo3.DistanceSensor` class.
 We do it like in the following code snippet.
 
 .. code-block:: python
 
-   my_distance_sensor = easy.DistanceSensor()
+   gpg = easy.EasyGoPiGo3() # this is an EasyGoPiGo3 object
+   my_distance_sensor = gpg.init_distance_sensor() # this is a DistanceSensor object
 
 =========
 Main part
