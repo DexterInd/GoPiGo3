@@ -1,4 +1,4 @@
-const EasyGopigo3 = require('../../ib/easyGopigo3');
+const EasyGopigo3 = require('../../lib/easyGopigo3');
 
 const gpg = new EasyGopigo3();
 const sensor = gpg.initDhtSensor('SERIAL', 11);
