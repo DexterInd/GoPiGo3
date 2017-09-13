@@ -32,8 +32,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 import time
 import easygopigo3 as easy
 
+# This example shows how to read values from the Distance Sensor
+
+# Create an instance of the GoPiGo3 class.
+# GPG will be the GoPiGo3 object.
+gpg = easy.EasyGoPiGo3()
+
 # Create an instance of the Distance Sensor class.
-my_distance_sensor = easy.DistanceSensor()     # Distance_Sensor will be the object.
+# I2C1 and I2C2 are just labels used for identifyng the port on the GoPiGo3 board.
+# But technically, I2C1 and I2C2 are the same thing, so we don't have to pass any port to the constructor.
+my_distance_sensor = gpg.init_distance_sensor()
 
 while True:
     # Directly print the values of the sensor.
