@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Loading NVM
-. ~/.nvm/nvm.sh
-. ~/.profile
-. ~/.bashrc
+source ~/.nvm/nvm.sh
+source ~/.profile
+source ~/.bashrc
 
 # Installing stable version of Node.js
-nvm install node v8.4.0
+nvm install 8.5.0
 
 # Validating installation
 echo "❤ Node.js version"

@@ -23,7 +23,7 @@ fi
 
 read -p "This operation will install NPM, Node.js and NVM for the current user profile, do you want to proceed? [Y,N] " answer
 if [[ $answer = [Yy] ]] ; then
-    $( dirname "$0" )/sh/installNvm.sh && source ~/.bashrc && $( dirname "$0" )/sh/installNodejs.sh
+    bash $( dirname "$0" )/sh/installNvm.sh && bash $( dirname "$0" )/sh/installNodejs.sh && exec bash -l
     echo
     echo
     echo "Done, you can now use Node.js on your device."
