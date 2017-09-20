@@ -23,15 +23,33 @@ fi
 
 read -p "This operation will install NPM, Node.js and NVM for the current user profile, do you want to proceed? [Y,N] " answer
 if [[ $answer = [Yy] ]] ; then
-    bash $( dirname "$0" )/sh/installNvm.sh && bash $( dirname "$0" )/sh/installNodejs.sh && exec bash -l
+
+    # Installing NVM
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.4/install.sh | bash
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+    # Installing Node.js
+    nvm install 8.5.0
+
+    # Validating installation
+    echo "❤ Node.js version"
+    node --version
+    echo "❤ NPM version"
+    npm --version
+
     echo
     echo
     echo "Done, you can now use Node.js on your device."
-    echo "If you need to build the current library run 'npm install' inside '$( dirname "$0" )' otherwise you can already start using it"
-    echo "including the npm package (node-gopigo3) in your application."
+    echo "If you need to build the current library run 'npm install' inside the NodeJS folder"
+    echo "otherwise you can already start using it including the npm package (node-gopigo3) in your application."
     echo
-    echo "For any other hint please go to the repository."
+    echo "For any other hint please check the repository."
     echo "Bye!"
     echo
     echo
+
+    bash -l
 fi
