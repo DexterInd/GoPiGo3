@@ -10,20 +10,133 @@
  */
 
 #include "GoPiGo3.h"
+#include <iostream>
+#include <unistd.h>
+#include <string.h>           // for strstr
+#include <fcntl.h>
 
-GoPiGo3::GoPiGo3(){
-  if(spi_file_handle < 0){
-    if(spi_setup()){
-      fatal_error("spi_setup error");
-    }
-  }
-  Address = 8;
+///Possible types for Grove setup
+enum GROVE_TYPE{
+  GROVE_TYPE_CUSTOM = 1,
+  GROVE_TYPE_IR_DI_REMOTE,
+  GROVE_TYPE_IR_EV3_REMOTE,
+  GROVE_TYPE_US,
+  GROVE_TYPE_I2C
+};
+
+///Possible return values for Grove operations.
+enum GROVE_STATUS{
+  GROVE_STATUS_VALID_DATA,
+  GROVE_STATUS_NOT_CONFIGURED,
+  GROVE_STATUS_CONFIGURING,
+  GROVE_STATUS_NO_DATA,
+  GROVE_STATUS_I2C_ERROR
+};
+
+/// File name of SPI
+#define SPIDEV_FILE_NAME "/dev/spidev0.1"
+
+///Max length for an error description.
+#define ERROR_STRING_LENGTH 100
+
+/// Constructor: set the address and open the spi file.
+/// Parameters:
+///  addr:  The spi address.
+GoPiGo3::GoPiGo3(uint8_t addr)
+{
+
+ if((spi_file_handle = spi_setup(spi_xfer_struct)) == ERROR_SPI_FILE)
+ {
+   fatal_error("spi_setup error");
+ }
+ Address = addr;
+ this->set_grove_type(GROVE_1 + GROVE_2, GROVE_TYPE_CUSTOM);
 }
 
-int GoPiGo3::spi_read_8(uint8_t msg_type, uint8_t &value){
+/// Constructor: set the address, using a pre-opened spi handle.
+/// Parameters:
+///   spiHandle: a preopened spi handle.
+///   addr:  The spi address.
+GoPiGo3::GoPiGo3(int spiHandle, uint8_t addr)
+{
+ this->spi_file_handle = spiHandle;
+ SetSpiIocTransfer();
+ Address = addr;
+}
+
+///Destructor:  clean up everything!
+GoPiGo3::~GoPiGo3()
+{
+  if (this->spi_file_handle >= 0)
+  {
+    close(this->spi_file_handle);
+  }
+}
+
+/// Set up an SPI. Open the file, and define the configuration.
+/// Parameters:
+///   spi_ioc_transfer:  returned transfer structure used for
+///                      other spi operations.
+int GoPiGo3::spi_setup(struct spi_ioc_transfer& xferStructure)
+{
+  int file_handle = open(SPIDEV_FILE_NAME, O_RDWR);
+
+  if (file_handle >= 0)
+  {
+    xferStructure.cs_change = 0;
+    xferStructure.delay_usecs = 0;
+    xferStructure.speed_hz =  SPI_TARGET_SPEED;
+    xferStructure.bits_per_word = 8;
+  }
+  else
+  {
+     file_handle = ERROR_SPI_FILE;
+  }
+  return file_handle;
+}
+
+/// Transfer length number of bytes.
+/// Parameters:
+///    length:  array length (both arrays must be of the same length).
+///    outArray --  The array of values to write.
+///    inArray -- The array of values to read.
+int GoPiGo3::spi_transfer_array(uint8_t length, uint8_t *outArray, uint8_t *inArray)
+{
+  spi_xfer_struct.len = length;
+  spi_xfer_struct.tx_buf = (unsigned long)outArray;
+  spi_xfer_struct.rx_buf = (unsigned long)inArray;
+
+  if (ioctl(spi_file_handle, SPI_IOC_MESSAGE(1), &spi_xfer_struct) < 0)
+  {
+      return ERROR_SPI_FILE;
+  }
+    return ERROR_NONE;
+}
+
+/// Set the transfer structure attributes.
+/// Parameters:
+///   cs_Change:  struct cs_Change value.
+///   delay:  The call delay.
+///   speed:  The target speed.
+///   bits_per_word:  The word size.
+void GoPiGo3::SetSpiIocTransfer (int cs_Change, int delay, int speed, int bits_per_word)
+{
+  spi_xfer_struct.cs_change = cs_Change;
+  spi_xfer_struct.delay_usecs = delay;
+  spi_xfer_struct.speed_hz =  speed;
+  spi_xfer_struct.bits_per_word = bits_per_word;
+}
+
+/// Read an 8-bit value over SPI
+/// Parameters:
+///   msg_type: Message type to read.
+///   value:  the returned value read.
+///  Returns:
+///   0 on success, error value on failure.
+int GoPiGo3::spi_read_8(GPGSPI_MESSAGE_TYPE msg_type, uint8_t &value){
   value = 0;
   spi_array_out[0] = Address;
-  spi_array_out[1] = msg_type;
+  spi_array_out[1] = (uint8_t)msg_type;
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array(5, spi_array_out, spi_array_in)){
     return error;
@@ -35,10 +148,16 @@ int GoPiGo3::spi_read_8(uint8_t msg_type, uint8_t &value){
   return ERROR_NONE;
 }
 
-int GoPiGo3::spi_read_16(uint8_t msg_type, uint16_t &value){
+/// Read an 16-bit value over SPI
+/// Parameters:
+///   msg_type: Message type to read.
+///   value:  the returned value read.
+///  Returns:
+///   0 on success, error value on failure.
+int GoPiGo3::spi_read_16(GPGSPI_MESSAGE_TYPE msg_type, uint16_t &value){
   value = 0;
   spi_array_out[0] = Address;
-  spi_array_out[1] = msg_type;
+  spi_array_out[1] = (uint8_t)msg_type;
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array(6, spi_array_out, spi_array_in)){
     return error;
@@ -50,10 +169,16 @@ int GoPiGo3::spi_read_16(uint8_t msg_type, uint16_t &value){
   return ERROR_NONE;
 }
 
-int GoPiGo3::spi_read_32(uint8_t msg_type, uint32_t &value){
+/// Read an 32-bit value over SPI
+/// Parameters:
+///   msg_type: Message type to read.
+///   value:  the returned value read.
+///  Returns:
+///   0 on success, error value on failure.
+int GoPiGo3::spi_read_32(GPGSPI_MESSAGE_TYPE msg_type, uint32_t &value){
   value = 0;
   spi_array_out[0] = Address;
-  spi_array_out[1] = msg_type;
+  spi_array_out[1] = (uint8_t)msg_type;
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array(8, spi_array_out, spi_array_in)){
     return error;
@@ -65,12 +190,19 @@ int GoPiGo3::spi_read_32(uint8_t msg_type, uint32_t &value){
   return ERROR_NONE;
 }
 
-int GoPiGo3::spi_read_string(uint8_t msg_type, char *str, uint8_t chars){
+/// Read a string value over SPI
+/// Parameters:
+///   msg_type: Message type to read.
+///   str:  the returned string read.
+///   chars: returned buffer size.
+///  Returns:
+///   0 on success, error value on failure.
+int GoPiGo3::spi_read_string(GPGSPI_MESSAGE_TYPE msg_type, char *str, uint8_t chars){
   if((chars + 4) > LONGEST_SPI_TRANSFER){
     return -3;
   }
   spi_array_out[0] = Address;
-  spi_array_out[1] = msg_type;
+  spi_array_out[1] = (uint8_t)msg_type;
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array(chars + 4, spi_array_out, spi_array_in)){
     return error;
@@ -84,7 +216,13 @@ int GoPiGo3::spi_read_string(uint8_t msg_type, char *str, uint8_t chars){
   return ERROR_NONE;
 }
 
-int GoPiGo3::spi_write_32(uint8_t msg_type, uint32_t value){
+/// Write a 32-bit value over SPI
+/// Parameters:
+///   msg_type: Message type to read.
+///   value:  the value to write.
+///  Returns:
+///   0 on success, error value on failure.
+int GoPiGo3::spi_write_32(GPGSPI_MESSAGE_TYPE msg_type, uint32_t value){
   spi_array_out[0] = Address;
   spi_array_out[1] = msg_type;
   spi_array_out[2] = ((value >> 24) & 0xFF);
@@ -94,8 +232,15 @@ int GoPiGo3::spi_write_32(uint8_t msg_type, uint32_t value){
   return spi_transfer_array(6, spi_array_out, spi_array_in);
 }
 
+/// Confirm that the GoPiGo3 is connected and up-to-date
+/// Optionally disable the detection of the GoPiGo3 hardware. This can be used for debugging
+/// and testing when the GoPiGo3 would otherwise not pass the detection tests
+/// Parameters:
+///   critical:  if true a detection fails, a fatal error is invoked.  Otherwise, an error
+///              value is returned from the function.
+/// Returns:  ERROR_NONE on success, otherwise an error value indicating the error.
 int GoPiGo3::detect(bool critical){
-  char ErrorStr[100];
+  char ErrorStr[ERROR_STRING_LENGTH];
   char str[21];
   int error;
   // assign error to the value returned by get_manufacturer, and if not 0:
@@ -113,7 +258,7 @@ int GoPiGo3::detect(bool critical){
       return ERROR_WRONG_MANUFACTURER;
     }
   }
-  
+
   // assign error to the value returned by get_board, and if not 0:
   if(error = get_board(str)){
     if(critical){
@@ -129,7 +274,7 @@ int GoPiGo3::detect(bool critical){
       return ERROR_WRONG_DEVICE;
     }
   }
-  
+
   // assign error to the value returned by get_version_firmware, and if not 0:
   if(error = get_version_firmware(str)){
     if(critical){
@@ -149,14 +294,26 @@ int GoPiGo3::detect(bool critical){
   return ERROR_NONE;
 }
 
+/// Get the manufacturer (should be "Dexter Industries")
+/// Parameters:
+///  str: value to receive the manufactuer's name.
+/// Returns:  0 on success, non-zero othewise.
 int GoPiGo3::get_manufacturer(char *str){
   return spi_read_string(GPGSPI_MESSAGE_GET_MANUFACTURER, str);
 }
 
+/// Get the board name (should be "BrickPi3")
+/// Parameters:
+///  str: value to receive the board name.
+/// Returns:  0 on success, non-zero othewise.
 int GoPiGo3::get_board(char *str){
   return spi_read_string(GPGSPI_MESSAGE_GET_NAME, str);
 }
 
+/// Get the hardware version number
+/// Parameters:
+///  str: value to receive the version.
+/// Returns:  0 on success, non-zero othewise.
 int GoPiGo3::get_version_hardware(char *str){
   uint32_t value;
   // assign error to the value returned by spi_read_32, and if not 0:
@@ -164,8 +321,13 @@ int GoPiGo3::get_version_hardware(char *str){
     return error;
   }
   sprintf(str, "%d.%d.%d", (value / 1000000), ((value / 1000) % 1000), (value % 1000));
+  return ERROR_NONE;
 }
 
+/// Get the firmware version number
+/// Parameters:
+///  str: value to receive the version number.
+/// Returns:  0 on success, non-zero othewise.
 int GoPiGo3::get_version_firmware(char *str){
   uint32_t value;
   // assign error to the value returned by spi_read_32, and if not 0:
@@ -176,6 +338,10 @@ int GoPiGo3::get_version_firmware(char *str){
   return ERROR_NONE;
 }
 
+/// Read the 128-bit GoPiGo3 hardware serial number
+/// Parameters:
+///  str: value to receive the id.
+/// Returns:  0 on success, non-zero othewise.
 int GoPiGo3::get_id(char *str){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_GET_ID;
@@ -192,6 +358,13 @@ int GoPiGo3::get_id(char *str){
   return ERROR_NONE;
 }
 
+/// Control the LED
+/// Parameters:
+///   led -- The LED(s). LED_LEFT_EYE, LED_RIGHT_EYE, LED_LEFT_BLINKER, LED_RIGHT_BLINKER, and/or LED_WIFI.
+///   red -- The LED's Red color component (0-255)
+///   green -- The LED's Green color component (0-255)
+///   blue -- The LED's Blue color component (0-255)
+   /// Returns:  0 on success, non-zero othewise.
 int GoPiGo3::set_led(uint8_t led, uint8_t red, uint8_t green, uint8_t blue){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_LED;
@@ -202,6 +375,8 @@ int GoPiGo3::set_led(uint8_t led, uint8_t red, uint8_t green, uint8_t blue){
   return spi_transfer_array(6, spi_array_out, spi_array_in);
 }
 
+/// Get the voltages of the four power rails
+/// Returns: the voltage.
 float GoPiGo3::get_voltage_5v(){
   float voltage;
   int res = get_voltage_5v(voltage);
@@ -209,6 +384,11 @@ float GoPiGo3::get_voltage_5v(){
   return voltage;
 }
 
+/// Get the voltages of the four power rails
+/// Parameters:
+///   voltage:  the returned circuit voltage.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::get_voltage_5v(float &voltage){
   uint16_t value;
   int res = spi_read_16(GPGSPI_MESSAGE_GET_VOLTAGE_5V, value);
@@ -216,6 +396,8 @@ int GoPiGo3::get_voltage_5v(float &voltage){
   return res;
 }
 
+/// Get the battery voltage.
+/// Returns: the battery voltage.
 float GoPiGo3::get_voltage_battery(){
   float voltage;
   int res = get_voltage_battery(voltage);
@@ -223,6 +405,10 @@ float GoPiGo3::get_voltage_battery(){
   return voltage;
 }
 
+/// Get the battery voltage.
+/// Parameters:
+///   voltage:  the returned value of the battery voltage
+/// Returns: 0 on success, otherwise an error code.
 int GoPiGo3::get_voltage_battery(float &voltage){
   uint16_t value;
   int res = spi_read_16(GPGSPI_MESSAGE_GET_VOLTAGE_VCC, value);
@@ -230,6 +416,12 @@ int GoPiGo3::get_voltage_battery(float &voltage){
   return res;
 }
 
+/// Set a servo position in microseconds
+/// Parameters:
+///   servo -- The servo(s). SERVO_1 and/or SERVO_2.
+///   us -- The pulse width in microseconds (0-16666)
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_servo(uint8_t servo, uint16_t us){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_SERVO;
@@ -239,7 +431,14 @@ int GoPiGo3::set_servo(uint8_t servo, uint16_t us){
   return spi_transfer_array(5, spi_array_out, spi_array_in);
 }
 
-int GoPiGo3::set_motor_power(uint8_t port, int8_t power){
+/// Set the motor power in percent
+/// Parameters:
+///   port -- The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+///   power -- The PWM power from -100 to 100, or MOTOR_FLOAT for float.
+/// Returns:
+///   0 on success, an error value otherwise.
+int GoPiGo3::set_motor_power(uint8_t port, int8_t power)
+{
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_PWM;
   spi_array_out[2] = port;
@@ -247,6 +446,12 @@ int GoPiGo3::set_motor_power(uint8_t port, int8_t power){
   return spi_transfer_array(4, spi_array_out, spi_array_in);
 }
 
+/// Set the motor target position to run to (go to the specified position)
+/// Parameters:
+///   port -- The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+///   position -- The target position
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_motor_position(uint8_t port, int32_t position){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_POSITION;
@@ -258,6 +463,12 @@ int GoPiGo3::set_motor_position(uint8_t port, int32_t position){
   return spi_transfer_array(7, spi_array_out, spi_array_in);
 }
 
+/// Set the motor speed in degrees per second.
+/// Parameters:
+///   port -- The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+///   dps -- The target speed in degrees per second	int
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_motor_dps(uint8_t port, int16_t dps){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_DPS;
@@ -267,6 +478,14 @@ int GoPiGo3::set_motor_dps(uint8_t port, int16_t dps){
   return spi_transfer_array(5, spi_array_out, spi_array_in);
 }
 
+/// Set the motor PWM and speed limits. PWM limit applies to set_motor_position and set_motor_dps and speed limit applies to set_motor_position.
+/// Changed this!
+/// Parameters:
+///   port -- The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+///   power -- The power limit in percent (0 to 100), with 0 being no limit (100)
+///   dps -- The speed limit in degrees per second, with 0 being no limit
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_motor_limits(uint8_t port, uint8_t power, uint16_t dps){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_LIMITS;
@@ -277,6 +496,17 @@ int GoPiGo3::set_motor_limits(uint8_t port, uint8_t power, uint16_t dps){
   return spi_transfer_array(6, spi_array_out, spi_array_in);
 }
 
+/// Get the motor status. State, PWM power, encoder position, and speed (in degrees per second)
+/// Parameters:
+///   port -- The motor port (one at a time). MOTOR_LEFT or MOTOR_RIGHT.
+///   state -- Bits of bit-flags that indicate motor status:
+///            bit 0 -- LOW_VOLTAGE_FLOAT - The motors are automatically disabled because the battery voltage is too low
+///            bit 1 -- OVERLOADED - The motors aren't close to the target (applies to position control and dps speed control).
+///   power -- the raw PWM power in percent (-100 to 100)
+///   position -- The encoder position
+///   dps -- The current speed in Degrees Per Second
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::get_motor_status(uint8_t port, uint8_t &state, int8_t &power, int32_t &position, int16_t &dps){
   uint8_t msg_type;
   switch(port){
@@ -295,19 +525,26 @@ int GoPiGo3::get_motor_status(uint8_t port, uint8_t &state, int8_t &power, int32
   if(int error = spi_transfer_array(12, spi_array_out, spi_array_in)){
     return error;
   }
-  
+
   if(spi_array_in[3] != 0xA5){
     return ERROR_SPI_RESPONSE;
   }
-  
+
   state    = spi_array_in[4];
   power    = spi_array_in[5];
   position = ((spi_array_in[6] << 24) | (spi_array_in[7] << 16) | (spi_array_in[8] << 8) | spi_array_in[9]);
   dps      = ((spi_array_in[10] << 8) | spi_array_in[11]);
-  
+
   return ERROR_NONE;
 }
 
+
+/// Offset the encoder position. By setting the offset to the current position, it effectively resets the encoder value.
+/// Parameters:
+///   port -- The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+///   position -- The encoder offset
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::offset_motor_encoder(uint8_t port, int32_t position){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_OFFSET_MOTOR_ENCODER;
@@ -319,14 +556,14 @@ int GoPiGo3::offset_motor_encoder(uint8_t port, int32_t position){
   return spi_transfer_array(7, spi_array_out, spi_array_in);
 }
 
-int32_t GoPiGo3::get_motor_encoder(uint8_t port){
-  int32_t value;
-  get_motor_encoder(port, value);
-  return value;
-}
-
+/// Get the encoder position
+/// Parameters:
+///   port -- The motor port (one at a time). MOTOR_LEFT or MOTOR_RIGHT.
+///   value --  the encoder position in degrees
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::get_motor_encoder(uint8_t port, int32_t &value){
-  uint8_t msg_type;
+  GPGSPI_MESSAGE_TYPE msg_type;
   switch(port){
     case MOTOR_LEFT:
       msg_type = GPGSPI_MESSAGE_GET_MOTOR_ENCODER_LEFT;
@@ -343,6 +580,23 @@ int GoPiGo3::get_motor_encoder(uint8_t port, int32_t &value){
   return res;
 }
 
+///Get the encoder value.
+/// Parameters:
+///   port -- The motor port (one at a time). MOTOR_LEFT or MOTOR_RIGHT.
+/// Returns:
+///   The encoder position in degrees
+int32_t GoPiGo3::get_motor_encoder(uint8_t port){
+  int32_t value;
+  get_motor_encoder(port, value);
+  return value;
+}
+
+/// Set grove port type
+/// Parameters:
+///   port -- The grove port(s). GROVE_1 and/or GROVE_2.
+///   type -- The grove device type
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_grove_type(uint8_t port, uint8_t type){
   if((port & GROVE_1) == GROVE_1){
     GroveType[0] = type;
@@ -357,6 +611,12 @@ int GoPiGo3::set_grove_type(uint8_t port, uint8_t type){
   return spi_transfer_array(4, spi_array_out, spi_array_in);
 }
 
+/// Set grove pin(s) mode
+/// Parameters:
+///   pin -- The grove pin(s). GROVE_1_1, GROVE_1_2, GROVE_2_1, and/or GROVE_2_2.
+///   mode -- The pin mode. GROVE_INPUT_DIGITAL, GROVE_OUTPUT_DIGITAL, GROVE_INPUT_DIGITAL_PULLUP, GROVE_INPUT_DIGITAL_PULLDOWN, GROVE_INPUT_ANALOG, GROVE_OUTPUT_PWM, GROVE_INPUT_ANALOG_PULLUP, or GROVE_INPUT_ANALOG_PULLDOWN.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_grove_mode(uint8_t pin, uint8_t mode){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_GROVE_MODE;
@@ -365,14 +625,26 @@ int GoPiGo3::set_grove_mode(uint8_t pin, uint8_t mode){
   return spi_transfer_array(4, spi_array_out, spi_array_in);
 }
 
-int GoPiGo3::set_grove_state(uint8_t pin, uint8_t state){
+/// Set grove pin(s) output state. LOW or HIGH (0 or 1).
+/// Parameters:
+///   pin -- The grove pin(s). GROVE_1_1, GROVE_1_2, GROVE_2_1, and/or GROVE_2_2.
+///   state -- The pin state. GROVE_LOW or GROVE_HIGH.
+/// Returns:
+///   0 on success, an error value otherwise.
+int GoPiGo3::set_grove_state(uint8_t pin, GROVE_STATE state){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_GROVE_STATE;
   spi_array_out[2] = pin;
-  spi_array_out[3] = state;
+  spi_array_out[3] = (uint8_t)state;
   return spi_transfer_array(4, spi_array_out, spi_array_in);
 }
 
+/// Set grove pin(s) PWM duty cycle. 0-100% with 0.1% precision.
+/// Parameters:
+///   pin -- The grove pin(s). GROVE_1_1, GROVE_1_2, GROVE_2_1, and/or GROVE_2_2.
+///   duty -- The PWM duty cycle in percent.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_grove_pwm_duty(uint8_t pin, float duty){
   if(duty > 100){
     duty = 100;
@@ -388,6 +660,12 @@ int GoPiGo3::set_grove_pwm_duty(uint8_t pin, float duty){
   return spi_transfer_array(5, spi_array_out, spi_array_in);
 }
 
+/// Set grove port(s) PWM frequency. 3 - 48000 Hz
+/// Parameters:
+///   port -- The grove port(s). GROVE_1 and/or GROVE_2.
+///   freq -- The PWM frequency. Range is 3 through 48000Hz. Default is 24000 (24kHz).
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::set_grove_pwm_frequency(uint8_t port, uint16_t freq){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_GROVE_PWM_FREQUENCY;
@@ -397,6 +675,13 @@ int GoPiGo3::set_grove_pwm_frequency(uint8_t port, uint16_t freq){
   return spi_transfer_array(5, spi_array_out, spi_array_in);
 }
 
+/// Perform an I2C transaction
+/// Parameters:
+///   port -- The grove port. GROVE_1 or GROVE_2.
+///   i2c_struct -- contains the setup parameters for the transfer, as well as the
+///                 returned buffer.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
   double Timeout = get_time() + 0.005;
   bool Continue = false;
@@ -410,7 +695,7 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
       Continue = true;
     }
   }
-  
+
   double DelayTime = 0;
   if(i2c_struct->length_write){
     DelayTime += 1 + i2c_struct->length_write;
@@ -422,7 +707,7 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
   // No point trying to read the values before they are ready.
   usleep((DelayTime * 1000000)); // delay for as long as it will take to do the I2C transaction.
   Timeout = get_time() + 0.005;  // timeout after 5ms of failed attempted reads
-  
+
   while(true){
     if(error = get_grove_value(port, i2c_struct)){
       if(get_time() >= Timeout){
@@ -434,6 +719,13 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
   }
 }
 
+/// Start an I2C transaction
+/// Parameters:
+///   port -- The grove port. GROVE_1 or GROVE_2.
+///   i2c_struct -- contains the setup parameters for the transfer, as well as the
+///                 returned buffer.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::grove_i2c_start(uint8_t port, i2c_struct_t *i2c_struct){
   uint8_t msg_type;
   uint8_t port_index;
@@ -452,27 +744,27 @@ int GoPiGo3::grove_i2c_start(uint8_t port, i2c_struct_t *i2c_struct){
   spi_array_out[0] = Address;
   spi_array_out[1] = msg_type;
   spi_array_out[2] = ((i2c_struct->address & 0x7F) << 1);
-  
+
   if(i2c_struct->length_read > LONGEST_I2C_TRANSFER){
     i2c_struct->length_read = LONGEST_I2C_TRANSFER;
   }
   spi_array_out[3] = i2c_struct->length_read;
   GroveI2CInBytes[port_index] = i2c_struct->length_read;
-  
+
   if(i2c_struct->length_write > LONGEST_I2C_TRANSFER){
     i2c_struct->length_write = LONGEST_I2C_TRANSFER;
   }
   spi_array_out[4] = i2c_struct->length_write;
-  
+
   for(uint8_t i = 0; i < i2c_struct->length_write; i++){
     spi_array_out[5 + i] = i2c_struct->buffer_write[i];
   }
-  
+
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array((5 + i2c_struct->length_write), spi_array_out, spi_array_in)){
     return error;
   }
-  
+
   // If the fourth byte received is not 0xA5
   if(spi_array_in[3] != 0xA5){
     return ERROR_SPI_RESPONSE;
@@ -481,10 +773,16 @@ int GoPiGo3::grove_i2c_start(uint8_t port, i2c_struct_t *i2c_struct){
   if(spi_array_in[4] != GROVE_STATUS_VALID_DATA){
     return spi_array_in[4];
   }
-  
+
   return ERROR_NONE;
 }
 
+/// Read grove value(s)
+/// Parameters:
+///   port -- The grove port. GROVE_1 or GROVE_2.
+///   value_ptr -- returned grove value
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   uint8_t msg_type;
   uint8_t port_index;
@@ -502,9 +800,9 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   }
   spi_array_out[0] = Address;
   spi_array_out[1] = msg_type;
-  
+
   uint8_t spi_transfer_length;
-  
+
   // Determine the SPI transaction byte length based on the grove type
   switch(GroveType[port_index]){
     case GROVE_TYPE_IR_DI_REMOTE:
@@ -523,7 +821,7 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
       return GROVE_STATUS_NOT_CONFIGURED;
     break;
   }
-  
+
   // Get the grove value(s), and if error
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array(spi_transfer_length, spi_array_out, spi_array_in)){
@@ -542,7 +840,7 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   if(spi_array_in[5] != GROVE_STATUS_VALID_DATA){
     return spi_array_in[5];
   }
-  
+
   if(GroveType[port_index] == GROVE_TYPE_IR_DI_REMOTE){
     sensor_infrared_gobox_t *Value = (sensor_infrared_gobox_t*)value_ptr;
     Value->button = spi_array_in[6];
@@ -566,14 +864,25 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   return GROVE_STATUS_VALID_DATA;
 }
 
-uint8_t GoPiGo3::get_grove_state(uint8_t pin){
-  uint8_t value;
+/// Read the grove pin state
+/// Parameters:
+///   pin -- The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+/// Returns:
+///   The grove state.
+GROVE_STATE GoPiGo3::get_grove_state(uint8_t pin){
+  GROVE_STATE value;
   get_grove_state(pin, value);
   return value;
 }
 
-int GoPiGo3::get_grove_state(uint8_t pin, uint8_t &value){
-  value = 0;
+/// Read the grove pin state
+/// Parameters:
+///   pin -- The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+///   value -- The returned grove state.
+/// Returns:
+///   0 on success, an error value otherwise.
+int GoPiGo3::get_grove_state(uint8_t pin, GROVE_STATE&value){
+  value = LOW;
   uint8_t msg_type;
   switch(pin){
     case GROVE_1_1:
@@ -591,6 +900,7 @@ int GoPiGo3::get_grove_state(uint8_t pin, uint8_t &value){
     default:
       fatal_error("get_grove_state error. Must be one pin at a time. GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.");
   }
+  memset(spi_array_out, 0,sizeof(char) *6);
   spi_array_out[0] = Address;
   spi_array_out[1] = msg_type;
   // assign error to the value returned by spi_transfer_array, and if not 0:
@@ -599,7 +909,7 @@ int GoPiGo3::get_grove_state(uint8_t pin, uint8_t &value){
   }
   if(spi_array_in[3] == 0xA5){
     if(spi_array_in[4] == GROVE_STATUS_VALID_DATA){
-      value = spi_array_in[5];
+      value = (GROVE_STATE)spi_array_in[5];
       return ERROR_NONE;
     }else{
       return ERROR_GROVE_DATA_ERROR;
@@ -609,12 +919,23 @@ int GoPiGo3::get_grove_state(uint8_t pin, uint8_t &value){
   }
 }
 
+/// Read grove pin voltage
+/// Parameters:
+///   pin -- The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+/// Returns:
+///   The pin voltage.
 float GoPiGo3::get_grove_voltage(uint8_t pin){
   float value;
   get_grove_voltage(pin, value);
   return value;
 }
 
+/// Read grove pin voltage
+/// Parameters:
+///   pin -- The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+///   value -- The pin voltage.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::get_grove_voltage(uint8_t pin, float &value){
   value = 0;
   uint8_t msg_type;
@@ -652,12 +973,23 @@ int GoPiGo3::get_grove_voltage(uint8_t pin, float &value){
   }
 }
 
+/// Get a grove input pin 12-bit raw ADC reading
+/// Parameters:
+///   pin -- The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+/// Returns:
+///   The ADC reading.
 uint16_t GoPiGo3::get_grove_analog(uint8_t pin){
   uint16_t value;
   get_grove_analog(pin, value);
   return value;
 }
 
+/// Get a grove input pin 12-bit raw ADC reading
+/// Parameters:
+///   pin -- The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+///   value -- the returned ADC reading.
+/// Returns:
+///   0 on success, an error value otherwise.
 int GoPiGo3::get_grove_analog(uint8_t pin, uint16_t &value){
   value = 0;
   uint8_t msg_type;
@@ -695,6 +1027,11 @@ int GoPiGo3::get_grove_analog(uint8_t pin, uint16_t &value){
   }
 }
 
+/// Reset the grove ports (unconfigure), motors (float with no limits), and LEDs.
+/// Returns:
+///   0 on success, the error value otherwise.
+///   Note:  on error, execution will halt on the error and return the
+///          error value of the first conguration that fails.
 int GoPiGo3::reset_all(){
   int res1 = set_grove_type(GROVE_1 + GROVE_2, GROVE_TYPE_CUSTOM);
   int res2 = set_motor_power(MOTOR_LEFT + MOTOR_RIGHT, MOTOR_FLOAT);
