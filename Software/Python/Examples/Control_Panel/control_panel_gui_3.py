@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from __future__ import print_function
+
 # try to import the auto_detection library
 try:
     import auto_detect_robot
