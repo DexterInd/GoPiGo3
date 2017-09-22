@@ -14,7 +14,7 @@ gpg = easy.EasyGoPiGo3()
 try:
     import wx
 except ImportError:
-    raise ImportError,"The wxPython module is required to run this program"
+    raise ImportError("The wxPython module is required to run this program")
 
 import atexit
 atexit.register(gpg.stop)    
