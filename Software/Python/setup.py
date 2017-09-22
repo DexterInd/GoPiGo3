@@ -12,14 +12,13 @@ try:
 		description = file_description.read()
 
 except IOError:
-	print(str(IOError))
-	print("make sure you have [package_description.rst] file in the same directory as [setup.py]")
+	description = "Check more on https://pypi.python.org/pypi/gopigo3"
 
 from setuptools import setup, find_packages
 
 setup(
     name = "gopigo3",
-    version = "1.1.0",
+    version = "1.1.1",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
