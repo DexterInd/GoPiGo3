@@ -31,9 +31,25 @@ To uninstall NVM, Node.js and NPM:
 2. Follow the instructions
 
 # Use in your application
-This library is published as a NPM package.
-1. Add it to your project: `npm install node-gopigo3 --save`
-2. Use it in your code: `const EasyGopigo3 = require('node-gopigo3').EasyGopigo3` or `const Gopigo3 = require('node-gopigo3').Gopigo3`
+This library is published as a [NPM package](https://www.npmjs.com/package/node-gopigo3).
+1. Install the package in your project by typing the following command in your project's folder:
+        `npm install node-gopigo3 --save`
+2. Include the package in your application:
+        `const EasyGopigo3 = require('node-gopigo3').EasyGopigo3` or `const Gopigo3 = require('node-gopigo3').Gopigo3`
+
+# How your application may look like
+```javascript
+const EasyGopigo3 = require('node-gopigo3').EasyGopigo3;
+
+const easyGoPiGo3 = new EasyGopigo3();
+const myLed = easyGoPiGo3.initLed('AD1');
+
+// Turn on the led
+myLed.lightOn(30);
+
+// Turn off the led
+myLed.lightOff();
+```
 
 For any initial hint please check the "examples" folder. Feel free to use the forum for any extra help.
 
