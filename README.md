@@ -25,7 +25,7 @@ You can install the GoPiGo3 on your own operating system with the following comm
 # Quick Install
 In order to quick install the `GoPiGo3` repository, open up a terminal and type the following command:
 ```
-sudo curl -L dexterindustries.com/update_gopigo3 | bash
+sudo curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
 The same command can be used for updating the `GoPiGo3` to the latest version.
 
