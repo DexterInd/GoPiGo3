@@ -54,6 +54,6 @@ try:
 except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.
     GPG.reset_all()       # Unconfigure the sensors, disable the motors, and restore the LED to the control of the GoPiGo3 firmware.
 
-except Exception, e:
+except Exception as e:
     print(e)
     GPG.reset_all()
