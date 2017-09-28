@@ -1,0 +1,3 @@
+[submodule "DI_Sensors"]
+	path = DI_Sensors
+	url = https://github.com/DexterInd/DI_Sensors
