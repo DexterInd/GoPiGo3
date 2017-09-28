@@ -181,6 +181,13 @@ Remote
    :members:
    :special-members:
 
+=====================================
+DI Sensors
+=====================================
+
+.. autoclass:: di_sensors.BNO055.BNO055
+   :members:
+
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
