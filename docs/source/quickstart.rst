@@ -28,7 +28,38 @@ For connecting to your `GoPiGo3`_ robot with a computer or laptop, read the inst
 Program your GoPiGo3
 ***********************
 
-For programming your `GoPiGo3`_ to do anything you want, read the instructions found here: `programming your robot`_.
+For programming your `GoPiGo3`_ to do anything you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
+
+For installing/updating the `GoPiGo3`_ on your RaspberryPi, you have to open up a terminal and hit the following command:
+
+.. code-block:: bash
+
+   # follow any given instructions given through this command
+
+   sudo curl -kL dexterindustries.com/update_gopigo3 | bash
+
+Also, in order to be able to use the :py:meth:`easygopigo3.EasyGoPiGo3.init_distance_sensor` method and the :py:class:`easygopigo3.DistanceSensor` class, the `DI-Sensors`_ package is required.
+You can get it installed/updated by typing the following command:
+
+.. code-block:: bash
+
+   # follow any given instructions given through this command
+
+   sudo curl -kL dexterindustries.com/update_sensors | bash
+
+***********************
+Connecting More Sensors
+***********************
+
+The `GoPiGo3`_ can also be paired with our in-house made sensors.
+At the moment, we've got 4 sensors (one of which is already implemented in the GoPiGo3's package):
+
+   * The DI `IMU Sensor`_.
+   * The DI `Light and Color Sensor`_.
+   * The DI `Temperature Humidity Pressure Sensor`_.
+   * The DI `Distance Sensor`_.
+
+For more on getting started with these sensors, please check the `DI-Sensors`_ documentation.
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _assembling instructions: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/1-assemble-gopigo3/
@@ -53,3 +84,7 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
+.. _DI-Sensors: http://di-sensors.readthedocs.io/en/latest/
+.. _imu sensor: https://www.dexterindustries.com/shop/imu-sensor/
+.. _light and color sensor: https://www.dexterindustries.com/shop/light-color-sensor/
+.. _temperature humidity pressure sensor: https://www.dexterindustries.com/shop/temperature-humidity-pressure-sensor/

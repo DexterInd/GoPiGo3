@@ -1,8 +1,8 @@
 .. _api-advanced-chapter:
 
-##############################
-API Reference Point - Advanced
-##############################
+######################
+API GoPiGo3 - Advanced
+######################
 
 ============
 Requirements
@@ -19,7 +19,7 @@ If you have issues importing these 2 modules, then make sure that:
 
    * You've followed the steps found in :ref:`Getting Started <getting-started-chapter>` guide.
    * You have installed either `Raspbian For Robots`_, the GoPiGo3 `repository`_ or the `GoPiGo3 package`_ (the pip package).
-   * You have the ``gopigo3`` package installed by typing the command ``pip freeze | grep gopigo3`` on your Raspberry Pi's terminal. If the package is installed, then a string with the ``GoPiGo3==[x.y.z]`` format will show up.
+   * You have the ``gopigo3`` package installed by typing the command ``pip freeze | grep gopigo3`` on your Raspberry Pi's terminal. If the package is installed, then a string with the ``gopigo3==[x.y.z]`` format will show up.
 
 If you encounter issues that aren't covered by our :ref:`Getting Started <getting-started-chapter>` guide or :ref:`FAQ <faq-chapter>` chapter, please head over to our `forum`_.
 
