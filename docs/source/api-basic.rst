@@ -207,4 +207,4 @@ Remote
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
-.. _DI-Sensors: http://di-sensors.readthedocs.io/en/master/
+.. _DI-Sensors: http://di-sensors.readthedocs.io

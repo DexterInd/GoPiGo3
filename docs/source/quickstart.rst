@@ -84,7 +84,7 @@ For more on getting started with these sensors, please check the `DI-Sensors`_ d
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
-.. _DI-Sensors: http://di-sensors.readthedocs.io/en/master/
+.. _DI-Sensors: http://di-sensors.readthedocs.io
 .. _imu sensor: https://www.dexterindustries.com/shop/imu-sensor/
 .. _light and color sensor: https://www.dexterindustries.com/shop/light-color-sensor/
 .. _temperature humidity pressure sensor: https://www.dexterindustries.com/shop/temperature-humidity-pressure-sensor/
