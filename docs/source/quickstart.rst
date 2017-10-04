@@ -47,11 +47,11 @@ You can get it installed/updated by typing the following command:
 
    sudo curl -kL dexterindustries.com/update_sensors | bash
 
-***********************
-Connecting More Sensors
-***********************
+********************
+Connect More Sensors
+********************
 
-The `GoPiGo3`_ can also be paired with our in-house made sensors.
+The `GoPiGo3`_ can also be paired with our in-house sensors.
 At the moment, we've got 4 sensors (one of which is already implemented in the GoPiGo3's package):
 
    * The DI `IMU Sensor`_.
