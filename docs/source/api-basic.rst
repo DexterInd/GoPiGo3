@@ -161,6 +161,11 @@ Servo
 DistanceSensor
 =====================================
 
+.. important::
+
+   The :py:class:`easygopigo3.DistanceSensor` class requires the ``DI_Sensors`` package installed.
+   Please check the documentation of the `DI-Sensors`_'s package on how to install it.
+
 .. autoclass:: easygopigo3.DistanceSensor
    :members:
    :special-members:
@@ -202,3 +207,4 @@ Remote
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
+.. _DI-Sensors: http://di-sensors.readthedocs.io/en/master/
