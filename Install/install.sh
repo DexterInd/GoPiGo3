@@ -100,6 +100,9 @@ sudo python3 setup.py install
 
 # module for interfacing with the keyboard
 sudo pip install curtsies
+sudo pip3 install curtsies
+sudo pip install numpy
+sudo pip3 install numpy
 
 echo ""
 echo "Installation complete"
