@@ -2,8 +2,6 @@
 import time
 import easygopigo3 as easy
 
-# This example will turn a Grove LED on the GoPiGo3 AD1 port on and off.
-
 # Create an instance of the GoPiGo3 class.
 # GPG will be the GoPiGo3 object.
 gpg = easy.EasyGoPiGo3()
