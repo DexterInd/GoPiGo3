@@ -44,7 +44,6 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
-.. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
@@ -53,3 +52,5 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
+.. _blue dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
+.. _white dht sensor: https://www.seeedstudio.com/Grove-Temperature%26Humidity-Sensor-Pro-p-838.html

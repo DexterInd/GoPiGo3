@@ -59,27 +59,6 @@ def debug(in_str):
     if False:
         print(in_str)
 
-
-def _grab_read():
-    global read_is_open
-    try:
-        I2C_Mutex_Acquire()
-    except:
-        pass
-    # thread safe doesn't seem to be required so
-    # commented out
-    # while read_is_open is False:
-    #     time.sleep(0.01)
-    read_is_open = False
-    # print("acquired")
-
-
-def _release_read():
-    global read_is_open
-    I2C_Mutex_Release()
-    read_is_open = True
-    # print("released")
-
 #####################################################################
 #
 # EASYGOPIGO3
@@ -723,7 +702,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return SoundSensor(port, self)
-        
+
     def init_loudness_sensor(self, port = "AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
@@ -735,7 +714,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return LoudnessSensor(port, self)
-               
+
 
     def init_ultrasonic_sensor(self, port = "AD1"):
         """
@@ -865,15 +844,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def init_motion_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.MotionSensor` object and then returns it
-        
+
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.MotionSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
-                
+
         return MotionSensor(port,self)
-        
+
 # the following functions may be redundant
 
 
@@ -1288,8 +1267,8 @@ class AnalogSensor(Sensor):
 
         """
         reading_percent = round(self.read() * 100 // self._max_value)
-        
-        # Some sensors - like the loudness_sensor - 
+
+        # Some sensors - like the loudness_sensor -
         # can actually return higher than 100% so let's clip it
         # and keep classrooms within an acceptable noise level
         if reading_percent > 100:
@@ -1537,7 +1516,7 @@ class LoudnessSensor(AnalogSensor):
         self._max_value = 1024  # based on empirical tests
 
 
-##########################        
+##########################
 
 
 class UltraSonicSensor(AnalogSensor):
@@ -2084,7 +2063,7 @@ class MotionSensor(DigitalSensor):
 
 
     """
-   
+
     def __init__(self, port="AD1", gpg=None):
         """
         Constructor for initializing a :py:class:`~easygopigo3.MotionSensor` object for the `Grove Motion Sensor`_.
@@ -2611,13 +2590,28 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             raise
 
         try:
-            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
             print("Distance Sensor init: {}".format(e))
             raise
         finally:
             _release_read()
+
+    def __ifMutexAcquire(self):
+        """
+        Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.acquire()
+
+    def __ifMutexRelease(self):
+        """
+        Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.release()
 
     # Returns the values in cms
     def read_mm(self):
@@ -2644,14 +2638,14 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # smaller than 8m or bigger than 5 mm.
         # if sensor insists on that value, then pass it on
         while (mm > 8000 or mm < 5) and attempt < 3:
+            self.__ifMutexAcquire()
             try:
-                _grab_read()
                 mm = self.read_range_single()
             except:
                 mm = 0
             finally:
-                _release_read()
-                
+                self.__ifMutexRelease()
+
             attempt = attempt + 1
             time.sleep(0.001)
 
@@ -2724,6 +2718,38 @@ class DHTSensor(Sensor):
         except:
             raise
 
+        try:
+            self.sensor_type = sensor_type
+
+            if self.sensor_type == 0:
+                self.set_descriptor("Blue DHT Sensor")
+            else:
+                self.set_descriptor("White DHT Sensor")
+
+        except Exception as e:
+            print("DHTSensor: {}".format(e))
+            raise ValueError("DHT Sensor not found")
+
+        self.mutex = None
+        if use_mutex is True:
+            self.mutex = Mutex()
+
+    def __ifMutexAcquire(self):
+        """
+        Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.acquire()
+
+    def __ifMutexRelease(self):
+        """
+        Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+        """
+        if self.mutex:
+            self.mutex.release()
+
     def read_temperature(self):
         '''
         Return values may be a float, or error strings
@@ -2733,13 +2759,13 @@ class DHTSensor(Sensor):
 
         from di_sensors import DHT
 
+        self.__ifMutexAcquire()
         try:
-            _grab_read()
             temp = DHT.dht(self.sensor_type)[0]
         except Exception as e:
-            raise
+            pass
         finally:
-            _release_read()
+            self.__ifMutexRelease()
 
         if temp == -2:
             return "Bad reading, trying again"
@@ -2756,13 +2782,13 @@ class DHTSensor(Sensor):
         '''
         from di_sensors import DHT
 
+        self.__ifMutexAcquire()
         try:
-            _grab_read()
             humidity = DHT.dht(self.sensor_type)[1]
         except Exception as e:
             raise
         finally:
-            _release_read()
+            self.__ifMutexRelease()
 
         if humidity == -2:
             return "Bad reading, trying again"
@@ -2775,13 +2801,13 @@ class DHTSensor(Sensor):
     def read(self):
         from di_sensors import DHT
 
+        self.__ifMutexAcquire()
         try:
-            _grab_read()
             [temp , humidity]=DHT.dht(self.sensor_type)
         except Exception as e:
             raise
         finally:
-            _release_read()
+            self.__ifMutexRelease()
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, trying again"
