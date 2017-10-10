@@ -30,7 +30,7 @@ Program your GoPiGo3
 
 For programming your `GoPiGo3`_ to do anything you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
 
-For installing/updating the `GoPiGo3`_ on your RaspberryPi, you have to open up a terminal and hit the following command:
+To install or update the `GoPiGo3`_ library on your RaspberryPi, open a terminal or the command line and type the following command:
 
 .. code-block:: bash
 
@@ -39,7 +39,7 @@ For installing/updating the `GoPiGo3`_ on your RaspberryPi, you have to open up 
    sudo curl -kL dexterindustries.com/update_gopigo3 | bash
 
 Also, in order to be able to use the :py:meth:`easygopigo3.EasyGoPiGo3.init_distance_sensor` method and the :py:class:`easygopigo3.DistanceSensor` class, the `DI-Sensors`_ package is required.
-You can get it installed/updated by typing the following command:
+You can install it or update it with the following command in the terminal:
 
 .. code-block:: bash
 
@@ -52,7 +52,7 @@ Connect More Sensors
 ********************
 
 The `GoPiGo3`_ can also be paired with our in-house sensors.
-At the moment, we've got 4 sensors (one of which is already implemented in the GoPiGo3's package):
+There are a number of digital and analog sensor that can be connected to the GoPiGo3. We have further in-depth documentation on the following 4 sensors:
 
    * The DI `IMU Sensor`_.
    * The DI `Light and Color Sensor`_.
