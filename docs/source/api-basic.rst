@@ -94,6 +94,14 @@ SoundSensor
    :special-members:
 
 =====================================
+LoudnessSensor
+=====================================
+
+.. autoclass:: easygopigo3.LoudnessSensor
+  :members:
+  :special-members:
+
+=====================================
 UltrasonicSensor
 =====================================
 
@@ -116,6 +124,14 @@ Led
 .. autoclass:: easygopigo3.Led
    :members:
    :special-members:
+
+=====================================
+MotionSensor
+=====================================
+
+.. autoclass:: easygopigo3.MotionSensor
+  :members:
+  :special-members:
 
 =====================================
 ButtonSensor
@@ -173,10 +189,12 @@ Remote
 .. _technical specs: https://www.dexterindustries.com/GoPiGo/learning/hardware-port-description/
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
 .. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
+.. _grove loudness sensor: http://wiki.seeed.cc/Grove-Loudness_Sensor/
 .. _grove ultrasonic sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
+.. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/

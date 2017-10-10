@@ -702,6 +702,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return SoundSensor(port, self)
+        
+    def init_loudness_sensor(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
 
     def init_loudness_sensor(self, port = "AD1"):
         """
@@ -2591,10 +2595,13 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             raise
 
         try:
+            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
-            print(e)
-            raise IOError("Distance Sensor not found")
+            print("Distance Sensor init: {}".format(e))
+            raise
+        finally:
+            _release_read()
 
         self.mutex = None
         if use_mutex is True:
@@ -2727,7 +2734,6 @@ class DHTSensor(Sensor):
             self.sensor_type = sensor_type
 
             # here we keep the temperature values after removing outliers
-            self.filtered_temperature = []
 
             # here we keep the filtered humidity values after removing the outliers
             self.filtered_humidity = []
@@ -2763,6 +2769,7 @@ class DHTSensor(Sensor):
         if self.mutex:
             self.mutex.release()
 
+            self.filtered_temperature = []
     def read_temperature(self):
         '''
         Return values may be a float, or error strings

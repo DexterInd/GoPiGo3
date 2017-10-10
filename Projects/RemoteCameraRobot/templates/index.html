@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='static/favicon.ico') }}">
+    <link rel="stylesheet" href="static/style.css"/>
+    <script src="static/nipplejs.js"></script>
+    <script src="static/jquery-3.2.1.min.js"></script>
+    <script src="static/throttle.js"></script>
+
+    <title>Remote GoPiGo3</title>
+
+  </head>
+  <body>
+
+    <div class="container">
+        <div id="zone_joystick">
+            <img id="video_source" src="http://dex.local:8080/stream/video.mjpeg"/>
+
+            <!--
+            Example of video source shown on the whole page
+
+            <video poster="https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/polina.jpg" id="bgvid" playsinline autoplay muted loop>
+            WCAG general accessibility recommendation is that media such as background video play through only once. Loop turned on for the purposes of illustration; if removed, the end of the video will fade in the same way created by pressing the "Pause" button
+            <!--<source src="http://thenewcode.com/assets/videos/polina.webm" type="video/webm">
+            <source src="http://thenewcode.com/assets/videos/polina.mp4" type="video/mp4">
+            </video>
+            -->
+
+        </div>
+        <div class="robot">
+            GoPiGo3 - Live Stream
+            <ul>
+                <li id="state">State: Stop</li>
+                <li id="angle_deg">Angle Degrees: 0°</li>
+                <li id="angle_dir">Angle Direction: Up</li>
+                <li id="force">Joystick Force: 1.0</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var joystick;
+        var width = 1280;
+        var joystick_size_factor = 1280;
+        var joystick_default_size = 150;
+        var joystick_current_size = joystick_default_size * width / joystick_size_factor;
+        var server_address = "http://dex.local:5000/robot";
+
+        // the data that's transformed as a query and sent to the server
+        // changes while the joystick is used
+        var gopigo3_orientation = {
+            state: 'stop',
+            angle_degrees: 0,
+            angle_dir: 'forward',
+            force: 1
+        };
+
+        var joystick_config = {
+            zone: document.getElementById('zone_joystick'),
+            mode: 'semi',
+            catchDistance: 150,
+            color: 'Salmon',
+            size: joystick_current_size,
+            fadeTime: 500,
+            restOpacity: 0.0
+            };
+
+        document.getElementById('zone_joystick').onclick = createNipple;
+        // function for throttling the rate of sending data
+        // sends data every 250 ms
+        var send_throttled_data = throttle(function(server_address, query_string, sent_data){
+            setOnScreen(sent_data);
+            console.log('move robot', sent_data);
+
+            $.post(server_address + query_string);
+        }, 250);
+
+        // after creating the joystick, state some event handlers for it
+        function bindNipple() {
+
+            // when the joystick is moved around, send data to the server
+            joystick.on('move dir', function(evt, data) {
+
+              gopigo3_orientation.state = 'move';
+              gopigo3_orientation.angle_degrees = data.angle.degree;
+              if('direction' in data) {
+                gopigo3_orientation.angle_dir = data.direction.angle;
+              }
+              gopigo3_orientation.force = data.force;
+              query_string = '?' + $.param(gopigo3_orientation);
+
+              // use the following function instead the usual $.post
+              // so that we can throttle the rate of sending data
+              // good practice for not "choking" the network
+              send_throttled_data(server_address, query_string, gopigo3_orientation);
+            })
+
+            // when the joystick is released, send the stop command
+            // for stopping the robot from moving
+            joystick.on('end', function(evt, data) {
+
+                setTimeout(function(){
+                    gopigo3_orientation.state = 'stop';
+                    query_string = '?' + $.param(gopigo3_orientation);
+
+                    setOnScreen(gopigo3_orientation);
+                    console.log('stop robot', gopigo3_orientation);
+
+                    $.post(server_address + query_string);
+
+                }, 300);
+
+            })
+        }
+
+        // for creating a new on-screen joystick
+        function createNipple(evt) {
+            var type = typeof evt === 'string' ? evt : evt.target.getAttribute('data-type');
+            if (joystick) {
+              joystick.destroy();
+            }
+            joystick = nipplejs.create(joystick_config);
+            bindNipple();
+        }
+
+        // resize the joystick depending on the width length
+        window.onresize = function(){
+            width = document.getElementById('zone_joystick').offsetWidth;
+            joystick_current_size = joystick_default_size * width / joystick_size_factor;
+            joystick_config.size = joystick_current_size;
+        }
+
+        // change the on-screen data
+        function setOnScreen(data) {
+            document.getElementById('state').innerHTML = "State: " + data.state
+            document.getElementById('angle_deg').innerHTML = 'Angle Degrees: ' + data.angle_degrees.toFixed(2);
+            document.getElementById('angle_dir').innerHTML = 'Angle Direction: ' + data.angle_dir;
+            document.getElementById('force').innerHTML = 'Joystick Force: ' + data.force.toFixed(2);
+        }
+
+    </script>
+  </body>
+</html>

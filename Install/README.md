@@ -12,9 +12,25 @@ You can also [purchase an SD Card with the software on it here](https://www.dext
 
 ## Installation
 You can install the GoPiGo3 on your own operating system with the following commands in the command line:
-1. Clone this repository onto the Raspberry Pi: `sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3`
-2. Run the install script: `sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
-3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
+1. Clone this repository onto the Raspberry Pi:
+```
+sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
+```
+2. Run the install script:
+```
+sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh
+```
+3. Reboot the Raspberry Pi to make the settings take effect:
+```
+sudo reboot
+```
+
+## Quick Install
+
+Instead of cloning the repository and then running the install script, you can just enter the following command and then reboot your Raspberry Pi:
+```
+sudo curl -kL dexterindustries.com/update_gopigo3 | bash
+```
 
 ## Test and Troubleshooting
 You can see [the test and troubleshooting section on the GoPiGo3, including detailed information about updating the firmwaer, here.](https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/test-and-troubleshoot-the-gopigo3-raspberry-pi-robot/)

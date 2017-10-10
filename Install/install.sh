@@ -71,13 +71,15 @@ echo ""
 sudo bash $REPO_PATH/Firmware/openocd/install_openocd_compiled.sh
 
 # Adding in /etc/modules
-echo ""
-if grep -q "spi-dev" /etc/modules; then
-    echo "spi-dev already present in /etc/modules"
-else
-    echo spi-dev >> /etc/modules
-    echo "spi-dev added to /etc/modules"
-fi
+# this is not needed with Jessie and leads to a FAILED error at boot
+# (boot does work though)
+# echo ""
+# if grep -q "spi-dev" /etc/modules; then
+#     echo "spi-dev already present in /etc/modules"
+# else
+#     echo spi-dev >> /etc/modules
+#     echo "spi-dev added to /etc/modules"
+# fi
 
 # Enable SPI
 echo ""
@@ -98,6 +100,9 @@ sudo python3 setup.py install
 
 # module for interfacing with the keyboard
 sudo pip install curtsies
+sudo pip3 install curtsies
+sudo pip install numpy
+sudo pip3 install numpy
 
 echo ""
 echo "Installation complete"

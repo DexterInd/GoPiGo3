@@ -1,0 +1,54 @@
+
+version = '0.1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("com.pi4j:pi4j-core:1.1")
+}
+
+//Compile
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+//Jar
+jar {
+    baseName = "${rootProject.name}"
+    manifest {
+        from file("${projectDir}/src/main/resources/META-INF/MANIFEST.MF")
+    }
+}
+
+//Fat Jar
+task fatJar(type: Jar) {
+    baseName = "${rootProject.name}" + "-all"
+    manifest {
+        from file("${projectDir}/src/main/resources/META-INF/MANIFEST.MF")
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+//Deploy on Brick
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.hidetake:gradle-ssh-plugin:2.0.0"
+    }
+}
+apply plugin: 'org.hidetake.ssh'
+
+apply from: 'deploy.gradle'
+
