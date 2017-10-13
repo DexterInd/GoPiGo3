@@ -45,6 +45,7 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
+.. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/

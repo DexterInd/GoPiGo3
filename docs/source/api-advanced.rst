@@ -31,6 +31,7 @@ Sensor
   :members:
   :special-members:
   :exclude-members: __weakref__
+  :show-inheritance:
 
 =====================================
 DigitalSensor
@@ -47,6 +48,7 @@ AnalogSensor
 .. autoclass:: easygopigo3.AnalogSensor
   :members:
   :special-members:
+  :show-inheritance:
 
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/

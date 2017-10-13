@@ -702,10 +702,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return SoundSensor(port, self)
-        
+
     def init_loudness_sensor(self, port = "AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
+        """
 
     def init_loudness_sensor(self, port = "AD1"):
         """
@@ -800,12 +801,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Servo(port, self)
 
-    def init_distance_sensor(self, port = "I2C"):
+    def init_distance_sensor(self, port = "I2C", use_mutex=False):
         """
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param str port = "I2C": the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -819,19 +821,25 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return DistanceSensor(port, self)
+        return DistanceSensor(port, self, use_mutex)
 
-    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+    def init_dht_sensor(self, sensor_type = 0, use_mutex=False):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
-        :param str port = "SERIAL": The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
+        :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes have to be used.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
-        The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
+        .. important::
+
+            The only port to which this device can be connected is the ``"SERIAL"`` port, so therefore, there's no need
+            for a parameter which specifies the port of device because we've only got one available.
+
+            The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return DHTSensor(port, self, sensor_type)
+        return DHTSensor(self, sensor_type, use_mutex)
 
     def init_remote(self, port="AD1"):
         """
@@ -1458,7 +1466,7 @@ class LoudnessSensor(AnalogSensor):
     """
     | Class for the `Grove Loudness Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.Sensor` and :py:class:`~easygopigo3.AnalogSensor` class, so all of their attributes and methods are inherited.
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of their attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
 
     .. code-block:: python
@@ -2576,12 +2584,13 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             print(distance)
 
     """
-    def __init__(self, port="I2C",gpg=None):
+    def __init__(self, port="I2C",gpg=None, use_mutex=False):
         """
         Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
 
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises IOError: If :py:class:`di_sensors.distance_sensor.DistanceSensor` can't be found. Probably the :py:mod:`di_sensors` module isn't installed.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -2594,18 +2603,17 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         except:
             raise
 
+        self.mutex = None
+        if use_mutex is True:
+            self.mutex = Mutex()
+
+        self.__ifMutexAcquire()
         try:
-            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
             print("Distance Sensor init: {}".format(e))
             raise
-        finally:
-            _release_read()
-
-        self.mutex = None
-        if use_mutex is True:
-            self.mutex = Mutex()
+        self.__ifMutexRelease()
 
         self.set_descriptor("Distance Sensor")
 
@@ -2709,14 +2717,40 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
 
 class DHTSensor(Sensor):
-    '''
-    Support for the Adafruit DHT sensor, blue or white
-    All imports are done internally so it's done on a as needed basis only
-        as in many cases the DHT sensor is not connected.
-    '''
-    def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
+    """
+    Class for interfacing with the `Grove DHT Sensor`_.
+    This class derives from :py:class:`~easygopigo3.Sensor` class, so all of its attributes and methods are inherited.
+
+    We can create a :py:class:`~easygopigo3.DHTSensor` object similar to how we create it in the following template.
+
+    .. code-block:: python
+
+        # create an EasyGoPiGo3 object
+        gpg3_obj = EasyGoPiGo3()
+
+        # and now let's instantiate a DistanceSensor object through the gpg3_obj object
+        dht_sensor = gpg3_obj.init_dht_sensor()
+
+        # read values continuously and print them in the terminal
+        while True:
+            temp, hum = dht_sensor.read()
+
+            print("temp = {:.1f} hum = {:.1f}".format(temp, hum))
+    """
+
+    def __init__(self, gpg=None, sensor_type=0, use_mutex=False):
+        """
+        Constructor for creating a :py:class:`~easygopigo3.DHTSensor` object which can be used for interfacing with the `Grove DHT Sensor`_.
+
+        :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes have to be used.
+        :raises: Any of the :py:class:`~easygopigo3.Sensor` constructor's exceptions in case of error.
+
+        """
 
         self.sensor_type = sensor_type
+        port = "SERIAL"
 
         if self.sensor_type == 0:
             self.set_descriptor("Blue DHT Sensor")
@@ -2727,27 +2761,6 @@ class DHTSensor(Sensor):
             Sensor.__init__(self,port,"INPUT",gpg)
         except:
             raise
-
-        try:
-            import threading
-
-            self.sensor_type = sensor_type
-
-            # here we keep the temperature values after removing outliers
-
-            # here we keep the filtered humidity values after removing the outliers
-            self.filtered_humidity = []
-
-            # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
-            self.event = threading.Event()
-            if self.sensor_type == 0:
-                self.set_descriptor("Blue DHT Sensor")
-            else:
-                self.set_descriptor("White DHT Sensor")
-
-        except Exception as e:
-            print("DHTSensor: {}".format(e))
-            raise ValueError("DHT Sensor not found")
 
         self.mutex = None
         if use_mutex is True:
@@ -2771,11 +2784,16 @@ class DHTSensor(Sensor):
 
             self.filtered_temperature = []
     def read_temperature(self):
-        '''
-        Return values may be a float, or error strings
-        TBD: raise errors instead of returning strings
-        import done internally so it's done on a as needed basis only
-        '''
+        """
+        Return the temperature in Celsius degrees.
+
+        :returns: The temperature in Celsius degrees.
+        :rtype: float
+
+        If the sensor isn't plugged in, a ``"Bad reading, try again"`` message is returned.
+        If there is a runtime error, then a ``"Runtime error"`` message is returned.
+
+        """
 
         from di_sensors import DHT
 
@@ -2784,18 +2802,24 @@ class DHTSensor(Sensor):
         self.__ifMutexRelease()
 
         if temp == -2:
-            return "Bad reading, trying again"
+            return "Bad reading, try again"
         elif temp == -3:
-            return "Run the program as sudo"
+            return "Runtime error"
         else:
             # print("Temperature = %.02fC"%temp)
             return temp
 
     def read_humidity(self):
-        '''
-        Return values may be a float, or error strings
-        TBD: raise errors instead of returning strins
-        '''
+        """
+        Return the humidity as a percentage.
+
+        :returns: Return the humidity as a percentage number from 0% to 100%.
+        :rtype: float
+
+        If the sensor isn't plugged in, a ``"Bad reading, try again"`` message is returned.
+        If there is a runtime error, then a ``"Runtime error"`` message is returned.
+
+        """
         from di_sensors import DHT
 
         self.__ifMutexAcquire()
@@ -2803,14 +2827,24 @@ class DHTSensor(Sensor):
         self.__ifMutexRelease()
 
         if humidity == -2:
-            return "Bad reading, trying again"
+            return "Bad reading, try again"
         elif humidity == -3:
-            return "Run the program as sudo"
+            return "Runtime error"
         else:
             # print("Humidity = %.02f%%"%humidity)
             return humidity
 
     def read(self):
+        """
+        Return the temperature and humidity.
+
+        :returns: The temperature and humidity as a tuple, where the temperature is the 1st element of the tuple and the humidity the 2nd.
+        :rtype: (float, float)
+
+        If the sensor isn't plugged in, a ``"Bad reading, try again"`` message is returned.
+        If there is a runtime error, then a ``"Runtime error"`` message is returned.
+
+        """
         from di_sensors import DHT
 
         self.__ifMutexAcquire()
@@ -2818,11 +2852,10 @@ class DHTSensor(Sensor):
         self.__ifMutexRelease()
 
         if temp ==-2.0 or humidity == -2.0:
-            return "Bad reading, trying again"
+            return "Bad reading, try again"
         elif temp ==-3.0 or humidity == -3.0:
-            return "Run the program as sudo"
+            return "Runtime error"
         else:
-            print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
             return [temp, humidity]
 
 
