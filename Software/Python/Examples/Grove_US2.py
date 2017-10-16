@@ -36,14 +36,18 @@ try:
         # try reading sensor 1
         try:
             sensor1 = GPG.get_grove_value(GPG.GROVE_1)
-        except gopigo3.SensorError as error:
-            pass
+        except gopigo3.SensorError:
+            sensor1 = 0
+        except gopigo3.ValueError:
+            sensor1 = 0
         
         # try reading sensor 2
         try:
             sensor2 = GPG.get_grove_value(GPG.GROVE_2)
-        except gopigo3.SensorError as error:
-            pass
+        except gopigo3.SensorError:
+            sensor2 = 0
+        except gopigo3.ValueError:
+            sensor2 = 0
         
         # print the sensor values
         print("Sensor 1: %4dmm   Sensor 2: %4dmm" % (sensor1, sensor2))
