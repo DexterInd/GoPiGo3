@@ -46,7 +46,7 @@ DRIVE_SPEED = 175
 # how fast to steer when being controlled by the remote (degrees per second)
 STEER_SPEED = 100
 
-# constants used to define how agressively the robot should respond to:
+# constants used to define how aggressively the robot should respond to:
 KGYROANGLE = 15    # overall angle
 KGYROSPEED = 1.7   # sudden changes in angle
 KPOS       = 0.07  # deviation from the target position
