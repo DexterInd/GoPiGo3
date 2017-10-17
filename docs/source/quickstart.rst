@@ -28,7 +28,7 @@ For connecting to your `GoPiGo3`_ robot with a computer or laptop, read the inst
 Program your GoPiGo3
 ***********************
 
-For programming your `GoPiGo3`_ to do anything you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
+For programming your `GoPiGo3`_ to do what you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
 
 To install or update the `GoPiGo3`_ library on your RaspberryPi, open a terminal or the command line and type the following command:
 
@@ -52,7 +52,7 @@ Connect More Sensors
 ********************
 
 The `GoPiGo3`_ can also be paired with our in-house sensors.
-There are a number of digital and analog sensor that can be connected to the GoPiGo3. We have further in-depth documentation on the following 4 sensors:
+There are a number of digital and analog sensors that can be connected to the GoPiGo3. We have further in-depth documentation on the following 4 sensors:
 
    * The DI `IMU Sensor`_.
    * The DI `Light and Color Sensor`_.
