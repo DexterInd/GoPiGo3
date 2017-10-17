@@ -22,13 +22,13 @@ For assembling your `GoPiGo3`_ robot, read the instructions from the following p
 Connecting to GoPiGo3
 ************************
 
-For connecting to your `GoPiGo3`_ robot with a computer or laptop, read the instructions on the following page: `connecting to robot`_.
+To connect to your `GoPiGo3`_ robot with a computer or laptop, read the instructions on the following page: `connecting to robot`_.
 
 ***********************
 Program your GoPiGo3
 ***********************
 
-For programming your `GoPiGo3`_ to do what you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
+To program your `GoPiGo3`_ to do what you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
 
 To install or update the `GoPiGo3`_ library on your RaspberryPi, open a terminal or the command line and type the following command:
 
