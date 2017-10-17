@@ -2767,8 +2767,12 @@ class DHTSensor(Sensor):
         from di_sensors import DHT
 
         _ifMutexAcquire(self.use_mutex)
-        temp = DHT.dht(self.sensor_type)[0]
-        _ifMutexRelease(self.use_mutex)
+        try:
+            temp = DHT.dht(self.sensor_type)[0]
+        except Exception as e:
+            raise
+        finally:
+            _ifMutexRelease(self.use_mutex)
 
         if temp == -2:
             return "Bad reading, try again"
@@ -2792,8 +2796,12 @@ class DHTSensor(Sensor):
         from di_sensors import DHT
 
         _ifMutexAcquire(self.use_mutex)
-        humidity = DHT.dht(self.sensor_type)[1]
-        _ifMutexRelease(self.use_mutex)
+        try:
+            humidity = DHT.dht(self.sensor_type)[1]
+        except Exception as e:
+            raise
+        finally:
+            _ifMutexRelease(self.use_mutex)
 
         if humidity == -2:
             return "Bad reading, try again"
@@ -2817,8 +2825,12 @@ class DHTSensor(Sensor):
         from di_sensors import DHT
 
         _ifMutexAcquire(self.use_mutex)
-        [temp , humidity]=DHT.dht(self.sensor_type)
-        _ifMutexRelease(self.use_mutex)
+        try:
+            [temp, humidity]=DHT.dht(self.sensor_type)
+        except Exception as e:
+            raise
+        finally:
+            _ifMutexRelease(self.use_mutex)
 
         if temp ==-2.0 or humidity == -2.0:
             return "Bad reading, try again"
