@@ -2351,7 +2351,8 @@ class LineFollower(Sensor):
 
         :returns: A list with 5 10-bit numbers that represent the readings from the line follower device.
         :rtype: list[int]
-
+        :raises IOError: If the line follower is not responding.
+        
         """
         five_vals = line_sensor.read_sensor()
 
