@@ -2326,6 +2326,7 @@ class LineFollower(Sensor):
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
         :raises ImportError: If the :py:mod:`line_follower` module couldn't be found.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+        :raises IOError: If the line follower is not responding.
 
 
         The only value the ``port`` parameter can take is ``"I2C"``.
@@ -2339,6 +2340,8 @@ class LineFollower(Sensor):
         try:
             self.set_descriptor("Line Follower")
             Sensor.__init__(self, port, "INPUT", gpg)
+            if line_sensor.read_sensor() == [-1, -1, -1, -1, -1]:
+                raise IOError("Line Follower not responding")
         except:
             raise
 
@@ -2348,14 +2351,15 @@ class LineFollower(Sensor):
 
         :returns: A list with 5 10-bit numbers that represent the readings from the line follower device.
         :rtype: list[int]
-
+        :raises IOError: If the line follower is not responding.
+        
         """
         five_vals = line_sensor.read_sensor()
 
-        if five_vals != -1:
+        if five_vals != [-1, -1, -1, -1, -1]:
             return five_vals
         else:
-            return [-1, -1, -1, -1, -1]
+            raise IOError("Line Follower not responding")
 
     def get_white_calibration(self):
         """
