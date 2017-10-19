@@ -1,8 +1,8 @@
 .. _api-basic-chapter:
 
-###########################
-API Reference Point - Basic
-###########################
+###################
+API GoPiGo3 - Basic
+###################
 
 ============
 Requirements
@@ -19,7 +19,7 @@ If you have issues importing these two modules, then make sure:
 
    * You have followed the steps found in :ref:`Getting Started <getting-started-chapter>` guide.
    * You have installed either `Raspbian For Robots`_, the GoPiGo3 `repository`_ or the `GoPiGo3 package`_ (the pip package).
-   * You have the ``gopigo3`` package installed by typing the command ``pip freeze | grep gopigo3`` on your Raspberry Pi's terminal. If the package is installed, then a string with the ``GoPiGo3==[x.y.z]`` format will show up.
+   * You have the ``gopigo3`` package installed by typing the command ``pip freeze | grep gopigo3`` on your Raspberry Pi's terminal. If the package is installed, then a string with the ``gopigo3==[x.y.z]`` format will show up.
 
 If you encounter issues that aren't covered by our :ref:`Getting Started <getting-started-chapter>` guide or :ref:`FAQ <faq-chapter>` chapter, please head over to our `forum`_.
 
@@ -161,6 +161,11 @@ Servo
 DistanceSensor
 =====================================
 
+.. important::
+
+   The :py:class:`easygopigo3.DistanceSensor` class requires the ``DI_Sensors`` package installed.
+   Please check the documentation of the `DI-Sensors`_'s package on how to install it.
+
 .. autoclass:: easygopigo3.DistanceSensor
    :members:
    :special-members:
@@ -202,3 +207,4 @@ Remote
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
+.. _DI-Sensors: http://di-sensors.readthedocs.io
