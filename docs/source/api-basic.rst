@@ -76,6 +76,7 @@ EasyGoPiGo3
 .. autoclass:: easygopigo3.EasyGoPiGo3
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 LightSensor
@@ -84,6 +85,7 @@ LightSensor
 .. autoclass:: easygopigo3.LightSensor
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 SoundSensor
@@ -92,6 +94,7 @@ SoundSensor
 .. autoclass:: easygopigo3.SoundSensor
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 LoudnessSensor
@@ -100,6 +103,7 @@ LoudnessSensor
 .. autoclass:: easygopigo3.LoudnessSensor
   :members:
   :special-members:
+  :show-inheritance:
 
 =====================================
 UltrasonicSensor
@@ -108,6 +112,7 @@ UltrasonicSensor
 .. autoclass:: easygopigo3.UltraSonicSensor
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 Buzzer
@@ -116,6 +121,7 @@ Buzzer
 .. autoclass:: easygopigo3.Buzzer
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 Led
@@ -124,6 +130,7 @@ Led
 .. autoclass:: easygopigo3.Led
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 MotionSensor
@@ -132,6 +139,7 @@ MotionSensor
 .. autoclass:: easygopigo3.MotionSensor
   :members:
   :special-members:
+  :show-inheritance:
 
 =====================================
 ButtonSensor
@@ -140,6 +148,7 @@ ButtonSensor
 .. autoclass:: easygopigo3.ButtonSensor
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 LineFollower
@@ -148,6 +157,7 @@ LineFollower
 .. autoclass:: easygopigo3.LineFollower
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 Servo
@@ -156,6 +166,7 @@ Servo
 .. autoclass:: easygopigo3.Servo
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 DistanceSensor
@@ -169,14 +180,16 @@ DistanceSensor
 .. autoclass:: easygopigo3.DistanceSensor
    :members:
    :special-members:
+   :show-inheritance:
 
 =====================================
 DHTSensor
 =====================================
 
-.. warning::
-
-   Coming soon!
+.. autoclass:: easygopigo3.DHTSensor
+   :members:
+   :special-members:
+   :show-inheritance:
 
 =====================================
 Remote
@@ -185,6 +198,7 @@ Remote
 .. autoclass:: easygopigo3.Remote
    :members:
    :special-members:
+   :show-inheritance:
 
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
@@ -200,6 +214,7 @@ Remote
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
+.. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
