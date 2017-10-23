@@ -10,7 +10,7 @@ import time
 import os
 from I2C_mutex import Mutex
 
-mutex = Mutex()
+mutex = Mutex(debug=True)
 
 def _ifMutexAcquire(mutex_enabled = False):
     """
@@ -2651,7 +2651,8 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             _ifMutexAcquire(self.use_mutex)
             try:
                 mm = self.read_range_single()
-            except:
+            except Exception as e:
+                print(e)
                 mm = 0
             finally:
                 _ifMutexRelease(self.use_mutex)
