@@ -10,7 +10,7 @@ import time
 import os
 from I2C_mutex import Mutex
 
-mutex = Mutex(debug=True)
+mutex = Mutex(debug=False)
 
 def _ifMutexAcquire(mutex_enabled = False):
     """
