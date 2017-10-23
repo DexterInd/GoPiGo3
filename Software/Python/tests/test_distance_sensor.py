@@ -1,3 +1,10 @@
+####################################################
+# This file contains a short test to determine
+#     if it is possible to access the distance sensor
+#     from two separate processes using mutex.
+# Run in parallel with test_distance_sensor_2.py
+####################################################
+
 import time
 import easygopigo3 as easy
 gpg = easy.EasyGoPiGo3(use_mutex=True)
