@@ -89,10 +89,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self):
+    def __init__(self, use_mutex = False):
         """
         | This constructor sets the variables to the following values:
 
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
@@ -119,6 +120,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
+        self.use_mutex = use_mutex
 
     def volt(self):
         """
@@ -805,13 +807,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Servo(port, self)
 
-    def init_distance_sensor(self, port = "I2C", use_mutex=False):
+    def init_distance_sensor(self, port = "I2C"):
         """
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -825,14 +826,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return DistanceSensor(port, self, use_mutex)
+        return DistanceSensor(port, self, self.use_mutex)
 
-    def init_dht_sensor(self, sensor_type = 0, use_mutex=False):
+    def init_dht_sensor(self, sensor_type = 0):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
         :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
-        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes have to be used.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
         .. important::
@@ -843,7 +843,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return DHTSensor(self, sensor_type, use_mutex)
+        return DHTSensor(self, sensor_type, self.use_mutex)
 
     def init_remote(self, port="AD1"):
         """
@@ -867,7 +867,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
 
-        return MotionSensor(port,self)
+        return MotionSensor(port, self)
 
 # the following functions may be redundant
 
@@ -2348,7 +2348,7 @@ class LineFollower(Sensor):
         :returns: A list with 5 10-bit numbers that represent the readings from the line follower device.
         :rtype: list[int]
         :raises IOError: If the line follower is not responding.
-        
+
         """
         five_vals = line_sensor.read_sensor()
 
