@@ -1,4 +1,4 @@
-# GoPiGo3 [![Documentation Status](https://readthedocs.org/projects/gopigo3/badge/?version=latest)](http://gopigo3.readthedocs.io/en/latest/?badge=latest)
+# GoPiGo3 [![Documentation Status](https://readthedocs.org/projects/gopigo3/badge/?version=master)](http://gopigo3.readthedocs.io/en/latest/?badge=master)
 
 The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo3 is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo)
 
