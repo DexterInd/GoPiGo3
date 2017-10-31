@@ -22,13 +22,44 @@ For assembling your `GoPiGo3`_ robot, read the instructions from the following p
 Connecting to GoPiGo3
 ************************
 
-For connecting to your `GoPiGo3`_ robot with a computer or laptop, read the instructions on the following page: `connecting to robot`_.
+To connect to your `GoPiGo3`_ robot with a computer or laptop, read the instructions on the following page: `connecting to robot`_.
 
 ***********************
 Program your GoPiGo3
 ***********************
 
-For programming your `GoPiGo3`_ to do anything you want, read the instructions found here: `programming your robot`_.
+To program your `GoPiGo3`_ to do what you want, you can follow the instructions found here (`programming your robot`_) or *follow the rest of instructions found in this section*.
+
+To install or update the `GoPiGo3`_ library on your RaspberryPi, open a terminal or the command line and type the following command:
+
+.. code-block:: bash
+
+   # follow any given instructions given through this command
+
+   sudo curl -kL dexterindustries.com/update_gopigo3 | bash
+
+Also, in order to be able to use the :py:meth:`easygopigo3.EasyGoPiGo3.init_distance_sensor` method and the :py:class:`easygopigo3.DistanceSensor` class, the `DI-Sensors`_ package is required.
+You can install it or update it with the following command in the terminal:
+
+.. code-block:: bash
+
+   # follow any given instructions given through this command
+
+   sudo curl -kL dexterindustries.com/update_sensors | bash
+
+********************
+Connect More Sensors
+********************
+
+The `GoPiGo3`_ can also be paired with our in-house sensors.
+There are a number of digital and analog sensors that can be connected to the GoPiGo3. We have further in-depth documentation on the following 4 sensors:
+
+   * The DI `IMU Sensor`_.
+   * The DI `Light and Color Sensor`_.
+   * The DI `Temperature Humidity Pressure Sensor`_.
+   * The DI `Distance Sensor`_.
+
+For more on getting started with these sensors, please check the `DI-Sensors`_ documentation.
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _assembling instructions: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/1-assemble-gopigo3/
@@ -45,6 +76,7 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
+.. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
@@ -53,3 +85,7 @@ For programming your `GoPiGo3`_ to do anything you want, read the instructions f
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
+.. _DI-Sensors: http://di-sensors.readthedocs.io
+.. _imu sensor: https://www.dexterindustries.com/shop/imu-sensor/
+.. _light and color sensor: https://www.dexterindustries.com/shop/light-color-sensor/
+.. _temperature humidity pressure sensor: https://www.dexterindustries.com/shop/temperature-humidity-pressure-sensor/

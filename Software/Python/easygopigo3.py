@@ -7,6 +7,29 @@ import sys
 # import tty
 # import select
 import time
+import os
+from I2C_mutex import Mutex
+
+mutex = Mutex(debug=False)
+
+def _ifMutexAcquire(mutex_enabled = False):
+    """
+    Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+    """
+    if mutex_enabled:
+        mutex.acquire()
+
+def _ifMutexRelease(mutex_enabled = False):
+    """
+    Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
+
+    """
+    if mutex_enabled:
+        mutex.release()
+
+
+
 hardware_connected = True
 try:
     import gopigo3
@@ -17,21 +40,6 @@ except Exception as e:
     hardware_connected = False
     print("Unknown issue while importing gopigo3")
     print(e)
-
-
-# from datetime import datetime
-
-try:
-    from I2C_mutex import *
-
-    mutex = True
-except:
-    mutex = False
-    pass
-#import DHT
-#import grove_rgb_lcd
-
-import os
 
 try:
     from line_follower import line_sensor
@@ -48,37 +56,12 @@ except:
     except:
         is_line_follower_accessible = False
 
-old_settings = ''
-fd = ''
 ##########################
-
-read_is_open = True
 
 
 def debug(in_str):
     if False:
         print(in_str)
-
-
-def _grab_read():
-    global read_is_open
-    try:
-        I2C_Mutex_Acquire()
-    except:
-        pass
-    # thread safe doesn't seem to be required so
-    # commented out
-    # while read_is_open is False:
-    #     time.sleep(0.01)
-    read_is_open = False
-    # print("acquired")
-
-
-def _release_read():
-    global read_is_open
-    I2C_Mutex_Release()
-    read_is_open = True
-    # print("released")
 
 #####################################################################
 #
@@ -106,10 +89,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self):
+    def __init__(self, use_mutex = False):
         """
         | This constructor sets the variables to the following values:
 
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
@@ -136,6 +120,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
+        self.use_mutex = use_mutex
 
     def volt(self):
         """
@@ -723,7 +708,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return SoundSensor(port, self)
-        
+
+    def init_loudness_sensor(self, port = "AD1"):
+        """
+        | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
+        """
+
     def init_loudness_sensor(self, port = "AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
@@ -735,7 +725,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         return LoudnessSensor(port, self)
-               
+
 
     def init_ultrasonic_sensor(self, port = "AD1"):
         """
@@ -822,7 +812,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
 
-        :param str port = "I2C": the only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
@@ -836,19 +826,24 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return DistanceSensor(port, self)
+        return DistanceSensor(port, self, self.use_mutex)
 
-    def init_dht_sensor(self, port = "SERIAL", sensor_type = 0):
+    def init_dht_sensor(self, sensor_type = 0):
         """
         | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
 
-        :param str port = "SERIAL": The only available port name is ``"SERIAL"``. The default value is also ``"SERIAL"``, so it can be left alone.
+        :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
         :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
 
-        The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
+        .. important::
+
+            The only port to which this device can be connected is the ``"SERIAL"`` port, so therefore, there's no need
+            for a parameter which specifies the port of device because we've only got one available.
+
+            The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return DHTSensor(port, self, sensor_type)
+        return DHTSensor(self, sensor_type, self.use_mutex)
 
     def init_remote(self, port="AD1"):
         """
@@ -865,15 +860,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def init_motion_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.MotionSensor` object and then returns it
-        
+
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
         :returns: An instance of the :py:class:`~easygopigo3.MotionSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
-                
-        return MotionSensor(port,self)
-        
+
+        return MotionSensor(port, self)
+
 # the following functions may be redundant
 
 
@@ -925,7 +920,7 @@ class Sensor(object):
     """
     PORTS = {}
 
-    def __init__(self, port, pinmode, gpg):
+    def __init__(self, port, pinmode, gpg, use_mutex=False):
         """
         Constructor for creating a connection to one of the available grove ports on the `GoPIGo3`_.
 
@@ -967,6 +962,7 @@ class Sensor(object):
         debug(pinmode)
         self.set_port(port)
         self.set_pin_mode(pinmode)
+        self.use_mutex = use_mutex
 
         try:
             # I2C sensors don't need a valid gpg
@@ -1156,10 +1152,10 @@ class Sensor(object):
 
 
 class DigitalSensor(Sensor):
-    def __init__(self, port, pinmode, gpg):
+    def __init__(self, port, pinmode, gpg, use_mutex = False):
         debug("DigitalSensor init")
         try:
-            Sensor.__init__(self, port, pinmode, gpg)
+            Sensor.__init__(self, port, pinmode, gpg, use_mutex)
         except:
             raise
 
@@ -1221,7 +1217,7 @@ class AnalogSensor(Sensor):
         With this class, both analog sensors and actuators (output devices such as LEDs which may require controlled output voltages) can be connected.
 
     """
-    def __init__(self, port, pinmode, gpg):
+    def __init__(self, port, pinmode, gpg, use_mutex = False):
         """
         Binds an analog device to the specified ``port`` with the appropriate ``pinmode`` mode.
 
@@ -1249,7 +1245,7 @@ class AnalogSensor(Sensor):
         self.freq = 24000
         self._max_value = 4096
         try:
-            Sensor.__init__(self, port, pinmode, gpg)
+            Sensor.__init__(self, port, pinmode, gpg, use_mutex)
         except:
             raise
 
@@ -1288,8 +1284,8 @@ class AnalogSensor(Sensor):
 
         """
         reading_percent = round(self.read() * 100 // self._max_value)
-        
-        # Some sensors - like the loudness_sensor - 
+
+        # Some sensors - like the loudness_sensor -
         # can actually return higher than 100% so let's clip it
         # and keep classrooms within an acceptable noise level
         if reading_percent > 100:
@@ -1378,7 +1374,7 @@ class LightSensor(AnalogSensor):
          For more sensors, please see our Dexter Industries `shop`_.
 
     """
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.LightSensor` object for the `Grove Light Sensor`_.
 
@@ -1397,7 +1393,7 @@ class LightSensor(AnalogSensor):
         debug("LightSensor init")
         self.set_descriptor("Light sensor")
         try:
-            AnalogSensor.__init__(self, port, "INPUT", gpg)
+            AnalogSensor.__init__(self, port, "INPUT", gpg, use_mutex)
         except:
             raise
         self.set_pin(1)
@@ -1444,7 +1440,7 @@ class SoundSensor(AnalogSensor):
          For more sensors, please see our Dexter Industries `shop`_.
 
     """
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex=False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.SoundSensor` object for the `Grove Sound Sensor`_.
 
@@ -1463,7 +1459,7 @@ class SoundSensor(AnalogSensor):
         debug("Sound Sensor on port " + port)
         self.set_descriptor("Sound sensor")
         try:
-            AnalogSensor.__init__(self, port, "INPUT", gpg)
+            AnalogSensor.__init__(self, port, "INPUT", gpg, use_mutex)
         except:
             raise
         self.set_pin(1)
@@ -1475,7 +1471,7 @@ class LoudnessSensor(AnalogSensor):
     """
     | Class for the `Grove Loudness Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.Sensor` and :py:class:`~easygopigo3.AnalogSensor` class, so all of their attributes and methods are inherited.
+    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of their attributes and methods are inherited.
     | For creating a :py:class:`~easygopigo3.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
 
     .. code-block:: python
@@ -1511,7 +1507,7 @@ class LoudnessSensor(AnalogSensor):
          For more sensors, please see our Dexter Industries `shop`_.
 
     """
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex=False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.LoudnessSensor` object for the `Grove Loudness Sensor`_.
 
@@ -1530,14 +1526,15 @@ class LoudnessSensor(AnalogSensor):
         debug("Loudness Sensor on port " + port)
         self.set_descriptor("Loudness sensor")
         try:
-            AnalogSensor.__init__(self, port, "INPUT", gpg)
+            AnalogSensor.__init__(self, port, "INPUT", gpg, use_mutex)
         except:
             raise
         self.set_pin(1)
         self._max_value = 1024  # based on empirical tests
 
+##########################
 
-##########################        
+##########################
 
 
 class UltraSonicSensor(AnalogSensor):
@@ -1582,7 +1579,7 @@ class UltraSonicSensor(AnalogSensor):
 
     """
 
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.UltraSonicSensor` object for the `Grove Ultrasonic Sensor`_.
 
@@ -1601,7 +1598,7 @@ class UltraSonicSensor(AnalogSensor):
 
         try:
             debug("Ultrasonic Sensor on port " + port)
-            AnalogSensor.__init__(self, port, "US", gpg)
+            AnalogSensor.__init__(self, port, "US", gpg, use_mutex)
             self.set_descriptor("Ultrasonic sensor")
             self.safe_distance = 500
             self.set_pin(1)
@@ -1833,7 +1830,7 @@ class Buzzer(AnalogSensor):
              "G5": 784,
              "G5#": 831}
 
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.Buzzer` object for the `Grove Buzzer`_.
 
@@ -1853,7 +1850,7 @@ class Buzzer(AnalogSensor):
         """
 
         try:
-            AnalogSensor.__init__(self, port, "OUTPUT", gpg)
+            AnalogSensor.__init__(self, port, "OUTPUT", gpg, use_mutex)
             self.set_pin(1)
             self.set_descriptor("Buzzer")
             self.power = 50
@@ -1974,7 +1971,7 @@ class Led(AnalogSensor):
 
 
     """
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.Led` object for the `Grove LED`_.
 
@@ -1992,7 +1989,7 @@ class Led(AnalogSensor):
         """
         try:
             self.set_descriptor("LED")
-            AnalogSensor.__init__(self, port, "OUTPUT", gpg)
+            AnalogSensor.__init__(self, port, "OUTPUT", gpg, use_mutex)
             self.set_pin(1)
         except:
             raise
@@ -2084,8 +2081,8 @@ class MotionSensor(DigitalSensor):
 
 
     """
-   
-    def __init__(self, port="AD1", gpg=None):
+
+    def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.MotionSensor` object for the `Grove Motion Sensor`_.
 
@@ -2103,7 +2100,7 @@ class MotionSensor(DigitalSensor):
         """
         try:
             self.set_descriptor("Motion Sensor")
-            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg, use_mutex)
             self.set_pin(1)
         except:
             raise
@@ -2164,7 +2161,7 @@ class ButtonSensor(DigitalSensor):
 
     """
 
-    def __init__(self, port="AD1", gpg=None):
+    def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.ButtonSensor` object for the `Grove Button`_.
 
@@ -2182,7 +2179,7 @@ class ButtonSensor(DigitalSensor):
         """
         try:
             self.set_descriptor("Button sensor")
-            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg)
+            DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg, use_mutex)
             self.set_pin(1)
         except:
             raise
@@ -2224,7 +2221,7 @@ class Remote(Sensor):
     #: the actual symbols we see on the `Infrared Remote`_.
     keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
 
-    def __init__(self, port="AD1",gpg=None):
+    def __init__(self, port="AD1",gpg=None, use_mutex = False):
         """
         Constructor for initializing a :py:class:`~easygopigo3.Remote` object.
 
@@ -2237,7 +2234,7 @@ class Remote(Sensor):
         """
         try:
             self.set_descriptor("Remote Control")
-            Sensor.__init__(self, port, "IR", gpg)
+            Sensor.__init__(self, port, "IR", gpg, use_mutex)
         except:
             raise
 
@@ -2318,7 +2315,7 @@ class LineFollower(Sensor):
 
     """
 
-    def __init__(self, port="I2C", gpg=None):
+    def __init__(self, port="I2C", gpg=None, use_mutex=False):
         """
         Constructor for initalizing a :py:class:`~easygopigo3.LineFollower` object.
 
@@ -2326,6 +2323,7 @@ class LineFollower(Sensor):
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
         :raises ImportError: If the :py:mod:`line_follower` module couldn't be found.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
+        :raises IOError: If the line follower is not responding.
 
 
         The only value the ``port`` parameter can take is ``"I2C"``.
@@ -2338,7 +2336,9 @@ class LineFollower(Sensor):
 
         try:
             self.set_descriptor("Line Follower")
-            Sensor.__init__(self, port, "INPUT", gpg)
+            Sensor.__init__(self, port, "INPUT", gpg, use_mutex)
+            if line_sensor.read_sensor() == [-1, -1, -1, -1, -1]:
+                raise IOError("Line Follower not responding")
         except:
             raise
 
@@ -2348,14 +2348,15 @@ class LineFollower(Sensor):
 
         :returns: A list with 5 10-bit numbers that represent the readings from the line follower device.
         :rtype: list[int]
+        :raises IOError: If the line follower is not responding.
 
         """
         five_vals = line_sensor.read_sensor()
 
-        if five_vals != -1:
+        if five_vals != [-1, -1, -1, -1, -1]:
             return five_vals
         else:
-            return [-1, -1, -1, -1, -1]
+            raise IOError("Line Follower not responding")
 
     def get_white_calibration(self):
         """
@@ -2485,7 +2486,7 @@ class Servo(Sensor):
 
     """
 
-    def __init__(self, port="SERVO1", gpg=None):
+    def __init__(self, port="SERVO1", gpg=None, use_mutex=False):
         """
         Constructor for instantiating a :py:class:`~easygopigo3.Servo` object for a (or multiple) `servo`_ (servos).
 
@@ -2503,7 +2504,7 @@ class Servo(Sensor):
         """
         try:
             self.set_descriptor("GoPiGo3 Servo")
-            Sensor.__init__(self, port, "OUTPUT", gpg)
+            Sensor.__init__(self, port, "OUTPUT", gpg, use_mutex)
         except:
             raise
 
@@ -2592,12 +2593,13 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
             print(distance)
 
     """
-    def __init__(self, port="I2C",gpg=None):
+    def __init__(self, port="I2C",gpg=None, use_mutex=False):
         """
         Creates a :py:class:`~easygopigo3.DistanceSensor` object which can be used for interfacing with a `distance sensor`_.
 
         :param str port = "I2C": Port to which the distance sensor is connected.
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises IOError: If :py:class:`di_sensors.distance_sensor.DistanceSensor` can't be found. Probably the :py:mod:`di_sensors` module isn't installed.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -2606,18 +2608,20 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         """
         self.set_descriptor("Distance Sensor")
         try:
-            Sensor.__init__(self, port, "OUTPUT", gpg)
+            Sensor.__init__(self, port, "OUTPUT", gpg, use_mutex)
         except:
             raise
 
+        _ifMutexAcquire(self.use_mutex)
         try:
-            _grab_read()
             distance_sensor.DistanceSensor.__init__(self)
         except Exception as e:
             print("Distance Sensor init: {}".format(e))
             raise
         finally:
-            _release_read()
+            _ifMutexRelease(self.use_mutex)
+
+        self.set_descriptor("Distance Sensor")
 
     # Returns the values in cms
     def read_mm(self):
@@ -2644,14 +2648,14 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
         # smaller than 8m or bigger than 5 mm.
         # if sensor insists on that value, then pass it on
         while (mm > 8000 or mm < 5) and attempt < 3:
+            _ifMutexAcquire(self.use_mutex)
             try:
-                _grab_read()
                 mm = self.read_range_single()
-            except:
+            except Exception as e:
+                print(e)
                 mm = 0
             finally:
-                _release_read()
-                
+                _ifMutexRelease(self.use_mutex)
             attempt = attempt + 1
             time.sleep(0.001)
 
@@ -2705,14 +2709,40 @@ class DistanceSensor(Sensor, distance_sensor.DistanceSensor):
 
 
 class DHTSensor(Sensor):
-    '''
-    Support for the Adafruit DHT sensor, blue or white
-    All imports are done internally so it's done on a as needed basis only
-        as in many cases the DHT sensor is not connected.
-    '''
-    def __init__(self, port="SERIAL",gpg=None, sensor_type=0):
+    """
+    Class for interfacing with the `Grove DHT Sensor`_.
+    This class derives from :py:class:`~easygopigo3.Sensor` class, so all of its attributes and methods are inherited.
+
+    We can create a :py:class:`~easygopigo3.DHTSensor` object similar to how we create it in the following template.
+
+    .. code-block:: python
+
+        # create an EasyGoPiGo3 object
+        gpg3_obj = EasyGoPiGo3()
+
+        # and now let's instantiate a DistanceSensor object through the gpg3_obj object
+        dht_sensor = gpg3_obj.init_dht_sensor()
+
+        # read values continuously and print them in the terminal
+        while True:
+            temp, hum = dht_sensor.read()
+
+            print("temp = {:.1f} hum = {:.1f}".format(temp, hum))
+    """
+
+    def __init__(self, gpg=None, sensor_type=0, use_mutex=False):
+        """
+        Constructor for creating a :py:class:`~easygopigo3.DHTSensor` object which can be used for interfacing with the `Grove DHT Sensor`_.
+
+        :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes have to be used.
+        :raises: Any of the :py:class:`~easygopigo3.Sensor` constructor's exceptions in case of error.
+
+        """
 
         self.sensor_type = sensor_type
+        port = "SERIAL"
 
         if self.sensor_type == 0:
             self.set_descriptor("Blue DHT Sensor")
@@ -2720,75 +2750,96 @@ class DHTSensor(Sensor):
             self.set_descriptor("White DHT Sensor")
 
         try:
-            Sensor.__init__(self,port,"INPUT",gpg)
+            Sensor.__init__(self,port,"INPUT",gpg, use_mutex)
         except:
             raise
 
+
     def read_temperature(self):
-        '''
-        Return values may be a float, or error strings
-        TBD: raise errors instead of returning strings
-        import done internally so it's done on a as needed basis only
-        '''
+        """
+        Return the temperature in Celsius degrees.
+
+        :returns: The temperature in Celsius degrees.
+        :rtype: float
+
+        If the sensor isn't plugged in, a ``"Bad reading, try again"`` message is returned.
+        If there is a runtime error, then a ``"Runtime error"`` message is returned.
+
+        """
 
         from di_sensors import DHT
 
+        _ifMutexAcquire(self.use_mutex)
         try:
-            _grab_read()
             temp = DHT.dht(self.sensor_type)[0]
         except Exception as e:
             raise
         finally:
-            _release_read()
+            _ifMutexRelease(self.use_mutex)
 
         if temp == -2:
-            return "Bad reading, trying again"
+            return "Bad reading, try again"
         elif temp == -3:
-            return "Run the program as sudo"
+            return "Runtime error"
         else:
             # print("Temperature = %.02fC"%temp)
             return temp
 
     def read_humidity(self):
-        '''
-        Return values may be a float, or error strings
-        TBD: raise errors instead of returning strins
-        '''
+        """
+        Return the humidity as a percentage.
+
+        :returns: Return the humidity as a percentage number from 0% to 100%.
+        :rtype: float
+
+        If the sensor isn't plugged in, a ``"Bad reading, try again"`` message is returned.
+        If there is a runtime error, then a ``"Runtime error"`` message is returned.
+
+        """
         from di_sensors import DHT
 
+        _ifMutexAcquire(self.use_mutex)
         try:
-            _grab_read()
             humidity = DHT.dht(self.sensor_type)[1]
         except Exception as e:
             raise
         finally:
-            _release_read()
+            _ifMutexRelease(self.use_mutex)
 
         if humidity == -2:
-            return "Bad reading, trying again"
+            return "Bad reading, try again"
         elif humidity == -3:
-            return "Run the program as sudo"
+            return "Runtime error"
         else:
             # print("Humidity = %.02f%%"%humidity)
             return humidity
 
     def read(self):
+        """
+        Return the temperature and humidity.
+
+        :returns: The temperature and humidity as a tuple, where the temperature is the 1st element of the tuple and the humidity the 2nd.
+        :rtype: (float, float)
+
+        If the sensor isn't plugged in, a ``"Bad reading, try again"`` message is returned.
+        If there is a runtime error, then a ``"Runtime error"`` message is returned.
+
+        """
         from di_sensors import DHT
 
+        _ifMutexAcquire(self.use_mutex)
         try:
-            _grab_read()
-            [temp , humidity]=DHT.dht(self.sensor_type)
+            [temp, humidity]=DHT.dht(self.sensor_type)
         except Exception as e:
             raise
         finally:
-            _release_read()
+            _ifMutexRelease(self.use_mutex)
 
         if temp ==-2.0 or humidity == -2.0:
-            return "Bad reading, trying again"
+            return "Bad reading, try again"
         elif temp ==-3.0 or humidity == -3.0:
-            return "Run the program as sudo"
+            return "Runtime error"
         else:
-            print("Temperature = %.02fC Humidity = %.02f%%"%(temp, humidity))
             return [temp, humidity]
 
 
