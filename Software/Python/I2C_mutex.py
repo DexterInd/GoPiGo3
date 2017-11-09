@@ -21,7 +21,8 @@ def I2C_Mutex_Acquire():
 
 def I2C_Mutex_Release():
     global DexterLockI2C_handle
-    if DexterLockI2C_handle is not None:
+    if DexterLockI2C_handle is not None and \
+       DexterLockI2C_handle is not True:
         DexterLockI2C_handle.close()
         DexterLockI2C_handle = None
         time.sleep(0.001)

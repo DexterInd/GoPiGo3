@@ -1,4 +1,4 @@
-# GoPiGo3 [![Documentation Status](https://readthedocs.org/projects/gopigo3/badge/?version=latest)](http://gopigo3.readthedocs.io/en/latest/?badge=latest)
+# GoPiGo3 [![Documentation Status](https://readthedocs.org/projects/gopigo3/badge/?version=master)](http://gopigo3.readthedocs.io/en/latest/?badge=master)
 
 The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo3 is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo)
 
@@ -16,9 +16,18 @@ You can also [purchase an SD Card with the software on it here](https://www.dext
 You can install the GoPiGo3 on your own operating system with the following commands in the command line:
 1. Clone this repository onto the Raspberry Pi:
 
-        `sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3`
+        sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
+        
 2. Run the install script: `sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
 3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
+
+
+# Quick Install
+In order to quick install the `GoPiGo3` repository, open up a terminal and type the following command:
+```
+sudo curl -kL dexterindustries.com/update_gopigo3 | bash
+```
+The same command can be used for updating the `GoPiGo3` to the latest version.
 
 # License
 
