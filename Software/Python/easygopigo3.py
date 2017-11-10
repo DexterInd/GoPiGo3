@@ -709,10 +709,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return SoundSensor(port, self)
 
-    def init_loudness_sensor(self, port = "AD1"):
-        """
-        | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
-        """
+    # def init_loudness_sensor(self, port = "AD1"):
+    #     """
+    #     | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
+    #     """
 
     def init_loudness_sensor(self, port = "AD1"):
         """
