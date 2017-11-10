@@ -1,5 +1,23 @@
-from flask import Flask, jsonify, render_template, request, Response, send_from_directory, url_for
-from easygopigo3 import EasyGoPiGo3
+# Dexter Industries GoPiGo3 Remote Camera robot
+# With this project you can control your Raspberry Pi Robot, the GoPiGo3, with a phone, tablet, or browser.
+# Remotely view your robot as first person in your browser.
+# You MUST:
+# - Run this in python3
+# - Run this with sudo powers.
+#
+# To Run:  sudo python3 flask_server.py
+
+# Directory Path can change depending on where you install this file.  Non-standard installations
+# may require you to change this directory.
+directory_path = '/home/pi/Dexter/GoPiGo3/Projects/RemoteCameraRobot/static'
+
+try:
+    from flask import Flask, jsonify, render_template, request, Response, send_from_directory, url_for
+    from easygopigo3 import EasyGoPiGo3
+except Exception as e:
+    print("Error: " + str(e))
+    print("Error occured!  Make sure that your ran this program using python3!")
+    print("Try again with the command sudo python3 flask_server.py")
 
 MAX_FORCE = 5.0
 MIN_SPEED = 100
@@ -71,7 +89,9 @@ def page(page_name):
 
 @app.route("/static/<path:path>")
 def send_static(path):
-    return send_from_directory('static', path)
+    return send_from_directory(directory_path, path)
 
 if __name__ == "__main__":
+    print("Running server!")
+    print("Connect on either 'http://dex.local:5000' in your browser.")
     app.run(debug = True, host = "0.0.0.0")

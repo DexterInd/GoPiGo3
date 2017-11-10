@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo "Checking if code name distribution is jessie"
 CODE_NAME_DIST="$(lsb_release --codename)"
 if [[ $CODE_NAME_DIST != *"jessie" ]]; then
