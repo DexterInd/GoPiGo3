@@ -2553,7 +2553,7 @@ class Servo(Sensor):
            | Read more about :py:meth:`~easygopigo3.Servo.rotate_servo` method.
 
         """
-        self.gpg.set_servo(self.portID, 90)
+        self.rotate_servo(90)
 
 #######################################################################
 #
