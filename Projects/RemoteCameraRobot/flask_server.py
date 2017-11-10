@@ -9,6 +9,7 @@
 
 # Directory Path can change depending on where you install this file.  Non-standard installations
 # may require you to change this directory.
+
 directory_path = '/home/pi/Dexter/GoPiGo3/Projects/RemoteCameraRobot/static'
 
 try:
