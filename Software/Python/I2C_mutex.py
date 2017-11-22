@@ -24,8 +24,8 @@ class Mutex(object):
             except Exception as e:
                 print(e)
 
-    if self.mutex_debug:
-        print("I2C mutex acquired {}".format(time.time()))
+        if self.mutex_debug:
+            print("I2C mutex acquired {}".format(time.time()))
 
     def release(self):
         if self.mutex_debug:
