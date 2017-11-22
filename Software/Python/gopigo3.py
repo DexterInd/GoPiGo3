@@ -19,7 +19,7 @@ try:
 except:
     hardware_connected = False
     print ("Can't import spidev or fcntl")
-    
+
 import math       # import math for math.pi constant
 import time
 
@@ -75,7 +75,7 @@ class ValueError(Exception):
 
 
 class GoPiGo3(object):
-    WHEEL_BASE_WIDTH         = 117  # distance (mm) from left wheel to right wheel. This works with the initial GPG3 prototype. Will need to be adjusted.
+    WHEEL_BASE_WIDTH         = 128  # distance (mm) from left wheel to right wheel. This works with board 3.1.3 and up
     WHEEL_DIAMETER           = 66.5 # wheel diameter (mm)
     WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * math.pi # The circumference of the circle the wheels will trace while turning (mm)
     WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * math.pi # The circumference of the wheels (mm)
@@ -83,9 +83,9 @@ class GoPiGo3(object):
     MOTOR_GEAR_RATIO           = 120 # Motor gear ratio # 220 for Nicole's prototype
     ENCODER_TICKS_PER_ROTATION = 6   # Encoder ticks per motor rotation (number of magnet positions) # 16 for early prototypes
     MOTOR_TICKS_PER_DEGREE = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0) # encoder ticks per output shaft rotation degree
-    
+
     GROVE_I2C_LENGTH_LIMIT = 16
-    
+
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
 
@@ -152,7 +152,7 @@ class GoPiGo3(object):
         US,
         I2C,
     """)
-    
+
     GROVE_STATE = Enumeration("""
         VALID_DATA,
         NOT_CONFIGURED,
@@ -160,7 +160,7 @@ class GoPiGo3(object):
         NO_DATA,
         I2C_ERROR,
     """)
-    
+
     LED_EYE_LEFT      = 0x02
     LED_EYE_RIGHT     = 0x01
     LED_BLINKER_LEFT  = 0x04
@@ -210,12 +210,12 @@ class GoPiGo3(object):
         * Optionally disable the detection of the GoPiGo3 hardware. This can be used for debugging
           and testing when the GoPiGo3 would otherwise not pass the detection tests.
         """
-        
+
         # Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
         subprocess.call('gpio mode 12 ALT0', shell=True)
         subprocess.call('gpio mode 13 ALT0', shell=True)
         subprocess.call('gpio mode 14 ALT0', shell=True)
-        
+
         self.SPI_Address = addr
         if detect == True:
             try:
@@ -676,7 +676,7 @@ class GoPiGo3(object):
             except (IOError, I2CError):
                 if time.time() > Timeout:
                     raise IOError("grove_i2c_transfer error: Timeout trying to start transaction")
-        
+
         DelayTime = 0
         if len(outArr):
             DelayTime += 1 + len(outArr)
@@ -685,7 +685,7 @@ class GoPiGo3(object):
         DelayTime *= (0.000115) # each I2C byte takes about 115uS at full speed (about 100kbps)
         # No point trying to read the values before they are ready.
         time.sleep(DelayTime) # delay for as long as it will take to do the I2C transaction.
-        
+
         Timeout = time.time() + 0.005 # timeout after 5ms of failed attempted reads
         while True:
             try:
@@ -695,7 +695,7 @@ class GoPiGo3(object):
             except (ValueError, SensorError):
                 if time.time() > Timeout:
                     raise IOError("grove_i2c_transfer error: Timeout waiting for data")
-    
+
     def grove_i2c_start(self, port, addr, outArr, inBytes = 0):
         """
         Start an I2C transaction
@@ -714,16 +714,16 @@ class GoPiGo3(object):
             port_index = 1
         else:
             raise RuntimeError("Port unsupported. Must get one at a time.")
-        
+
         address = ((int(addr) & 0x7F) << 1)
-        
+
         if inBytes > self.GROVE_I2C_LENGTH_LIMIT:
             raise RuntimeError("Read length error. Up to %d bytes can be read in a single transaction." % self.GROVE_I2C_LENGTH_LIMIT)
-        
+
         outBytes = len(outArr)
         if outBytes > self.GROVE_I2C_LENGTH_LIMIT:
             raise RuntimeError("Write length error. Up to %d bytes can be written in a single transaction." % self.GROVE_I2C_LENGTH_LIMIT)
-        
+
         outArray = [self.SPI_Address, message_type, address, inBytes, outBytes]
         outArray.extend(outArr)
         reply = self.spi_transfer_array(outArray)
@@ -748,7 +748,7 @@ class GoPiGo3(object):
             port_index = 1
         else:
             raise IOError("Port unsupported. Must get one at a time.")
-        
+
         if self.GroveType[port_index] == self.GROVE_TYPE.IR_DI_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
@@ -759,7 +759,7 @@ class GoPiGo3(object):
                     raise SensorError("get_grove_value error: Invalid value")
             else:
                 raise IOError("get_grove_value error: No SPI response")
-        
+
         elif self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
