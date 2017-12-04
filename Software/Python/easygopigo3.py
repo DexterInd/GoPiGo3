@@ -1448,6 +1448,7 @@ class SoundSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Sound Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.SoundSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -1515,6 +1516,7 @@ class LoudnessSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Loudness Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LoudnessSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
