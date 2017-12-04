@@ -1,0 +1,13 @@
+[Unit]
+Description=CameraBotStart
+After=graphical.target multi-user.target
+Wants=troubleshoot.service
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python3 /home/pi/Dexter/GoPiGo3/Projects/RemoteCameraRobot/flask_server.py
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
