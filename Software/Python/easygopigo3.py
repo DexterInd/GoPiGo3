@@ -856,7 +856,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return Remote(port,self, self.use_mutex)
+        return Remote(port, self, self.use_mutex)
 
     def init_motion_sensor(self, port="AD1"):
         """
