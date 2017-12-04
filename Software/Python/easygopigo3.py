@@ -534,6 +534,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight - WheelTurnDegrees) is False:
                 time.sleep(0.1)
 
+
     def blinker_on(self, id):
         """
         | Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
@@ -855,7 +856,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return Remote(port,self)
+        return Remote(port,self, self.use_mutex)
 
     def init_motion_sensor(self, port="AD1"):
         """
@@ -867,7 +868,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
 
-        return MotionSensor(port, self)
+        return MotionSensor(port, self, self.use_mutex)
 
 # the following functions may be redundant
 
@@ -1174,7 +1175,6 @@ class DigitalSensor(Sensor):
             try:
                 self.value = self.gpg.get_grove_state(self.get_pin())
             except Exception as e:
-                print(e)
                 return -1
 
         return self.value
@@ -2189,6 +2189,7 @@ class ButtonSensor(DigitalSensor):
             DigitalSensor.__init__(self, port, "DIGITAL_INPUT", gpg, use_mutex)
             self.set_pin(1)
         except:
+            print("button init: {}".format(e))
             raise
 
     def is_button_pressed(self):
