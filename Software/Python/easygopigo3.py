@@ -1224,6 +1224,7 @@ class AnalogSensor(Sensor):
         :param str port: The port to which the sensor/actuator is connected.
         :param str pinmode: The pin mode of the device that's connected to the `GoPiGo3`_.
         :param easygopigo3.EasyGoPiGo3 gpg: Required object for instantiating an :py:class:`~easygopigo3.AnalogSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The available ``port``'s for use are the following:
@@ -1380,6 +1381,7 @@ class LightSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Light Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LightSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -1585,6 +1587,7 @@ class UltraSonicSensor(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.UltraSonicSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -1836,6 +1839,7 @@ class Buzzer(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Buzzer`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Buzzer` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :var int power = 50: Duty cycle of the signal that's put on the buzzer.
         :var int freq = 329: Frequency of the signal that's put on the buzzer. 329Hz is synonymous to E4 musical note. See :py:attr:`~.easygopigo3.Buzzer.scale` for more musical notes.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
@@ -1977,6 +1981,7 @@ class Led(AnalogSensor):
 
         :param str port = "AD1": Port to which we have the `Grove LED`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Led` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -2088,6 +2093,7 @@ class MotionSensor(DigitalSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Motion Sensor`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.MotionSensor` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -2167,6 +2173,7 @@ class ButtonSensor(DigitalSensor):
 
         :param str port = "AD1": Port to which we have the `Grove Button`_ connected to.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Button` object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -2227,6 +2234,7 @@ class Remote(Sensor):
 
         :param str port = "AD1": The port to which we connect the `Infrared Receiver`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``"AD1"`` and ``"AD2"`` ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
@@ -2321,6 +2329,7 @@ class LineFollower(Sensor):
 
         :param str port = "I2C": The port to which we have connected the `Line Follower`_ sensor.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises ImportError: If the :py:mod:`line_follower` module couldn't be found.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
         :raises IOError: If the line follower is not responding.
@@ -2492,6 +2501,7 @@ class Servo(Sensor):
 
         :param str port = "SERVO1": The port to which we have connected the `servo`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
+        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The available ports that can be used for a `servo`_ are:
