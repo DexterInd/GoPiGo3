@@ -28,7 +28,7 @@ You should now have everything set up.
 
 Start the server by typing the following command:
 ```
-python3 flask_server.py
+sudo python3 flask_server.py
 ```
 It's going to take a couple of seconds for the server to fire up.
 A port and address will be shown in there. By default, the port is set to `5000`.
@@ -37,6 +37,15 @@ If you have got `Raspbian For Robots` installed, then going to `http://dex.local
 If you don't have `Raspbian For Robots`, then you'll need to see what's your interface's IP address.
 
 Also, please make sure you have your mobile device / laptop on the same network as your `GoPiGo3`. Otherwise, you won't be able to access it.
+
+## Setting Up to Run on Boot
+You can run the server on boot so you don't have to run it manually.  Use the command
+`install_startup.sh`
+and this should start the flask server on boot.  You should be able to connect to the robot using "http://dex.local:5000" or if using the Cinch setup, you can use "http://10.10.10.10:5000"
+
+You can setup Cinch, which will automatically setup a wifi access point, with the command
+`sudo bash /home/pi/di_update/Raspbian_For_Robots/upd_script/wifi/cinch_setup.sh`
+On reboot, connect to the WiFi service "Dex".
 
 ## YouTube Video
 
