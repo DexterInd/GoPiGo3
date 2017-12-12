@@ -163,7 +163,7 @@ int GoPiGo3::get_version_hardware(char *str){
   if(int error = spi_read_32(GPGSPI_MESSAGE_GET_HARDWARE_VERSION, value)){
     return error;
   }
-  sprintf(str, "%d.%d.%d", (value / 1000000), ((value / 1000) % 1000), (value % 1000));
+  sprintf(str, "%d.x.x", (value / 1000000));
 }
 
 int GoPiGo3::get_version_firmware(char *str){
