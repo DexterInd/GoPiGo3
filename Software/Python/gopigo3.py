@@ -23,7 +23,7 @@ except:
 import math       # import math for math.pi constant
 import time
 
-FIRMWARE_VERSION_REQUIRED = "0.3.x" # Make sure the top 2 of 3 numbers match
+FIRMWARE_VERSION_REQUIRED = "1.0.x" # Make sure the top 2 of 3 numbers match
 
 if hardware_connected:
     GPG_SPI = spidev.SpiDev()
@@ -84,7 +84,7 @@ class GoPiGo3(object):
     ENCODER_TICKS_PER_ROTATION = 6   # Encoder ticks per motor rotation (number of magnet positions) # 16 for early prototypes
     MOTOR_TICKS_PER_DEGREE = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0) # encoder ticks per output shaft rotation degree
     
-    GROVE_I2C_LENGTH_LIMIT = 16
+    GROVE_I2C_LENGTH_LIMIT = 32
     
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
@@ -356,7 +356,7 @@ class GoPiGo3(object):
         hardware version, error
         """
         version = self.spi_read_32(self.SPI_MESSAGE_TYPE.GET_HARDWARE_VERSION)
-        return ("%d.%d.%d" % ((version / 1000000), ((version / 1000) % 1000), (version % 1000)))
+        return ("%d.x.x" % (version / 1000000))
 
     def get_version_firmware(self):
         """
