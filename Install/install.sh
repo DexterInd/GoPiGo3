@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [[ $EUID -ne 0 ]]; then
-    echo "This script must be run as root"
+    echo "Script ran without root privileges: not installing python packages."
     exit 1
 fi
 
@@ -54,9 +54,9 @@ SERVICEFILE=$REPO_PATH/Install/gpg3_power.service # This should be changed to th
 SCRIPTFILE=$REPO_PATH/Install/gpg3_power.sh
 SERVICECOMMAND=" ExecStart=/usr/bin/env bash "
 # Remove line 8 from the service file, the default location of the Service File
-sed -i '6d' $SERVICEFILE
+sudo sed -i '6d' $SERVICEFILE
 # Add new path and file name of gpg3_power.sh to the service file
-sed -i "6i $SERVICECOMMAND $SCRIPTFILE" $SERVICEFILE
+sudo sed -i "6i $SERVICECOMMAND $SCRIPTFILE" $SERVICEFILE
 
 # Install the system services
 sudo cp $REPO_PATH/Install/gpg3_power.service /etc/systemd/system
@@ -89,22 +89,22 @@ if grep -q "#dtparam=spi=on" /boot/config.txt; then
 elif grep -q "dtparam=spi=on" /boot/config.txt; then
     echo "SPI already enabled"
 else
-    echo 'dtparam=spi=on' >> /boot/config.txt
+    sudo sh -c "echo 'dtparam=spi=on' >> /boot/config.txt"
     echo "SPI enabled"
 fi
 
 echo ""
 cd $REPO_PATH/Software/Python/
-sudo python setup.py install
-sudo python3 setup.py install
+python setup.py install
+python3 setup.py install
 
 # module for interfacing with the keyboard
-sudo pip3 install curtsies
-sudo pip3 install numpy
-sudo pip3 install python-periphery
-sudo pip install curtsies
-sudo pip install numpy
-sudo pip install python-periphery
+pip3 install curtsies
+pip3 install numpy
+pip3 install python-periphery
+pip install curtsies
+pip install numpy
+pip install python-periphery
 
 echo ""
 echo "Installation complete"
