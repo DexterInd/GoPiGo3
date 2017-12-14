@@ -32,7 +32,7 @@ sudo sh -c "curl -kL dexterindustries.com/update_tools | bash"
 
 2. For installing the python packages of the `GoPiGo3` without root privileges (except any other settings that can come with), use the following command:
 ```
-curl -kL dexterindustris.com/update_tools | bash
+curl -kL dexterindustries.com/update_tools | bash
 ```
 The same command can be used for updating the `GoPiGo3` to the latest version.
 
