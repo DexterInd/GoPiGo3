@@ -2,7 +2,6 @@
 
 if [[ $EUID -ne 0 ]]; then
     echo "Script ran without root privileges: not installing python packages."
-    exit 1
 fi
 
 SCRIPTDIR="$(readlink -f $(dirname $0))"
