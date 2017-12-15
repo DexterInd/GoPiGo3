@@ -27,12 +27,12 @@ In order to quick install the `GoPiGo3` repository, open up a terminal and type 
 
 1. For installing the python packages of the `GoPiGo3` with root privileges (except any other settings that can come with), use the following command:
 ```
-sudo sh -c "curl -kL dexterindustries.com/update_tools | bash"
+sudo sh -c "curl -kL dexterindustries.com/update_gopigo3 | bash"
 ```
 
 2. For installing the python packages of the `GoPiGo3` without root privileges (except any other settings that can come with), use the following command:
 ```
-curl -kL dexterindustries.com/update_tools | bash
+curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
 The same command can be used for updating the `GoPiGo3` to the latest version.
 
