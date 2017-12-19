@@ -29,6 +29,8 @@ try:
             print("%4dmm" % GPG.get_grove_value(GPG.GROVE_1))
         except gopigo3.SensorError as error:
             print(error)
+        except gopigo3.ValueError as error:
+            print(error)
         time.sleep(0.05)
 
 except KeyboardInterrupt: # except the program gets interrupted by Ctrl+C on the keyboard.
