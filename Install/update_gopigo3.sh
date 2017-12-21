@@ -13,7 +13,7 @@ if folder_exists "$GOPIGO3_DIR" ; then
     echo "GoPiGo3 Directory Exists"
     cd $DEXTER_PATH/GoPiGo3    # Go to directory
     sudo git fetch origin       # Hard reset the git files
-    sudo git reset --hard  
+    sudo git reset --hard
     sudo git merge origin/master
     # change_branch $BRANCH
 else
@@ -23,4 +23,4 @@ else
     # change_branch $BRANCH  # change to a branch we're working on, if we've defined the branch above.
 fi
 
-sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh
+bash /home/pi/Dexter/GoPiGo3/Install/install.sh
