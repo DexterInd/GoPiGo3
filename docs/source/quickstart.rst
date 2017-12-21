@@ -36,7 +36,7 @@ To install or update the `GoPiGo3`_ library on your RaspberryPi, open a terminal
 
    # follow any given instructions given through this command
 
-   sudo curl -kL dexterindustries.com/update_gopigo3 | bash
+   sudo sh -c "curl -kL dexterindustries.com/update_gopigo3 | bash"
 
 Also, in order to be able to use the :py:meth:`easygopigo3.EasyGoPiGo3.init_distance_sensor` method and the :py:class:`easygopigo3.DistanceSensor` class, the `DI-Sensors`_ package is required.
 You can install it or update it with the following command in the terminal:
@@ -45,7 +45,7 @@ You can install it or update it with the following command in the terminal:
 
    # follow any given instructions given through this command
 
-   sudo curl -kL dexterindustries.com/update_sensors | bash
+   sudo sh -c "curl -kL dexterindustries.com/update_sensors | bash"
 
 ********************
 Connect More Sensors
