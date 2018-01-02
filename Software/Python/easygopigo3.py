@@ -12,7 +12,7 @@ from I2C_mutex import Mutex
 
 mutex = Mutex(debug=False)
 
-def _ifMutexAcquire(mutex_enabled = False):
+def _ifMutexAcquire(mutex_enabled=False):
     """
     Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
 
@@ -20,7 +20,7 @@ def _ifMutexAcquire(mutex_enabled = False):
     if mutex_enabled:
         mutex.acquire()
 
-def _ifMutexRelease(mutex_enabled = False):
+def _ifMutexRelease(mutex_enabled=False):
     """
     Releases the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
 
@@ -89,7 +89,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self, use_mutex = False):
+    def __init__(self, use_mutex=False):
         """
         | This constructor sets the variables to the following values:
 
@@ -116,7 +116,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         self.sensor_1 = None
         self.sensor_2 = None
-        self.DEFAULT_SPEED=300
+        self.DEFAULT_SPEED = 300
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
@@ -199,7 +199,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                               self.get_speed() * -1)
+                           self.get_speed() * -1)
 
     def right(self):
         """
@@ -240,7 +240,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                               self.get_speed())
+                           self.get_speed())
 
     def drive_cm(self, dist, blocking=True):
         """
@@ -458,8 +458,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        self.offset_motor_encoder(self.MOTOR_LEFT,self.get_motor_encoder(self.MOTOR_LEFT))
-        self.offset_motor_encoder(self.MOTOR_RIGHT,self.get_motor_encoder(self.MOTOR_RIGHT))
+        self.offset_motor_encoder(self.MOTOR_LEFT, self.get_motor_encoder(self.MOTOR_LEFT))
+        self.offset_motor_encoder(self.MOTOR_RIGHT, self.get_motor_encoder(self.MOTOR_RIGHT))
 
     def read_encoders(self):
         """
@@ -643,7 +643,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                      self.left_eye_color[0],
                      self.left_eye_color[1],
                      self.left_eye_color[2],
-                     )
+                    )
 
     def open_right_eye(self):
         """
@@ -654,7 +654,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                      self.right_eye_color[0],
                      self.right_eye_color[1],
                      self.right_eye_color[2],
-                     )
+                    )
 
     def open_eyes(self):
         """
@@ -686,7 +686,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-    def init_light_sensor(self, port = "AD1"):
+    def init_light_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
 
@@ -698,7 +698,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return LightSensor(port, self)
 
-    def init_sound_sensor(self, port = "AD1"):
+    def init_sound_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.SoundSensor` object and then returns it.
 
@@ -715,7 +715,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     #     | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
     #     """
 
-    def init_loudness_sensor(self, port = "AD1"):
+    def init_loudness_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
 
@@ -728,7 +728,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return LoudnessSensor(port, self)
 
 
-    def init_ultrasonic_sensor(self, port = "AD1"):
+    def init_ultrasonic_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.UltraSonicSensor` object and then returns it.
 
@@ -740,7 +740,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return UltraSonicSensor(port, self)
 
-    def init_buzzer(self, port = "AD1"):
+    def init_buzzer(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.Buzzer` object and then returns it.
 
@@ -752,7 +752,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Buzzer(port, self)
 
-    def init_led(self, port = "AD1"):
+    def init_led(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.Led` object and then returns it.
 
@@ -764,7 +764,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         return Led(port, self)
 
-    def init_button_sensor(self, port = "AD1"):
+    def init_button_sensor(self, port="AD1"):
         """
         | Initialises a :py:class:`~easygopigo3.ButtonSensor` object and then returns it.
 
