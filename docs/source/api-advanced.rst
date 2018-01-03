@@ -13,7 +13,6 @@ Before using this chapter's classes, you need to be able to import the following
 .. code-block:: python
 
    import easygopigo3
-   import gopigo3
 
 If you have issues importing these 2 modules, then make sure that:
 
