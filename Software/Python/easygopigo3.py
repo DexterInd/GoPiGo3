@@ -484,7 +484,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :rtype: int
         """
 
-        left,right = self.read_encoders()
+        left, right = self.read_encoders()
         average = (left+right)/2
         return round(average,2)
 
