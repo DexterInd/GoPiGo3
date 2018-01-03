@@ -22,7 +22,7 @@ If you have issues importing this module, then make sure that:
 
 If you encounter issues that aren't covered by our :ref:`Getting Started <getting-started-chapter>` guide or :ref:`FAQ <faq-chapter>` chapter, please head over to our `forum`_.
 
-Take note that the easygopigo3 module depends on the underlying gopigo3 module.  The base gopigo3 module contains lower level calls that would allow you finer control over your GoPiGo3 and its functionality is available to you once easygopigo3 is imported.
+Take note that the ``easygopigo3`` module depends on the underlying ``gopigo3`` module.  The base ``gopigo3`` module contains lower level calls that would allow you finer control over your GoPiGo3 and its functionality is available to you once ``easygopigo3`` is imported.
 
 =====================================
 Sensor
