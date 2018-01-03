@@ -412,7 +412,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         .. note::
 
-            You *can* use this method in conjuction with the following methods:
+            You *can* use this method in conjunction with the following methods:
 
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm`
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.drive_inches`
@@ -445,7 +445,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         else:
             return False
 
-    def reset_encoders(self):
+    def reset_encoders(self, blocking=True):
         """
         | Resets both the encoders back to **0**.
 
@@ -458,8 +458,16 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        self.offset_motor_encoder(self.MOTOR_LEFT, self.get_motor_encoder(self.MOTOR_LEFT))
-        self.offset_motor_encoder(self.MOTOR_RIGHT, self.get_motor_encoder(self.MOTOR_RIGHT))
+        left_target = self.get_motor_encoder(self.MOTOR_LEFT)
+        right_target = self.get_motor_encoder(self.MOTOR_RIGHT)
+        self.offset_motor_encoder(self.MOTOR_LEFT, left_target)
+        self.offset_motor_encoder(self.MOTOR_RIGHT, right_target)
+        print("Targets: {} {}".format(left_target, right_target))
+
+        if blocking:
+            while self.target_reached(left_target, right_target) is False:
+                print(self.get_motor_encoder(self.MOTOR_LEFT), self.get_motor_encoder(self.MOTOR_RIGHT))
+                time.sleep(0.1)
 
     def read_encoders(self):
         """
@@ -476,9 +484,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         return encoders
 
-    def read_encoders_average(self):
+    def read_encoders_average(self, units="cm"):
         """
         | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+
+        :param string units: By default it's cm, but it could also be "in" for inches. Anything else will return raw encoder average
 
         :returns: the average of the two wheel encoder values
         :rtype: int
@@ -486,7 +496,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         left, right = self.read_encoders()
         average = (left+right)/2
-        return round(average,2)
+        if units=="cm":
+            average = ((average / 360 ) * self.WHEEL_CIRCUMFERENCE) / 10
+        elif units=="in" or units=="inches" or units=="inch":
+            average = ((average / 360 ) * self.WHEEL_CIRCUMFERENCE) / (10 * 2.54)
+        else:
+            pass
+            # do no conversion
+        return average
 
     def turn_degrees(self, degrees, blocking=False):
         """
