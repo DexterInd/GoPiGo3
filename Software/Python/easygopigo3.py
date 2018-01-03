@@ -327,7 +327,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
             gpg3_obj.drive_degrees(-30.5)
 
-        This line of code is makes the `GoPiGo3`_ robot backward for *30.5 / 360* rotations, which is roughly *8.5%* of the `GoPiGo3`_'s wheel circumference.
+        This line of code makes the `GoPiGo3`_ robot go backward for *30.5 / 360* rotations, which is roughly *8.5%* of the `GoPiGo3`_'s wheel circumference.
 
         """
         # these degrees are meant to be wheel rotations.
@@ -475,6 +475,18 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         encoders = (left_encoder, right_encoder)
 
         return encoders
+
+    def read_encoders_average(self):
+        """
+        | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+
+        :returns: the average of the two wheel encoder values
+        :rtype: int
+        """
+
+        left,right = self.read_encoders()
+        average = (left+right)/2
+        return round(average,2)
 
     def turn_degrees(self, degrees, blocking=False):
         """
