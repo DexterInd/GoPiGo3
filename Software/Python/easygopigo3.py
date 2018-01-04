@@ -462,12 +462,18 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         right_target = self.get_motor_encoder(self.MOTOR_RIGHT)
         self.offset_motor_encoder(self.MOTOR_LEFT, left_target)
         self.offset_motor_encoder(self.MOTOR_RIGHT, right_target)
-        print("Targets: {} {}".format(left_target, right_target))
+
+        motor_left_previous = None
+        motor_right_previous = None
 
         if blocking:
-            while self.target_reached(left_target, right_target) is False:
-                print(self.get_motor_encoder(self.MOTOR_LEFT), self.get_motor_encoder(self.MOTOR_RIGHT))
-                time.sleep(0.1)
+            # Note to self. using target_reached() here didn't work.
+            # So instead let's keep waiting till the motors stop moving
+            while motor_left_previous != self.MOTOR_LEFT or motor_right_previous != self.MOTOR_RIGHT:
+                motor_left_previous = self.MOTOR_LEFT
+                motor_right_previous = self.MOTOR_RIGHT
+                time.sleep(0.025)
+
 
     def read_encoders(self):
         """
@@ -488,9 +494,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
 
-        :param string units: By default it's cm, but it could also be "in" for inches. Anything else will return raw encoder average
+        :param string units: By default it's cm, but it could also be "in" for inches. Anything else will return raw encoder average.
 
-        :returns: the average of the two wheel encoder values
+        :returns: the average of the two wheel encoder values.
         :rtype: int
         """
 
