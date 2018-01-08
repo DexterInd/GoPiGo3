@@ -449,6 +449,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Resets both the encoders back to **0**.
 
+        :param boolean blocking = True: Set it as a blocking or non-blocking method.
+
+        ``blocking`` parameter can take the following values:
+
+             * ``True`` so that the method will wait for the `GoPiGo3`_ motors to finish resetting.
+             * ``False`` so that the method will exit immediately while the `GoPiGo3`_ motors will continue to reset. Sending another motor command to the motors while the reset is under way might lead to confusing behavior.
+
         | When keeping track of the `GoPiGo3`_ movements, this method is exclusively being required by the following methods:
 
              * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
@@ -494,9 +501,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
 
-        :param string units: By default it's cm, but it could also be "in" for inches. Anything else will return raw encoder average.
+        :param string units: By default it's "cm", but it could also be "in" for inches. Anything else will return raw encoder average.
 
-        :returns: the average of the two wheel encoder values.
+        :returns: The average of the two wheel encoder values.
         :rtype: int
         """
 
