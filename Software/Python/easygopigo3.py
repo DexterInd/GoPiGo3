@@ -456,13 +456,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              * ``True`` so that the method will wait for the `GoPiGo3`_ motors to finish resetting.
              * ``False`` so that the method will exit immediately while the `GoPiGo3`_ motors will continue to reset. Sending another motor command to the motors while the reset is under way might lead to confusing behavior.
 
-        | When keeping track of the `GoPiGo3`_ movements, this method is exclusively being required by the following methods:
-
-             * :py:meth:`~easygopigo3.EasyGoPiGo3.backward`
-             * :py:meth:`~easygopigo3.EasyGoPiGo3.right`
-             * :py:meth:`~easygopigo3.EasyGoPiGo3.left`
-             * :py:meth:`~easygopigo3.EasyGoPiGo3.forward`
-
         """
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         left_target = self.get_motor_encoder(self.MOTOR_LEFT)
