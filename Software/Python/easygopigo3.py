@@ -2450,6 +2450,7 @@ class LineFollower(Sensor):
 
         return five_vals
 
+
     def read_position(self):
         """
         Returns a string telling to which side the black line that we're following is located.
@@ -2496,6 +2497,24 @@ class LineFollower(Sensor):
            five_vals == [0, 1, 1, 1, 1]:
             return "right"
         return "unknown"
+
+    def read_position_str(self):
+        """
+        returns a string of five letters indicating what the line sensor is seeing
+        'b' indicates that specific sensor has detected a black line
+        'w' indicates that specific sensor has not detected a black line
+
+        :returns: String indicating what the line follower just read
+        :rtype: str
+
+        Here's an example of what could get returned:
+            * ``'bbbbb'`` - when the line follower reads black on all sensors
+            * ``'wwbww'`` - when the line follower is perfectly centered 
+            * ``'bbbww'`` - when the line follower reaches an intersection
+        """
+        five_vals  = self.read()
+        out_str = "".join(["b" if sensor_val == 1 else "w" for sensor_val in five_vals])
+        return out_str
 ##########################
 
 
