@@ -2450,7 +2450,6 @@ class LineFollower(Sensor):
 
         return five_vals
 
-
     def read_position(self):
         """
         Returns a string telling to which side the black line that we're following is located.
