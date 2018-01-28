@@ -35,4 +35,4 @@ echo "Restarting UV4L service"
 service uv4l_raspicam restart
 
 echo "Installing Flask"
-apt-get -y install python3-flask
+apt-get -y install python3-flask wiringpi
