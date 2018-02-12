@@ -9,8 +9,13 @@ import sys
 import time
 import os
 from I2C_mutex import Mutex
-import easy_sensors
-import easy_distance_sensor
+import easysensors
+try:
+    import easydisensors
+except:
+    # It is quite possible to use the GPG3 without having the di_sensors repo installed
+    pass
+
 
 mutex = Mutex(debug=False)
 
@@ -716,7 +721,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.LightSensor(port, self)
+        return easysensors.LightSensor(port, self)
 
     def init_sound_sensor(self, port="AD1"):
         """
@@ -728,7 +733,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.SoundSensor(port, self)
+        return easysensors.SoundSensor(port, self)
 
     # def init_loudness_sensor(self, port = "AD1"):
     #     """
@@ -745,7 +750,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.LoudnessSensor(port, self)
+        return easysensors.LoudnessSensor(port, self)
 
 
     def init_ultrasonic_sensor(self, port="AD1"):
@@ -758,7 +763,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.UltraSonicSensor(port, self)
+        return easysensors.UltraSonicSensor(port, self)
 
     def init_buzzer(self, port="AD1"):
         """
@@ -770,7 +775,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.Buzzer(port, self)
+        return easysensors.Buzzer(port, self)
 
     def init_led(self, port="AD1"):
         """
@@ -782,7 +787,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.Led(port, self)
+        return easysensors.Led(port, self)
 
     def init_button_sensor(self, port="AD1"):
         """
@@ -794,7 +799,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.ButtonSensor(port, self)
+        return easysensors.ButtonSensor(port, self)
 
     def init_line_follower(self, port = "I2C"):
         """
@@ -814,7 +819,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return easy_sensors.LineFollower(port, self)
+        return easysensors.LineFollower(port, self)
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -826,15 +831,16 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.Servo(port, self)
+        return easysensors.Servo(port, self)
 
     def init_distance_sensor(self, port = "I2C"):
         """
 
-        | Initialises a :py:class:`~easygopigo3.DistanceSensor` object and then returns it.
+        | Initialises a :py:class:`~easydisensors.DistanceSensor` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :returns: An instance of the :py:class:`~easygopigo3.DistanceSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easydisensors.DistanceSensor` class and with the port set to ``port``'s value.
+        :raises ImportError: When the DI Sensors libraries are not found.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -847,7 +853,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return easy_distance_sensor.DistanceSensor(port, self, self.use_mutex)
+        try:
+            return easydisensors.DistanceSensor(port, self, self.use_mutex)
+        except ImportError as e:
+            print("DI Sensors are not installed: {}".format(e))
+            raise
+
 
     def init_dht_sensor(self, sensor_type = 0):
         """
@@ -864,7 +875,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             The ``"SERIAL"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.DHTSensor(self, sensor_type, self.use_mutex)
+        return easysensors.DHTSensor(self, sensor_type, self.use_mutex)
 
     def init_remote(self, port="AD1"):
         """
@@ -876,7 +887,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easy_sensors.Remote(port, self, self.use_mutex)
+        return easysensors.Remote(port, self, self.use_mutex)
 
     def init_motion_sensor(self, port="AD1"):
         """
@@ -888,7 +899,4 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
 
-        return easy_sensors.MotionSensor(port, self, self.use_mutex)
-
-
-
+        return easysensors.MotionSensor(port, self, self.use_mutex)

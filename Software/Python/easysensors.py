@@ -1,5 +1,7 @@
 from I2C_mutex import Mutex
 import time
+
+# needed for duck typing
 import gopigo3
 
 mutex = Mutex()
@@ -18,12 +20,14 @@ def _ifMutexRelease(mutex_enabled=False):
     if mutex_enabled:
         mutex.release()
 
-#############################################################
-# SENSORS
-#############################################################
 def debug(in_str):
     if False:
         print(in_str)
+
+#############################################################
+# SENSORS
+#############################################################
+
 
 
 class Sensor(object):
@@ -48,7 +52,6 @@ class Sensor(object):
              * :py:class:`~easygopigo3.AnalogSensor`
              * :py:class:`~easygopigo3.LineFollower`
              * :py:class:`~easygopigo3.Servo`
-             * :py:class:`~easygopigo3.DistanceSensor`
              * :py:class:`~easygopigo3.DHTSensor`
 
         And the classes which are found at 2nd level of inheritance from this class are:
@@ -105,8 +108,8 @@ class Sensor(object):
         """
         debug("Sensor init")
 
-        if type(gpg) != gopigo3.GoPiGo3:
-            raise TypeError("Use an EasyGoPiGo3 object for the gpg parameter.")
+        if not isinstance(gpg, gopigo3.GoPiGo3):
+            raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
         self.gpg = gpg
         debug(pinmode)
         self.set_port(port)
@@ -1562,7 +1565,7 @@ class DHTSensor(Sensor):
         # create an EasyGoPiGo3 object
         gpg3_obj = EasyGoPiGo3()
 
-        # and now let's instantiate a DistanceSensor object through the gpg3_obj object
+        # and now let's instantiate a DHTSensor object through the gpg3_obj object
         dht_sensor = gpg3_obj.init_dht_sensor()
 
         # read values continuously and print them in the terminal
@@ -1576,7 +1579,7 @@ class DHTSensor(Sensor):
         """
         Constructor for creating a :py:class:`~easygopigo3.DHTSensor` object which can be used for interfacing with the `Grove DHT Sensor`_.
 
-        :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easygopigo3.DistanceSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easysensors.DHTSensor` object.
         :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes have to be used.
         :raises: Any of the :py:class:`~easygopigo3.Sensor` constructor's exceptions in case of error.
@@ -1721,35 +1724,3 @@ class DHTSensor(Sensor):
 
 if __name__ == '__main__':
     print("No default test")
-   # e=EasyGoPiGo3()
-   # b = Buzzer()
-   # print (b)
-   # print ("Sounding buzzer")
-   # b.sound_on()
-   # time.sleep(1)
-   # print ("buzzer off")
-   # b.sound_off()
-
-   #  c = RgbLcd("I2C",e)
-   #  c.display_text("Hello World")
-   #  c.display_text_over("\nK")
-   #  c.set_BgColor(0,128,64)
-   #  time.sleep(2)
-
-
-   #  d=Distance("I2C",e)
-   #  h=d.read_distance()
-   #  print(h)
-
-   #  f=Servo("SERVO",e)
-   #  f.rotate_servo("both",0)
-   #  time.sleep(1)
-   #  f.rotate_servo(1,180)
-   #  time.sleep(1)
-   #  f.rotate_servo("two",180)
-
-   #  g=DHTSensor("SERIAL",e)
-   #  g.read_humidity()
-   #  g.read_temperature()
-   #  g.read_dht()
-   #  g.continuous_read_dht()
