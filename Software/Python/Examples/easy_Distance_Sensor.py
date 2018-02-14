@@ -45,4 +45,4 @@ my_distance_sensor = gpg.init_distance_sensor()
 
 while True:
     # Directly print the values of the sensor.
-    print("Distance Sensor Reading (mm): " + str(my_distance_sensor.read_mm()))
+    print("Distance Sensor Reading: {} mm ".format(my_distance_sensor.read_mm()))
