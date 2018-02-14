@@ -43,6 +43,6 @@ setup(
     keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning', 'education'],
 
     packages=find_packages(),
-    py_modules = ['gopigo3','easygopigo3'],
+    py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
     install_requires = ['spidev']
 )
