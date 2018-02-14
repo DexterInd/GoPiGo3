@@ -48,21 +48,21 @@ class Sensor(object):
 
         The classes which derive from this class are the following:
 
-             * :py:class:`~easygopigo3.DigitalSensor`
-             * :py:class:`~easygopigo3.AnalogSensor`
-             * :py:class:`~easygopigo3.LineFollower`
-             * :py:class:`~easygopigo3.Servo`
-             * :py:class:`~easygopigo3.DHTSensor`
+             * :py:class:`~easysensors.DigitalSensor`
+             * :py:class:`~easysensors.AnalogSensor`
+             * :py:class:`~easysensors.LineFollower`
+             * :py:class:`~easysensors.Servo`
+             * :py:class:`~easysensors.DHTSensor`
 
         And the classes which are found at 2nd level of inheritance from this class are:
 
-            * :py:class:`~easygopigo3.LightSensor`
-            * :py:class:`~easygopigo3.SoundSensor`
-            * :py:class:`~easygopigo3.LoudnessSensor`
-            * :py:class:`~easygopigo3.UltraSonicSensor`
-            * :py:class:`~easygopigo3.Buzzer`
-            * :py:class:`~easygopigo3.Led`
-            * :py:class:`~easygopigo3.ButtonSensor`
+            * :py:class:`~easysensors.LightSensor`
+            * :py:class:`~easysensors.SoundSensor`
+            * :py:class:`~easysensors.LoudnessSensor`
+            * :py:class:`~easysensors.UltraSonicSensor`
+            * :py:class:`~easysensors.Buzzer`
+            * :py:class:`~easysensors.Led`
+            * :py:class:`~easysensors.ButtonSensor`
 
     .. warning::
 
@@ -98,7 +98,7 @@ class Sensor(object):
              * ``"DIGITAL_INPUT"`` - for digital inputs. The port can detect either **0** or **1**.
              * ``"OUTPUT"`` - for general purpose outputs.
              * ``"DIGITAL_OUTPUT"`` - for digital outputs. The port can only be set to **0** or **1**.
-             * ``"US"`` - that's for the :py:class:`~easygopigo3.UltraSonicSensor` which can be bought from our `shop`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
+             * ``"US"`` - that's for the :py:class:`~easysensors.UltraSonicSensor` which can be bought from our `shop`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
              * ``"IR"`` - that's for the `infrared receiver`_. Can only be used with ports ``"AD1"`` and ``"AD2"``.
 
         .. warning::
@@ -156,10 +156,10 @@ class Sensor(object):
 
         The returned string is made of the following components:
 
-             * the :py:attr:`~easygopigo3.Sensor.descriptor`'s description
-             * the :py:attr:`~easygopigo3.Sensor.port` name
-             * the :py:attr:`~easygopigo3.Sensor.pin` identifier
-             * the :py:attr:`~easygopigo3.Sensor.portID` - see :py:meth:`~easygopigo3.Sensor.set_port` method.
+             * the :py:attr:`~easysensors.Sensor.descriptor`'s description
+             * the :py:attr:`~easysensors.Sensor.port` name
+             * the :py:attr:`~easysensors.Sensor.pin` identifier
+             * the :py:attr:`~easysensors.Sensor.portID` - see :py:meth:`~easysensors.Sensor.set_port` method.
 
         Sample of returned string as shown in a terminal:
 
@@ -211,7 +211,7 @@ class Sensor(object):
         :param str port: The port we're connecting the device to. Take a look at the :ref:`hardware-ports-section`' locations.
 
         Apart from this graphical representation of the ports' locations (:ref:`hardware-ports-section` locations),
-        take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+        take a look at the list of ports in :py:meth:`~easysensors.Sensor.__init__`'s description.
 
         """
         debug(port)
@@ -244,7 +244,7 @@ class Sensor(object):
         :rtype: str
 
         Apart from this graphical representation of the ports' locations (:ref:`hardware-ports-section` locations),
-        take a look at the list of ports in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+        take a look at the list of ports in :py:meth:`~easysensors.Sensor.__init__`'s description.
 
         """
         return (self.port)
@@ -256,7 +256,7 @@ class Sensor(object):
         :returns: The ID of the port we're set to.
         :rtype: int
 
-        See more about port IDs in :py:class:`~easygopigo3.Sensor`'s description.
+        See more about port IDs in :py:class:`~easysensors.Sensor`'s description.
 
         """
         return (self.portID)
@@ -267,7 +267,7 @@ class Sensor(object):
 
         :param str pinmode: The pin mode of the port.
 
-        See more about pin modes in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+        See more about pin modes in :py:meth:`~easysensors.Sensor.__init__`'s description.
 
         """
         self.pinmode = pinmode
@@ -279,7 +279,7 @@ class Sensor(object):
         :returns: The pin mode of the port.
         :rtype: str
 
-        See more about pin modes in :py:meth:`~easygopigo3.Sensor.__init__`'s description.
+        See more about pin modes in :py:meth:`~easysensors.Sensor.__init__`'s description.
 
         """
         return (self.pinmode)
@@ -296,7 +296,7 @@ class Sensor(object):
 
         :param str descriptor: The object's description.
 
-        See more about class descriptors in :py:class:`~easygopigo3.Sensor`'s description.
+        See more about class descriptors in :py:class:`~easysensors.Sensor`'s description.
 
         """
         self.descriptor = descriptor
@@ -309,7 +309,7 @@ class DigitalSensor(Sensor):
         try:
             Sensor.__init__(self, port, pinmode, gpg, use_mutex)
         except:
-            raise
+            raise("Digital Sensor Init")
 
     def read(self):
         '''
@@ -341,9 +341,9 @@ class DigitalSensor(Sensor):
 class AnalogSensor(Sensor):
     """
     | Class for analog devices with input/output capabilities on the `GoPiGo3`_ robot.
-    | This class is derived from :py:class:`~easygopigo3.Sensor` class, so this means this class inherits all attributes and methods.
+    | This class is derived from :py:class:`~easysensors.Sensor` class, so this means this class inherits all attributes and methods.
 
-    | For creating an :py:class:`~easygopigo3.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
+    | For creating an :py:class:`~easysensors.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
 
     .. code-block:: python
 
@@ -374,7 +374,7 @@ class AnalogSensor(Sensor):
 
         :param str port: The port to which the sensor/actuator is connected.
         :param str pinmode: The pin mode of the device that's connected to the `GoPiGo3`_.
-        :param easygopigo3.EasyGoPiGo3 gpg: Required object for instantiating an :py:class:`~easygopigo3.AnalogSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg: Required object for instantiating an :py:class:`~easysensors.AnalogSensor` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -387,7 +387,7 @@ class AnalogSensor(Sensor):
 
         .. important::
 
-            Since the grove connector allows 2 signals to pass through 2 pins (not concurently), we can select which pin to go with by using the :py:meth:`~easygopigo3.Sensor.set_pin` method.
+            Since the grove connector allows 2 signals to pass through 2 pins (not concurently), we can select which pin to go with by using the :py:meth:`~easysensors.Sensor.set_pin` method.
             By default, we're using pin **1**, which corresponds to the exterior pin of the grove connector (aka SIG) and the wire is yellow.
 
         """
@@ -399,7 +399,7 @@ class AnalogSensor(Sensor):
         try:
             Sensor.__init__(self, port, pinmode, gpg, use_mutex)
         except:
-            raise
+            raise("AnalogSensor Init")
 
         # select the outwards pin of the grove connector
         self.set_pin(1)
@@ -425,6 +425,9 @@ class AnalogSensor(Sensor):
             except Exception as e:
                 print("Value Error: {}".format(e))
                 return 0
+        except Exception as e:
+            print("Analog Read fail-all: {}".format(e))
+        print("Analog Read: {}".format(self.value))
         return self.value
 
     def percent_read(self):
@@ -490,8 +493,8 @@ class LightSensor(AnalogSensor):
     """
     | Class for the `Grove Light Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -528,10 +531,10 @@ class LightSensor(AnalogSensor):
     """
     def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.LightSensor` object for the `Grove Light Sensor`_.
+        Constructor for initializing a :py:class:`~easysensors.LightSensor` object for the `Grove Light Sensor`_.
 
         :param str port = "AD1": Port to which we have the `Grove Light Sensor`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LightSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.LightSensor` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -557,8 +560,8 @@ class SoundSensor(AnalogSensor):
     """
     | Class for the `Grove Sound Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.SoundSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_sound_sensor` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.SoundSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_sound_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -595,10 +598,10 @@ class SoundSensor(AnalogSensor):
     """
     def __init__(self, port="AD1", gpg=None, use_mutex=False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.SoundSensor` object for the `Grove Sound Sensor`_.
+        Constructor for initializing a :py:class:`~easysensors.SoundSensor` object for the `Grove Sound Sensor`_.
 
         :param str port = "AD1": Port to which we have the `Grove Sound Sensor`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.SoundSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.SoundSensor` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -625,8 +628,8 @@ class LoudnessSensor(AnalogSensor):
     """
     | Class for the `Grove Loudness Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of their attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of their attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -663,10 +666,10 @@ class LoudnessSensor(AnalogSensor):
     """
     def __init__(self, port="AD1", gpg=None, use_mutex=False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.LoudnessSensor` object for the `Grove Loudness Sensor`_.
+        Constructor for initializing a :py:class:`~easysensors.LoudnessSensor` object for the `Grove Loudness Sensor`_.
 
         :param str port = "AD1": Port to which we have the `Grove Loudness Sensor`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.LoudnessSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.LoudnessSensor` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -684,6 +687,7 @@ class LoudnessSensor(AnalogSensor):
             AnalogSensor.__init__(self, port, "INPUT", gpg, use_mutex)
         except:
             raise
+        # time.sleep(0.2)
         self.set_pin(1)
         self._max_value = 1024  # based on empirical tests
 
@@ -693,8 +697,8 @@ class UltraSonicSensor(AnalogSensor):
     """
     | Class for the `Grove Ultrasonic Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.UltraSonicSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.UltraSonicSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -733,10 +737,10 @@ class UltraSonicSensor(AnalogSensor):
 
     def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.UltraSonicSensor` object for the `Grove Ultrasonic Sensor`_.
+        Constructor for initializing a :py:class:`~easysensors.UltraSonicSensor` object for the `Grove Ultrasonic Sensor`_.
 
         :param str port = "AD1": Port to which we have the `Grove Ultrasonic Sensor`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.UltraSonicSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.UltraSonicSensor` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -768,7 +772,7 @@ class UltraSonicSensor(AnalogSensor):
         :rtype: boolean
         :raises gopigo3.SensorError: If a sensor is not yet configured when trying to read it.
 
-        A *safe distance* can be set with the :py:meth:`~easygopigo3.UltraSonicSensor.set_safe_distance` method.
+        A *safe distance* can be set with the :py:meth:`~easysensors.UltraSonicSensor.set_safe_distance` method.
 
         .. note::
 
@@ -793,7 +797,7 @@ class UltraSonicSensor(AnalogSensor):
 
         :param int dist: Minimum distance from a target that we can call a *safe distance*.
 
-        To check whether the robot is too close from a target, please check the :py:meth:`~easygopigo3.UltraSonicSensor.is_too_close` method.
+        To check whether the robot is too close from a target, please check the :py:meth:`~easysensors.UltraSonicSensor.is_too_close` method.
 
         .. note::
 
@@ -918,8 +922,8 @@ class Buzzer(AnalogSensor):
     """
     | Class for the `Grove Buzzer`_.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.Buzzer` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_buzzer` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.Buzzer` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_buzzer` method like in the following examples.
 
     .. code-block:: python
 
@@ -985,13 +989,13 @@ class Buzzer(AnalogSensor):
 
     def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.Buzzer` object for the `Grove Buzzer`_.
+        Constructor for initializing a :py:class:`~easysensors.Buzzer` object for the `Grove Buzzer`_.
 
         :param str port = "AD1": Port to which we have the `Grove Buzzer`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Buzzer` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.Buzzer` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :var int power = 50: Duty cycle of the signal that's put on the buzzer.
-        :var int freq = 329: Frequency of the signal that's put on the buzzer. 329Hz is synonymous to E4 musical note. See :py:attr:`~.easygopigo3.Buzzer.scale` for more musical notes.
+        :var int freq = 329: Frequency of the signal that's put on the buzzer. 329Hz is synonymous to E4 musical note. See :py:attr:`~.easysensors.Buzzer.scale` for more musical notes.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
         The ``port`` parameter can take the following values:
@@ -1019,7 +1023,7 @@ class Buzzer(AnalogSensor):
 
         :param int freq: The frequency of the signal that's put on the `Grove Buzzer`_.
 
-        For a list of musical notes, please see :py:attr:`~.easygopigo3.Buzzer.scale`.
+        For a list of musical notes, please see :py:attr:`~.easysensors.Buzzer.scale`.
 
         Example on how to play musical notes.
 
@@ -1071,7 +1075,7 @@ class Buzzer(AnalogSensor):
         """
         Turns on the `Grove Buzzer`_ at the set frequency.
 
-        For changing the frequency, please check the :py:meth:`~easygopigo3.Buzzer.sound` method.
+        For changing the frequency, please check the :py:meth:`~easysensors.Buzzer.sound` method.
 
         """
         self.sound(self.freq)
@@ -1087,8 +1091,8 @@ class Led(AnalogSensor):
          * Set a level of brightness for the LED.
          * Check if an LED is turned *ON* or *OFF*.
 
-    | This class derives from :py:class:`~easygopigo3.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.Led` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_led` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.Led` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_led` method like in the following examples.
 
     .. code-block:: python
 
@@ -1127,10 +1131,10 @@ class Led(AnalogSensor):
     """
     def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.Led` object for the `Grove LED`_.
+        Constructor for initializing a :py:class:`~easysensors.Led` object for the `Grove LED`_.
 
         :param str port = "AD1": Port to which we have the `Grove LED`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Led` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.Led` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -1199,8 +1203,8 @@ class MotionSensor(DigitalSensor):
     """
     | Class for the `Grove Motion Sensor`_.
 
-    | This class derives from :py:class:`~easygopigo3.Sensor` (check for throwable exceptions) and :py:class:`~easygopigo3.DigitalSensor` classes, so all attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.Sensor` (check for throwable exceptions) and :py:class:`~easysensors.DigitalSensor` classes, so all attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -1239,10 +1243,10 @@ class MotionSensor(DigitalSensor):
 
     def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.MotionSensor` object for the `Grove Motion Sensor`_.
+        Constructor for initializing a :py:class:`~easysensors.MotionSensor` object for the `Grove Motion Sensor`_.
 
         :param str port = "AD1": Port to which we have the `Grove Motion Sensor`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.MotionSensor` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.MotionSensor` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -1277,8 +1281,8 @@ class ButtonSensor(DigitalSensor):
     """
     | Class for the `Grove Button`_.
 
-    | This class derives from :py:class:`~easygopigo3.Sensor` (check for throwable exceptions) and :py:class:`~easygopigo3.DigitalSensor` classes, so all attributes and methods are inherited.
-    | For creating a :py:class:`~easygopigo3.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
+    | This class derives from :py:class:`~easysensors.Sensor` (check for throwable exceptions) and :py:class:`~easysensors.DigitalSensor` classes, so all attributes and methods are inherited.
+    | For creating a :py:class:`~easysensors.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -1319,10 +1323,10 @@ class ButtonSensor(DigitalSensor):
 
     def __init__(self, port="AD1", gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.ButtonSensor` object for the `Grove Button`_.
+        Constructor for initializing a :py:class:`~easysensors.ButtonSensor` object for the `Grove Button`_.
 
         :param str port = "AD1": Port to which we have the `Grove Button`_ connected to.
-        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easygopigo3.Button` object.
+        :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object used for instantiating a :py:class:`~easysensors.Button` object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
 
@@ -1375,13 +1379,13 @@ class Remote(Sensor):
 
     """
 
-    #: List for mapping the codes we get with the :py:meth:`~easygopigo3.Remote.read` method to
+    #: List for mapping the codes we get with the :py:meth:`~easysensors.Remote.read` method to
     #: the actual symbols we see on the `Infrared Remote`_.
     keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
 
     def __init__(self, port="AD1",gpg=None, use_mutex = False):
         """
-        Constructor for initializing a :py:class:`~easygopigo3.Remote` object.
+        Constructor for initializing a :py:class:`~easysensors.Remote` object.
 
         :param str port = "AD1": The port to which we connect the `Infrared Receiver`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
@@ -1404,11 +1408,11 @@ class Remote(Sensor):
         :return: The numeric code of the symbol that was pressed on the `Infrared Remote`_.
         :rtype: int
 
-        The numeric code represents the index of the :py:attr:`~easygopigo3.Remote.keycodes` list.
-        By accessing the :py:attr:`~easygopigo3.Remote.keycodes` elements with the numeric code, you
+        The numeric code represents the index of the :py:attr:`~easysensors.Remote.keycodes` list.
+        By accessing the :py:attr:`~easysensors.Remote.keycodes` elements with the numeric code, you
         get the symbol that was pressed on the `Infrared Remote`_.
 
-        For only getting the symbol that was pressed on the `Infrared Remote`_, please check the :py:meth:`~easygopigo3.Remote.get_remote_code` method.
+        For only getting the symbol that was pressed on the `Infrared Remote`_, please check the :py:meth:`~easysensors.Remote.get_remote_code` method.
 
         .. warning::
 
@@ -1434,7 +1438,7 @@ class Remote(Sensor):
         :return: The symbol that was pressed on the `Infrared Remote`_.
         :rtype: str
 
-        Check the :py:attr:`~easygopigo3.Remote.keycodes` list for seeing what strings this method can return.
+        Check the :py:attr:`~easysensors.Remote.keycodes` list for seeing what strings this method can return.
         On error or when nothing is read, an empty string is returned.
 
         """
@@ -1453,9 +1457,9 @@ class Servo(Sensor):
     Class for controlling `servo`_ motors with the `GoPiGo3`_ robot.
     Allows you to rotate the servo by serving the angle of rotation.
 
-    This class is derived from :py:class:`~easygopigo3.Sensor` class and because of this, it inherits all the attributes and methods.
+    This class is derived from :py:class:`~easysensors.Sensor` class and because of this, it inherits all the attributes and methods.
 
-    For creating a :py:class:`~easygopigo3.Servo` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_servo` method like in
+    For creating a :py:class:`~easysensors.Servo` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_servo` method like in
     the following examples.
 
     .. code-block:: python
@@ -1484,7 +1488,7 @@ class Servo(Sensor):
 
     def __init__(self, port="SERVO1", gpg=None, use_mutex=False):
         """
-        Constructor for instantiating a :py:class:`~easygopigo3.Servo` object for a (or multiple) `servo`_ (servos).
+        Constructor for instantiating a :py:class:`~easysensors.Servo` object for a (or multiple) `servo`_ (servos).
 
         :param str port = "SERVO1": The port to which we have connected the `servo`_.
         :param easygopigo3.EasyGoPiGo3 gpg = None: :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiation.
@@ -1547,7 +1551,7 @@ class Servo(Sensor):
         .. tip::
 
            | Same as calling ``rotate_servo(90)``.
-           | Read more about :py:meth:`~easygopigo3.Servo.rotate_servo` method.
+           | Read more about :py:meth:`~easysensors.Servo.rotate_servo` method.
 
         """
         self.rotate_servo(90)
@@ -1556,9 +1560,9 @@ class Servo(Sensor):
 class DHTSensor(Sensor):
     """
     Class for interfacing with the `Grove DHT Sensor`_.
-    This class derives from :py:class:`~easygopigo3.Sensor` class, so all of its attributes and methods are inherited.
+    This class derives from :py:class:`~easysensors.Sensor` class, so all of its attributes and methods are inherited.
 
-    We can create a :py:class:`~easygopigo3.DHTSensor` object similar to how we create it in the following template.
+    We can create a :py:class:`~easysensors.DHTSensor` object similar to how we create it in the following template.
 
     .. code-block:: python
 
@@ -1577,12 +1581,12 @@ class DHTSensor(Sensor):
 
     def __init__(self, gpg=None, sensor_type=0, use_mutex=False):
         """
-        Constructor for creating a :py:class:`~easygopigo3.DHTSensor` object which can be used for interfacing with the `Grove DHT Sensor`_.
+        Constructor for creating a :py:class:`~easysensors.DHTSensor` object which can be used for interfacing with the `Grove DHT Sensor`_.
 
         :param easygopigo3.EasyGoPiGo3 gpg = None: Object that's required for instantianting a :py:class:`~easysensors.DHTSensor` object.
         :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes have to be used.
-        :raises: Any of the :py:class:`~easygopigo3.Sensor` constructor's exceptions in case of error.
+        :raises: Any of the :py:class:`~easysensors.Sensor` constructor's exceptions in case of error.
 
         """
 

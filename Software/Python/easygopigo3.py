@@ -11,10 +11,12 @@ import os
 from I2C_mutex import Mutex
 import easysensors
 try:
-    import easydisensors
-except:
+    from di_sensors import easy_distance_sensor
+except ImportError as e:
     # It is quite possible to use the GPG3 without having the di_sensors repo installed
     pass
+except Exception as e:
+    print("Importing di_sensors error: {}".format(e))
 
 
 mutex = Mutex(debug=False)
@@ -713,10 +715,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_light_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.LightSensor` object and then returns it.
+        | Initialises a :py:class:`~easysensors.LightSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.LightSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.LightSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -725,10 +727,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_sound_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.SoundSensor` object and then returns it.
+        | Initialises a :py:class:`~easysensors.SoundSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.SoundSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.SoundSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -737,15 +739,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     # def init_loudness_sensor(self, port = "AD1"):
     #     """
-    #     | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
+    #     | Initialises a :py:class:`~easysensors.LoudnessSensor` object and then returns it.
     #     """
 
     def init_loudness_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.LoudnessSensor` object and then returns it.
+        | Initialises a :py:class:`~easysensors.LoudnessSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.LoudnessSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.LoudnessSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -755,10 +757,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_ultrasonic_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.UltraSonicSensor` object and then returns it.
+        | Initialises a :py:class:`~easysensors.UltraSonicSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.UltraSonicSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.UltraSonicSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -767,10 +769,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_buzzer(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.Buzzer` object and then returns it.
+        | Initialises a :py:class:`~easysensors.Buzzer` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.Buzzer` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.Buzzer` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -779,10 +781,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_led(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.Led` object and then returns it.
+        | Initialises a :py:class:`~easysensors.Led` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.Led` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.Led` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -791,10 +793,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_button_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.ButtonSensor` object and then returns it.
+        | Initialises a :py:class:`~easysensors.ButtonSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.ButtonSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.ButtonSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -803,10 +805,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_line_follower(self, port = "I2C"):
         """
-        | Initialises a :py:class:`~easygopigo3.LineFollower` object and then returns it.
+        | Initialises a :py:class:`~easysensors.LineFollower` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
-        :returns: An instance of the :py:class:`~easygopigo3.LineFollower` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.LineFollower` class and with the port set to ``port``'s value.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -823,10 +825,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_servo(self, port = "SERVO1"):
         """
-        | Initialises a :py:class:`~easygopigo3.Servo` object and then returns it.
+        | Initialises a :py:class:`~easysensors.Servo` object and then returns it.
 
         :param str port = "SERVO1": Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.Servo` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.Servo` class and with the port set to ``port``'s value.
 
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -854,7 +856,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         try:
-            return easydisensors.DistanceSensor(port, self, self.use_mutex)
+            return easy_distance_sensor.EasyDistanceSensor(port, self, self.use_mutex)
         except ImportError as e:
             print("DI Sensors are not installed: {}".format(e))
             raise
@@ -862,10 +864,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_dht_sensor(self, sensor_type = 0):
         """
-        | Initialises a :py:class:`~easygopigo3.DHTSensor` object and then returns it.
+        | Initialises a :py:class:`~easysensors.DHTSensor` object and then returns it.
 
         :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
-        :returns: An instance of the :py:class:`~easygopigo3.DHTSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.DHTSensor` class and with the port set to ``port``'s value.
 
         .. important::
 
@@ -879,10 +881,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_remote(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.Remote` object and then returns it.
+        | Initialises a :py:class:`~easysensors.Remote` object and then returns it.
 
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.Remote` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.Remote` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
 
@@ -891,12 +893,112 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_motion_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easygopigo3.MotionSensor` object and then returns it
+        | Initialises a :py:class:`~easysensors.MotionSensor` object and then returns it
 
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
-        :returns: An instance of the :py:class:`~easygopigo3.MotionSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~easysensors.MotionSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
         """
 
         return easysensors.MotionSensor(port, self, self.use_mutex)
+
+
+#########################################################################################
+# The following functions are left behind for backward compatibility
+# It would be best not to use them as they are only offered to support existing code
+#########################################################################################
+import warnings
+deprecated_msg = "WARNING: Instantiating a {} this way is deprecated."
+
+def old_instantiation(fct_to_call, 
+        sensor_description, 
+        port="I2C", 
+        gpg=None, 
+        use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    if gpg.use_mutex != use_mutex:
+        msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the distance sensor {}."
+        raise ValueError(msg.format(
+            "uses" if gpg.use_mutex else "does not use", 
+            "does" if use_mutex else "does not"))
+
+
+    warnings.warn(deprecated_msg.format(sensor_description), DeprecationWarning)
+    print(deprecated_msg.format(sensor_description))
+    return fct_to_call(port=port)
+
+def LightSensor(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_light_sensor, "light sensor", port, gpg, use_mutex)
+
+def SoundSensor(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_sound_sensor, "sound sensor", port, gpg, use_mutex)
+
+def LoudnessSensor(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_loudness_sensor, "loudness sensor", port, gpg, use_mutex)
+
+def UltraSonicSensor(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_ultrasonic_sensor, "ultrasonic sensor", port, gpg, use_mutex)
+
+def Buzzer(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_buzzer, "buzzer", port, gpg, use_mutex)
+
+def Led(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_led, "LED", port, gpg, use_mutex)  
+
+def MotionSensor(port="AD1", gpg=None, use_mutex = False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_motion_sensor, "motion sensor", port, gpg, use_mutex)    
+
+def ButtonSensor(port="AD1", gpg=None, use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_button_sensor, "button sensor", port, gpg, use_mutex)    
+
+def Remote(port="AD1", gpg=None, use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_remote, "remote", port, gpg, use_mutex)   
+
+def LineFollower(port="I2C", gpg=None, use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_line_follower, "line follower", port, gpg, use_mutex)   
+
+def Servo(port="SERVO1", gpg=None, use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_servo, "servo", port, gpg, use_mutex)
+
+def DistanceSensor(port="I2C", gpg=None, use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+    return old_instantiation(gpg.init_distance_sensor, "distance sensor", port, gpg, use_mutex)
+
+def DHTSensor(gpg=None, sensor_type=0, use_mutex=False):
+    if not isinstance(gpg, gopigo3.GoPiGo3):
+        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
+
+    if gpg.use_mutex != use_mutex:
+        msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the distance sensor {}."
+        raise ValueError(msg.format(
+            "uses" if gpg.use_mutex else "does not use", 
+            "does" if use_mutex else "does not"))
+
+    warnings.warn(deprecated_msg.format(sensor_description), DeprecationWarning)
+    print(deprecated_msg.format(sensor_description))
+    return gpg.init_dht_sensor(sensor_type=sensor_type)
