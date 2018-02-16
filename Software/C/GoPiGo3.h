@@ -71,15 +71,8 @@ int spi_transfer_array(uint8_t length, uint8_t *outArray, uint8_t *inArray){
   if (ioctl(spi_file_handle, SPI_IOC_MESSAGE(1), &spi_xfer_struct) < 0) {
     return ERROR_SPI_FILE;
   }
-  
-  return ERROR_NONE;
-}
 
-// Function to call if an error occured that can not be resolved, such as failure to set up SPI
-void fatal_error(char *error){
-  printf(error);
-  printf("\n");
-  exit(-1);
+  return ERROR_NONE;
 }
 
 // Function to call if an error occured that can not be resolved, such as failure to set up SPI
