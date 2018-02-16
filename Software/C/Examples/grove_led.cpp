@@ -8,12 +8,12 @@
  *
  *  This is an example for using an ultrasonic sensor and IR receiver with the GoPiGo3.
  *
- *  Hardware: Connect a grove ultrasonic sensor to GPG3 AD1 port, and IR receiver to GPG3 AD2 port.
+ *  Hardware: Connect a grove LED to GPG3 AD1 port.
  *
- *  Results:  When you run this program, you should see the values for each sensor.
+ *  Results:  When you run this program, you should see the grove LED brightness pulsing up and down.
  *
  *  Example compile command:
- *    g++ -o program "sensors.c"
+ *    g++ -o program "grove_led.cpp"
  *  Example run command:
  *    sudo ./program
  *
@@ -30,19 +30,21 @@ void exit_signal_handler(int signo);
 
 int main(){
   signal(SIGINT, exit_signal_handler); // register the exit function for Ctrl+C
-  
+
   GPG.detect(); // Make sure that the GoPiGo3 is communicating and that the firmware is compatible with the drivers.
-  
-  GPG.set_grove_type(GROVE_1, GROVE_TYPE_US);
-  GPG.set_grove_type(GROVE_2, GROVE_TYPE_IR_DI_REMOTE);
-  sensor_ultrasonic_t US;
-  sensor_infrared_gobox_t IR;
-  
+
+  GPG.set_grove_type(GROVE_1, GROVE_TYPE_CUSTOM);
+  GPG.set_grove_mode(GROVE_1_1, OUTPUT_PWM);
+
+  int8_t i = 0;
+  int8_t a = 1;
   while(true){
-    int USerror = GPG.get_grove_value(GROVE_1, &US);
-    int IRerror = GPG.get_grove_value(GROVE_2, &IR);
-    printf("US: Error %d  %4dmm    IR: Error %d  button %d\n", USerror, US.mm, IRerror, IR.button);
-    usleep(20000);
+    GPG.set_grove_pwm_duty(GROVE_1_1, i);
+    i += a;
+    if(i == 100 || i == 0){
+      a *= -1;
+    }
+    usleep(5000);
   }
 }
 

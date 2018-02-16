@@ -6,14 +6,14 @@
  *  Released under the MIT license (http://choosealicense.com/licenses/mit/).
  *  For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
  *
- *  This is an example for using I2C with the GoPiGo3.
+ *  This is an example for using an ultrasonic sensor and IR receiver with the GoPiGo3.
  *
- *  Hardware: Connect a PCA9570 I2C output expander to GPG3 AD1 port.
+ *  Hardware: Connect a grove ultrasonic sensor to GPG3 AD1 port, and IR receiver to GPG3 AD2 port.
  *
- *  Results:  When you run this program, P0 output should toggle.
+ *  Results:  When you run this program, you should see the values for each sensor.
  *
  *  Example compile command:
- *    g++ -o program "i2c.c"
+ *    g++ -o program "sensors.cpp"
  *  Example run command:
  *    sudo ./program
  *
@@ -30,25 +30,19 @@ void exit_signal_handler(int signo);
 
 int main(){
   signal(SIGINT, exit_signal_handler); // register the exit function for Ctrl+C
-  
+
   GPG.detect(); // Make sure that the GoPiGo3 is communicating and that the firmware is compatible with the drivers.
-  
-  GPG.set_grove_type(GROVE_1, GROVE_TYPE_I2C);
-  i2c_struct_t I2C1;
-  I2C1.address = 0x24;
-  I2C1.length_read = 3;
-  I2C1.length_write = 1;
-  uint8_t s = 0;
+
+  GPG.set_grove_type(GROVE_1, GROVE_TYPE_US);
+  GPG.set_grove_type(GROVE_2, GROVE_TYPE_IR_DI_REMOTE);
+  sensor_ultrasonic_t US;
+  sensor_infrared_gobox_t IR;
+
   while(true){
-    I2C1.buffer_write[0] = s;
-    int error = GPG.grove_i2c_transfer(GROVE_1, &I2C1);
-    printf("Error: %d  bytes: %d %d %d\n", error, I2C1.buffer_read[0], I2C1.buffer_read[1], I2C1.buffer_read[2]);
-    if(s == 0){
-      s = 1;
-    }else{
-      s = 0;
-    }
-    usleep(50000);
+    int USerror = GPG.get_grove_value(GROVE_1, &US);
+    int IRerror = GPG.get_grove_value(GROVE_2, &IR);
+    printf("US: Error %d  %4dmm    IR: Error %d  button %d\n", USerror, US.mm, IRerror, IR.button);
+    usleep(20000);
   }
 }
 
