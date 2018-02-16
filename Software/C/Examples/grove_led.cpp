@@ -13,13 +13,13 @@
  *  Results:  When you run this program, you should see the grove LED brightness pulsing up and down.
  *
  *  Example compile command:
- *    g++ -o program "grove_led.cpp"
+ *    g++ -o grove_led grove_led.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./grove_led
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>    // for GoPiGo3
 #include <stdio.h>      // for printf
 #include <unistd.h>     // for usleep
 #include <signal.h>     // for catching exit signals

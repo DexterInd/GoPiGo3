@@ -11,13 +11,13 @@
  *  Results: Print information about the attached GoPiGo3.
  *
  *  Example compile command:
- *    g++ -o program "info.cpp"
+ *    g++ -o info info.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./info
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>   // for GoPiGo3
 #include <stdio.h>     // for printf
 
 GoPiGo3 GPG; // Create a GoPiGo3 instance

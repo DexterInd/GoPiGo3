@@ -13,13 +13,13 @@
  *  Results:  When you run this program, P0 output should toggle.
  *
  *  Example compile command:
- *    g++ -o program "i2c.cpp"
+ *    g++ -o i2c i2c.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./i2c
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>    // for GoPiGo3
 #include <stdio.h>      // for printf
 #include <unistd.h>     // for usleep
 #include <signal.h>     // for catching exit signals

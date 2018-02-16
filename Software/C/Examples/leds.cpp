@@ -11,13 +11,13 @@
  *  Results:  When you run this program, you should see the encoder value for each motor. Manually rotate the left motor, and the right motor will follow.
  *
  *  Example compile command:
- *    g++ -o program "leds.cpp"
+ *    g++ -o leds leds.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./leds
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>   // for GoPiGo3
 #include <stdio.h>     // for printf
 #include <unistd.h>    // for usleep
 #include <signal.h>    // for catching exit signals

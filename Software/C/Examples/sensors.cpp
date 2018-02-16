@@ -13,13 +13,13 @@
  *  Results:  When you run this program, you should see the values for each sensor.
  *
  *  Example compile command:
- *    g++ -o program "sensors.cpp"
+ *    g++ -o sensors sensors.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./sensors
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>    // for GoPiGo3
 #include <stdio.h>      // for printf
 #include <unistd.h>     // for usleep
 #include <signal.h>     // for catching exit signals
