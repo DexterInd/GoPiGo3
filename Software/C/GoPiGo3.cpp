@@ -9,7 +9,7 @@
  *  C++ drivers for the GoPiGo3
  */
 
-#include "GoPiGo3.h"
+#include <GoPiGo3.h>
 
 GoPiGo3::GoPiGo3(){
   if(spi_file_handle < 0){

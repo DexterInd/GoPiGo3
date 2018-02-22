@@ -30,6 +30,7 @@
 #include <string.h>           // for strstr
 #include <sys/time.h>         // for clock_gettime
 #include <unistd.h>
+#include <stdexcept>
 
 // Error values
 #define ERROR_NONE                  0
@@ -77,9 +78,7 @@ int spi_transfer_array(uint8_t length, uint8_t *outArray, uint8_t *inArray){
 
 // Function to call if an error occured that can not be resolved, such as failure to set up SPI
 void fatal_error(const char *error){
-  printf(error);
-  printf("\n");
-  exit(-1);
+  throw std::runtime_error(error);
 }
 
 //struct timespec _time;
