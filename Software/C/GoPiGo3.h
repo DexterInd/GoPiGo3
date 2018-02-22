@@ -50,16 +50,16 @@ uint8_t spi_array_in[LONGEST_SPI_TRANSFER];  // SPI in array
 // Set up SPI. Open the file, and define the configuration.
 int spi_setup(){
   spi_file_handle = open(SPIDEV_FILE_NAME, O_RDWR);
-  
+
   if (spi_file_handle < 0){
     return ERROR_SPI_FILE;
   }
-  
+
   spi_xfer_struct.cs_change = 0;               // Keep CS activated
   spi_xfer_struct.delay_usecs = 0;             // delay in us
   spi_xfer_struct.speed_hz = SPI_TARGET_SPEED; // speed
   spi_xfer_struct.bits_per_word = 8;           // bites per word 8
-  
+
   return ERROR_NONE;
 }
 
@@ -68,7 +68,7 @@ int spi_transfer_array(uint8_t length, uint8_t *outArray, uint8_t *inArray){
   spi_xfer_struct.len = length;
   spi_xfer_struct.tx_buf = (unsigned long)outArray;
   spi_xfer_struct.rx_buf = (unsigned long)inArray;
-  
+
   if (ioctl(spi_file_handle, SPI_IOC_MESSAGE(1), &spi_xfer_struct) < 0) {
     return ERROR_SPI_FILE;
   }
@@ -91,44 +91,44 @@ double get_time(){
 
 enum GPGSPI_MESSAGE_TYPE{
   GPGSPI_MESSAGE_NONE,
-  
+
   GPGSPI_MESSAGE_GET_MANUFACTURER,
   GPGSPI_MESSAGE_GET_NAME,
   GPGSPI_MESSAGE_GET_HARDWARE_VERSION,
   GPGSPI_MESSAGE_GET_FIRMWARE_VERSION,
   GPGSPI_MESSAGE_GET_ID,
-  
+
   GPGSPI_MESSAGE_SET_LED,
-  
+
   GPGSPI_MESSAGE_GET_VOLTAGE_5V,
   GPGSPI_MESSAGE_GET_VOLTAGE_VCC,
-  
+
   GPGSPI_MESSAGE_SET_SERVO,
-  
+
   GPGSPI_MESSAGE_SET_MOTOR_PWM,
-  
+
   GPGSPI_MESSAGE_SET_MOTOR_POSITION,
   GPGSPI_MESSAGE_SET_MOTOR_POSITION_KP,
   GPGSPI_MESSAGE_SET_MOTOR_POSITION_KD,
-  
+
   GPGSPI_MESSAGE_SET_MOTOR_DPS,
-  
+
   GPGSPI_MESSAGE_SET_MOTOR_LIMITS,
-  
+
   GPGSPI_MESSAGE_OFFSET_MOTOR_ENCODER,
-  
+
   GPGSPI_MESSAGE_GET_MOTOR_ENCODER_LEFT,
   GPGSPI_MESSAGE_GET_MOTOR_ENCODER_RIGHT,
-  
+
   GPGSPI_MESSAGE_GET_MOTOR_STATUS_LEFT,
   GPGSPI_MESSAGE_GET_MOTOR_STATUS_RIGHT,
-  
+
   GPGSPI_MESSAGE_SET_GROVE_TYPE,
   GPGSPI_MESSAGE_SET_GROVE_MODE,
   GPGSPI_MESSAGE_SET_GROVE_STATE,
   GPGSPI_MESSAGE_SET_GROVE_PWM_DUTY,
   GPGSPI_MESSAGE_SET_GROVE_PWM_FREQUENCY,
-  
+
   GPGSPI_MESSAGE_GET_GROVE_VALUE_1,
   GPGSPI_MESSAGE_GET_GROVE_VALUE_2,
   GPGSPI_MESSAGE_GET_GROVE_STATE_1_1,
@@ -143,7 +143,7 @@ enum GPGSPI_MESSAGE_TYPE{
   GPGSPI_MESSAGE_GET_GROVE_ANALOG_1_2,
   GPGSPI_MESSAGE_GET_GROVE_ANALOG_2_1,
   GPGSPI_MESSAGE_GET_GROVE_ANALOG_2_2,
-  
+
   GPGSPI_MESSAGE_START_GROVE_I2C_1,
   GPGSPI_MESSAGE_START_GROVE_I2C_2
 };
@@ -238,10 +238,10 @@ class GoPiGo3{
   public:
   // Set up the GoPiGo3
     GoPiGo3();
-    
+
   // Confirm that the BrickPi3 is connected and up-to-date
     int     detect(bool critical = true);
-    
+
   // Get the manufacturer (should be "Dexter Industries")
     int     get_manufacturer(char *str);
   // Get the board name (should be "BrickPi3")
@@ -252,10 +252,10 @@ class GoPiGo3{
     int     get_version_firmware(char *str);
   // Get the serial number ID that is unique to each BrickPi3
     int     get_id(char *str);
-    
+
   // Control the LED
     int     set_led(uint8_t led, uint8_t red, uint8_t green = 0, uint8_t blue = 0);
-    
+
   // Get the voltages of the four power rails
     // Get the voltage and return as floating point voltage
     float   get_voltage_5v     ();
@@ -263,10 +263,10 @@ class GoPiGo3{
     // Pass the pass-by-reference float variable where the voltage will be stored. Returns the error code.
     int     get_voltage_5v     (float &voltage);
     int     get_voltage_battery(float &voltage);
-    
+
   // Set a servo position in microseconds
     int     set_servo(uint8_t servo, uint16_t us);
-  
+
   // Set the motor PWM power
     int     set_motor_power(uint8_t port, int8_t power);
   // Set the motor target position to run to (go to the specified position)
@@ -284,8 +284,8 @@ class GoPiGo3{
     int     get_motor_encoder(uint8_t port, int32_t &value);
     // Pass the port. Returns the encoder value.
     int32_t get_motor_encoder(uint8_t port);
-    
-    
+
+
   // Configure grove pin(s)/port(s)
     // Set grove port type
     int      set_grove_type(uint8_t port, uint8_t type);
@@ -318,17 +318,17 @@ class GoPiGo3{
     uint16_t get_grove_analog(uint8_t pin);
     // get value with pass-by-reference, and return error code
     int      get_grove_analog(uint8_t pin, uint16_t &value);
-    
+
   // Reset the grove ports (unconfigure), motors (float with no limits), and LEDs.
     int     reset_all();
-    
+
   private:
     // GoPiGo3 SPI address
     uint8_t Address;
-    
+
     uint8_t GroveType[2];
     uint8_t GroveI2CInBytes[2];
-    
+
     int spi_read_8 (uint8_t msg_type, uint8_t  &value);
     int spi_read_16(uint8_t msg_type, uint16_t &value);
     int spi_read_32(uint8_t msg_type, uint32_t &value);
