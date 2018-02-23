@@ -18,7 +18,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "gopigo3",
-    version = "1.1.1",
+    version = "1.2.0",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
