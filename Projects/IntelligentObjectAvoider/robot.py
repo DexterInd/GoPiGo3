@@ -14,15 +14,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 """
 
-from easygopigo3 import *
+from easygopigo3 import EasyGoPiGo3
+from sklearn.cluster import KMeans
 from time import sleep
 import queue
 import threading
 import sys
 import signal
 
-KEEP_HEADING = -1
 MINIMUM_VOLTAGE = 7.0
+
+# Returns the index for the [array] list where the [considered_index_of_element]-th
+# element of a given element in [array] is the highest.
+#
+# [array] is a 2-dimensional array
+# [considered_index_of_element] is the index of the list of the [array]
+def getIndexOfHighestValueInList(array, considered_index_of_element):
+    values = [element[considered_index_of_element] for element in array]
+    return values.index(max(values))
 
 # Thread-launched function for polling the data from the distance sensor.
 # It calculates the best path for the robot and then sends the data
@@ -35,12 +44,12 @@ MINIMUM_VOLTAGE = 7.0
 def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     leftmost_degrees = 30
     rightmost_degrees = 150
-    middle = 90
     current_servo_position = leftmost_degrees
+    middle = 90
     step = 10
-    servo_delay = 0.05
-    wait_before_it_starts = 1.0
-    distance_trigger = 0.25
+    servo_delay = 0.035
+    wait_before_it_starts = 0
+    distance_trigger = 25
     how_much_to_rotate = 150
     to_the_right = True
 
@@ -80,17 +89,20 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     if not simultaneous_launcher.broken:
         print("[obstacleFinder] thread fully active")
 
+
     # and if everything is okay
     # start collecting, interpreting and sending messages
     # to the thread-launched [robotController] function
     while not trigger.is_set() and not simultaneous_launcher.broken:
-        anterior_distance = 0
         possible_routes = 0
         deadends = 0
+        final_distance = 0
+        final_servo_position = 0
+        sonar_samples = []
 
         # if the thread is put on hold by [robotController]
         # then wait until it's allowed to proceed
-        if not put_on_hold.is_set():
+        if not put_on_hold.is_set() and sensor_queue.empty():
 
             # when the servo is rotating to the right
             if to_the_right is True:
@@ -104,21 +116,14 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                     current_servo_position += step
                     possible_routes += 1
 
-                    if distance > distance_trigger:
-                        if distance > anterior_distance:
-                            sensor_queue.put([distance, current_servo_position - 90])
-                            anterior_distance = distance
-                        else:
-                            sensor_queue.put([KEEP_HEADING, 0])
-                    else:
-                        anterior_distance = 0
-                        sensor_queue.put([0, 0])
-                        deadends += 1
+                    # print("left", distance, 90 - current_servo_position)
 
-                # if the distance sensor couldn't found a route
-                if deadends == possible_routes:
-                    # then rotate a lot in order to find a new spot
-                    sensor_queue.put([0, how_much_to_rotate])
+                    if distance > distance_trigger:
+                        final_distance = distance
+                        final_servo_position = 90 - current_servo_position
+                        sonar_samples.append([distance, 90 - current_servo_position])
+                    else:
+                        deadends += 1
 
                 to_the_right = False
                 current_servo_position = rightmost_degrees
@@ -135,27 +140,39 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                     current_servo_position -= step
                     possible_routes += 1
 
-                    if distance > distance_trigger:
-                        if distance > anterior_distance:
-                            sensor_queue.put([distance, current_servo_position - 90])
-                            anterior_distance = distance
-                        else:
-                            sensor_queue.put([KEEP_HEADING, 0])
-                    else:
-                        anterior_distance = 0
-                        sensor_queue.put([0, 0])
-                        deadends += 1
+                    # print("right", distance, 90 - current_servo_position)
 
-                # if the distance sensor couldn't found a route
-                if deadends == possible_routes:
-                    # then rotate a lot in order to find a new spot
-                    sensor_queue.put([0, how_much_to_rotate])
+                    if distance > distance_trigger:
+                        final_distance = distance
+                        final_servo_position = 90 - current_servo_position
+                        sonar_samples.append([distance, 90 - current_servo_position])
+                    else:
+                        deadends += 1
 
                 to_the_right = True
                 current_servo_position = leftmost_degrees
 
-        else:
-            sleep(0.01)
+            # if the sonar (servo + distance sensor) couldn't find a distance >= threshold distance
+            if deadends == possible_routes:
+                # then rotate a lot in order to find a new spot
+                sensor_queue.put([0, how_much_to_rotate])
+            else:
+                # do k-means clustering on samples taken from the rotating servo
+                sample_size = len(sonar_samples)
+                if sample_size < 3:
+                    kmeans = KMeans(n_clusters = sample_size)
+                else:
+                    kmeans = KMeans(n_clusters = 3)
+
+                kmeans.fit(sonar_samples)
+                params = kmeans.cluster_centers_
+                idx = getIndexOfHighestValueInList(params, 0)
+
+                # push the orientation which leads to the farthest object detected
+                # aka takes the "freest" route
+                sensor_queue.put(params[idx])
+
+        sleep(0.01)
 
     # move the servo to the middle when the thread is being stopped
     servo.rotate_servo(middle)
@@ -176,7 +193,7 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
         simultaneous_launcher.abort()
 
     # set a lower speed of the GoPiGo3
-    gopigo3_robot.set_speed(200)
+    gopigo3_robot.set_speed(300)
     gopigo3_robot.stop() # in case the GoPiGo3 is moving, stop it
     previous = 0 # see the following instructions
     how_much_of_distance = 0.30 # measured in percentage
@@ -207,20 +224,12 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
             sleep(0.001)
             continue
 
-        # if we need to rotate the GoPiGo3
-        if rotation > 0:
-            put_on_hold.set()
-            gopigo3_robot.turn_degrees(rotation, blocking = True)
-            put_on_hold.clear()
+        print("Rotating at {} degrees and driving for {} cm".format(rotation, distance_to_walk * how_much_of_distance))
 
-        # if we need to move the GoPiGo3 around
-        if previous != 0 and distance_to_walk >= 0:
-            gopigo3_robot.drive_cm(distance_to_walk * how_much_of_distance)
-
-        # keep the previous distance we read
-        # if it's 0 now and the next time is still 0
-        # then the drive method won't be called
-        previous = distance_to_walk
+        put_on_hold.set()
+        gopigo3_robot.turn_degrees(rotation, blocking = True)
+        gopigo3_robot.drive_cm(distance_to_walk * how_much_of_distance)
+        put_on_hold.clear()
 
         sleep(0.001)
 
