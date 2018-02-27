@@ -18,7 +18,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "gopigo3",
-    version = "1.1.1",
+    version = "1.2.0",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
@@ -43,6 +43,6 @@ setup(
     keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning', 'education'],
 
     packages=find_packages(),
-    py_modules = ['gopigo3','easygopigo3','I2C_mutex'],
+    py_modules = ['gopigo3','easygopigo3', 'easysensors'],
     install_requires = ['spidev']
 )

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>gopigo3_cpp</name>
+  <version>0.0.0</version>
+  <description>C++ driver for GoPiGo3</description>
+
+  <maintainer email="Rauch.Christian@gmx.de">Christian Rauch</maintainer>
+
+  <license>MIT</license>
+
+  <url type="website">https://www.dexterindustries.com/gopigo3/</url>
+  <url type="website">https://github.com/DexterInd/GoPiGo3</url>
+
+
+  <!-- Author tags are optional, multiple are allowed, one per tag -->
+  <!-- Authors do not have to be maintainers, but could be -->
+  <!-- Example: -->
+  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+    <build_type>cmake</build_type>
+  </export>
+</package>

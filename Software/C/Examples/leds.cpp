@@ -11,13 +11,13 @@
  *  Results:  When you run this program, you should see the encoder value for each motor. Manually rotate the left motor, and the right motor will follow.
  *
  *  Example compile command:
- *    g++ -o program "leds.c"
+ *    g++ -o leds leds.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./leds
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>   // for GoPiGo3
 #include <stdio.h>     // for printf
 #include <unistd.h>    // for usleep
 #include <signal.h>    // for catching exit signals
@@ -30,9 +30,9 @@ void exit_signal_handler(int signo);
 
 int main(){
   signal(SIGINT, exit_signal_handler); // register the exit function for Ctrl+C
-  
+
   GPG.detect(); // Make sure that the GoPiGo3 is communicating and that the firmware is compatible with the drivers.
-  
+
   uint8_t i1 = 0;
   uint8_t i2 = BRIGHTNESS_LIMIT / 3;
   uint8_t i3 = (BRIGHTNESS_LIMIT * 2) / 3;
@@ -44,7 +44,7 @@ int main(){
     GPG.set_led(LED_EYE_RIGHT, i2, i3, i1);
     GPG.set_led(LED_BLINKER_LEFT, i1);
     GPG.set_led(LED_BLINKER_RIGHT, i2);
-    
+
     i1 += a1;
     if(i1 == BRIGHTNESS_LIMIT || i1 == 0){
       a1 *= -1;
@@ -57,7 +57,7 @@ int main(){
     if(i3 == BRIGHTNESS_LIMIT || i3 == 0){
       a3 *= -1;
     }
-    
+
     // slow down
     usleep(25000);
   }
