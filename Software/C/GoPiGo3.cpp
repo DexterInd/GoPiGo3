@@ -9,7 +9,7 @@
  *  C++ drivers for the GoPiGo3
  */
 
-#include "GoPiGo3.h"
+#include <GoPiGo3.h>
 
 GoPiGo3::GoPiGo3(){
   if(spi_file_handle < 0){
@@ -113,7 +113,7 @@ int GoPiGo3::detect(bool critical){
       return ERROR_WRONG_MANUFACTURER;
     }
   }
-  
+
   // assign error to the value returned by get_board, and if not 0:
   if(error = get_board(str)){
     if(critical){
@@ -129,7 +129,7 @@ int GoPiGo3::detect(bool critical){
       return ERROR_WRONG_DEVICE;
     }
   }
-  
+
   // assign error to the value returned by get_version_firmware, and if not 0:
   if(error = get_version_firmware(str)){
     if(critical){
@@ -295,16 +295,16 @@ int GoPiGo3::get_motor_status(uint8_t port, uint8_t &state, int8_t &power, int32
   if(int error = spi_transfer_array(12, spi_array_out, spi_array_in)){
     return error;
   }
-  
+
   if(spi_array_in[3] != 0xA5){
     return ERROR_SPI_RESPONSE;
   }
-  
+
   state    = spi_array_in[4];
   power    = spi_array_in[5];
   position = ((spi_array_in[6] << 24) | (spi_array_in[7] << 16) | (spi_array_in[8] << 8) | spi_array_in[9]);
   dps      = ((spi_array_in[10] << 8) | spi_array_in[11]);
-  
+
   return ERROR_NONE;
 }
 
@@ -410,7 +410,7 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
       Continue = true;
     }
   }
-  
+
   double DelayTime = 0;
   if(i2c_struct->length_write){
     DelayTime += 1 + i2c_struct->length_write;
@@ -422,7 +422,7 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
   // No point trying to read the values before they are ready.
   usleep((DelayTime * 1000000)); // delay for as long as it will take to do the I2C transaction.
   Timeout = get_time() + 0.005;  // timeout after 5ms of failed attempted reads
-  
+
   while(true){
     if(error = get_grove_value(port, i2c_struct)){
       if(get_time() >= Timeout){
@@ -452,27 +452,27 @@ int GoPiGo3::grove_i2c_start(uint8_t port, i2c_struct_t *i2c_struct){
   spi_array_out[0] = Address;
   spi_array_out[1] = msg_type;
   spi_array_out[2] = ((i2c_struct->address & 0x7F) << 1);
-  
+
   if(i2c_struct->length_read > LONGEST_I2C_TRANSFER){
     i2c_struct->length_read = LONGEST_I2C_TRANSFER;
   }
   spi_array_out[3] = i2c_struct->length_read;
   GroveI2CInBytes[port_index] = i2c_struct->length_read;
-  
+
   if(i2c_struct->length_write > LONGEST_I2C_TRANSFER){
     i2c_struct->length_write = LONGEST_I2C_TRANSFER;
   }
   spi_array_out[4] = i2c_struct->length_write;
-  
+
   for(uint8_t i = 0; i < i2c_struct->length_write; i++){
     spi_array_out[5 + i] = i2c_struct->buffer_write[i];
   }
-  
+
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array((5 + i2c_struct->length_write), spi_array_out, spi_array_in)){
     return error;
   }
-  
+
   // If the fourth byte received is not 0xA5
   if(spi_array_in[3] != 0xA5){
     return ERROR_SPI_RESPONSE;
@@ -481,7 +481,7 @@ int GoPiGo3::grove_i2c_start(uint8_t port, i2c_struct_t *i2c_struct){
   if(spi_array_in[4] != GROVE_STATUS_VALID_DATA){
     return spi_array_in[4];
   }
-  
+
   return ERROR_NONE;
 }
 
@@ -502,9 +502,9 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   }
   spi_array_out[0] = Address;
   spi_array_out[1] = msg_type;
-  
+
   uint8_t spi_transfer_length;
-  
+
   // Determine the SPI transaction byte length based on the grove type
   switch(GroveType[port_index]){
     case GROVE_TYPE_IR_DI_REMOTE:
@@ -523,7 +523,7 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
       return GROVE_STATUS_NOT_CONFIGURED;
     break;
   }
-  
+
   // Get the grove value(s), and if error
   // assign error to the value returned by spi_transfer_array, and if not 0:
   if(int error = spi_transfer_array(spi_transfer_length, spi_array_out, spi_array_in)){
@@ -542,7 +542,7 @@ int GoPiGo3::get_grove_value(uint8_t port, void *value_ptr){
   if(spi_array_in[5] != GROVE_STATUS_VALID_DATA){
     return spi_array_in[5];
   }
-  
+
   if(GroveType[port_index] == GROVE_TYPE_IR_DI_REMOTE){
     sensor_infrared_gobox_t *Value = (sensor_infrared_gobox_t*)value_ptr;
     Value->button = spi_array_in[6];

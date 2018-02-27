@@ -13,13 +13,13 @@
  *  Results:  When you run this program, you should see the values for each sensor.
  *
  *  Example compile command:
- *    g++ -o program "sensors.c"
+ *    g++ -o sensors sensors.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./program
+ *    sudo ./sensors
  *
  */
 
-#include "GoPiGo3.cpp" // for GoPiGo3
+#include <GoPiGo3.h>    // for GoPiGo3
 #include <stdio.h>      // for printf
 #include <unistd.h>     // for usleep
 #include <signal.h>     // for catching exit signals
@@ -30,14 +30,14 @@ void exit_signal_handler(int signo);
 
 int main(){
   signal(SIGINT, exit_signal_handler); // register the exit function for Ctrl+C
-  
+
   GPG.detect(); // Make sure that the GoPiGo3 is communicating and that the firmware is compatible with the drivers.
-  
+
   GPG.set_grove_type(GROVE_1, GROVE_TYPE_US);
   GPG.set_grove_type(GROVE_2, GROVE_TYPE_IR_DI_REMOTE);
   sensor_ultrasonic_t US;
   sensor_infrared_gobox_t IR;
-  
+
   while(true){
     int USerror = GPG.get_grove_value(GROVE_1, &US);
     int IRerror = GPG.get_grove_value(GROVE_2, &IR);

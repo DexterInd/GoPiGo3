@@ -19,13 +19,12 @@
 import os
 import sys
 
-'''
 from mock import Mock as MagicMock
-import mox
-'''
+#import mox
+
 sys.path.insert(0, os.path.abspath('../../Software/Python'))
 sys.path.insert(0, os.path.abspath('../../DI_Sensors/Python'))
-'''
+
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
@@ -33,7 +32,6 @@ class Mock(MagicMock):
 
 MOCK_MODULES = ['spidev', 'fcntl']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-'''
 
 # -- General configuration ------------------------------------------------
 
