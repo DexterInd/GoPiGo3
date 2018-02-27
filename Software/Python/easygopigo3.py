@@ -511,7 +511,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             # do no conversion
         return average
 
-    def turn_degrees(self, degrees, blocking=False):
+    def turn_degrees(self, degrees, blocking=True):
         """
         | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
