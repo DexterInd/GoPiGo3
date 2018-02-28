@@ -503,12 +503,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             # do no conversion
         return average
 
-    def turn_degrees(self, degrees, blocking=False):
+    def turn_degrees(self, degrees, blocking=True):
         """
         | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
         :param float degrees: The angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
-        :param boolean blocking = False: Set it as a blocking or non-blocking method.
+        :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
 
