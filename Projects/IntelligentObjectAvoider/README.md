@@ -1,5 +1,7 @@
 # Intelligent Object Avoider Robot
 
+## Component Requirements
+
 In this project, we make the `GoPiGo3` intelligently avoid obstacles. You need the following:
 * [GoPiGo3](https://www.dexterindustries.com/shop/gopigo3-robot-base-kit/)
 * [Distance Sensor](https://www.dexterindustries.com/shop/distance-sensor/)
@@ -8,7 +10,7 @@ In this project, we make the `GoPiGo3` intelligently avoid obstacles. You need t
 
 The `servo` is particularly useful, because it gives the distance sensor a 120 degrees viewing angle. The script uses a greedy-like algorithm for choosing the best path.
 
-In order to test this script, it's advised to create at your place a small labyrinth where the `GoPiGo3` can be put in. Books, bags, stools can be used. Avoid creating very sharp corners in your little maze or too small "corridors" as your `GoPiGo3` can get stuck.
+## Preparing It
 
 You need to do the following things in order to be able to launch the `robot.py` script:
 1. Install `scikit-learn` package. A `pip install scikit-learn` should be enough (be mindful of whether you need to use `sudo` or not - most probably it's `sudo` that's required).
@@ -17,6 +19,19 @@ Generally, `pip` is associated for `Python 2` applications and `pip3` is associa
 3. Plug in the distance sensor into any of the 2 `I2C` ports of the GoPiGo3 just like in the below photo.
 4. Run the actual script. Use only `Python 3` as `Python 2` is not supported.
 
+## Running It
+
+In order to run it, use the following command:
+```
+python3 robot.py
+```
+
+Depending on how your system is set, `Python 3` may direct to `python` executable or `python3` - most likely, it will point to `python3`.
+
 In order to stop, you need to press the `CTRL-C` combination of keyboard keys. Wait a couple of seconds until it finishes exiting.
+
+## Robot Environment
+
+In order to test this script, it's advised to create at your place a small labyrinth where the `GoPiGo3` can be put in. Books, bags, stools can be used. Avoid creating very sharp corners in your little maze or too small "corridors" as your `GoPiGo3` can get stuck.
 
 ![Imgur](http://i.imgur.com/LbuFTMd.jpg)
