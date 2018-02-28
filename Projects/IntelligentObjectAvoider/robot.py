@@ -96,8 +96,6 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
     while not trigger.is_set() and not simultaneous_launcher.broken:
         possible_routes = 0
         deadends = 0
-        final_distance = 0
-        final_servo_position = 0
         sonar_samples = []
 
         # if the thread is put on hold by [robotController]
@@ -119,8 +117,6 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                     # print("left", distance, 90 - current_servo_position)
 
                     if distance > distance_trigger:
-                        final_distance = distance
-                        final_servo_position = 90 - current_servo_position
                         sonar_samples.append([distance, 90 - current_servo_position])
                     else:
                         deadends += 1
@@ -143,8 +139,6 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                     # print("right", distance, 90 - current_servo_position)
 
                     if distance > distance_trigger:
-                        final_distance = distance
-                        final_servo_position = 90 - current_servo_position
                         sonar_samples.append([distance, 90 - current_servo_position])
                     else:
                         deadends += 1
