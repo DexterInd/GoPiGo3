@@ -918,10 +918,11 @@ def old_instantiation(fct_to_call,
         use_mutex=False):
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    if gpg.use_mutex != use_mutex:
-        msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the distance sensor {}."
+    if gpg.use_mutex != use_mutex and mutex.overall_mutex() == False :
+        msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the {} {}."
         raise ValueError(msg.format(
             "uses" if gpg.use_mutex else "does not use", 
+            sensor_description,
             "does" if use_mutex else "does not"))
 
 
