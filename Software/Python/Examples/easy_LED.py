@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # import the EasyGoPiGo3 drivers
 import time
 import easygopigo3 as easy
