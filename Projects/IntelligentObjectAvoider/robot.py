@@ -234,7 +234,17 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
 
         put_on_hold.set()
         gopigo3_robot.turn_degrees(rotation, blocking = True)
-        gopigo3_robot.drive_cm(distance_to_walk * how_much_of_distance)
+        gopigo3_robot.drive_cm(distance_to_walk * how_much_of_distance, blocking = False)
+
+        # give some time for the robot to start moving
+        # before taking measurements of its speed
+        sleep(0.2)
+
+        # while the robot is moving and CTRL-C hasn't been pressed
+        while gopigo3_robot.get_motor_status(gopigo3_robot.MOTOR_LEFT)[3] != 0 and \
+              gopigo3_robot.get_motor_status(gopigo3_robot.MOTOR_RIGHT)[3] != 0 and \
+              not trigger.is_set():
+            sleep(0.001)
         put_on_hold.clear()
 
         sleep(0.001)
