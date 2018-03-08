@@ -104,6 +104,10 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
 
             # when the servo is rotating to the right
             if to_the_right is True:
+                # rotate to the leftmost_degrees position in case the head is in the middle
+                servo.rotate_servo(leftmost_degrees)
+                sleep(servo_delay)
+
                 # read the distance to the target at every specific orientation of the servo
                 # and go with the best greedy-like solution
                 while current_servo_position <= rightmost_degrees:
@@ -126,6 +130,10 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
 
             # when the servo is rotating to the left
             elif to_the_right is False:
+                # rotate to the leftmost_degrees position in case the head is in the middle
+                servo.rotate_servo(rightmost_degrees)
+                sleep(servo_delay)
+
                 # read the distance to the target at every specific orientation of the servo
                 # and go with the best greedy-like solution
                 while current_servo_position >= leftmost_degrees:
@@ -145,6 +153,10 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
 
                 to_the_right = True
                 current_servo_position = leftmost_degrees
+
+            # remove the following line to make the servo rotational behavior more time-efficient
+            # by removing it, the time needed to take the measurements is halved
+            servo.rotate_servo(middle)
 
             # if the sonar (servo + distance sensor) couldn't find a distance >= threshold distance
             if deadends == possible_routes:
