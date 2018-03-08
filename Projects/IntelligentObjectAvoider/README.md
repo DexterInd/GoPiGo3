@@ -13,8 +13,8 @@ The `servo` is particularly useful, because it gives the distance sensor a 120 d
 ## Preparing It
 
 You need to do the following things in order to be able to launch the `robot.py` script:
-1. Install `scikit-learn` package. A `pip install scikit-learn` should be enough (be mindful of whether you need to use `sudo` or not - most probably it's `sudo` that's required).
-Generally, `pip` is associated for `Python 2` applications and `pip3` is associated for `Python 3` apps, so most likely, on your system, you'll have to do a `sudo pip3 install scikit-learn`.
+1. Install `scikit-learn` package. A `sudo pip3 install scikit-learn` should be enough (be mindful of whether you need to use `sudo` or not - most probably it's `sudo` that's required).
+Generally, `pip` is associated for `Python 2` applications and `pip3` is associated for `Python 3` apps, so most likely, on your system, you'll have to do use the `pip3` command.
 2. Plug in the servo into port `SERVO 1` of the GoPiGo3 just like in the below photo.
 3. Plug in the distance sensor into any of the 2 `I2C` ports of the GoPiGo3 just like in the below photo.
 4. Run the actual script. Use only `Python 3` as `Python 2` is not supported.
@@ -26,12 +26,13 @@ In order to run it, use the following command:
 python3 robot.py
 ```
 
-Depending on how your system is set, `Python 3` may direct to `python` executable or `python3` - most likely, it will point to `python3`.
+Depending on how your system is set, the Python 3 executable may be set to `python` or `python3`. To find out which executable you're dealing with, use the `-V` option when
+calling the executable to see which version it is: `python -V` or `python3 -V`.
 
 In order to stop, you need to press the `CTRL-C` combination of keyboard keys. Wait a couple of seconds until it finishes exiting.
 
 ## Robot Environment
 
-In order to test this script, it's advised to create at your place a small labyrinth where the `GoPiGo3` can be put in. Books, bags, stools can be used. Avoid creating very sharp corners in your little maze or too small "corridors" as your `GoPiGo3` can get stuck.
+In order to test this script, create a small labyrinth for your `GoPiGo3`. Books, bags, stools can be used. Avoid creating very sharp corners in your little maze or too small "corridors" as your `GoPiGo3` can get stuck.
 
 ![Imgur](http://i.imgur.com/LbuFTMd.jpg)
