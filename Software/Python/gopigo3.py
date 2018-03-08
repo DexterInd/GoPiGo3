@@ -583,6 +583,19 @@ class GoPiGo3(object):
                     ((offset >> 24) & 0xFF), ((offset >> 16) & 0xFF), ((offset >> 8) & 0xFF), (offset & 0xFF)]
         self.spi_transfer_array(outArray)
 
+    def reset_motor_encoder(self, port):
+        """
+        Reset a motor encoder to 0
+
+        Keyword arguments:
+        port -- The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+        """
+        if port & self.MOTOR_LEFT:
+            self.offset_motor_encoder(self.MOTOR_LEFT, self.get_motor_encoder(self.MOTOR_LEFT))
+
+        if port & self.MOTOR_RIGHT:
+            self.offset_motor_encoder(self.MOTOR_RIGHT, self.get_motor_encoder(self.MOTOR_RIGHT))
+
     def set_grove_type(self, port, type):
         """
         Set grove type
