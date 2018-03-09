@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This example demonstrates how to use the Grove GPS sensor with the GoPiGo3.
 # Connect the GPS sensor to the SERIAL port on the GoPiGo3.  This port
 # is on the right hand side of the GoPiGo3.
