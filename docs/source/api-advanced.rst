@@ -28,7 +28,7 @@ Take note that the ``easygopigo3`` module depends on the underlying ``gopigo3`` 
 Sensor
 =====================================
 
-.. autoclass:: easygopigo3.Sensor
+.. autoclass:: easysensors.Sensor
   :members:
   :special-members:
   :exclude-members: __weakref__
@@ -46,7 +46,7 @@ DigitalSensor
 AnalogSensor
 =====================================
 
-.. autoclass:: easygopigo3.AnalogSensor
+.. autoclass:: easysensors.AnalogSensor
   :members:
   :special-members:
   :show-inheritance:

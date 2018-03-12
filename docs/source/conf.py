@@ -30,8 +30,12 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['spidev', 'fcntl']
+MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+# When building the documentation on Windows with graphviz in mind, use
+# <<sphinx-build -b html -D graphviz_dot="C:\Program Files (x86)\Graphviz2.38\bin\dot.exe" source build/html>> command
+# That should be the path on Windows, but it can vary depending on your system's configuration
 
 # -- General configuration ------------------------------------------------
 
@@ -44,12 +48,50 @@ sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # ones.
 extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.viewcode']
+    'sphinx.ext.viewcode',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.graphviz']
+
+def _check_deps():
+    names = {"six": 'six',
+             "graphviz": 'graphviz',
+             "shutil": 'shutil',
+             "gopigo3": 'gopigo3',
+             "easysensors": 'easysensors',
+             "easygopigo3": 'easygopigo3'}
+    missing = []
+    for name in names:
+        try:
+            __import__(name)
+        except ImportError:
+            missing.append(names[name])
+    if missing:
+        raise ImportError(
+            "The following dependencies are missing to build the "
+            "documentation: {}".format(", ".join(missing)))
+
+_check_deps()
+
+# Import only after checking for dependencies.
+import easygopigo3, gopigo3, easysensors
+import six
+
+# if six.PY2:
+#     from distutils.spawn import find_executable
+#     has_dot = find_executable('dot') is not None
+# else:
+#     from shutil import which  # Python >= 3.3
+#     has_dot = which('dot') is not None
+# if not has_dot:
+#     raise OSError(
+#         "No binary named dot - you need to install the Graph Visualization "
+#         "software (usually packaged as 'graphviz') to build the documentation")
 
 # autoclass_content for showing the __init__ constructor
 # autodoc_member_order for ordering the functions the way they are represented in the source files
 # autoclass_content = "both"
 autodoc_member_order = "bysource"
+# autodoc_mock_imports =['spidev', 'fcntl', 'I2C_mutex']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -127,8 +169,6 @@ html_static_path = []
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'GoPiGo3doc'
-
-# autodoc_mock_imports = ["spidev", "fcntl"]
 
 # -- Options for LaTeX output ---------------------------------------------
 

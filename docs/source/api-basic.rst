@@ -1,24 +1,29 @@
 .. _api-basic-chapter:
 
-###################
+#####################################
 API GoPiGo3 - Basic
-###################
+#####################################
 
-============
+*************************************
+About Library & Hardware
+*************************************
+
+=====================================
 Requirements
-============
+=====================================
 
 
-Before using this chapter's classes, you need to be able to import the following module.
+Before using this chapter's classes, you need to be able to import the following modules.
 
 .. code-block:: python
 
    import easygopigo3
+   import easysensors
 
 If you have issues importing these two modules, then make sure:
 
    * You have followed the steps found in :ref:`Getting Started <getting-started-chapter>` guide.
-   * You have installed either `Raspbian For Robots`_, the GoPiGo3 `repository`_ or the `GoPiGo3 package`_ (the pip package).
+   * You have installed either `Raspbian For Robots`_ or the GoPiGo3 `repository`_'s python package.
    * You have the ``gopigo3`` package installed by typing the command ``pip freeze | grep gopigo3`` on your Raspberry Pi's terminal. If the package is installed, then a string with the ``gopigo3==[x.y.z]`` format will show up.
 
 If you encounter issues that aren't covered by our :ref:`Getting Started <getting-started-chapter>` guide or :ref:`FAQ <faq-chapter>` chapter, please head over to our `forum`_.
@@ -68,6 +73,22 @@ These ports have the following functionalities:
 
    For more technical details on the `GoPiGo3`_ robot, please check our `technical specs`_ page.
 
+=====================================
+Library Structure
+=====================================
+
+Each of the following classes are organized in the following modules:
+
+.. :py:mod:`gopigo3`------> :py:mod:`easygopigo3`------> :py:class:`easygopigo3.EasyGoPiGo3`
+..                                                 |
+..                                                 ----> :py:class:`easygopigo3.EasyGoPiGo3`
+
+.. inheritance-diagram:: easysensors easygopigo3
+   :parts: 2
+
+*************************************
+Library Classes
+*************************************
 
 =====================================
 EasyGoPiGo3
@@ -82,7 +103,7 @@ EasyGoPiGo3
 LightSensor
 =====================================
 
-.. autoclass:: easygopigo3.LightSensor
+.. autoclass:: easysensors.LightSensor
    :members:
    :special-members:
    :show-inheritance:
@@ -91,7 +112,7 @@ LightSensor
 SoundSensor
 =====================================
 
-.. autoclass:: easygopigo3.SoundSensor
+.. autoclass:: easysensors.SoundSensor
    :members:
    :special-members:
    :show-inheritance:
@@ -100,7 +121,7 @@ SoundSensor
 LoudnessSensor
 =====================================
 
-.. autoclass:: easygopigo3.LoudnessSensor
+.. autoclass:: easysensors.LoudnessSensor
   :members:
   :special-members:
   :show-inheritance:
@@ -109,7 +130,7 @@ LoudnessSensor
 UltrasonicSensor
 =====================================
 
-.. autoclass:: easygopigo3.UltraSonicSensor
+.. autoclass:: easysensors.UltraSonicSensor
    :members:
    :special-members:
    :show-inheritance:
@@ -118,7 +139,7 @@ UltrasonicSensor
 Buzzer
 =====================================
 
-.. autoclass:: easygopigo3.Buzzer
+.. autoclass:: easysensors.Buzzer
    :members:
    :special-members:
    :show-inheritance:
@@ -127,7 +148,7 @@ Buzzer
 Led
 =====================================
 
-.. autoclass:: easygopigo3.Led
+.. autoclass:: easysensors.Led
    :members:
    :special-members:
    :show-inheritance:
@@ -136,7 +157,7 @@ Led
 MotionSensor
 =====================================
 
-.. autoclass:: easygopigo3.MotionSensor
+.. autoclass:: easysensors.MotionSensor
   :members:
   :special-members:
   :show-inheritance:
@@ -145,7 +166,7 @@ MotionSensor
 ButtonSensor
 =====================================
 
-.. autoclass:: easygopigo3.ButtonSensor
+.. autoclass:: easysensors.ButtonSensor
    :members:
    :special-members:
    :show-inheritance:
@@ -154,7 +175,7 @@ ButtonSensor
 LineFollower
 =====================================
 
-.. autoclass:: easygopigo3.LineFollower
+.. autoclass:: easysensors.LineFollower
    :members:
    :special-members:
    :show-inheritance:
@@ -163,21 +184,7 @@ LineFollower
 Servo
 =====================================
 
-.. autoclass:: easygopigo3.Servo
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-DistanceSensor
-=====================================
-
-.. important::
-
-   The :py:class:`easygopigo3.DistanceSensor` class requires the ``DI_Sensors`` package installed.
-   Please check the documentation of the `DI-Sensors`_'s package on how to install it.
-
-.. autoclass:: easygopigo3.DistanceSensor
+.. autoclass:: easysensors.Servo
    :members:
    :special-members:
    :show-inheritance:
@@ -186,7 +193,7 @@ DistanceSensor
 DHTSensor
 =====================================
 
-.. autoclass:: easygopigo3.DHTSensor
+.. autoclass:: easysensors.DHTSensor
    :members:
    :special-members:
    :show-inheritance:
@@ -195,10 +202,14 @@ DHTSensor
 Remote
 =====================================
 
-.. autoclass:: easygopigo3.Remote
+.. autoclass:: easysensors.Remote
    :members:
    :special-members:
    :show-inheritance:
+
+*************************************
+Deprecated Classes/Functions
+*************************************
 
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
@@ -218,7 +229,6 @@ Remote
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
 .. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
-.. _gopigo3 package: https://pypi.python.org/pypi/gopigo3
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
