@@ -3,6 +3,7 @@ dependencies:
 - python=3
 - pip
 - graphviz
+- mock
 - six
 - sphinx
 - sphinx_rtd_theme

@@ -18,13 +18,10 @@
 #
 import os
 import sys
-
-from mock import Mock as MagicMock
-#import mox
-
 sys.path.insert(0, os.path.abspath('../../Software/Python'))
 sys.path.insert(0, os.path.abspath('../../DI_Sensors/Python'))
 
+from mock import Mock as MagicMock
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
@@ -54,7 +51,6 @@ extensions = ['sphinx.ext.autodoc',
 
 def _check_deps():
     names = {"six": 'six',
-             "graphviz": 'graphviz',
              "shutil": 'shutil',
              "gopigo3": 'gopigo3',
              "easysensors": 'easysensors',
@@ -70,7 +66,7 @@ def _check_deps():
             "The following dependencies are missing to build the "
             "documentation: {}".format(", ".join(missing)))
 
-# _check_deps()
+_check_deps()
 
 # Import only after checking for dependencies.
 import easygopigo3, gopigo3, easysensors
