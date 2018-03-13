@@ -1400,7 +1400,7 @@ class Remote(Sensor):
     #: the actual symbols we see on the `Infrared Remote`_.
     keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
 
-    def __init__(self, port="AD1",gpg=None, use_mutex = False):
+    def __init__(self, port="AD1", gpg=None, use_mutex=False):
         """
         Constructor for initializing a :py:class:`~easysensors.Remote` object.
 
