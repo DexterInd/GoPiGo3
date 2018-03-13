@@ -144,7 +144,7 @@ we finish with another one for the :py:mod:`easysensors` module, so that we can 
    easygopigo3.EasyGoPiGo3.init_motion_sensor
 
 
-And here's everything that resides in :py:mod:`easysensors`.
+And here's everything that resides in :py:mod:`easysensors` module.
 
 .. autosummary::
    easysensors.Sensor
