@@ -47,7 +47,8 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
-    'sphinx.ext.graphviz']
+    'sphinx.ext.graphviz',
+    'sphinx.ext.autosummary']
 
 def _check_deps():
     names = {"six": 'six',

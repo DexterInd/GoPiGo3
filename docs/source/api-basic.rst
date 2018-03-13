@@ -77,14 +77,71 @@ These ports have the following functionalities:
 Library Structure
 =====================================
 
-Each of the following classes are organized in the following modules:
+-------------------------------------
+Classes Short-List
+-------------------------------------
 
-.. :py:mod:`gopigo3`------> :py:mod:`easygopigo3`------> :py:class:`easygopigo3.EasyGoPiGo3`
-..                                                 |
-..                                                 ----> :py:class:`easygopigo3.EasyGoPiGo3`
+Each of the following classes are organized in 3 modules: :py:mod:`gopigo3`, :py:mod:`easygopigo3` and :py:mod:`easysensors`.
+Out of these 3 modules, we're only interested in :py:mod:`easygopigo3` and :py:mod:`easysensors` as :py:mod:`gopigo3` is meant for more advanced users.
 
 .. inheritance-diagram:: easysensors easygopigo3
    :parts: 2
+
+.. note::
+
+   Class :py:class:`easysensors.AnalogSensor` does not only deal with sensors, but outputs as well like :py:class:`easysensors.Led` and :py:class:`easysensors.Buzzer`.
+   While we agree this isn't the best name for this class, we're going to keep it this way due to compatibility reasons we don't want to break (for now).
+
+-------------------------------------
+Functions Short-List
+-------------------------------------
+
+Here's a short summary of the methods of all classes that are documented.
+
+.. autosummary::
+   easygopigo3.EasyGoPiGo3
+   easygopigo3.EasyGoPiGo3.volt
+   easygopigo3.EasyGoPiGo3.set_speed
+   easygopigo3.EasyGoPiGo3.get_speed
+   easygopigo3.EasyGoPiGo3.reset_speed
+   easygopigo3.EasyGoPiGo3.stop
+   easygopigo3.EasyGoPiGo3.backward
+   easygopigo3.EasyGoPiGo3.right
+   easygopigo3.EasyGoPiGo3.left
+   easygopigo3.EasyGoPiGo3.forward
+   easygopigo3.EasyGoPiGo3.drive_cm
+   easygopigo3.EasyGoPiGo3.drive_inches
+   easygopigo3.EasyGoPiGo3.drive_degrees
+   easygopigo3.EasyGoPiGo3.target_reached
+   easygopigo3.EasyGoPiGo3.reset_encoders
+   easygopigo3.EasyGoPiGo3.read_encoders
+   easygopigo3.EasyGoPiGo3.turn_degrees
+   easygopigo3.EasyGoPiGo3.blinker_on
+   easygopigo3.EasyGoPiGo3.blinker_off
+   easygopigo3.EasyGoPiGo3.led_on
+   easygopigo3.EasyGoPiGo3.led_off
+   easygopigo3.EasyGoPiGo3.set_left_eye_color
+   easygopigo3.EasyGoPiGo3.set_right_eye_color
+   easygopigo3.EasyGoPiGo3.set_eye_color
+   easygopigo3.EasyGoPiGo3.open_left_eye
+   easygopigo3.EasyGoPiGo3.open_right_eye
+   easygopigo3.EasyGoPiGo3.open_eyes
+   easygopigo3.EasyGoPiGo3.close_left_eye
+   easygopigo3.EasyGoPiGo3.close_right_eye
+   easygopigo3.EasyGoPiGo3.close_eyes
+   easygopigo3.EasyGoPiGo3.init_light_sensor
+   easygopigo3.EasyGoPiGo3.init_sound_sensor
+   easygopigo3.EasyGoPiGo3.init_loudness_sensor
+   easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor
+   easygopigo3.EasyGoPiGo3.init_buzzer
+   easygopigo3.EasyGoPiGo3.init_led
+   easygopigo3.EasyGoPiGo3.init_button_sensor
+   easygopigo3.EasyGoPiGo3.init_line_follower
+   easygopigo3.EasyGoPiGo3.init_servo
+   easygopigo3.EasyGoPiGo3.init_distance_sensor
+   easygopigo3.EasyGoPiGo3.init_dht_sensor
+   easygopigo3.EasyGoPiGo3.init_remote
+   easygopigo3.EasyGoPiGo3.init_motion_sensor
 
 *************************************
 Library Classes
