@@ -725,7 +725,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LightSensor` class.
 
         """
-        return easysensors.LightSensor(port, self)
+        return easysensors.LightSensor(port, self, use_mutex=self.use_mutex)
 
     def init_sound_sensor(self, port="AD1"):
         """
@@ -739,7 +739,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.SoundSensor` class.
 
         """
-        return easysensors.SoundSensor(port, self)
+        return easysensors.SoundSensor(port, self, use_mutex=self.use_mutex)
 
     # def init_loudness_sensor(self, port = "AD1"):
     #     """
@@ -758,7 +758,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LoudnessSensor` class.
 
         """
-        return easysensors.LoudnessSensor(port, self)
+        return easysensors.LoudnessSensor(port, self, use_mutex=self.use_mutex)
 
 
     def init_ultrasonic_sensor(self, port="AD1"):
@@ -773,7 +773,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.UltraSonicSensor` class.
 
         """
-        return easysensors.UltraSonicSensor(port, self)
+        return easysensors.UltraSonicSensor(port, self, use_mutex=self.use_mutex)
 
     def init_buzzer(self, port="AD1"):
         """
@@ -787,7 +787,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Buzzer` class.
 
         """
-        return easysensors.Buzzer(port, self)
+        return easysensors.Buzzer(port, self, use_mutex=self.use_mutex)
 
     def init_led(self, port="AD1"):
         """
@@ -801,7 +801,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Led` class.
 
         """
-        return easysensors.Led(port, self)
+        return easysensors.Led(port, self, use_mutex=self.use_mutex)
 
     def init_button_sensor(self, port="AD1"):
         """
@@ -815,7 +815,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.ButtonSensor` class.
 
         """
-        return easysensors.ButtonSensor(port, self)
+        return easysensors.ButtonSensor(port, self, use_mutex=self.use_mutex)
 
     def init_line_follower(self, port = "I2C"):
         """
@@ -837,7 +837,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LineFollower` class.
 
         """
-        return easysensors.LineFollower(port, self)
+        return easysensors.LineFollower(port, self, use_mutex=self.use_mutex)
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -851,7 +851,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Servo` class.
 
         """
-        return easysensors.Servo(port, self)
+        return easysensors.Servo(port, self, use_mutex=self.use_mutex)
 
     def init_distance_sensor(self, port = "I2C"):
         """
