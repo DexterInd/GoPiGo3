@@ -70,7 +70,7 @@ def _check_deps():
             "The following dependencies are missing to build the "
             "documentation: {}".format(", ".join(missing)))
 
-_check_deps()
+# _check_deps()
 
 # Import only after checking for dependencies.
 import easygopigo3, gopigo3, easysensors
