@@ -1,9 +1,3 @@
-.. _api-basic-chapter:
-
-#####################################
-API GoPiGo3 - Basic
-#####################################
-
 *************************************
 About Library & Hardware
 *************************************
@@ -38,7 +32,7 @@ Hardware Ports
 In this graphical representation, the `GoPiGo3`_ board has the following ports available for use.
 The quoted literals are to be used as pin identifiers inside the python scripts.
 
-.. image:: images/gpg3_ports.jpg
+.. image:: ../images/gpg3_ports.jpg
 
 These ports have the following functionalities:
 
@@ -87,6 +81,11 @@ Out of these 3 modules, we're only interested in :py:mod:`easygopigo3` and :py:m
 .. inheritance-diagram:: easysensors easygopigo3
    :parts: 2
 
+For intializing :py:class:`~easysensors.Sensor`-derived objects, there are 2 ways to do it:
+
+1. Either by using the ``init`` methods of the :py:class:`~easygopigo3.EasyGoPiGo3` class. This is the preffered way.
+2. Or by using the constructor of each class (:py:class:`~easysensors.DHTSensor`, :py:class:`~easysensors.Led`, etc), which is harder because it also requires passing a :py:class:`~easygopigo3.EasyGoPiGo3` object for instantiation.
+
 .. note::
 
    Class :py:class:`easysensors.AnalogSensor` does not only deal with sensors, but outputs as well like :py:class:`easysensors.Led` and :py:class:`easysensors.Buzzer`.
@@ -96,7 +95,8 @@ Out of these 3 modules, we're only interested in :py:mod:`easygopigo3` and :py:m
 Functions Short-List
 -------------------------------------
 
-Here's a short summary of the methods of all classes that are documented.
+Here's a short summary of the methods of all classes that are documented. We start off with a list of the methods/functions/methods of the :py:mod:`easygopigo3` and then
+we finish with another one for the :py:mod:`easysensors` module, so that we can visually separate one from another and thus make it more easy to search around.
 
 .. autosummary::
    easygopigo3.EasyGoPiGo3
@@ -143,131 +143,65 @@ Here's a short summary of the methods of all classes that are documented.
    easygopigo3.EasyGoPiGo3.init_remote
    easygopigo3.EasyGoPiGo3.init_motion_sensor
 
-*************************************
-Library Classes
-*************************************
 
-=====================================
-EasyGoPiGo3
-=====================================
+And here's everything that resides in :py:mod:`easysensors`.
 
-.. autoclass:: easygopigo3.EasyGoPiGo3
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-LightSensor
-=====================================
-
-.. autoclass:: easysensors.LightSensor
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-SoundSensor
-=====================================
-
-.. autoclass:: easysensors.SoundSensor
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-LoudnessSensor
-=====================================
-
-.. autoclass:: easysensors.LoudnessSensor
-  :members:
-  :special-members:
-  :show-inheritance:
-
-=====================================
-UltrasonicSensor
-=====================================
-
-.. autoclass:: easysensors.UltraSonicSensor
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-Buzzer
-=====================================
-
-.. autoclass:: easysensors.Buzzer
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-Led
-=====================================
-
-.. autoclass:: easysensors.Led
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-MotionSensor
-=====================================
-
-.. autoclass:: easysensors.MotionSensor
-  :members:
-  :special-members:
-  :show-inheritance:
-
-=====================================
-ButtonSensor
-=====================================
-
-.. autoclass:: easysensors.ButtonSensor
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-LineFollower
-=====================================
-
-.. autoclass:: easysensors.LineFollower
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-Servo
-=====================================
-
-.. autoclass:: easysensors.Servo
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-DHTSensor
-=====================================
-
-.. autoclass:: easysensors.DHTSensor
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
-Remote
-=====================================
-
-.. autoclass:: easysensors.Remote
-   :members:
-   :special-members:
-   :show-inheritance:
-
-*************************************
-Deprecated Classes/Functions
-*************************************
-
+.. autosummary::
+   easysensors.Sensor
+   easysensors.Sensor.__str__
+   easysensors.Sensor.set_pin
+   easysensors.Sensor.get_pin
+   easysensors.Sensor.set_port
+   easysensors.Sensor.get_port
+   easysensors.Sensor.get_port_ID
+   easysensors.Sensor.set_pin_mode
+   easysensors.Sensor.get_pin_mode
+   easysensors.Sensor.set_descriptor
+   easysensors.AnalogSensor
+   easysensors.AnalogSensor.read
+   easysensors.AnalogSensor.percent_read
+   easysensors.AnalogSensor.read
+   easysensors.AnalogSensor.write_freq
+   easysensors.LightSensor
+   easysensors.SoundSensor
+   easysensors.LoudnessSensor
+   easysensors.UltraSonicSensor
+   easysensors.UltraSonicSensor.is_too_close
+   easysensors.UltraSonicSensor.set_safe_distance
+   easysensors.UltraSonicSensor.get_safe_distance
+   easysensors.UltraSonicSensor.read_mm
+   easysensors.UltraSonicSensor.read
+   easysensors.UltraSonicSensor.read_inches
+   easysensors.Buzzer
+   easysensors.Buzzer.sound
+   easysensors.Buzzer.sound_off
+   easysensors.Buzzer.sound_on
+   easysensors.Led
+   easysensors.Led.light_on
+   easysensors.Led.light_max
+   easysensors.Led.light_off
+   easysensors.Led.is_on
+   easysensors.Led.is_off
+   easysensors.MotionSensor
+   easysensors.MotionSensor.motion_detected
+   easysensors.ButtonSensor
+   easysensors.ButtonSensor.is_button_pressed
+   easysensors.LineFollower.read_raw_sensors
+   easysensors.LineFollower.get_white_calibration
+   easysensors.LineFollower.get_black_calibration
+   easysensors.LineFollower.read
+   easysensors.LineFollower.read_position
+   easysensors.LineFollower.read_position_str
+   easysensors.Servo
+   easysensors.Servo.rotate_servo
+   easysensors.Servo.reset_servo
+   easysensors.DHTSensor
+   easysensors.DHTSensor.read_temperature
+   easysensors.DHTSensor.read_humidity
+   easysensors.DHTSensor.read
+   easysensors.Remote
+   easysensors.Remote.read
+   easysensors.Remote.get_remote_code
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
