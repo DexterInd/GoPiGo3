@@ -155,7 +155,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'GoPiGo3.tex', u'GoPiGo3 Documentation',
-     u'Robert Lucian Chiriac', 'manual'),
+     u'Dexter Industries', 'manual'),
 ]
 
 
@@ -165,7 +165,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, 'gopigo3', u'GoPiGo3 Documentation',
-     [author], 1)
+     [u'Dexter Industries'], 1)
 ]
 
 
@@ -176,7 +176,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'GoPiGo3', u'GoPiGo3 Documentation',
-     author, 'GoPiGo3', 'One line description of project.',
+     u'Dexter Industries', 'GoPiGo3', 'One line description of project.',
      'Miscellaneous'),
 ]
 
