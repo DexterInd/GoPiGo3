@@ -67,11 +67,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     | This class is used for controlling a `GoPiGo3`_ robot.
     | With this class you can do the following things with your `GoPiGo3`_:
 
-     * drive your robot in any number of directions
-     * have precise control over the direction of the robot
-     * set the speed of the robot
-     * turn *on* or *off* the blinker LEDs
-     * control the `GoPiGo3`_' Dex's *eyes*, *color* and so on ...
+     * Drive your robot in any number of directions.
+     * Have precise control over the direction of the robot.
+     * Set the speed of the robot.
+     * Turn *on* or *off* the blinker LEDs.
+     * Control the `GoPiGo3`_' Dex's *eyes*, *color* and so on ...
 
      .. needs revisiting
 
@@ -722,6 +722,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LightSensor` class.
+
         """
         return easysensors.LightSensor(port, self)
 
@@ -733,6 +735,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :returns: An instance of the :py:class:`~easysensors.SoundSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.SoundSensor` class.
 
         """
         return easysensors.SoundSensor(port, self)
@@ -751,6 +755,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LoudnessSensor` class.
+
         """
         return easysensors.LoudnessSensor(port, self)
 
@@ -764,6 +770,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.UltraSonicSensor` class.
+
         """
         return easysensors.UltraSonicSensor(port, self)
 
@@ -775,6 +783,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :returns: An instance of the :py:class:`~easysensors.Buzzer` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Buzzer` class.
 
         """
         return easysensors.Buzzer(port, self)
@@ -788,6 +798,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Led` class.
+
         """
         return easysensors.Led(port, self)
 
@@ -799,6 +811,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :returns: An instance of the :py:class:`~easysensors.ButtonSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.ButtonSensor` class.
 
         """
         return easysensors.ButtonSensor(port, self)
@@ -820,6 +834,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LineFollower` class.
+
         """
         return easysensors.LineFollower(port, self)
 
@@ -832,6 +848,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Servo` class.
+
         """
         return easysensors.Servo(port, self)
 
@@ -842,9 +860,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
         :returns: An instance of the :py:class:`~di_sensors.DistanceSensor` class and with the port set to ``port``'s value.
-        :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries. 
+        :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.DistanceSensor` class.
 
         .. tip::
 
@@ -869,6 +889,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
         :returns: An instance of the :py:class:`~easysensors.DHTSensor` class and with the port set to ``port``'s value.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.DHTSensor` class.
+
         .. important::
 
             The only port to which this device can be connected is the ``"SERIAL"`` port, so therefore, there's no need
@@ -888,6 +910,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Remote` class.
+
         """
         return easysensors.Remote(port, self, self.use_mutex)
 
@@ -899,6 +923,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :returns: An instance of the :py:class:`~easysensors.MotionSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.MotionSensor` class.
+
         """
 
         return easysensors.MotionSensor(port, self, self.use_mutex)
