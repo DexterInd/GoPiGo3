@@ -1,15 +1,6 @@
 *************************************
-API - Library
+API - Library - Sensors
 *************************************
-
-=====================================
-EasyGoPiGo3
-=====================================
-
-.. autoclass:: easygopigo3.EasyGoPiGo3
-   :members:
-   :special-members:
-   :show-inheritance:
 
 =====================================
 LightSensor

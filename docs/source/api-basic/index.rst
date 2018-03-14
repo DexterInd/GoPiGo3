@@ -9,7 +9,8 @@ API GoPiGo3 - Basic
    :caption: Contents:
 
    structure
-   library
+   easygopigo3
+   sensors
    deprecated
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
