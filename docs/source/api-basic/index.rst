@@ -8,8 +8,8 @@ API GoPiGo3 - Basic
    :maxdepth: 0
    :caption: Contents:
 
-   intro
-   classes
+   structure
+   library
    deprecated
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/

@@ -938,17 +938,17 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 import warnings
 deprecated_msg = "WARNING: Instantiating a {} this way is deprecated."
 
-def old_instantiation(fct_to_call, 
-        sensor_description, 
-        port="I2C", 
-        gpg=None, 
+def old_instantiation(fct_to_call,
+        sensor_description,
+        port="I2C",
+        gpg=None,
         use_mutex=False):
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     if gpg.use_mutex != use_mutex and mutex.overall_mutex() == False :
         msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the {} {}."
         raise ValueError(msg.format(
-            "uses" if gpg.use_mutex else "does not use", 
+            "uses" if gpg.use_mutex else "does not use",
             sensor_description,
             "does" if use_mutex else "does not"))
 
@@ -958,56 +958,89 @@ def old_instantiation(fct_to_call,
     return fct_to_call(port=port)
 
 def LightSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.LightSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_light_sensor, "light sensor", port, gpg, use_mutex)
 
 def SoundSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.SoundSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_sound_sensor, "sound sensor", port, gpg, use_mutex)
 
 def LoudnessSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.LoudnessSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_loudness_sensor, "loudness sensor", port, gpg, use_mutex)
 
 def UltraSonicSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.UltraSonicSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_ultrasonic_sensor, "ultrasonic sensor", port, gpg, use_mutex)
 
 def Buzzer(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.Buzzer`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_buzzer, "buzzer", port, gpg, use_mutex)
 
 def Led(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.Led`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_led, "LED", port, gpg, use_mutex)  
+    return old_instantiation(gpg.init_led, "LED", port, gpg, use_mutex)
 
 def MotionSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Backward-compatibility of :py:class:`easysensors.MotionSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_motion_sensor, "motion sensor", port, gpg, use_mutex)    
+    return old_instantiation(gpg.init_motion_sensor, "motion sensor", port, gpg, use_mutex)
 
 def ButtonSensor(port="AD1", gpg=None, use_mutex=False):
+    """
+    Backward-compatibility of :py:class:`easysensors.ButtonSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_button_sensor, "button sensor", port, gpg, use_mutex)    
+    return old_instantiation(gpg.init_button_sensor, "button sensor", port, gpg, use_mutex)
 
 def Remote(port="AD1", gpg=None, use_mutex=False):
+    """
+    Backward-compatibility of :py:class:`easysensors.Remote`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_remote, "remote", port, gpg, use_mutex)   
+    return old_instantiation(gpg.init_remote, "remote", port, gpg, use_mutex)
 
 def LineFollower(port="I2C", gpg=None, use_mutex=False):
+    """
+    Backward-compatibility of :py:class:`easysensors.LineFollower`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_line_follower, "line follower", port, gpg, use_mutex)   
+    return old_instantiation(gpg.init_line_follower, "line follower", port, gpg, use_mutex)
 
 def Servo(port="SERVO1", gpg=None, use_mutex=False):
+    """
+    Backward-compatibility of :py:class:`easysensors.Servo`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_servo, "servo", port, gpg, use_mutex)
@@ -1018,13 +1051,16 @@ def DistanceSensor(port="I2C", gpg=None, use_mutex=False):
     return old_instantiation(gpg.init_distance_sensor, "distance sensor", port, gpg, use_mutex)
 
 def DHTSensor(gpg=None, sensor_type=0, use_mutex=False):
+    """
+    Backward-compatibility of :py:class:`easysensors.DHTSensor`
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
 
     if gpg.use_mutex != use_mutex:
         msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the distance sensor {}."
         raise ValueError(msg.format(
-            "uses" if gpg.use_mutex else "does not use", 
+            "uses" if gpg.use_mutex else "does not use",
             "does" if use_mutex else "does not"))
 
     warnings.warn(deprecated_msg.format(sensor_description), DeprecationWarning)

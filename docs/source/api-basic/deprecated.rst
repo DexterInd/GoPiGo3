@@ -1,5 +1,5 @@
 *************************************
-Deprecated Classes/Functions
+API - Deprecated
 *************************************
 
 In earlier versions of this library, all classes of the :py:mod:`easysensors` module belonged to :py:mod:`easygopigo3` module.
@@ -13,19 +13,25 @@ In summary, the classes that are now being instantiated from the :py:mod:`easyse
 
 
 .. autosummary::
-   easysensors.LightSensor
-   easysensors.SoundSensor
-   easysensors.LoudnessSensor
-   easysensors.UltraSonicSensor
-   easysensors.Buzzer
-   easysensors.Led
-   easysensors.MotionSensor
-   easysensors.ButtonSensor
-   easysensors.Remote
-   easysensors.LineFollower
-   easysensors.Servo
-   easysensors.DHTSensor
+   easygopigo3.LightSensor
+   easygopigo3.SoundSensor
+   easygopigo3.LoudnessSensor
+   easygopigo3.UltraSonicSensor
+   easygopigo3.Buzzer
+   easygopigo3.Led
+   easygopigo3.MotionSensor
+   easygopigo3.ButtonSensor
+   easygopigo3.Remote
+   easygopigo3.LineFollower
+   easygopigo3.Servo
+   easygopigo3.DHTSensor
 
+The only exception is the :py:func:`easygopigo3.DistanceSensor` which class no longer exists in either module.
+This surrogate function has the same arguments as the other classes and the only port available to use is the ``"I2C"``.
+If you wish to initialize an object for the `Distance Sensor`_, a better way is just to use the :py:class:`~di_sensors.distance_sensor.DistanceSensor` class of `DI-Sensors`_ library on which this library is based upon.
+
+.. _DI-Sensors: http://di-sensors.readthedocs.io
+.. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
