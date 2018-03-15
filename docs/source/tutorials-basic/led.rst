@@ -65,7 +65,7 @@ The objects
 ===========
 
 After this, we need to instantiate an :py:class:`easygopigo3.EasyGoPiGo3` object.
-We are using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easygopigo3.Led` class,
+We are using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easysensors.Led` class,
 which is necessary for controlling the `Grove Led`_ device.
 
 .. code-block:: python
@@ -73,7 +73,7 @@ which is necessary for controlling the `Grove Led`_ device.
    gpg = easy.EasyGoPiGo3()
 
 Now that we have an :py:class:`~easygopigo3.EasyGoPiGo3` object, we can instantiate
-a :py:class:`~easygopigo3.Led` object.
+a :py:class:`~easysensors.Led` object.
 The argument of the initializer method is the port to which we connect the `Grove Led`_ and
 it's set to ``"AD1"``.
 
@@ -89,11 +89,11 @@ it's set to ``"AD1"``.
 Main part
 =========
 
-In this section of the tutorial we are focusing on 3 methods of the :py:class:`easygopigo3.Led` class.
+In this section of the tutorial we are focusing on 3 methods of the :py:class:`easysensors.Led` class.
 
-   * The :py:meth:`~easygopigo3.Led.light_max` method - which turns the LED at the maximum brightness.
-   * The :py:meth:`~easygopigo3.Led.light_on` method - used for turning the LED at a certain percent of the maximum brightness.
-   * The :py:meth:`~easygopigo3.Led.light_off` method - used for turning off the LED.
+   * The :py:meth:`~easysensors.Led.light_max` method - which turns the LED at the maximum brightness.
+   * The :py:meth:`~easysensors.Led.light_on` method - used for turning the LED at a certain percent of the maximum brightness.
+   * The :py:meth:`~easysensors.Led.light_off` method - used for turning off the LED.
 
 All in all, the following code snippet turns on the LED to the maximum brightness, then it sets the LED's brightness at 30%
 and in the last it turns off the LED. The delay between all these 3 commands is set at half a second.

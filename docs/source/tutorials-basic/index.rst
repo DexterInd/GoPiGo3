@@ -4,7 +4,7 @@
 Tutorials - Basic
 #################
 
-This chapter revolves around the :py:mod:`easygopigo3` module.
+This chapter revolves around the :py:mod:`easygopigo3` module and just a bit around :py:mod:`di_sensors`.
 
 Please make sure you have followed all the instructions found in :ref:`Getting Started <getting-started-chapter>` before jumping into tutorials.
 In all these tutorials, you will need:
