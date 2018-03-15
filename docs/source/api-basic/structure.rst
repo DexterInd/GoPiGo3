@@ -162,43 +162,12 @@ GoPiGo3 Init Methods
    easygopigo3.EasyGoPiGo3.init_remote
    easygopigo3.EasyGoPiGo3.init_motion_sensor
 
-
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Base Sensor Classes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autosummary::
-   easysensors.Sensor
-   easysensors.Sensor.__str__
-   easysensors.Sensor.set_pin
-   easysensors.Sensor.get_pin
-   easysensors.Sensor.set_port
-   easysensors.Sensor.get_port
-   easysensors.Sensor.get_port_ID
-   easysensors.Sensor.set_pin_mode
-   easysensors.Sensor.get_pin_mode
-   easysensors.Sensor.set_descriptor
-   easysensors.AnalogSensor
-   easysensors.AnalogSensor.read
-   easysensors.AnalogSensor.percent_read
-   easysensors.AnalogSensor.read
-   easysensors.AnalogSensor.write_freq
-
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Sensor/Actuator Classes
+Sensor/Actuator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autosummary::
-   easysensors.LightSensor
-   easysensors.SoundSensor
    easysensors.LoudnessSensor
-   easysensors.UltraSonicSensor
-   easysensors.UltraSonicSensor.is_too_close
-   easysensors.UltraSonicSensor.set_safe_distance
-   easysensors.UltraSonicSensor.get_safe_distance
-   easysensors.UltraSonicSensor.read_mm
-   easysensors.UltraSonicSensor.read
-   easysensors.UltraSonicSensor.read_inches
    easysensors.Buzzer
    easysensors.Buzzer.sound
    easysensors.Buzzer.sound_off
@@ -222,13 +191,49 @@ Sensor/Actuator Classes
    easysensors.Servo
    easysensors.Servo.rotate_servo
    easysensors.Servo.reset_servo
+   easysensors.Remote
+   easysensors.Remote.read
+   easysensors.Remote.get_remote_code
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Retired Sensor/Actuator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+   easysensors.LightSensor
+   easysensors.SoundSensor
+   easysensors.UltraSonicSensor
+   easysensors.UltraSonicSensor.is_too_close
+   easysensors.UltraSonicSensor.set_safe_distance
+   easysensors.UltraSonicSensor.get_safe_distance
+   easysensors.UltraSonicSensor.read_mm
+   easysensors.UltraSonicSensor.read
+   easysensors.UltraSonicSensor.read_inches
    easysensors.DHTSensor
    easysensors.DHTSensor.read_temperature
    easysensors.DHTSensor.read_humidity
    easysensors.DHTSensor.read
-   easysensors.Remote
-   easysensors.Remote.read
-   easysensors.Remote.get_remote_code
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Base Sensor
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
+  easysensors.Sensor
+  easysensors.Sensor.__str__
+  easysensors.Sensor.set_pin
+  easysensors.Sensor.get_pin
+  easysensors.Sensor.set_port
+  easysensors.Sensor.get_port
+  easysensors.Sensor.get_port_ID
+  easysensors.Sensor.set_pin_mode
+  easysensors.Sensor.get_pin_mode
+  easysensors.Sensor.set_descriptor
+  easysensors.AnalogSensor
+  easysensors.AnalogSensor.read
+  easysensors.AnalogSensor.percent_read
+  easysensors.AnalogSensor.read
+  easysensors.AnalogSensor.write_freq
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/

@@ -11,7 +11,7 @@ Dexter Industries GoPiGo3 Documentation!
 
 .. toctree::
    :glob:
-   :maxdepth: 4
+   :maxdepth: 2
    :numbered:
    :caption: Contents:
 

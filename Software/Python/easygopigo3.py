@@ -961,7 +961,7 @@ def old_instantiation(fct_to_call,
 
 def LightSensor(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.LightSensor`
+    Use :py:class:`easysensors.LightSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -969,7 +969,7 @@ def LightSensor(port="AD1", gpg=None, use_mutex = False):
 
 def SoundSensor(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.SoundSensor`
+    Use :py:class:`easysensors.SoundSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -977,7 +977,7 @@ def SoundSensor(port="AD1", gpg=None, use_mutex = False):
 
 def LoudnessSensor(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.LoudnessSensor`
+    Use :py:class:`easysensors.LoudnessSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -985,7 +985,7 @@ def LoudnessSensor(port="AD1", gpg=None, use_mutex = False):
 
 def UltraSonicSensor(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.UltraSonicSensor`
+    Use :py:class:`easysensors.UltraSonicSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -993,7 +993,7 @@ def UltraSonicSensor(port="AD1", gpg=None, use_mutex = False):
 
 def Buzzer(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.Buzzer`
+    Use :py:class:`easysensors.Buzzer` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1001,7 +1001,7 @@ def Buzzer(port="AD1", gpg=None, use_mutex = False):
 
 def Led(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.Led`
+    Use :py:class:`easysensors.Led` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1009,7 +1009,7 @@ def Led(port="AD1", gpg=None, use_mutex = False):
 
 def MotionSensor(port="AD1", gpg=None, use_mutex = False):
     """
-    Backward-compatibility of :py:class:`easysensors.MotionSensor`
+    Use :py:class:`easysensors.MotionSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1017,7 +1017,7 @@ def MotionSensor(port="AD1", gpg=None, use_mutex = False):
 
 def ButtonSensor(port="AD1", gpg=None, use_mutex=False):
     """
-    Backward-compatibility of :py:class:`easysensors.ButtonSensor`
+    Use :py:class:`easysensors.ButtonSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1025,7 +1025,7 @@ def ButtonSensor(port="AD1", gpg=None, use_mutex=False):
 
 def Remote(port="AD1", gpg=None, use_mutex=False):
     """
-    Backward-compatibility of :py:class:`easysensors.Remote`
+    Use :py:class:`easysensors.Remote` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1033,7 +1033,7 @@ def Remote(port="AD1", gpg=None, use_mutex=False):
 
 def LineFollower(port="I2C", gpg=None, use_mutex=False):
     """
-    Backward-compatibility of :py:class:`easysensors.LineFollower`
+    Use :py:class:`easysensors.LineFollower` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1041,7 +1041,7 @@ def LineFollower(port="I2C", gpg=None, use_mutex=False):
 
 def Servo(port="SERVO1", gpg=None, use_mutex=False):
     """
-    Backward-compatibility of :py:class:`easysensors.Servo`
+    Use :py:class:`easysensors.Servo` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
@@ -1054,7 +1054,7 @@ def DistanceSensor(port="I2C", gpg=None, use_mutex=False):
 
 def DHTSensor(gpg=None, sensor_type=0, use_mutex=False):
     """
-    Backward-compatibility of :py:class:`easysensors.DHTSensor`
+    Use :py:class:`easysensors.DHTSensor` instead
     """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
