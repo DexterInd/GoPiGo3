@@ -100,8 +100,12 @@ For intializing :py:class:`~easysensors.Sensor`-derived objects, there are 2 way
 Functions Short-List
 -------------------------------------
 
-Here's a short summary of the methods of all classes that are documented. We start off with a list of the methods/functions/methods of the :py:mod:`easygopigo3` and then
-we finish with another one for the :py:mod:`easysensors` module, so that we can visually separate one from another and thus make it more easy to search around.
+Here's a short summary of the methods of all classes that are documented. We start off with a couple of lists for the methods/functions/methods of the :py:mod:`easygopigo3` module and then
+we finish with another few for the :py:mod:`easysensors` module, so that we can create a visual distinction one from another and thus make it more easy to search around.
+
+"""""""""""""""""""""""""""""""""""""
+GoPiGo3 Movement
+"""""""""""""""""""""""""""""""""""""
 
 .. autosummary::
    easygopigo3.EasyGoPiGo3
@@ -121,10 +125,14 @@ we finish with another one for the :py:mod:`easysensors` module, so that we can 
    easygopigo3.EasyGoPiGo3.reset_encoders
    easygopigo3.EasyGoPiGo3.read_encoders
    easygopigo3.EasyGoPiGo3.turn_degrees
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+GoPiGo3 LEDs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
    easygopigo3.EasyGoPiGo3.blinker_on
    easygopigo3.EasyGoPiGo3.blinker_off
-   easygopigo3.EasyGoPiGo3.led_on
-   easygopigo3.EasyGoPiGo3.led_off
    easygopigo3.EasyGoPiGo3.set_left_eye_color
    easygopigo3.EasyGoPiGo3.set_right_eye_color
    easygopigo3.EasyGoPiGo3.set_eye_color
@@ -134,6 +142,12 @@ we finish with another one for the :py:mod:`easysensors` module, so that we can 
    easygopigo3.EasyGoPiGo3.close_left_eye
    easygopigo3.EasyGoPiGo3.close_right_eye
    easygopigo3.EasyGoPiGo3.close_eyes
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+GoPiGo3 Init Methods
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
    easygopigo3.EasyGoPiGo3.init_light_sensor
    easygopigo3.EasyGoPiGo3.init_sound_sensor
    easygopigo3.EasyGoPiGo3.init_loudness_sensor
@@ -149,7 +163,9 @@ we finish with another one for the :py:mod:`easysensors` module, so that we can 
    easygopigo3.EasyGoPiGo3.init_motion_sensor
 
 
-And here's everything that resides in :py:mod:`easysensors` module.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Base Sensor Classes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autosummary::
    easysensors.Sensor
@@ -167,6 +183,12 @@ And here's everything that resides in :py:mod:`easysensors` module.
    easysensors.AnalogSensor.percent_read
    easysensors.AnalogSensor.read
    easysensors.AnalogSensor.write_freq
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sensor/Actuator Classes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autosummary::
    easysensors.LightSensor
    easysensors.SoundSensor
    easysensors.LoudnessSensor

@@ -5,7 +5,7 @@ API GoPiGo3 - Basic
 #####################################
 
 .. toctree::
-   :maxdepth: 0
+   :maxdepth: 4
    :caption: Contents:
 
    structure
