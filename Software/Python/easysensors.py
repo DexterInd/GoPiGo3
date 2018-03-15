@@ -357,10 +357,10 @@ class DigitalSensor(Sensor):
 
 class AnalogSensor(Sensor):
     """
-    | Class for analog devices with input/output capabilities on the `GoPiGo3`_ robot.
-    | This class is derived from :py:class:`~easysensors.Sensor` class, so this means this class inherits all attributes and methods.
+    Class for analog devices with input/output capabilities on the `GoPiGo3`_ robot.
+    This class is derived from :py:class:`~easysensors.Sensor` class, so this means this class inherits all attributes and methods.
 
-    | For creating an :py:class:`~easysensors.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
+    For creating an :py:class:`~easysensors.AnalogSensor` object an :py:class:`~easygopigo3.EasyGoPiGo3` object is needed like in the following example.
 
     .. code-block:: python
 
@@ -466,8 +466,8 @@ class AnalogSensor(Sensor):
 
     def write(self, power):
         """
-        | Generates a PWM signal on the selected port.
-        | Good for simulating an DAC convertor - for instance an LED is a good candidate.
+        Generates a PWM signal on the selected port.
+        Good for simulating an DAC convertor - for instance an LED is a good candidate.
 
         :param int power: Number from **0** to **100** that represents the duty cycle as a percentage of the frequency's period.
 
@@ -484,9 +484,9 @@ class AnalogSensor(Sensor):
 
     def write_freq(self, freq):
         """
-        | Sets the frequency of the PWM signal.
-        | The frequency range goes from 3Hz up to 48000Hz.
-        | Default value is set to 24000Hz (24kHz).
+        Sets the frequency of the PWM signal.
+
+        The frequency range goes from 3Hz up to 48000Hz. Default value is set to 24000Hz (24kHz).
 
         :param int freq: Frequency of the PWM signal.
 
@@ -508,10 +508,10 @@ class AnalogSensor(Sensor):
 
 class LightSensor(AnalogSensor):
     """
-    | Class for the `Grove Light Sensor`_.
+    Class for the `Grove Light Sensor`_.
 
-    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
+    This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -527,7 +527,7 @@ class LightSensor(AnalogSensor):
 
          # take a look at AnalogSensor class for more methods and attributes
 
-    | Or if we need to specify the port we want to use, we might do it like in the following example.
+    Or if we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -575,10 +575,10 @@ class LightSensor(AnalogSensor):
 
 class SoundSensor(AnalogSensor):
     """
-    | Class for the `Grove Sound Sensor`_.
+    Class for the `Grove Sound Sensor`_.
 
-    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.SoundSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_sound_sensor` method like in the following examples.
+    This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.SoundSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_sound_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -643,10 +643,10 @@ class SoundSensor(AnalogSensor):
 
 class LoudnessSensor(AnalogSensor):
     """
-    | Class for the `Grove Loudness Sensor`_.
+    Class for the `Grove Loudness Sensor`_.
 
-    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of their attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
+    This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of their attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.LoudnessSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_loudness_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -662,7 +662,7 @@ class LoudnessSensor(AnalogSensor):
 
          # take a look at AnalogSensor class and Sensor class for more methods and attributes
 
-    | Or if we need to specify the port we want to use, we might do it like in the following example.
+    Or if we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -712,10 +712,10 @@ class LoudnessSensor(AnalogSensor):
 
 class UltraSonicSensor(AnalogSensor):
     """
-    | Class for the `Grove Ultrasonic Sensor`_.
+    Class for the `Grove Ultrasonic Sensor`_.
 
-    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.UltraSonicSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor` method like in the following examples.
+    This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.UltraSonicSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_ultrasonic_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -731,7 +731,7 @@ class UltraSonicSensor(AnalogSensor):
 
          # take a look at AnalogSensor class for more methods and attributes
 
-    | Or if we need to specify the port we want to use, we might do it like in the following example.
+    Or if we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -937,10 +937,10 @@ class UltraSonicSensor(AnalogSensor):
 
 class Buzzer(AnalogSensor):
     """
-    | Class for the `Grove Buzzer`_.
+    Class for the `Grove Buzzer`_.
 
-    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.Buzzer` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_buzzer` method like in the following examples.
+    This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.Buzzer` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_buzzer` method like in the following examples.
 
     .. code-block:: python
 
@@ -957,7 +957,7 @@ class Buzzer(AnalogSensor):
 
          # take a look at AnalogSensor class for more methods and attributes
 
-    | If we need to specify the port we want to use, we might do it like in the following example.
+    If we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -976,9 +976,9 @@ class Buzzer(AnalogSensor):
 
     """
 
-    #: | Dictionary of frequencies for each musical note.
-    #: | For instance, ``scale["A3"]`` instruction is equal to 220 Hz (that's the A3 musical note's frequency).
-    #: | This dictionary is useful when we want to make the buzzer ring at certain frequencies (aka musical notes).
+    #:Dictionary of frequencies for each musical note.
+    #:For instance, ``scale["A3"]`` instruction is equal to 220 Hz (that's the A3 musical note's frequency).
+    #:This dictionary is useful when we want to make the buzzer ring at certain frequencies (aka musical notes).
     scale = {"A3": 220,
              "A3#": 233,
              "B3": 247,
@@ -1041,8 +1041,7 @@ class Buzzer(AnalogSensor):
         :param int freq: The frequency of the signal that's put on the `Grove Buzzer`_.
 
         For a list of musical notes, please see :py:attr:`~.easysensors.Buzzer.scale`.
-
-        Example on how to play musical notes.
+        See this example script on how to play musical notes.
 
         .. code-block:: python
 
@@ -1101,15 +1100,16 @@ class Buzzer(AnalogSensor):
 
 class Led(AnalogSensor):
     """
-    | Class for the `Grove LED`_.
-    | With this class the following things can be done:
+    Class for the `Grove LED`_.
+
+    With this class the following things can be done:
 
          * Turn *ON*/*OFF* an LED.
          * Set a level of brightness for the LED.
          * Check if an LED is turned *ON* or *OFF*.
 
-    | This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.Led` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_led` method like in the following examples.
+    This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.Led` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_led` method like in the following examples.
 
     .. code-block:: python
 
@@ -1126,7 +1126,7 @@ class Led(AnalogSensor):
 
          # take a look at AnalogSensor class for more methods and attributes
 
-    | If we need to specify the port we want to use, we might do it like in the following example.
+    If we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -1218,10 +1218,10 @@ class Led(AnalogSensor):
 
 class MotionSensor(DigitalSensor):
     """
-    | Class for the `Grove Motion Sensor`_.
+    Class for the `Grove Motion Sensor`_.
 
-    | This class derives from :py:class:`~easysensors.Sensor` (check for throwable exceptions) and :py:class:`~easysensors.DigitalSensor` classes, so all attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
+    This class derives from :py:class:`~easysensors.Sensor` (check for throwable exceptions) and :py:class:`~easysensors.DigitalSensor` classes, so all attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.MotionSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_motion_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -1239,7 +1239,7 @@ class MotionSensor(DigitalSensor):
 
          # take a look at DigitalSensor & Sensor class for more methods and attributes
 
-    | If we need to specify the port we want to use, we might do it like in the following example.
+    If we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
@@ -1296,10 +1296,10 @@ class MotionSensor(DigitalSensor):
 
 class ButtonSensor(DigitalSensor):
     """
-    | Class for the `Grove Button`_.
+    Class for the `Grove Button`_.
 
-    | This class derives from :py:class:`~easysensors.Sensor` (check for throwable exceptions) and :py:class:`~easysensors.DigitalSensor` classes, so all attributes and methods are inherited.
-    | For creating a :py:class:`~easysensors.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
+    This class derives from :py:class:`~easysensors.Sensor` (check for throwable exceptions) and :py:class:`~easysensors.DigitalSensor` classes, so all attributes and methods are inherited.
+    For creating a :py:class:`~easysensors.ButtonSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_button_sensor` method like in the following examples.
 
     .. code-block:: python
 
@@ -1317,7 +1317,7 @@ class ButtonSensor(DigitalSensor):
 
          # take a look at DigitalSensor & Sensor class for more methods and attributes
 
-    | If we need to specify the port we want to use, we might do it like in the following example.
+    If we need to specify the port we want to use, we might do it like in the following example.
 
     .. code-block:: python
 
