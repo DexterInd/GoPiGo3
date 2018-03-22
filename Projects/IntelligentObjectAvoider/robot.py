@@ -238,7 +238,7 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
 
         # give some time for the robot to start moving
         # before taking measurements of its speed
-        sleep(0.2)
+        sleep(0.3)
 
         # while the robot is moving and CTRL-C hasn't been pressed
         while gopigo3_robot.get_motor_status(gopigo3_robot.MOTOR_LEFT)[3] != 0 and \
