@@ -94,8 +94,8 @@ fi
 
 echo ""
 cd $REPO_PATH/Software/Python/
-python setup.py install
-python3 setup.py install
+python setup.py install --force
+python3 setup.py install --force
 
 # module for interfacing with the keyboard
 pip3 install curtsies
