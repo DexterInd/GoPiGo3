@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # import the time library for the sleep function
 import time
 
