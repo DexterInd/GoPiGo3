@@ -1474,8 +1474,7 @@ class Remote(Sensor):
 
         if key > 0 and key < len(self.keycodes)+1:
             string = self.keycodes[self.read()-1]
-
-        print(f"get_remote_code: {key}, {string}")        
+ 
         return string
 ##########################
 
