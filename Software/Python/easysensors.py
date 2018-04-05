@@ -133,6 +133,14 @@ class Sensor(object):
         self.set_pin_mode(pinmode)
         self.use_mutex = use_mutex
 
+        self.reconfig_bus()
+
+    def reconfig_bus(self):
+        """
+        Sets the bus properly. Sometimes this needs to be done even after instantiation when two processes are 
+        trying to connect to the GoPiGo and one re-initialises the ports.
+        """
+        pinmode = self.get_pin_mode()
         try:
             # I2C sensors don't need a valid gpg
             if pinmode == "INPUT":
@@ -1400,7 +1408,7 @@ class Remote(Sensor):
     #: the actual symbols we see on the `Infrared Remote`_.
     keycodes = ["up", "left", "ok", "right","down","1","2","3","4","5","6","7", "8","9","*","0","#"]
 
-    def __init__(self, port="AD1",gpg=None, use_mutex = False):
+    def __init__(self, port="AD1", gpg=None, use_mutex=False):
         """
         Constructor for initializing a :py:class:`~easysensors.Remote` object.
 
@@ -1440,7 +1448,9 @@ class Remote(Sensor):
 
         """
         try:
+            _ifMutexAcquire(self.use_mutex)
             val = self.gpg.get_grove_value(self.get_port_ID())
+            _ifMutexRelease(self.use_mutex)
             return val
         except gopigo3.SensorError as e:
             print("Invalid Reading")
@@ -1464,7 +1474,7 @@ class Remote(Sensor):
 
         if key > 0 and key < len(self.keycodes)+1:
             string = self.keycodes[self.read()-1]
-
+ 
         return string
 ##########################
 

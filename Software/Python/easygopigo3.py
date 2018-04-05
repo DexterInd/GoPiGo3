@@ -723,7 +723,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.LightSensor(port, self)
+        return easysensors.LightSensor(port, self, use_mutex=self.use_mutex)
 
     def init_sound_sensor(self, port="AD1"):
         """
@@ -735,7 +735,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.SoundSensor(port, self)
+        return easysensors.SoundSensor(port, self, use_mutex=self.use_mutex)
 
     # def init_loudness_sensor(self, port = "AD1"):
     #     """
@@ -752,7 +752,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.LoudnessSensor(port, self)
+        return easysensors.LoudnessSensor(port, self, use_mutex=self.use_mutex)
 
 
     def init_ultrasonic_sensor(self, port="AD1"):
@@ -765,7 +765,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.UltraSonicSensor(port, self)
+        return easysensors.UltraSonicSensor(port, self, use_mutex=self.use_mutex)
 
     def init_buzzer(self, port="AD1"):
         """
@@ -777,7 +777,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.Buzzer(port, self)
+        return easysensors.Buzzer(port, self, use_mutex=self.use_mutex)
 
     def init_led(self, port="AD1"):
         """
@@ -789,7 +789,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.Led(port, self)
+        return easysensors.Led(port, self, use_mutex=self.use_mutex)
 
     def init_button_sensor(self, port="AD1"):
         """
@@ -801,7 +801,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.ButtonSensor(port, self)
+        return easysensors.ButtonSensor(port, self, use_mutex=self.use_mutex)
 
     def init_line_follower(self, port = "I2C"):
         """
@@ -821,7 +821,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        return easysensors.LineFollower(port, self)
+        return easysensors.LineFollower(port, self, use_mutex=self.use_mutex)
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -833,7 +833,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
         """
-        return easysensors.Servo(port, self)
+        return easysensors.Servo(port, self, use_mutex=self.use_mutex)
 
     def init_distance_sensor(self, port = "I2C"):
         """
