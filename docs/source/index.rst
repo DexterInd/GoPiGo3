@@ -21,7 +21,7 @@ Dexter Industries GoPiGo3 Documentation!
    tutorials-basic/index
    tutorials-advanced/*
 
-   api-basic
+   api-basic/index
    api-advanced
 
    devguide

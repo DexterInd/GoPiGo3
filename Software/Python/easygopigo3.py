@@ -64,14 +64,15 @@ def debug(in_str):
 
 class EasyGoPiGo3(gopigo3.GoPiGo3):
     """
-    | This class is used for controlling a `GoPiGo3`_ robot.
-    | With this class you can do the following things with your `GoPiGo3`_:
+    This class is used for controlling a `GoPiGo3`_ robot.
 
-     * drive your robot in any number of directions
-     * have precise control over the direction of the robot
-     * set the speed of the robot
-     * turn *on* or *off* the blinker LEDs
-     * control the `GoPiGo3`_' Dex's *eyes*, *color* and so on ...
+    With this class you can do the following things with your `GoPiGo3`_:
+
+     * Drive your robot in any number of directions.
+     * Have precise control over the direction of the robot.
+     * Set the speed of the robot.
+     * Turn *on* or *off* the blinker LEDs.
+     * Control the `GoPiGo3`_' Dex's *eyes*, *color* and so on ...
 
      .. needs revisiting
 
@@ -83,7 +84,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def __init__(self, use_mutex=False):
         """
-        | This constructor sets the variables to the following values:
+        This constructor sets the variables to the following values:
 
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
@@ -116,7 +117,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def volt(self):
         """
-        | This method returns the battery voltage of the `GoPiGo3`_.
+        This method returns the battery voltage of the `GoPiGo3`_.
 
         :return: The battery voltage of the `GoPiGo3`_.
         :rtype: float
@@ -127,8 +128,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def set_speed(self, in_speed):
         """
-        | This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
-        | The speed is measured in *DPS = degrees per second* of the robot's wheel(s).
+        This method sets the speed of the `GoPiGo3`_ specified by ``in_speed`` argument.
+
+        The speed is measured in *DPS = degrees per second* of the robot's wheel(s).
 
         :param int in_speed: The speed at which the robot is set to run - speed between **0-1000** DPS.
 
@@ -149,7 +151,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def get_speed(self):
         """
-        | Use this method for getting the speed of your `GoPiGo3`_.
+        Use this method for getting the speed of your `GoPiGo3`_.
 
         :return: The speed of the robot measured between **0-1000** DPS.
         :rtype: int
@@ -159,15 +161,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def reset_speed(self):
         """
-        | This method resets the speed to its original value.
+        This method resets the speed to its original value.
 
         """
         self.set_speed(self.DEFAULT_SPEED)
 
     def stop(self):
         """
-        | This method stops the `GoPiGo3`_ from moving.
-        | It brings the `GoPiGo3`_ to a full stop.
+        This method stops the `GoPiGo3`_ from moving.
+        It brings the `GoPiGo3`_ to a full stop.
 
         .. note::
 
@@ -184,10 +186,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def backward(self):
         """
-        | Move the `GoPiGo3`_ backward.
+        Move the `GoPiGo3`_ backward.
 
-        | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -195,10 +197,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def right(self):
         """
-        | Move the `GoPiGo3`_ to the right.
+        Move the `GoPiGo3`_ to the right.
 
-        | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
              | The robot will activate only the left motor, whilst the right motor will be completely stopped.
@@ -210,10 +212,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def left(self):
         """
-        | Move the `GoPiGo3`_ to the left.
+        Move the `GoPiGo3`_ to the left.
 
-        | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
              | The robot will activate only the right motor, whilst the left motor will be completely stopped.
@@ -225,10 +227,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def forward(self):
         """
-        | Move the `GoPiGo3`_ forward.
+        Move the `GoPiGo3`_ forward.
 
-        | For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        | Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
@@ -236,7 +238,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_cm(self, dist, blocking=True):
         """
-        | Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
+        Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
 
         | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
@@ -275,7 +277,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_inches(self, dist, blocking=True):
         """
-        | Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
+        Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
 
         | For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
@@ -293,7 +295,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def drive_degrees(self, degrees, blocking=True):
         """
-        | Move the `GoPiGo3`_ forward / backward for ``degrees / 360`` wheel rotations.
+        Move the `GoPiGo3`_ forward / backward for ``degrees / 360`` wheel rotations.
 
         | For moving the `GoPiGo3`_ robot forward, the ``degrees`` parameter has to be *positive*.
         | For moving the `GoPiGo3`_ robot backward, the ``degrees`` parameter has to be *negative*.
@@ -347,12 +349,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def target_reached(self, left_target_degrees, right_target_degrees):
         """
-        | Checks if :
+        Checks if (*wheels have rotated for a given number of degrees*):
 
              * The left *wheel* has rotated for ``left_target_degrees`` degrees.
              * The right *wheel* has rotated for ``right_target_degrees`` degrees.
 
-        | If both conditions are met, it returns ``True``, otherwise it's ``False``.
+        If both conditions are met, it returns ``True``, otherwise it's ``False``.
 
         :param int left_target_degrees: Target degrees for the *left* wheel.
         :param int right_target_degrees: Target degrees for the *right* wheel.
@@ -439,7 +441,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def reset_encoders(self, blocking=True):
         """
-        | Resets both the encoders back to **0**.
+        Resets both the encoders back to **0**.
 
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
@@ -469,7 +471,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def read_encoders(self):
         """
-        | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+        Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
 
         :returns: A tuple containing the position in degrees of each encoder. The 1st element is for the left motor and the 2nd is for the right motor.
         :rtype: tuple(int,int)
@@ -484,7 +486,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def read_encoders_average(self, units="cm"):
         """
-        | Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+        Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
 
         :param string units: By default it's "cm", but it could also be "in" for inches. Anything else will return raw encoder average.
 
@@ -505,7 +507,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def turn_degrees(self, degrees, blocking=True):
         """
-        | Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
+        Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
         :param float degrees: The angle in degress at which the `GoPiGo3`_ has to turn. For rotating the robot to the left, ``degrees`` has to negative, and make it turn to the right, ``degrees`` has to be positive.
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
@@ -517,7 +519,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         In order to better understand what does this method do, let's take a look at the following graphical representation.
 
-        .. image:: images/gpg3_robot.svg
+        .. image:: ../images/gpg3_robot.svg
 
         In the image, we have multiple identifiers:
 
@@ -564,7 +566,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def blinker_on(self, id):
         """
-        | Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
+        Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"`` and ``"left"``.
 
@@ -577,7 +579,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def blinker_off(self, id):
         """
-        | Turns *OFF* one of the 2 red blinkers that `GoPiGo3`_ has.
+        Turns *OFF* one of the 2 red blinkers that `GoPiGo3`_ has.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"`` and ``"left"``.
 
@@ -590,8 +592,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def led_on(self, id):
         """
-        | Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
-        | The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_on`.
+        Turns *ON* one of the 2 red blinkers that `GoPiGo3`_ has.
+        The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_on`.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"``` and ``"left"``.
 
@@ -600,8 +602,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def led_off(self, id):
         """
-        | Turns *OFF* one of the 2 red blinkers that `GoPiGo3`_ has.
-        | The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_off`.
+        Turns *OFF* one of the 2 red blinkers that `GoPiGo3`_ has.
+        The same as :py:meth:`~easygopigo3.EasyGoPiGo3.blinker_off`.
 
         :param int|str id: **0** / **1** for the right / left led or string literals can be used : ``"right"`` and ``"left"``.
 
@@ -611,7 +613,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def set_left_eye_color(self, color):
         """
-        | Sets the LED color for Dexter mascot's left eye.
+        Sets the LED color for Dexter mascot's left eye.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the left eye's color.
         :raises TypeError: When ``color`` parameter is not valid.
@@ -629,7 +631,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def set_right_eye_color(self, color):
         """
-        | Sets the LED color for Dexter mascot's right eye.
+        Sets the LED color for Dexter mascot's right eye.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the right eye's color.
         :raises TypeError: When ``color`` parameter is not valid.
@@ -647,7 +649,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def set_eye_color(self, color):
         """
-        | Sets the LED color for Dexter mascot's eyes.
+        Sets the LED color for Dexter mascot's eyes.
 
         :param tuple(int,int,int) color: 8-bit RGB tuple that represents the eyes' color.
         :raises TypeError: When ``color`` parameter is not valid.
@@ -663,7 +665,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def open_left_eye(self):
         """
-        | Turns *ON* Dexter mascot's left eye.
+        Turns *ON* Dexter mascot's left eye.
 
         """
         self.set_led(self.LED_LEFT_EYE,
@@ -674,7 +676,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def open_right_eye(self):
         """
-        | Turns *ON* Dexter mascot's right eye.
+        Turns *ON* Dexter mascot's right eye.
 
         """
         self.set_led(self.LED_RIGHT_EYE,
@@ -685,7 +687,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def open_eyes(self):
         """
-        | Turns *ON* Dexter mascot's eyes.
+        Turns *ON* Dexter mascot's eyes.
 
         """
         self.open_left_eye()
@@ -693,21 +695,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def close_left_eye(self):
         """
-        | Turns *OFF* Dexter mascot's left eye.
+        Turns *OFF* Dexter mascot's left eye.
 
         """
         self.set_led(self.LED_LEFT_EYE, 0, 0, 0)
 
     def close_right_eye(self):
         """
-        | Turns *OFF* Dexter mascot's right eye.
+        Turns *OFF* Dexter mascot's right eye.
 
         """
         self.set_led(self.LED_RIGHT_EYE, 0, 0, 0)
 
     def close_eyes(self):
         """
-        | Turns *OFF* Dexter mascot's eyes.
+        Turns *OFF* Dexter mascot's eyes.
 
         """
         self.close_left_eye()
@@ -715,24 +717,28 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_light_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.LightSensor` object and then returns it.
+        Initialises a :py:class:`~easysensors.LightSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.LightSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LightSensor` class.
+
         """
         return easysensors.LightSensor(port, self, use_mutex=self.use_mutex)
 
     def init_sound_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.SoundSensor` object and then returns it.
+        Initialises a :py:class:`~easysensors.SoundSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.SoundSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.SoundSensor` class.
 
         """
         return easysensors.SoundSensor(port, self, use_mutex=self.use_mutex)
@@ -744,12 +750,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_loudness_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.LoudnessSensor` object and then returns it.
+        Initialises a :py:class:`~easysensors.LoudnessSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.LoudnessSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LoudnessSensor` class.
 
         """
         return easysensors.LoudnessSensor(port, self, use_mutex=self.use_mutex)
@@ -757,55 +765,63 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_ultrasonic_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.UltraSonicSensor` object and then returns it.
+        Initialises a :py:class:`~easysensors.UltraSonicSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.UltraSonicSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.UltraSonicSensor` class.
+
         """
         return easysensors.UltraSonicSensor(port, self, use_mutex=self.use_mutex)
 
     def init_buzzer(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.Buzzer` object and then returns it.
+        Initialises a :py:class:`~easysensors.Buzzer` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.Buzzer` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Buzzer` class.
+
         """
         return easysensors.Buzzer(port, self, use_mutex=self.use_mutex)
 
     def init_led(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.Led` object and then returns it.
+        Initialises a :py:class:`~easysensors.Led` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.Led` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Led` class.
+
         """
         return easysensors.Led(port, self, use_mutex=self.use_mutex)
 
     def init_button_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.ButtonSensor` object and then returns it.
+        Initialises a :py:class:`~easysensors.ButtonSensor` object and then returns it.
 
         :param str port = "AD1": Can be either ``"AD1"`` or ``"AD2"``. By default it's set to be ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.ButtonSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.ButtonSensor` class.
+
         """
         return easysensors.ButtonSensor(port, self, use_mutex=self.use_mutex)
 
     def init_line_follower(self, port = "I2C"):
         """
-        | Initialises a :py:class:`~easysensors.LineFollower` object and then returns it.
+        Initialises a :py:class:`~easysensors.LineFollower` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The default value for this parameter is already set to ``"I2C"``.
         :returns: An instance of the :py:class:`~easysensors.LineFollower` class and with the port set to ``port``'s value.
@@ -820,17 +836,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LineFollower` class.
+
         """
         return easysensors.LineFollower(port, self, use_mutex=self.use_mutex)
 
     def init_servo(self, port = "SERVO1"):
         """
-        | Initialises a :py:class:`~easysensors.Servo` object and then returns it.
+        Initialises a :py:class:`~easysensors.Servo` object and then returns it.
 
         :param str port = "SERVO1": Can be either ``"SERVO1"`` or ``"SERVO2"``. By default it's set to be ``"SERVO1"``.
         :returns: An instance of the :py:class:`~easysensors.Servo` class and with the port set to ``port``'s value.
 
         The ``"SERVO1"`` and ``"SERVO2"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Servo` class.
 
         """
         return easysensors.Servo(port, self, use_mutex=self.use_mutex)
@@ -838,13 +858,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def init_distance_sensor(self, port = "I2C"):
         """
 
-        | Initialises a :py:class:`~easydisensors.DistanceSensor` object and then returns it.
+        Initialises a :py:class:`~di_sensors.easy_distance_sensor.DistanceSensor` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :returns: An instance of the :py:class:`~easydisensors.DistanceSensor` class and with the port set to ``port``'s value.
-        :raises ImportError: When the DI Sensors libraries are not found.
+        :returns: An instance of the :py:class:`~di_sensors.easy_distance_sensorDistanceSensor` class and with the port set to ``port``'s value.
+        :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_distance_sensor.DistanceSensor` class.
 
         .. tip::
 
@@ -864,10 +886,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_dht_sensor(self, sensor_type = 0):
         """
-        | Initialises a :py:class:`~easysensors.DHTSensor` object and then returns it.
+        Initialises a :py:class:`~easysensors.DHTSensor` object and then returns it.
 
         :param int sensor_type = 0: Choose ``sensor_type = 0`` when you have the blue-coloured DHT sensor or ``sensor_type = 1`` when it's white.
         :returns: An instance of the :py:class:`~easysensors.DHTSensor` class and with the port set to ``port``'s value.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.DHTSensor` class.
 
         .. important::
 
@@ -881,24 +905,29 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_remote(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.Remote` object and then returns it.
+        Initialises a :py:class:`~easysensors.Remote` object and then returns it.
 
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.Remote` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
 
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.Remote` class.
+
         """
         return easysensors.Remote(port, self, self.use_mutex)
 
     def init_motion_sensor(self, port="AD1"):
         """
-        | Initialises a :py:class:`~easysensors.MotionSensor` object and then returns it
+        Initialises a :py:class:`~easysensors.MotionSensor` object and then returns it
 
         :param str port = "AD1": Can be set to either ``"AD1"`` or ``"AD2"``. Set by default to ``"AD1"``.
         :returns: An instance of the :py:class:`~easysensors.MotionSensor` class and with the port set to ``port``'s value.
 
         The ``"AD1"`` port is mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.MotionSensor` class.
+
         """
 
         return easysensors.MotionSensor(port, self, self.use_mutex)
@@ -911,17 +940,17 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 import warnings
 deprecated_msg = "WARNING: Instantiating a {} this way is deprecated."
 
-def old_instantiation(fct_to_call, 
-        sensor_description, 
-        port="I2C", 
-        gpg=None, 
+def old_instantiation(fct_to_call,
+        sensor_description,
+        port="I2C",
+        gpg=None,
         use_mutex=False):
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     if gpg.use_mutex != use_mutex and mutex.overall_mutex() == False :
         msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the {} {}."
         raise ValueError(msg.format(
-            "uses" if gpg.use_mutex else "does not use", 
+            "uses" if gpg.use_mutex else "does not use",
             sensor_description,
             "does" if use_mutex else "does not"))
 
@@ -931,56 +960,89 @@ def old_instantiation(fct_to_call,
     return fct_to_call(port=port)
 
 def LightSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.LightSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_light_sensor, "light sensor", port, gpg, use_mutex)
 
 def SoundSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.SoundSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_sound_sensor, "sound sensor", port, gpg, use_mutex)
 
 def LoudnessSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.LoudnessSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_loudness_sensor, "loudness sensor", port, gpg, use_mutex)
 
 def UltraSonicSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.UltraSonicSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_ultrasonic_sensor, "ultrasonic sensor", port, gpg, use_mutex)
 
 def Buzzer(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.Buzzer` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_buzzer, "buzzer", port, gpg, use_mutex)
 
 def Led(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.Led` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_led, "LED", port, gpg, use_mutex)  
+    return old_instantiation(gpg.init_led, "LED", port, gpg, use_mutex)
 
 def MotionSensor(port="AD1", gpg=None, use_mutex = False):
+    """
+    Use :py:class:`easysensors.MotionSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_motion_sensor, "motion sensor", port, gpg, use_mutex)    
+    return old_instantiation(gpg.init_motion_sensor, "motion sensor", port, gpg, use_mutex)
 
 def ButtonSensor(port="AD1", gpg=None, use_mutex=False):
+    """
+    Use :py:class:`easysensors.ButtonSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_button_sensor, "button sensor", port, gpg, use_mutex)    
+    return old_instantiation(gpg.init_button_sensor, "button sensor", port, gpg, use_mutex)
 
 def Remote(port="AD1", gpg=None, use_mutex=False):
+    """
+    Use :py:class:`easysensors.Remote` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_remote, "remote", port, gpg, use_mutex)   
+    return old_instantiation(gpg.init_remote, "remote", port, gpg, use_mutex)
 
 def LineFollower(port="I2C", gpg=None, use_mutex=False):
+    """
+    Use :py:class:`easysensors.LineFollower` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_line_follower, "line follower", port, gpg, use_mutex)   
+    return old_instantiation(gpg.init_line_follower, "line follower", port, gpg, use_mutex)
 
 def Servo(port="SERVO1", gpg=None, use_mutex=False):
+    """
+    Use :py:class:`easysensors.Servo` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
     return old_instantiation(gpg.init_servo, "servo", port, gpg, use_mutex)
@@ -991,13 +1053,16 @@ def DistanceSensor(port="I2C", gpg=None, use_mutex=False):
     return old_instantiation(gpg.init_distance_sensor, "distance sensor", port, gpg, use_mutex)
 
 def DHTSensor(gpg=None, sensor_type=0, use_mutex=False):
+    """
+    Use :py:class:`easysensors.DHTSensor` instead
+    """
     if not isinstance(gpg, gopigo3.GoPiGo3):
         raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
 
     if gpg.use_mutex != use_mutex:
         msg = "Invalid use of mutex: the GoPiGo3 {} mutex protection and the distance sensor {}."
         raise ValueError(msg.format(
-            "uses" if gpg.use_mutex else "does not use", 
+            "uses" if gpg.use_mutex else "does not use",
             "does" if use_mutex else "does not"))
 
     warnings.warn(deprecated_msg.format(sensor_description), DeprecationWarning)

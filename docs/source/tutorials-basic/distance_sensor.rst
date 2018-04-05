@@ -59,7 +59,7 @@ the ``time`` module is generally used for delaying actions, commands, setting ti
 The objects
 ===========
 
-For interfacing with the `Distance Sensor`_ we need to instantiate an object of the :py:class:`easygopigo3.EasyGoPiGo3` class so in return, we can instantiate an object of the :py:class:`easygopigo3.DistanceSensor` class.
+For interfacing with the `Distance Sensor`_ we need to instantiate an object of the :py:class:`easygopigo3.EasyGoPiGo3` class so in return, we can instantiate an object of the :py:class:`di_sensors.easy_distance_sensor.DistanceSensor` class.
 We do it like in the following code snippet.
 
 .. code-block:: python
@@ -67,12 +67,15 @@ We do it like in the following code snippet.
    gpg = easy.EasyGoPiGo3() # this is an EasyGoPiGo3 object
    my_distance_sensor = gpg.init_distance_sensor() # this is a DistanceSensor object
 
+.. important::
+  Notice that in order for this to work, we also need to have the `DI-Sensors`_ library installed. Follow the instructions on that documentation on how to install the required package.
+
 =========
 Main part
 =========
 
 There's a single while loop in the entire script. The loop is for printing the values that we're
-reading repeatedly. We will be using the :py:meth:`~easygopigo3.DistanceSensor.read_mm` method for reading
+reading repeatedly. We will be using the :py:meth:`~di_sensors.easy_distance_sensor.DistanceSensor.read_mm` method for reading
 the distance in millimeters to the target.
 
 .. code-block:: python
@@ -84,7 +87,7 @@ the distance in millimeters to the target.
 
 .. seealso::
 
-     Check out :py:class:`easygopigo3.DistanceSensor`'s API for more details.
+     Check out :py:class:`di_sensors.easy_distance_sensor.DistanceSensor`'s API for more details.
 
 ==========
 Running it
@@ -104,5 +107,6 @@ After the sensor is connected, on your Raspberry Pi, open up a terminal and type
 
    See the following :ref:`graphical representation <hardware-ports-section>` as a reference to where the ports are.
 
+.. _DI-Sensors: http://di-sensors.readthedocs.io
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
