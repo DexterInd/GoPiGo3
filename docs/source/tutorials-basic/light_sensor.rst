@@ -79,7 +79,7 @@ The objects
 ===========
 
 After this, we need to instantiate an :py:class:`easygopigo3.EasyGoPiGo3` object.
-We are using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easygopigo3.Led` class,
+We are using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easysensors.Led` class,
 which is necessary for controlling the `Grove Led`_ and for reading off of the `Grove Light Sensor`_.
 
 .. code-block:: python
@@ -87,7 +87,7 @@ which is necessary for controlling the `Grove Led`_ and for reading off of the `
    gpg = easy.EasyGoPiGo3()
 
 Now that we have an :py:class:`~easygopigo3.EasyGoPiGo3` object, we can instantiate
-a :py:class:`~easygopigo3.LightSensor` and :py:class:`~easygopigo3.Led` objects.
+a :py:class:`~easysensors.LightSensor` and :py:class:`~easysensors.Led` objects.
 The argument of each of the 2 initializer methods represents the port to which a device is connected.
 
 .. code-block:: python
