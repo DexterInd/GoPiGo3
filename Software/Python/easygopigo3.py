@@ -878,7 +878,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         try:
-            return easy_distance_sensor.EasyDistanceSensor(port, self, self.use_mutex)
+            return easy_distance_sensor.EasyDistanceSensor(use_mutex=self.use_mutex)
         except ImportError as e:
             print("DI Sensors are not installed: {}".format(e))
             raise
