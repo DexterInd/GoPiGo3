@@ -93,6 +93,10 @@ else
 fi
 
 echo ""
+
+# remove old libraries, otherwise Mutex is taken from there instead
+sudo rm /usr/local/lib/python2.7/dist-packages/gopigo3*.egg
+sudo rm /usr/local/lib/python3.4/dist-packages/gopigo3*.egg
 cd $REPO_PATH/Software/Python/
 python setup.py install --force
 python3 setup.py install --force
