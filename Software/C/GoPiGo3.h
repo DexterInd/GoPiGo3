@@ -12,10 +12,10 @@
 #ifndef GoPiGo3_h_
 #define GoPiGo3_h_
 
-#define FIRMWARE_VERSION_REQUIRED "0.3." // Firmware version needs to start with this
+#define FIRMWARE_VERSION_REQUIRED "1.0." // Firmware version needs to start with this
 
-#define LONGEST_I2C_TRANSFER 16 // longest possible I2C read/write
-#define LONGEST_SPI_TRANSFER 24 // spi_read_string 20 chars (LONGEST_I2C_TRANSFER + 6) // longest possible message for configuring for an I2C sensor
+#define LONGEST_I2C_TRANSFER 32 // longest possible I2C read/write
+#define LONGEST_SPI_TRANSFER (LONGEST_I2C_TRANSFER + 6) // at least 24 for spi_read_string 20 chars, and at least LONGEST_I2C_TRANSFER + 6 for I2C transactions
 
 #define SPI_TARGET_SPEED 500000 // SPI target speed of 500kbps
 
