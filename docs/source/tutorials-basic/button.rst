@@ -84,14 +84,14 @@ After this, we need to instantiate an :py:class:`easygopigo3.EasyGoPiGo3` object
 The :py:class:`~easygopigo3.EasyGoPiGo3` object is used for 2 things:
 
    * For turning *ON* and *OFF* the `GoPiGo3`_ Dex's eyes.
-   * For instantiating a :py:class:`~easygopigo3.ButtonSensor` object for reading the `Grove Button`_'s state.
+   * For instantiating a :py:class:`~easysensors.ButtonSensor` object for reading the `Grove Button`_'s state.
 
 .. code-block:: python
 
    gpg = easy.EasyGoPiGo3()
 
 Now that we have an :py:class:`~easygopigo3.EasyGoPiGo3` object, we can instantiate
-a :py:class:`~easygopigo3.ButtonSensor` object.
+a :py:class:`~easysensors.ButtonSensor` object.
 The argument of the initializer method is the port to which we connect the `Grove Button`_ and
 it's set to ``"AD1"``.
 

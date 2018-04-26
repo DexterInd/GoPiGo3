@@ -11,7 +11,11 @@ except:
 
 import gopigo3
 import easygopigo3 as easy
-gpg = easy.EasyGoPiGo3()
+try:
+    gpg = easy.EasyGoPiGo3()
+except Exception as e:
+    print("GoPiGo3 cannot be instanstiated. Most likely wrong firmware version")
+    print(e)
 
 try:
     import wx
@@ -19,7 +23,7 @@ except ImportError:
     raise ImportError("The wxPython module is required to run this program")
 
 import atexit
-atexit.register(gpg.stop)    
+atexit.register(gpg.stop)
 
 left_led=0
 right_led=0
@@ -40,6 +44,7 @@ class gopigo_control_app(wx.Frame):
         exit_button = wx.Button(self, label="Exit", pos=(240+75,500))
         exit_button.Bind(wx.EVT_BUTTON, self.onClose)
     
+
     #----------------------------------------------------------------------
     def OnEraseBackground(self, evt):
         """
@@ -47,12 +52,12 @@ class gopigo_control_app(wx.Frame):
         """
         # yanked from ColourDB.py
         dc = evt.GetDC()
- 
+
         if not dc:
             dc = wx.ClientDC(self)
             rect = self.GetUpdateRegion().GetBox()
             dc.SetClippingRect(rect)
-        dc.Clear()	
+        dc.Clear()
         # bmp = wx.Bitmap("/home/pi/Desktop/GoBox/Troubleshooting_GUI/dex.png")	# Draw the photograph.
         # dc.DrawBitmap(bmp, 0, 400)						# Absolute position of where to put the picture
 
@@ -61,7 +66,7 @@ class gopigo_control_app(wx.Frame):
         sizer = wx.GridBagSizer()
 
         x=75
-        y=175 
+        y=175
         dist=60
 
         # if we can auto-detect, then give feedback to the user
@@ -93,11 +98,11 @@ class gopigo_control_app(wx.Frame):
         right_button = wx.Button(self,-1,label="Right", pos=(x+dist*4,y))
         sizer.Add(right_button, (2,2))
         self.Bind(wx.EVT_BUTTON, self.right_button_OnButtonClick, right_button)
-        
+
         bwd_button = wx.Button(self,-1,label="Back", pos=(x+dist*2,y+dist))
         sizer.Add(bwd_button, (3,1))
         self.Bind(wx.EVT_BUTTON, self.bwd_button_OnButtonClick, bwd_button)
-        
+
         # Led buttons
         x=75
         y=25
@@ -139,7 +144,7 @@ class gopigo_control_app(wx.Frame):
         
         y=460
 
-        self.Show(True)     
+        self.Show(True)
 
     def battery_button_OnButtonClick(self,event):
         global v
@@ -151,16 +156,16 @@ class gopigo_control_app(wx.Frame):
         global f
         f=gpg.get_version_firmware()
         self.firmware_label.SetLabel(str(f))
-     
+
     def left_button_OnButtonClick(self,event):
         f=gpg.left()
- 
+
     def stop_button_OnButtonClick(self,event):
         f=gpg.stop()
 
     def right_button_OnButtonClick(self,event):
         f=gpg.right()
-        
+
     def fwd_button_OnButtonClick(self,event):
         f=gpg.forward()
 
@@ -171,16 +176,16 @@ class gopigo_control_app(wx.Frame):
         global left_led
         if left_led==0:
             gpg.led_on(1)
-            left_led=1        
+            left_led=1
         else :
             gpg.led_off(1)
             left_led=0
-    
+
     def right_led_button_OnButtonClick(self,event):
         global right_led
         if right_led==0:
             gpg.led_on(0)
-            right_led=1        
+            right_led=1
         else :
             gpg.led_off(0)
             right_led=0

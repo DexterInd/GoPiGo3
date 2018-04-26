@@ -77,7 +77,7 @@ The objects
 ===========
 
 After this, we need to instantiate an :py:class:`easygopigo3.EasyGoPiGo3` object.
-We will be using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easygopigo3.Buzzer` class,
+We will be using the :py:class:`~easygopigo3.EasyGoPiGo3` object for creating an instance of :py:class:`~easysensors.Buzzer` class,
 which is necessary for controlling the `Grove Buzzer`_ device.
 
 .. code-block:: python
@@ -85,7 +85,7 @@ which is necessary for controlling the `Grove Buzzer`_ device.
    gpg = easy.EasyGoPiGo3()
 
 Now that we have an :py:class:`~easygopigo3.EasyGoPiGo3` object, we can instantiate
-a :py:class:`~easygopigo3.Buzzer` object.
+a :py:class:`~easysensors.Buzzer` object.
 The argument of the initializer method is the port to which we connect the `Grove Buzzer`_ and
 it's set to ``"AD2"``.
 
@@ -117,7 +117,7 @@ The main zone of the code is divided into 2 sections:
    1. The 1st section, where we only play 3 musical notes with a 1 second delay.
    2. The 2nd section, where we play the lovely *"Twinkle Twinkle Little Start"* song.
 
-In the 1st section, we use the :py:meth:`easygopigo3.Buzzer.sound` method, which takes as a paramater,
+In the 1st section, we use the :py:meth:`easysensors.Buzzer.sound` method, which takes as a paramater,
 an integer that represents the frequency of the emitted sound. As you can see in the following code snippet,
 each musical note corresponds to a certain frequency:
 
@@ -139,10 +139,10 @@ each musical note corresponds to a certain frequency:
     my_buzzer.sound(220)
     time.sleep(1)
 
-In the 2nd section we are using the :py:attr:`~easygopigo3.Buzzer.scale` dictionary.
+In the 2nd section we are using the :py:attr:`~easysensors.Buzzer.scale` dictionary.
 In this dictionary there are stored the frequencies of each musical note.
-So, when using the ``twinkle`` list in conjuction with :py:attr:`~easygopigo3.Buzzer.scale` attribute,
-we're basically retrieving the frequency of a musical note (found in ``twinkle`` attribute) from the :py:attr:`~easygopigo3.Buzzer.scale` dictionary.
+So, when using the ``twinkle`` list in conjuction with :py:attr:`~easysensors.Buzzer.scale` attribute,
+we're basically retrieving the frequency of a musical note (found in ``twinkle`` attribute) from the :py:attr:`~easysensors.Buzzer.scale` dictionary.
 
 .. code-block:: python
 
