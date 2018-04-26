@@ -23,6 +23,8 @@ atexit.register(gpg.stop)
 
 left_led=0
 right_led=0
+left_eye=0
+right_eye=0
 # trim_val=gopigo.trim_read()
 v=gpg.volt()
 f=gpg.get_version_firmware()
@@ -35,13 +37,8 @@ class gopigo_control_app(wx.Frame):
         self.parent = parent
         self.initialize()
         # Exit
-        exit_button = wx.Button(self, label="Exit", pos=(240+75,550))
+        exit_button = wx.Button(self, label="Exit", pos=(240+75,500))
         exit_button.Bind(wx.EVT_BUTTON, self.onClose)
-        
-        # robot = "/home/pi/Desktop/GoBox/Troubleshooting_GUI/dex.png"
-        # png = wx.Image(robot, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        # wx.StaticBitmap(self, -1, png, (0, 0), (png.GetWidth()-320, png.GetHeight()-20))
-        # self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)		# Sets background picture
     
     #----------------------------------------------------------------------
     def OnEraseBackground(self, evt):
@@ -74,61 +71,71 @@ class gopigo_control_app(wx.Frame):
                 detected_robot_str = wx.StaticText(self,-1,
                     label="Warning: Could not find a GoPiGo3",pos=(x-30+dist*2,4))
                 detected_robot_str.SetForegroundColour('red')
-                sizer.AddStretchSpacer((1,1))
+                sizer.AddStretchSpacer((0,0))
                 sizer.Add(detected_robot_str,(0,1))
-                sizer.AddStretchSpacer((1,1))
+                sizer.AddStretchSpacer((0,2))
 
         # Motion buttons
+
+        fwd_button = wx.Button(self,-1,label="Forward", pos=(x+dist*2,y-dist))
+        sizer.Add(fwd_button, (1,1))
+        self.Bind(wx.EVT_BUTTON, self.fwd_button_OnButtonClick, fwd_button)
+
         left_button = wx.Button(self,-1,label="Left", pos=(x,y))
-        sizer.Add(left_button, (0,1))
+        sizer.Add(left_button, (2,0))
         self.Bind(wx.EVT_BUTTON, self.left_button_OnButtonClick, left_button)
 
         stop_button = wx.Button(self,-1,label="Stop", pos=(x+dist*2,y))
         stop_button.SetBackgroundColour('red')
-        sizer.Add(stop_button, (0,1))
+        sizer.Add(stop_button, (2,1))
         self.Bind(wx.EVT_BUTTON, self.stop_button_OnButtonClick, stop_button)
 
         right_button = wx.Button(self,-1,label="Right", pos=(x+dist*4,y))
-        sizer.Add(right_button, (0,1))
+        sizer.Add(right_button, (2,2))
         self.Bind(wx.EVT_BUTTON, self.right_button_OnButtonClick, right_button)
         
-        fwd_button = wx.Button(self,-1,label="Forward", pos=(x+dist*2,y-dist))
-        sizer.Add(fwd_button, (0,1))
-        self.Bind(wx.EVT_BUTTON, self.fwd_button_OnButtonClick, fwd_button)
-        
         bwd_button = wx.Button(self,-1,label="Back", pos=(x+dist*2,y+dist))
-        sizer.Add(bwd_button, (0,1))
+        sizer.Add(bwd_button, (3,1))
         self.Bind(wx.EVT_BUTTON, self.bwd_button_OnButtonClick, bwd_button)
         
         # Led buttons
         x=75
         y=25
         left_led_button = wx.Button(self,-1,label="Left LED", pos=(x,y))
-        sizer.Add(left_led_button, (0,1))
+        sizer.Add(left_led_button, (4,0))
         self.Bind(wx.EVT_BUTTON, self.left_led_button_OnButtonClick, left_led_button)
 
         right_led_button = wx.Button(self,-1,label="Right LED", pos=(x+dist*4,y))
-        sizer.Add(right_led_button, (0,1))
+        sizer.Add(right_led_button, (4,2))
         self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)       
+
+        # Eyes buttons
+        x=75
+        y=65
+        left_eye_button = wx.Button(self,-1,label="Left eye", pos=(x,y))
+        sizer.Add(left_eye_button, (5,0))
+        self.Bind(wx.EVT_BUTTON, self.left_eye_button_OnButtonClick, left_eye_button)
+
+        right_eye_button = wx.Button(self,-1,label="Right eye", pos=(x+dist*4,y))
+        sizer.Add(right_eye_button, (5,2))
+        self.Bind(wx.EVT_BUTTON, self.right_eye_button_OnButtonClick, right_eye_button)    
         
         y=320
-        battery_button = wx.Button(self,-1,label="Check Battery Voltage\t ", pos=(x,y))
-        sizer.Add(battery_button, (0,1))
+        battery_button = wx.Button(self,-1,label="Check Battery Voltage", pos=(x,y))
+        sizer.Add(battery_button, (6,1))
         self.Bind(wx.EVT_BUTTON, self.battery_button_OnButtonClick, battery_button)
 
-        firmware_button = wx.Button(self,-1,label="Check Firmware Version\t", pos=(x,y+dist/2))
-        sizer.Add(firmware_button, (0,1))
+        firmware_button = wx.Button(self,-1,label="Check Firmware Version", pos=(x,y+dist/2))
+        sizer.Add(firmware_button, (7,1))
         self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)        
         # Set up labels
 
         
-        self.battery_label = wx.StaticText(self,-1,label=str(v)+"V",pos=(x+dist*2+45,y+6))
-        sizer.Add( self.battery_label, (1,0),(1,2), wx.EXPAND )
+        self.battery_label = wx.StaticText(self,-1,label=str(round(v,1))+"V",pos=(x+dist*2+65,y+6))
+        sizer.Add( self.battery_label, (6,2),(1,2), wx.EXPAND )
         
-        self.firmware_label = wx.StaticText(self,-1,label=str(f),pos=(x+dist*2+45,y+6+dist/2))
-        sizer.Add( self.firmware_label, (1,0),(1,2), wx.EXPAND )
-        
-        sizer.Add( self.firmware_label, (1,0),(1,2), wx.EXPAND )
+        self.firmware_label = wx.StaticText(self,-1,label=str(f),pos=(x+dist*2+65,y+6+dist/2))
+        sizer.Add( self.firmware_label, (7,2),(1,2), wx.EXPAND )
         
         y=460
 
@@ -137,7 +144,7 @@ class gopigo_control_app(wx.Frame):
     def battery_button_OnButtonClick(self,event):
         global v
         # v=gopigo.volt()
-        v=gpg.volt()
+        v=round(gpg.volt(),1)
         self.battery_label.SetLabel(str(v)+"V")    
         
     def firmware_button_OnButtonClick(self,event):
@@ -177,6 +184,24 @@ class gopigo_control_app(wx.Frame):
         else :
             gpg.led_off(0)
             right_led=0
+
+    def right_eye_button_OnButtonClick(self,event):
+        global right_eye
+        if right_eye==0:
+            gpg.open_right_eye()
+            right_eye=1        
+        else :
+            gpg.close_right_eye()
+            right_eye=0
+
+    def left_eye_button_OnButtonClick(self,event):
+        global left_eye
+        if left_eye==0:
+            gpg.open_left_eye()
+            left_eye=1        
+        else :
+            gpg.close_left_eye()
+            left_eye=0
 
     def onClose(self, event):	# Close the entire program.
         self.Close()
