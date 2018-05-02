@@ -109,6 +109,11 @@ pip install curtsies
 pip install numpy
 pip install python-periphery
 
+# install control panel on desktop
+# as long as this script requires sudo, we cannot install in $HOME directly
+HOMEPI="/home/pi"
+cp $REPO_PATH/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $HOMEPI/Desktop/gopigo3_control_panel.desktop
+
 echo ""
 echo "Installation complete"
 echo "Please reboot to make settings take effect"
