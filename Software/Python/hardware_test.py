@@ -29,21 +29,21 @@ from builtins import input
 
 import time
 import easygopigo3 as easy
+import sys
+import atexit
+
 
 gpg = easy.EasyGoPiGo3()
+atexit.register(gpg.stop)
+
 gpg.reset_all()
+print("Warning: The robot is about to move forward. ")
 time.sleep(1)  # let's give the reset_all() some time to finish
 gpg.set_speed(300)
-
-import sys
-
-import atexit
-atexit.register(gpg.stop)
 
 print ("Both motors moving Forward with Dex Eyes On")
 gpg.open_eyes()
 gpg.drive_cm(100)
-time.sleep(5)
 
 print ("Both motors stopped with Dex Eyes Off")
 gpg.close_eyes()
@@ -54,14 +54,11 @@ print ("Both motors moving back with blinkers On")
 gpg.blinker_on(1)
 gpg.blinker_on(0)
 gpg.drive_cm(-100)
-time.sleep(5)
 
 print ("Both motors stopped with blinkers Off")
 gpg.blinker_off(1)
 gpg.blinker_off(0)
 gpg.stop()
 
-gpg.stop()
-gpg.stop()
-
 print ("Hardware test finished.")
+time.sleep(5)
