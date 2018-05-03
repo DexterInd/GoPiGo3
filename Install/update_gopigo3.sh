@@ -240,6 +240,7 @@ install_gopigp3_power_service() {
   sudo chmod 644 /etc/systemd/system/gpg3_power.service
   sudo systemctl daemon-reload
   sudo systemctl enable gpg3_power.service
+  sudo systemctl start gpg3_power.service
 }
 
 parse_cmdline_arguments "$@"
@@ -247,8 +248,5 @@ install_scriptools
 clone_gopigo3
 install_python_pkgs_and_dependencies
 install_gopigp3_power_service
-
-echo ""
-feedback "Reboot required to make settings take effect."
 
 exit 0

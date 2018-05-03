@@ -13,7 +13,6 @@ check_root_user() {
         feedback "FAIL!  This script must be run as such: sudo ./install.sh"
         exit 1
     fi
-    echo " "
 }
 
 install_dependencies() {
@@ -22,9 +21,7 @@ install_dependencies() {
     # done by the script_tools installer in
     # update_gopigo.sh
 
-    echo " "
-    feedback "Installing Dependencies"
-    feedback "======================="
+    feedback "Installing Dependencies for the GoPiGo3"
 
     # for python3
     sudo apt-get install python3-pip python3-numpy python3-curtsies -y
@@ -32,7 +29,7 @@ install_dependencies() {
     # for python2
     sudo apt-get install python-pip python-numpy python-curtsies -y
 
-    feedback "Dependencies installed"
+    feedback "Dependencies installed for the GoPiGo3"
 }
 
 install_wiringpi() {
@@ -51,12 +48,10 @@ install_wiringpi() {
         sudo rm -r wiringPi
     fi
     # End check if WiringPi installed
-    echo " "
 }
 
 enable_spi() {
-    feedback "Removing blacklist from /etc/modprobe.d/raspi-blacklist.conf . . ."
-    feedback "=================================================================="
+    feedback "Removing blacklist from /etc/modprobe.d/raspi-blacklist.conf"
 
     if grep -q "#blacklist spi-bcm2708" /etc/modprobe.d/raspi-blacklist.conf; then
         echo "SPI already removed from blacklist"
@@ -66,9 +61,7 @@ enable_spi() {
     fi
 
     #Adding in /etc/modules
-    echo " "
-    feedback "Adding SPI-dev in /etc/modules . . ."
-    feedback "================================================"
+    feedback "Adding SPI-dev in /etc/modules"
 
     if grep -q "spi-dev" /etc/modules; then
         echo "spi-dev already there"
@@ -76,9 +69,7 @@ enable_spi() {
         echo spi-dev >> /etc/modules
         echo "spi-dev added"
     fi
-    echo " "
-    feedback "Making SPI changes in /boot/config.txt . . ."
-    feedback "================================================"
+    feedback "Making SPI changes in /boot/config.txt"
 
     if grep -q "#dtparam=spi=on" /boot/config.txt; then
         sudo sed -i 's/#dtparam=spi=on/dtparam=spi=on/g' /boot/config.txt
@@ -90,7 +81,6 @@ enable_spi() {
         echo "SPI enabled"
     fi
 
-    echo " "
 }
 
 # Enable GoPiGo3 Power Services in Systemd
