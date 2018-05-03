@@ -66,6 +66,28 @@ parse_cmdline_arguments() {
   # show some feedback on the console
   if [ -f $DEXTERSCRIPT/functions_library.sh ]; then
     source $DEXTERSCRIPT/functions_library.sh
+    # show some feedback for the GoPiGo3
+    if [ ! quiet_mode ]; then
+      echo "  _____            _                                "
+      echo " |  __ \          | |                               "
+      echo " | |  | | _____  _| |_ ___ _ __                     "
+      echo " | |  | |/ _ \ \/ / __/ _ \ '__|                    "
+      echo " | |__| |  __/>  <| ||  __/ |                       "
+      echo " |_____/ \___/_/\_\ __\___|_| _        _            "
+      echo " |_   _|         | |         | |      (_)           "
+      echo "   | |  _ __   __| |_   _ ___| |_ _ __ _  ___  ___  "
+      echo "   | | | '_ \ / _\ | | | / __| __| '__| |/ _ \/ __| "
+      echo "  _| |_| | | | (_| | |_| \__ \ |_| |  | |  __/\__ \ "
+      echo " |_____|_| |_|\__,_|\__,_|___/\__|_|  |_|\___||___/ "
+      echo "                                                    "
+      echo "                                                    "
+      echo "   ____       ____  _  ____      _____ "
+      echo "  / ___| ___ |  _ \(_)/ ___| ___|___ / "
+      echo " | |  _ / _ \| |_) | | |  _ / _ \ |_ \ "
+      echo " | |_| | (_) |  __/| | |_| | (_) |__) |"
+      echo "  \____|\___/|_|   |_|\____|\___/____/ "
+      echo "                                       "
+    fi
     feedback "Welcome to GoPiGo3 Installer."
   else
     echo "Welcome to GoPiGo3 Installer."
