@@ -32,6 +32,7 @@ import easygopigo3 as easy
 
 gpg = easy.EasyGoPiGo3()
 gpg.reset_all()
+time.sleep(1)  # let's give the reset_all() some time to finish
 gpg.set_speed(300)
 
 import sys
