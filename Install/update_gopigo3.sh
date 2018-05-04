@@ -227,7 +227,9 @@ install_python_pkgs_and_dependencies() {
   popd > /dev/null
 
   # install control panel on desktop
-  cp $REPO_PATH/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $HOMEPI/Desktop/gopigo3_control_panel.desktop
+  if [[ -f $PIHOME/Desktop ]]; then
+    cp $REPO_PATH/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
+  fi
 
   # install the pre-compiled OpenOCD packaged with GoPiGo3
   sudo bash $GOPIGO3_DIR/Firmware/openocd/install_openocd_compiled.sh
