@@ -1,4 +1,5 @@
 #! /bin/bash
+
 PIHOME=/home/pi
 DEXTER=Dexter
 DEXTER_PATH=$PIHOME/$DEXTER
@@ -17,9 +18,8 @@ check_root_user() {
 
 install_dependencies() {
 
-    # the sudo apt-get update is already
-    # done by the script_tools installer in
-    # update_gopigo.sh
+    # the sudo apt-get update is already done by the
+    # script_tools installer in update_gopigo3.sh
 
     feedback "Installing Dependencies for the GoPiGo3"
 

@@ -1,10 +1,5 @@
 #! /bin/bash
 
-################################################
-######## Parsing Command Line Arguments ########
-################################################
-
-# Check for a GoPiGo3 directory under "Dexter" folder.  If it doesn't exist, create it.
 PIHOME=/home/pi
 DEXTER=Dexter
 DEXTER_PATH=$PIHOME/$DEXTER
@@ -19,6 +14,9 @@ REPO_PACKAGE=gopigo3
 # the following option specifies which GoPiGo3 github branch to use
 selectedbranch="master"
 
+##############################################
+######## Parse Command Line Arguments ########
+##############################################
 parse_cmdline_arguments() {
 
   # whether to install the dependencies or not (apt-get etc.)
@@ -119,10 +117,9 @@ parse_cmdline_arguments() {
   echo "Options used for script_tools script: \"${optionslist[@]}\""
 }
 
-################################################
-######## Cloning GoPiGo3 & Script_Tools  ########
-################################################
-
+######################################
+######## Install Script_Tools ########
+######################################
 install_scriptools() {
 
   # update script_tools first
@@ -143,11 +140,10 @@ install_scriptools() {
   source $DEXTERSCRIPT/functions_library.sh
 }
 
+################################################
+######## Install Python Packages & Deps ########
+################################################
 clone_gopigo3() {
-
-  ################################################
-  ######## Install Python Packages & Deps ########
-  ################################################
 
   echo "Installing GoPiGo3 package."
 
@@ -229,6 +225,9 @@ install_python_pkgs_and_dependencies() {
   pushd $GOPIGO3_DIR/Software/Python > /dev/null
   install_python_packages
   popd > /dev/null
+
+  # install control panel on desktop
+  cp $REPO_PATH/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $HOMEPI/Desktop/gopigo3_control_panel.desktop
 
   # install the pre-compiled OpenOCD packaged with GoPiGo3
   sudo bash $GOPIGO3_DIR/Firmware/openocd/install_openocd_compiled.sh
