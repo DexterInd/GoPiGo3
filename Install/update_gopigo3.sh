@@ -144,7 +144,7 @@ install_scriptools() {
   ret_val=$?
   rm $PIHOME/.tmp_script_tools.sh
   if [[ $ret_val -ne 0 ]]; then
-    echo "script_tools failed installing with exit code $ret_val. Aborting."
+    echo "script_tools failed installing with exit code $ret_val. Exiting."
     exit 6
   fi
 
