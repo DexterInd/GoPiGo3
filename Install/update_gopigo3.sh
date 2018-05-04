@@ -18,6 +18,7 @@ selectedbranch="master"
 ######## Parse Command Line Arguments ########
 ##############################################
 
+# called way down bellow
 check_if_run_with_pi() {
   ## if not running with the pi user then exit
   if [ $(id -ur) -ne $(id -ur pi) ]; then
@@ -26,6 +27,7 @@ check_if_run_with_pi() {
   fi
 }
 
+# called way down bellow
 parse_cmdline_arguments() {
 
   # whether to install the dependencies or not (apt-get etc.)
@@ -129,6 +131,7 @@ parse_cmdline_arguments() {
 ######################################
 ######## Install Script_Tools ########
 ######################################
+# called way down bellow
 install_scriptools() {
 
   # update script_tools first
@@ -152,6 +155,7 @@ install_scriptools() {
 ################################################
 ######## Install Python Packages & Deps ########
 ################################################
+# called way down bellow
 clone_gopigo3() {
 
   echo "Installing GoPiGo3 package."
@@ -174,6 +178,7 @@ clone_gopigo3() {
   cd $GOPIGO3_DIR
 }
 
+# called by <<install_python_pkgs_and_dependencies>>
 install_python_packages() {
   [[ $systemwide = "true" ]] && sudo python setup.py install \
               && [[ $usepython3exec = "true" ]] && sudo python3 setup.py install
@@ -183,6 +188,7 @@ install_python_packages() {
               && [[ $usepython3exec = "true" ]] && python3 setup.py install
 }
 
+# called by <<install_python_pkgs_and_dependencies>>
 remove_python_packages() {
   # the 1st and only argument
   # takes the name of the package that needs to removed
@@ -219,6 +225,7 @@ remove_python_packages() {
   done < $PIHOME/.pypaths
 }
 
+# called way down bellow
 install_python_pkgs_and_dependencies() {
   # installing dependencies if required
   if [[ $installdependencies = "true" ]]; then
@@ -244,6 +251,7 @@ install_python_pkgs_and_dependencies() {
   sudo bash $GOPIGO3_DIR/Firmware/openocd/install_openocd_compiled.sh
 }
 
+# called way down bellow
 install_gopigp3_power_service() {
   # Install the system services
   sudo cp $GOPIGO3_DIR/Install/gpg3_power.service /etc/systemd/system
