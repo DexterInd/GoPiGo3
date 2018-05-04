@@ -54,6 +54,12 @@ sudo cp $PIHOME/$DEXTER/$ROBOT_FOLDER/Software/Scratch/Local_Scratch_Start.deskt
 # Desktop shortcut permissions.
 sudo chmod +x $PIHOME/Desktop/Local_Scratch_Start.desktop
 
+# Copy shortcut into menu
+sudo cp $PIHOME/$DEXTER/$ROBOT_FOLDER/Software/Scratch/Local_Scratch_Start.desktop /usr/share/applications/Local_Scratch_Start.desktop
+#reload the menu
+lxpanelctl restart
+
+
 # Make select_state, error_log, nohup.out readable and writable
 sudo echo "GoPiGo3" >> $SCRATCH_PATH/selected_state
 sudo touch $SCRATCH_PATH/error_log
@@ -67,4 +73,5 @@ sudo rm  /usr/share/scratch/Projects/$ROBOT_FOLDER 2> /dev/null
 sudo ln -s $PIHOME/$DEXTER/$ROBOT_FOLDER/Software/Scratch/Examples /usr/share/scratch/Projects/$ROBOT_FOLDER  2> /dev/null
 
 feedback "You now have a Scratch icon on your desktop. Double clicking it will start Scratch with all the necessary configuration to control your GoPiGo3"
-feedback "Please note that you cannot use Scratch from the menu or double click on a Scratch file to control your robot."
+feedback "There is a specialized Scratch for GoPiGo3 in the menu"
+feedback "However you cannot double click on a Scratch file to control your robot."
