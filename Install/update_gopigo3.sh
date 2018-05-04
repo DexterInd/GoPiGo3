@@ -17,6 +17,15 @@ selectedbranch="master"
 ##############################################
 ######## Parse Command Line Arguments ########
 ##############################################
+
+check_if_run_with_pi() {
+  ## if not running with the pi user then exit
+  if [ $(id -ur) -ne $(id -ur pi) ]; then
+    echo "GoPiGo3 installer script must be run with \"pi\" user. Exiting."
+    exit 7
+  fi
+}
+
 parse_cmdline_arguments() {
 
   # whether to install the dependencies or not (apt-get etc.)
@@ -244,6 +253,11 @@ install_gopigp3_power_service() {
   sudo systemctl start gpg3_power.service
 }
 
+################################################
+######## Call all functions - main part ########
+################################################
+
+check_if_run_with_pi
 parse_cmdline_arguments "$@"
 install_scriptools
 clone_gopigo3
