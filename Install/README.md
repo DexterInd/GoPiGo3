@@ -10,31 +10,35 @@ You can find all software and installation for the GoPiGo3 on an SD Card by usin
 
 You can also [purchase an SD Card with the software on it here](https://www.dexterindustries.com/shop/sd-card-raspbian-wheezy-image-for-raspberry-pi/).  
 
-## Installation
-You can install the GoPiGo3 on your own operating system with the following commands in the command line:
-1. Clone this repository onto the Raspberry Pi:
+## Installing
+
+You need internet access for the following step(s).
+
+The quickest way for installing the GoPiGo is to enter the following command:
 ```
-sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
-```
-2. Run the install script:
-```
-sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh
-```
-3. Reboot the Raspberry Pi to make the settings take effect:
-```
-sudo reboot
+curl -kL dexterindustries.com/update_gopigo | bash
 ```
 
-## Quick Install
+By default, the GoPiGo package is installed system-wide and [script_tools](https://github.com/DexterInd/script_tools) is completely updated each time the script is ran.
 
-Instead of cloning the repository and then running the install script, you can just enter one of the following 2 commands and then reboot your Raspberry Pi:
+An example using options appended to the command can be:
 ```
-# for installing the python packages with root permissions (except anything else which will ran as root) run this
-sudo sh -c "curl -kL dexterindustries.com/update_gopigo3 | bash"
+curl -kL dexterindustries.com/update_gopigo | bash -s --user-local --no-update-aptget --no-dependencies
+```
 
-# for installing the python packages with user permissions (except anything else which will ran as root) run this
-curl -kL dexterindustries.com/update_gopigo3 | bash
-```
+#### Command Options
+
+The options that can be appended to this command are:
+
+* `--no-dependencies` - skip installing any dependencies for the GoPiGo3. It's supposed to be used on each consecutive update after the initial install has gone through.
+* `--no-update-aptget` - to skip using `sudo apt-get update` before installing dependencies. For this to be useful, `--no-dependencies` has to be not used.
+* `--bypass-pkg-scriptools` - skips installing/updating the python package for  [script_tools](https://github.com/DexterInd/script_tools).
+* `--user-local` - install the python package for the GoPiGo3 in the home directory of the user. This doesn't require any special read/write permissions: the actual command used is (`python setup.py install --force --user`).
+* `--env-local` - install the python package for the GoPiGo3 within the given environment without elevated privileges: the actual command used is (`python setup.py install --force`).
+* `--system-wide` - install the python package for the GoPiGo3 within the sytem-wide environment with `sudo`: the actual command used is (`sudo python setup.py install --force`).
+
+Important to remember is that `--user-local`, `--env-local` and `--system-wide` options are all mutually-exclusive - they cannot be used together.
+As a last thing, different versions of it can be pulled by appending a corresponding branch name or tag.
 
 ## Test and Troubleshooting
 You can see [the test and troubleshooting section on the GoPiGo3, including detailed information about updating the firmwaer, here.](https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/test-and-troubleshoot-the-gopigo3-raspberry-pi-robot/)

@@ -23,14 +23,7 @@ You can install the GoPiGo3 on your own operating system with the following comm
 
 
 # Quick Install
-In order to quick install the `GoPiGo3` repository, open up a terminal and type one of the 2 following commands:
-
-1. For installing the python packages of the `GoPiGo3` with root privileges (except any other settings that can come with), use the following command:
-```
-curl -kL dexterindustries.com/update_gopigo3 | sudo bash
-```
-
-2. For installing the python packages of the `GoPiGo3` without root privileges (except any other settings that can come with), use the following command:
+In order to quick install the `GoPiGo3` repository, open up a terminal and type the following command:
 ```
 curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
