@@ -16,9 +16,9 @@ You can also [purchase an SD Card with the software on it here](https://www.dext
 You can install the GoPiGo3 on your own operating system with the following commands in the command line:
 1. Clone this repository onto the Raspberry Pi:
 
-        sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
+        git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
 
-2. Run the install script: `sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
+2. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
 3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
 
 

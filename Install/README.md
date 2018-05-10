@@ -14,16 +14,21 @@ You can also [purchase an SD Card with the software on it here](https://www.dext
 
 You need internet access for the following step(s).
 
-The quickest way for installing the GoPiGo is to enter the following command:
+The quickest way for installing the GoPiGo3 is to enter the following command:
 ```
-curl -kL dexterindustries.com/update_gopigo | bash
+curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
 
-By default, the GoPiGo package is installed system-wide and [script_tools](https://github.com/DexterInd/script_tools) is completely updated each time the script is ran.
+By default, the GoPiGo3 package is installed system-wide and [script_tools](https://github.com/DexterInd/script_tools) is completely updated each time the script is ran.
+
+If you still want to go the old route where you first clone the repo and then you run the install script, you can do it by running the following command once cloned:
+```
+bash update_gopigo3.sh
+```
 
 An example using options appended to the command can be:
 ```
-curl -kL dexterindustries.com/update_gopigo | bash -s --user-local --no-update-aptget --no-dependencies
+curl -kL dexterindustries.com/update_gopigo3 | bash -s --user-local --no-update-aptget --no-dependencies
 ```
 
 #### Command Options
@@ -32,7 +37,8 @@ The options that can be appended to this command are:
 
 * `--no-dependencies` - skip installing any dependencies for the GoPiGo3. It's supposed to be used on each consecutive update after the initial install has gone through.
 * `--no-update-aptget` - to skip using `sudo apt-get update` before installing dependencies. For this to be useful, `--no-dependencies` has to be not used.
-* `--bypass-pkg-scriptools` - skips installing/updating the python package for  [script_tools](https://github.com/DexterInd/script_tools).
+* `--bypass-rfrtools` - skip installing RFR_Tools altogether.
+* `--bypass-python-rfrtools` - skips installing/updating the python package for  [RFR_Tools](https://github.com/DexterInd/RFR_Tools).
 * `--user-local` - install the python package for the GoPiGo3 in the home directory of the user. This doesn't require any special read/write permissions: the actual command used is (`python setup.py install --force --user`).
 * `--env-local` - install the python package for the GoPiGo3 within the given environment without elevated privileges: the actual command used is (`python setup.py install --force`).
 * `--system-wide` - install the python package for the GoPiGo3 within the sytem-wide environment with `sudo`: the actual command used is (`sudo python setup.py install --force`).
