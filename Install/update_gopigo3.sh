@@ -161,7 +161,7 @@ install_scriptools_and_rfrtools() {
       echo "RFR_Tools failed installing with exit code $ret_val. Exiting."
       exit 7
     fi
-    echo "Done installing RFR_Tool"
+    echo "Done installing RFR_Tools"
   fi
 
   # update script_tools
