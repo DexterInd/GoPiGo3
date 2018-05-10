@@ -263,7 +263,7 @@ install_python_pkgs_and_dependencies() {
 
   # install control panel on desktop
   if [[ -f $PIHOME/Desktop ]]; then
-    cp $REPO_PATH/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
+    cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
   fi
 
   # install the pre-compiled OpenOCD packaged with GoPiGo3
