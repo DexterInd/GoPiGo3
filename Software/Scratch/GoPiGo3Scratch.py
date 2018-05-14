@@ -78,7 +78,7 @@ except:
     pivotpi_available=False
     
 try:
-    distance_sensor = easy.DistanceSensor(gpg=gpg)
+    distance_sensor = gpg.init_distance_sensor()
 except Exception as e:
     distance_sensor = None
     
