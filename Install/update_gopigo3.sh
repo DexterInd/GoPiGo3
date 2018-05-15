@@ -262,7 +262,7 @@ install_python_pkgs_and_dependencies() {
   popd > /dev/null
 
   # install control panel on desktop
-  if [[ -f $PIHOME/Desktop ]]; then
+  if [[ -d $PIHOME/Desktop ]]; then
     cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
   fi
 
