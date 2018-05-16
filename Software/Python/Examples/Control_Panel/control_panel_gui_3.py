@@ -9,6 +9,11 @@ try:
 except:
     no_auto_detect = True
 
+try:
+    import wx
+except ImportError:
+    raise ImportError("The wxPython module is required to run this program")
+
 import gopigo3
 import easygopigo3 as easy
 try:
@@ -16,11 +21,9 @@ try:
 except Exception as e:
     print("GoPiGo3 cannot be instanstiated. Most likely wrong firmware version")
     print(e)
-
-try:
-    import wx
-except ImportError:
-    raise ImportError("The wxPython module is required to run this program")
+    app = wx.App()
+    wx.MessageBox('GoPiGo3 cannot be found. It may need a firmware update.\n\nYou can upgrade the firmware by running DI Software Update then updating your robot.', 'GoPiGo3 not found', wx.OK | wx.ICON_ERROR)
+    exit()
 
 import atexit
 atexit.register(gpg.stop)
