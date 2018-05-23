@@ -154,7 +154,7 @@ class MainPanel(wx.Panel):
         global v
         # v=gopigo.volt()
         v=round(gpg.volt(),1)
-        self.battery_label.SetLabel(str(v)+"V")    
+        self.battery_label.SetLabel(str(v)+"V")
         
     def firmware_button_OnButtonClick(self,event):
         global f
