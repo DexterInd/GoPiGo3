@@ -6,23 +6,24 @@
 
 echo "Checking if code name distribution is jessie/stretch"
 OS_CODENAME="$(lsb_release --codename --short)"
-if [[ $OS_CODENAME != "stretch" ]]; then
+if [[ $OS_CODENAME != "stretch" && $OS_CODENAME != "jessie" ]]; then
   echo "Code name distribution mismatch"
-  echo "Only Stretch is supported - older versions like Jessie or Wheezy are no longer maintained"
+  echo "Only Stretch and Jessie version are supported - soon enough, Jessie will no longer be supported as UV4L no longer maintains the project for Jessie"
   exit 1
 fi
 
 echo "Found $OS_CODENAME distribution"
 
-echo "Adding repository location for UV4L"
-curl -s http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add - > /dev/null
-if grep -q "[# ]*deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main" /etc/apt/sources.list
-then
-    sed -i '/deb http:\/\/www\.linux-projects\.org\/listing\/uv4l_repo\/raspbian\/stretch stretch main/s/^#//' /etc/apt/sources.list
+# for stretch and jessie there are different sources
+if [[ $OS_CODENAME == "stretch" ]]; then
+  RELATIVE_PATH_SRC="stretch"
 else
-    echo -e "deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main" >> /etc/apt/sources.list
+  RELATIVE_PATH_SRC=""
 fi
 
+echo "Adding repository location for UV4L"
+curl -s http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add - > /dev/null
+echo -e "deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/$RELATIVE_PATH_SRC $OS_CODENAME main" >> /etc/apt/sources.list
 
 echo "Updating repository"
 apt-get update
