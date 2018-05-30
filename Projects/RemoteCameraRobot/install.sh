@@ -1,27 +1,31 @@
 #!/usr/bin/env bash
 
-echo "Checking if code name distribution is jessie"
-CODE_NAME_DIST="$(lsb_release --codename)"
-if [[ $CODE_NAME_DIST != *"jessie" ]]; then
+# check https://www.linux-projects.org/uv4l/installation/ for more information
+# jessie/wheezy versions of UV4L are no longer maintained and hence
+# it's recommended to run this on a stretch
+
+echo "Checking if code name distribution is jessie/stretch"
+OS_CODENAME="$(lsb_release --codename --short)"
+if [[ $OS_CODENAME != "stretch" ]]; then
   echo "Code name distribution mismatch"
-  echo "Found "$CODE_NAME_DIST
+  echo "Only Stretch is supported - older versions like Jessie or Wheezy are no longer maintained"
   exit 1
-else
-  echo "Found jessie distribution"
 fi
+
+echo "Found $OS_CODENAME distribution"
 
 echo "Adding repository location for UV4L"
 curl -s http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add - > /dev/null
-if grep -q "[# ]*deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ jessie main" /etc/apt/sources.list
+if grep -q "[# ]*deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main" /etc/apt/sources.list
 then
-    sed -i '/deb http:\/\/www\.linux-projects\.org\/listing\/uv4l_repo\/raspbian\/ jessie main/s/^#//' /etc/apt/sources.list
+    sed -i '/deb http:\/\/www\.linux-projects\.org\/listing\/uv4l_repo\/raspbian\/stretch stretch main/s/^#//' /etc/apt/sources.list
 else
-    echo -e "deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ jessie main" >> /etc/apt/sources.list
+    echo -e "deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/stretch stretch main" >> /etc/apt/sources.list
 fi
 
 
 echo "Updating repository"
-apt-get update > /dev/null
+apt-get update
 
 echo "Installing UV4L drivers"
 apt-get -y install uv4l uv4l-raspicam
