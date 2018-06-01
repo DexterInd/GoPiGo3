@@ -9,6 +9,11 @@ try:
 except:
     no_auto_detect = True
 
+try:
+    import wx
+except ImportError:
+    raise ImportError("The wxPython module is required to run this program")
+
 import gopigo3
 import easygopigo3 as easy
 try:
@@ -16,134 +21,141 @@ try:
 except Exception as e:
     print("GoPiGo3 cannot be instanstiated. Most likely wrong firmware version")
     print(e)
-
-try:
-    import wx
-except ImportError:
-    raise ImportError("The wxPython module is required to run this program")
+    app = wx.App()
+    wx.MessageBox('GoPiGo3 cannot be found. It may need a firmware update.\n\nYou can upgrade the firmware by running DI Software Update then updating your robot.', 'GoPiGo3 not found', wx.OK | wx.ICON_ERROR)
+    exit()
 
 import atexit
 atexit.register(gpg.stop)
 
 left_led=0
 right_led=0
-# trim_val=gopigo.trim_read()
+left_eye=0
+right_eye=0
 v=gpg.volt()
 f=gpg.get_version_firmware()
-# slider_val=gopigo.trim_read()
 
-class gopigo_control_app(wx.Frame):
-    slider=0
-    def __init__(self,parent,id,title):
-        wx.Frame.__init__(self,parent,id,title,size=(475,600))
-        self.parent = parent
-        self.initialize()
-        # Exit
-        exit_button = wx.Button(self, label="Exit", pos=(240+75,550))
-        exit_button.Bind(wx.EVT_BUTTON, self.onClose)
+ICON_PATH = "/home/pi/Dexter/GoPiGo3/Software/Python/Examples/Control_Panel/"
 
-        # robot = "/home/pi/Desktop/GoBox/Troubleshooting_GUI/dex.png"
-        # png = wx.Image(robot, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        # wx.StaticBitmap(self, -1, png, (0, 0), (png.GetWidth()-320, png.GetHeight()-20))
-        # self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)		# Sets background picture
-
+class MainPanel(wx.Panel):
+    """"""
     #----------------------------------------------------------------------
-    def OnEraseBackground(self, evt):
-        """
-        Add a picture to the background
-        """
-        # yanked from ColourDB.py
-        dc = evt.GetDC()
+    def __init__(self, parent):
 
-        if not dc:
-            dc = wx.ClientDC(self)
-            rect = self.GetUpdateRegion().GetBox()
-            dc.SetClippingRect(rect)
-        dc.Clear()
-        # bmp = wx.Bitmap("/home/pi/Desktop/GoBox/Troubleshooting_GUI/dex.png")	# Draw the photograph.
-        # dc.DrawBitmap(bmp, 0, 400)						# Absolute position of where to put the picture
+        wx.Panel.__init__(self, parent=parent)
+        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        self.SetBackgroundColour(wx.WHITE)
+        self.frame = parent
 
+        # main sizer
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        main_sizer.AddSpacer(30)
 
-    def initialize(self):
-        sizer = wx.GridBagSizer()
-
-        x=75
-        y=175
-        dist=60
-
-        # if we can auto-detect, then give feedback to the user
-        if no_auto_detect == False:
+        if no_auto_detect == True:
             detected_robot = auto_detect_robot.autodetect()
+            print(detected_robot)
             if detected_robot != "GoPiGo3":
                 detected_robot_str = wx.StaticText(self,-1,
-                    label="Warning: Could not find a GoPiGo3",pos=(x-30+dist*2,4))
+                    label="Warning: Could not find a GoPiGo3")
                 detected_robot_str.SetForegroundColour('red')
-                sizer.AddStretchSpacer((1,1))
-                sizer.Add(detected_robot_str,(0,1))
-                sizer.AddStretchSpacer((1,1))
+                warning_sizer = wx.BoxSizer(wx.HORIZONTAL)
+                warning_sizer.Add(detected_robot_str, 0, wx.EXPAND| wx.ALIGN_CENTER)
+                main_sizer.Add(warning_sizer, 0, wx.ALIGN_CENTER)
 
-        # Motion buttons
-        left_button = wx.Button(self,-1,label="Left", pos=(x,y))
-        sizer.Add(left_button, (0,1))
+        led_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        left_led_button = wx.Button(self, label="Left LED")
+        self.Bind(wx.EVT_BUTTON, self.left_led_button_OnButtonClick, left_led_button)
+        right_led_button = wx.Button(self, label="Right LED")
+        self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)       
+
+        led_sizer.AddSpacer(30)
+        led_sizer.Add(left_led_button, 0, wx.ALIGN_CENTER)
+        led_sizer.AddSpacer(80)
+        led_sizer.Add(right_led_button, 0, wx.ALIGN_CENTER)
+        led_sizer.AddSpacer(30)
+
+        eyesSizer = wx.BoxSizer(wx.HORIZONTAL)
+        left_eye_button = wx.Button(self, label="Left eye")
+        self.Bind(wx.EVT_BUTTON, self.left_eye_button_OnButtonClick, left_eye_button)
+        icon_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        bmp = wx.Bitmap(ICON_PATH+"dex.png",type=wx.BITMAP_TYPE_PNG)
+        robotbitmap=wx.StaticBitmap(self, bitmap=bmp)
+        right_eye_button = wx.Button(self, label="Right eye")
+        self.Bind(wx.EVT_BUTTON, self.right_eye_button_OnButtonClick, right_eye_button)
+
+        eyesSizer.AddSpacer(30)
+        eyesSizer.Add(right_eye_button, 0)
+        eyesSizer.Add(robotbitmap, 0)
+        eyesSizer.Add(left_eye_button, 0)
+        eyesSizer.AddSpacer(30)
+
+        fwd_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        fwd_button = wx.Button(self, label="Forward")
+        self.Bind(wx.EVT_BUTTON, self.fwd_button_OnButtonClick, fwd_button)
+        fwd_sizer.Add(fwd_button, 0, wx.ALIGN_CENTER)
+
+        middle_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        left_button = wx.Button(self, label="Left")
         self.Bind(wx.EVT_BUTTON, self.left_button_OnButtonClick, left_button)
-
-        stop_button = wx.Button(self,-1,label="Stop", pos=(x+dist*2,y))
+        stop_button = wx.Button(self, label="Stop")
         stop_button.SetBackgroundColour('red')
-        sizer.Add(stop_button, (0,1))
         self.Bind(wx.EVT_BUTTON, self.stop_button_OnButtonClick, stop_button)
-
-        right_button = wx.Button(self,-1,label="Right", pos=(x+dist*4,y))
-        sizer.Add(right_button, (0,1))
+        right_button = wx.Button(self, label="Right")
         self.Bind(wx.EVT_BUTTON, self.right_button_OnButtonClick, right_button)
 
-        fwd_button = wx.Button(self,-1,label="Forward", pos=(x+dist*2,y-dist))
-        sizer.Add(fwd_button, (0,1))
-        self.Bind(wx.EVT_BUTTON, self.fwd_button_OnButtonClick, fwd_button)
+        middle_sizer.Add(left_button, 0, wx.ALIGN_CENTER)
+        middle_sizer.Add(stop_button,  0, wx.ALIGN_CENTER)
+        middle_sizer.Add(right_button,  0, wx.ALIGN_CENTER)
 
-        bwd_button = wx.Button(self,-1,label="Back", pos=(x+dist*2,y+dist))
-        sizer.Add(bwd_button, (0,1))
+        bwdSizer = wx.BoxSizer(wx.HORIZONTAL)
+        bwd_button = wx.Button(self, label="Back")
         self.Bind(wx.EVT_BUTTON, self.bwd_button_OnButtonClick, bwd_button)
+        bwdSizer.Add(bwd_button,  0, wx.ALIGN_CENTER)
 
-        # Led buttons
-        x=75
-        y=25
-        left_led_button = wx.Button(self,-1,label="Left LED", pos=(x,y))
-        sizer.Add(left_led_button, (0,1))
-        self.Bind(wx.EVT_BUTTON, self.left_led_button_OnButtonClick, left_led_button)
-
-        right_led_button = wx.Button(self,-1,label="Right LED", pos=(x+dist*4,y))
-        sizer.Add(right_led_button, (0,1))
-        self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)
-
-        y=320
-        battery_button = wx.Button(self,-1,label="Check Battery Voltage\t ", pos=(x,y))
-        sizer.Add(battery_button, (0,1))
+        batterySizer = wx.BoxSizer(wx.HORIZONTAL)
+        battery_button = wx.Button(self, label="Check Battery Voltage")
         self.Bind(wx.EVT_BUTTON, self.battery_button_OnButtonClick, battery_button)
+        self.battery_label = wx.StaticText(self, label=str(round(v,1))+"V")
+        batterySizer.AddSpacer(30)
+        batterySizer.Add(battery_button, 0, wx.ALIGN_LEFT )
+        batterySizer.AddSpacer(20)
+        batterySizer.Add( self.battery_label,0, wx.ALIGN_CENTER|wx.EXPAND )
 
-        firmware_button = wx.Button(self,-1,label="Check Firmware Version\t", pos=(x,y+dist/2))
-        sizer.Add(firmware_button, (0,1))
-        self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)
-        # Set up labels
+        firmwareSizer = wx.BoxSizer(wx.HORIZONTAL)
+        firmware_button = wx.Button(self,-1,label="Check Firmware Version")
+        self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)        
+        self.firmware_label = wx.StaticText(self,-1,label=str(f))
+        firmwareSizer.AddSpacer(30)
+        firmwareSizer.Add(firmware_button, 0, wx.ALIGN_LEFT)
+        firmwareSizer.AddSpacer(15)
+        firmwareSizer.Add( self.firmware_label, 0, wx.ALIGN_CENTER|wx.EXPAND )
 
+        # Exit
+        exit_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        exit_button = wx.Button(self, label="Exit")
+        exit_button.Bind(wx.EVT_BUTTON, self.onClose)
+        exit_sizer.Add(exit_button,0, wx.ALIGN_RIGHT)
+        exit_sizer.AddSpacer(30)
 
-        self.battery_label = wx.StaticText(self,-1,label=str(v)+"V",pos=(x+dist*2+45,y+6))
-        sizer.Add( self.battery_label, (1,0),(1,2), wx.EXPAND )
-
-        self.firmware_label = wx.StaticText(self,-1,label=str(f),pos=(x+dist*2+45,y+6+dist/2))
-        sizer.Add( self.firmware_label, (1,0),(1,2), wx.EXPAND )
-
-        sizer.Add( self.firmware_label, (1,0),(1,2), wx.EXPAND )
-
-        y=460
-
-        self.Show(True)
+        main_sizer.Add(led_sizer, 0, wx.ALIGN_CENTER)
+        main_sizer.Add(eyesSizer, 0, wx.ALIGN_CENTER)
+        main_sizer.AddSpacer(20)
+        main_sizer.Add(fwd_sizer, 0, wx.ALIGN_CENTER)
+        main_sizer.Add(middle_sizer, 0, wx.ALIGN_CENTER)
+        main_sizer.Add(bwdSizer, 0, wx.ALIGN_CENTER)
+        main_sizer.AddSpacer(30)
+        main_sizer.Add(batterySizer, 0, wx.ALIGN_LEFT)
+        main_sizer.Add(firmwareSizer, 0, wx.ALIGN_LEFT)
+        main_sizer.AddSpacer(20)
+        main_sizer.Add(exit_sizer,0,wx.ALIGN_RIGHT)
+        self.SetSizerAndFit(main_sizer)
 
     def battery_button_OnButtonClick(self,event):
         global v
         # v=gopigo.volt()
-        v=gpg.volt()
+        v=round(gpg.volt(),1)
         self.battery_label.SetLabel(str(v)+"V")
-
+        
     def firmware_button_OnButtonClick(self,event):
         global f
         f=gpg.get_version_firmware()
@@ -182,10 +194,42 @@ class gopigo_control_app(wx.Frame):
             gpg.led_off(0)
             right_led=0
 
+    def right_eye_button_OnButtonClick(self,event):
+        global right_eye
+        if right_eye==0:
+            gpg.open_right_eye()
+            right_eye=1        
+        else :
+            gpg.close_right_eye()
+            right_eye=0
+
+    def left_eye_button_OnButtonClick(self,event):
+        global left_eye
+        if left_eye==0:
+            gpg.open_left_eye()
+            left_eye=1        
+        else :
+            gpg.close_left_eye()
+            left_eye=0
+
     def onClose(self, event):	# Close the entire program.
-        self.Close()
+        self.frame.Close()
+
+
+class MainFrame(wx.Frame):
+    def __init__(self):
+        wx.Log.SetVerbose(False)
+        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(475,500))
+        panel = MainPanel(self)
+        self.Center()
+
+class Main(wx.App):
+    def __init__(self, redirect=False, filename=None):
+        """Constructor"""
+        wx.App.__init__(self, redirect, filename)
+        dlg = MainFrame()
+        dlg.Show()
 
 if __name__ == "__main__":
-    app = wx.App()
-    frame = gopigo_control_app(None,-1,'GoPiGo3 Control Panel')
+    app = Main()
     app.MainLoop()
