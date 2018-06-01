@@ -11,9 +11,6 @@ DEXTERSCRIPT=$DEXTER_PATH/lib/Dexter/script_tools
 # used for identifying present packages
 REPO_PACKAGE=gopigo3
 
-# the following option specifies which GoPiGo3 github branch to use
-selectedbranch="master"
-
 ##############################################
 ######## Parse Command Line Arguments ########
 ##############################################
