@@ -11,6 +11,9 @@ DEXTERSCRIPT=$DEXTER_PATH/lib/Dexter/script_tools
 # used for identifying present packages
 REPO_PACKAGE=gopigo3
 
+# the following option specifies which GoPiGo3 github branch to use
+selectedbranch="master"
+
 ##############################################
 ######## Parse Command Line Arguments ########
 ##############################################
@@ -39,8 +42,8 @@ parse_cmdline_arguments() {
   envlocal=false
   usepython3exec=true
 
-  # the following option tells which branch has to be used
-  selectedbranch="master"
+  # selectedbranch=master
+  # "selectedbranch" variable can be found up top in the code
 
   declare -ga rfrtools_options=("--system-wide")
   # iterate through bash arguments
