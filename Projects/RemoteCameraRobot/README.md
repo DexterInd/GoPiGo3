@@ -38,6 +38,8 @@ If you don't have `Raspbian For Robots`, then you'll need to see what's your int
 
 Also, please make sure you have your mobile device / laptop on the same network as your `GoPiGo3`. Otherwise, you won't be able to access it.
 
+Be aware if the video stream doesn't appear. If it doesn't, then the first thing to run is `systemctl status uv4l_raspicam`. If bugs about not having enough resources appear, then it might be the case to increase the split size for the GPU with `raspi-config`. For other bugs, we encourage you to contact us on the [forum](https://forum.dexterindustries.com).
+
 ## Setting Up to Run on Boot
 You can run the server on boot so you don't have to run it manually.  Use the command
 `install_startup.sh`
