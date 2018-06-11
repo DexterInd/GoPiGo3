@@ -17,12 +17,16 @@ echo "Found $OS_CODENAME distribution"
 # for stretch and jessie there are different sources
 if [[ $OS_CODENAME == "stretch" ]]; then
   RELATIVE_PATH_SRC="stretch"
+
+  echo "Adding repository location for UV4L"
+  curl http://www.linux-projects.org/listing/uv4l_repo/lpkey.asc | sudo apt-key add - > /dev/null
 else
   RELATIVE_PATH_SRC=""
+
+  echo "Adding repository location for UV4L"
+  curl -s http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add - > /dev/null
 fi
 
-echo "Adding repository location for UV4L"
-curl -s http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add - > /dev/null
 echo -e "deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/$RELATIVE_PATH_SRC $OS_CODENAME main" >> /etc/apt/sources.list
 
 echo "Updating repository"
