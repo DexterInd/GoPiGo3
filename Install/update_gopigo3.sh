@@ -266,8 +266,9 @@ install_python_pkgs_and_dependencies() {
     cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
   fi
 
-  # install the pre-compiled OpenOCD packaged with GoPiGo3
-  sudo bash $GOPIGO3_DIR/Firmware/openocd/install_openocd_compiled.sh
+  # install openocd
+  echo "Installing OpenOCD for GoPiGo3"
+  curl --silent https://raw.githubusercontent.com/DexterInd/openocd/master/openocd_install.sh | bash
 }
 
 # called way down bellow
