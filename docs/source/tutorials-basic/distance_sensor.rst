@@ -59,7 +59,7 @@ the ``time`` module is generally used for delaying actions, commands, setting ti
 The objects
 ===========
 
-For interfacing with the `Distance Sensor`_ we need to instantiate an object of the :py:class:`easygopigo3.EasyGoPiGo3` class so in return, we can instantiate an object of the :py:class:`di_sensors.easy_distance_sensor.DistanceSensor` class.
+For interfacing with the `Distance Sensor`_ we need to instantiate an object of the :py:class:`easygopigo3.EasyGoPiGo3` class so in return, we can instantiate an object of the :py:class:`di_sensors.easy_distance_sensor.EasyDistanceSensor` class.
 We do it like in the following code snippet.
 
 .. code-block:: python
@@ -75,7 +75,7 @@ Main part
 =========
 
 There's a single while loop in the entire script. The loop is for printing the values that we're
-reading repeatedly. We will be using the :py:meth:`~di_sensors.easy_distance_sensor.DistanceSensor.read_mm` method for reading
+reading repeatedly. We will be using the :py:meth:`~di_sensors.easy_distance_sensor.EasyDistanceSensor.read_mm` method for reading
 the distance in millimeters to the target.
 
 .. code-block:: python
@@ -87,7 +87,7 @@ the distance in millimeters to the target.
 
 .. seealso::
 
-     Check out :py:class:`di_sensors.easy_distance_sensor.DistanceSensor`'s API for more details.
+     Check out :py:class:`di_sensors.easy_distance_sensor.EasyDistanceSensor`'s API for more details.
 
 ==========
 Running it

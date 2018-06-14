@@ -858,15 +858,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
     def init_distance_sensor(self, port = "I2C"):
         """
 
-        Initialises a :py:class:`~di_sensors.easy_distance_sensor.DistanceSensor` object and then returns it.
+        Initialises a :py:class:`~di_sensors.easy_distance_sensor.EasyDistanceSensor` object and then returns it.
 
         :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
-        :returns: An instance of the :py:class:`~di_sensors.easy_distance_sensorDistanceSensor` class and with the port set to ``port``'s value.
+        :returns: An instance of the :py:class:`~di_sensors.easy_distance_sensor.EasyDistanceSensor` class and with the port set to ``port``'s value.
         :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
 
         The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
-        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_distance_sensor.DistanceSensor` class.
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_distance_sensor.EasyDistanceSensor` class.
 
         .. tip::
 
