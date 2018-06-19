@@ -28,7 +28,7 @@ You should now have everything set up.
 
 Start the server by typing the following command:
 ```
-python3 flask_server.py
+python3 remote_robot.py
 ```
 It's going to take a couple of seconds for the server to fire up.
 A port and address will be shown in there. By default, the port is set to `5000`.
