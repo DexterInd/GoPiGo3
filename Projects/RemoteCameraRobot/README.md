@@ -31,7 +31,7 @@ Start the server by typing the following command:
 python3 remote_robot.py
 ```
 It's going to take a couple of seconds for the server to fire up.
-A port and address will be shown in there. By default, the port is set to `5000`.
+The web app is set to port `5000` whereas the video stream is found at port `5001`.
 
 If you have got `Raspbian For Robots` installed, then going to `http://dex.local:5000` address will be enough.
 If you don't have `Raspbian For Robots`, then you'll need to see what's your interface's IP address.
