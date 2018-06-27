@@ -17,28 +17,26 @@ We need the following components for this project:
 
 In order to proceed the setup, make sure you have the `GoPiGo3` repository installed (not just cloned, but also installed) or that you have the latest version of `Raspbian For Robots`.
 
-After going through the above paragraph, install the `Pi Camera` dependencies and `Flask` by running the `install.sh` script:
+After going through the above paragraph, install the `Pi Camera` dependencies and `Flask` by running following command:
  ```
- sudo bash install.sh
+ sudo pip3 install -r requirements.txt
  ```
-If everything goes well, **reboot** your `Raspberry Pi`.
+
 You should now have everything set up.
 
 ## Running it
 
 Start the server by typing the following command:
 ```
-python3 flask_server.py
+python3 remote_robot.py
 ```
 It's going to take a couple of seconds for the server to fire up.
-A port and address will be shown in there. By default, the port is set to `5000`.
+The web app is set to port `5000` whereas the video stream is found at port `5001`.
 
 If you have got `Raspbian For Robots` installed, then going to `http://dex.local:5000` address will be enough.
 If you don't have `Raspbian For Robots`, then you'll need to see what's your interface's IP address.
 
 Also, please make sure you have your mobile device / laptop on the same network as your `GoPiGo3`. Otherwise, you won't be able to access it.
-
-Be aware if the video stream doesn't appear. If it doesn't, then the first thing to run is `systemctl status uv4l_raspicam`. If bugs about not having enough resources appear, then it might be the case to increase the split size for the GPU with `raspi-config`. For other bugs, we encourage you to contact us on the [forum](https://forum.dexterindustries.com).
 
 ## Setting Up to Run on Boot
 You can run the server on boot so you don't have to run it manually.  Use the command
