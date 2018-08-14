@@ -35,6 +35,7 @@ parse_cmdline_arguments() {
   updaterepo=true
   install_rfrtools=true
   install_pkg_rfrtools=true
+  install_rfrtools_gui=true
 
   # the following 3 options are mutually exclusive
   systemwide=true
@@ -60,6 +61,9 @@ parse_cmdline_arguments() {
         ;;
       --bypass-python-rfrtools)
         install_pkg_rfrtools=false
+        ;;
+      --bypass-gui-installation)
+        install_rfrtools_gui=false
         ;;
       --user-local)
         userlocal=true
@@ -115,6 +119,7 @@ parse_cmdline_arguments() {
   ([[ $updaterepo = "true" ]] && echo "  --no-update-aptget=false") || echo "  --no-update-aptget=true"
   ([[ $install_rfrtools = "true" ]] && echo "  --bypass-rfrtools=false") || echo "  --bypass-rfrtools=true"
   ([[ $install_pkg_rfrtools = "true" ]] && echo "  --bypass-python-rfrtools=false") || echo "  --bypass-python-rfrtools=true"
+  ([[ $install_rfrtools_gui = "true" ]] && echo "  --bypass-gui-installation=false") || echo "  --bypass-gui-installation=true"
   echo "  --user-local=$userlocal"
   echo "  --env-local=$envlocal"
   echo "  --system-wide=$systemwide"
@@ -134,6 +139,7 @@ parse_cmdline_arguments() {
   [[ $updaterepo = "true" ]] && rfrtools_options+=("--update-aptget")
   [[ $installdependencies = "true" ]] && rfrtools_options+=("--install-deb-deps")
   [[ $install_pkg_rfrtools = "true" ]] && rfrtools_options+=("--install-python-package")
+  [[ $install_rfrtools_gui = "true" ]] && rfrtools_options+=("--install-gui")
 
   # create list of arguments for script_tools call
   declare -ga scriptools_options=("$selectedbranch")
