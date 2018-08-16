@@ -134,7 +134,6 @@ parse_cmdline_arguments() {
 
   echo "Using \"$selectedbranch\" branch"
   echo "Options used for RFR_Tools script: \"${rfrtools_options[@]}\""
-  echo "Options used for script_tools script: \"${scriptools_options[@]}\""
 }
 
 #################################################
