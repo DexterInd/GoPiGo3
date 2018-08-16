@@ -124,15 +124,6 @@ parse_cmdline_arguments() {
   echo "  --env-local=$envlocal"
   echo "  --system-wide=$systemwide"
 
-  # in case the following packages are not installed and `--no-dependencies` option has been used
-  if [[ $installdependencies = "false" || $install_rfrtools = "false" ]]; then
-    command -v git >/dev/null 2>&1 || { echo "This script requires \"git\" but it's not installed. Don't use --no-dependencies option. Exiting." >&2; exit 1; }
-    command -v python >/dev/null 2>&1 || { echo "Executable \"python\" couldn't be found. Don't use --no-dependencies option. Exiting." >&2; exit 2; }
-    command -v python3 >/dev/null 2>&1 || { echo "Executable \"python3\" couldn't be found. Don't use --no-dependencies option. Exiting." >&2; exit 3; }
-    command -v pip >/dev/null 2>&1 || { echo "Executable \"pip\" couldn't be found. Don't use --no-dependencies option. Exiting." >&2; exit 4; }
-    command -v pip3 >/dev/null 2>&1 || { echo "Executable \"pip3\" couldn't be found. Don't use --no-dependencies option. Exiting." >&2; exit 5; }
-  fi
-
   # create rest of list of arguments for rfrtools call
   rfrtools_options+=("$selectedbranch")
   [[ $usepython3exec = "true" ]] && rfrtools_options+=("--use-python3-exe-too")
