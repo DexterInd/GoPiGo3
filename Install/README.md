@@ -49,16 +49,16 @@ As a last thing, different versions of it can be pulled by appending a correspon
 
 ## Minimal Installation
 
-Now, if you only want the absolute minimum in order to get going with the GrovePi, you can run this command:
+Now, if you only want the absolute minimum in order to get going with the GoPiGo3, you can run this command:
 ```bash
 curl -kL dexterindustries.com/update_gopigo3 | bash -s -- --bypass-gui-installation
 ```
 
-This will only get you installed the GrovePi dependencies and nothing else. You still can use options such as `--user-local` or `--env-local` if you are working with a different kind of environment. Keep in mind that `--system-wide` is selected by default.
+This will only get you installed the GoPiGo3 dependencies and nothing else. You still can use options such as `--user-local` or `--env-local` if you are working with a different kind of environment. Keep in mind that `--system-wide` is selected by default.
 
 ## Subsequent Updates
 
-If the GrovePi has been installed either by using the full command or the one for the minimal installation, this means you have all the packages installed already and all dependencies put in. Therefore, on subsequent installation, you can skip installing any dependency and instead just reinstall the python package of the GrovePi. To do this, you can run this command:
+If the GoPiGo3 has been installed either by using the full command or the one for the minimal installation, this means you have all the packages installed already and all dependencies put in. Therefore, on subsequent installation, you can skip installing any dependency and instead just reinstall the python package of the GoPiGo3. To do this, you can run this command:
 ```bash
 curl -kL dexterindustries.com/update_gopigo3| bash -s -- --bypass-rfrtools --no-dependencies --no-update-aptget
 ```
