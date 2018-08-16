@@ -171,7 +171,8 @@ install_rfrtools() {
 
   # if rfrtools is not bypassed then install it
   if [[ $install_rfrtools = "true" ]]; then
-    curl --silent -kL https://raw.githubusercontent.com/DexterInd/RFR_Tools/$selectedbranch/scripts/install_tools.sh > $PIHOME/.tmp_rfrtools.sh
+    # curl --silent -kL https://raw.githubusercontent.com/DexterInd/RFR_Tools/$selectedbranch/scripts/install_tools.sh > $PIHOME/.tmp_rfrtools.sh
+    curl --silent -kL https://raw.githubusercontent.com/RobertLucian/RFR_Tools/hotfix/add-gui-bypass/scripts/install_tools.sh > $PIHOME/.tmp_rfrtools.sh
     echo "Installing RFR_Tools. This might take a while.."
     bash $PIHOME/.tmp_rfrtools.sh ${rfrtools_options[@]} # > /dev/null
     ret_val=$?
@@ -199,7 +200,8 @@ clone_gopigo3() {
   # it's simpler and more reliable (for now) to just delete the repo and clone a new one
   # otherwise, we'd have to deal with all the intricacies of git
   sudo rm -rf $GOPIGO3_DIR
-  git clone --quiet --depth=1 -b $selectedbranch https://github.com/DexterInd/GoPiGo3.git
+  #git clone --quiet --depth=1 -b $selectedbranch https://github.com/DexterInd/GoPiGo3.git
+  git clone --quiet --depth=1 -b hotfix/bypass-gui-installation https://github.com/RobertLucian/GoPiGo3.git
   cd $GOPIGO3_DIR
 }
 
