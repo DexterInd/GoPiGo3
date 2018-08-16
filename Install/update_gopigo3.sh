@@ -157,7 +157,7 @@ check_dependencies() {
 }
 
 # called way down below
-install_rfrtools() {
+install_rfrtools_repo() {
 
   # if rfrtools is not bypassed then install it
   if [[ $install_rfrtools = "true" ]]; then
@@ -289,7 +289,7 @@ install_gopigp3_power_service() {
 check_if_run_with_pi
 
 parse_cmdline_arguments "$@"
-install_rfrtools
+install_rfrtools_repo
 
 clone_gopigo3
 install_python_pkgs_and_dependencies
