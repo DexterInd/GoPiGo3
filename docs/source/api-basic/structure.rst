@@ -232,7 +232,6 @@ Base Sensor
   easysensors.AnalogSensor
   easysensors.AnalogSensor.read
   easysensors.AnalogSensor.percent_read
-  easysensors.AnalogSensor.read
   easysensors.AnalogSensor.write_freq
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
