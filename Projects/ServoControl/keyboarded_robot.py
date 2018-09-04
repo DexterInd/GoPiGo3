@@ -180,8 +180,8 @@ class GoPiGo3WithKeyboard(object):
         return "gradual_turn_servo2"
 
     def _gopigo3_command_kill(self):
-        self.servo1.reset_servo()
-        self.servo2.reset_servo()
+        self.servo1.gpg.set_servo(self.servo1.portID, 0)
+        self.servo2.gpg.set_servo(self.servo2.portID, 0)
 
         return "kill_servos"
 
