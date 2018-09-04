@@ -10,6 +10,10 @@ In this project, we make the `GoPiGo3` intelligently avoid obstacles. You need t
 
 The `servo` is particularly useful, because it gives the distance sensor a 120 degrees viewing angle. The script uses a greedy-like algorithm for choosing the best path.
 
+## DexterOS Notice
+
+In DexterOS it's not needed to install or configure anything. Any required dependency is already installed on it. Just make sure you've got the right physical configuration (sensors, servos, etc) and then run the script this way `python program-name.py`.
+
 ## Preparing It
 
 You need to do the following things in order to be able to launch the `robot.py` script:
