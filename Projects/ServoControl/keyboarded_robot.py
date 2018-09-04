@@ -180,8 +180,8 @@ class GoPiGo3WithKeyboard(object):
         return "gradual_turn_servo2"
 
     def _gopigo3_command_kill(self):
-        self.servo1.kill_servo()
-        self.servo2.kill_servo()
+        self.servo1.disable_servo()
+        self.servo2.disable_servo()
 
         return "kill_servos"
 
