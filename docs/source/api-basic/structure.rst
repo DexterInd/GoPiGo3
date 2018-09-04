@@ -191,7 +191,7 @@ Sensor/Actuator
    easysensors.Servo
    easysensors.Servo.rotate_servo
    easysensors.Servo.reset_servo
-   easysensors.Servo.kill_servo
+   easysensors.Servo.disable_servo
    easysensors.Remote
    easysensors.Remote.read
    easysensors.Remote.get_remote_code

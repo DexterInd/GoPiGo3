@@ -1583,11 +1583,11 @@ class Servo(Sensor):
         """
         self.rotate_servo(90)
 
-    def kill_servo(self):
+    def disable_servo(self):
         """
-        Kill the power to the `servo`_. 
+        Disable (or "float") the `servo`_. 
         
-        The effect of this command is that if you then try to rotate the servo manually, it won't resist you, thus meaning that it's not powered.
+        The effect of this command is that if you then try to rotate the servo manually, it won't resist you, thus meaning that it's not trying to hold a target position.
         """
         self.gpg.set_servo(self.portID, 0)
 
