@@ -10,7 +10,7 @@ a set of keyboard combinations will be displayed in the terminal. The 6 availabl
 * `w` key - make the robot move towards a given direction (select one of the above cardinal points).
 * `<SPACE>` key - stops the robot (still allows you to use the `<LEFT>`, `<RIGHT>`, etc commands).
 
-## Required components
+## Required Components
 
 * A [`GoPiGo3`](https://www.dexterindustries.com/gopigo3/) robot - that includes the board, the actual robot and the battery pack.
 * A [`RaspberryPi`](https://www.dexterindustries.com/shop/raspberry-pi-3/).
@@ -27,7 +27,11 @@ You also need to plug the `IMU` inside the `AD1` port. See the `GoPiGo3` ports' 
 
 ![DI IMU + GoPiGo3](http://i.imgur.com/bdPfass.jpg)
 
-## Running it
+## DexterOS Notice
+
+In DexterOS it's not needed to install or configure anything. Any required dependency is already installed on it. Just make sure you've got the right physical configuration (sensors, servos, etc) and then run the script this way `python program-name.py`.
+
+## Running It
 
 In order to run this script, we need to use Python 3 exclusively like this:
 
@@ -43,7 +47,7 @@ Now, play with it!
 
 #### Warning: the compass (DI IMU) is very sensitive to any electronic/electric devices (laptops, PCs, smartphones, LCDs, etc). This devices will affect the determined heading of the robot.
 
-## Compass considerations
+## Compass Considerations
 
 The geographical location of the North pole is never static and it constantly changes as times passes.
 This means the North pole doesn't have to be exactly at the North pole of Earth - that's just a general convention. Right now, the North pole is situated somewhere near Canada, so that's pretty far away from what we consider the North pole.
