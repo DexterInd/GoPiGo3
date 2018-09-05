@@ -54,7 +54,7 @@ Now, if you only want the absolute minimum in order to get going with the GoPiGo
 curl -kL dexterindustries.com/update_gopigo3 | bash -s -- --bypass-gui-installation
 ```
 
-This will only get you installed the GoPiGo3 dependencies and nothing else. You still can use options such as `--user-local` or `--env-local` if you are working with a different kind of environment. Keep in mind that `--system-wide` is selected by default.
+This will only install the GoPiGo3 dependencies and nothing else. You still can use options such as `--user-local` or `--env-local` if you are working with a different kind of environment. Keep in mind that `--system-wide` is selected by default.
 
 ## Subsequent Updates
 
