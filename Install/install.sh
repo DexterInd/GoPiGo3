@@ -17,17 +17,11 @@ check_root_user() {
 }
 
 install_dependencies() {
-
-    # the sudo apt-get update is already done by the
-    # script_tools installer in update_gopigo3.sh
-
     feedback "Installing Dependencies for the GoPiGo3"
 
-    # for python3
-    sudo apt-get install python3-pip python3-numpy python3-curtsies -y
-
-    # for python2
-    sudo apt-get install python-pip python-numpy python-curtsies -y
+    sudo apt-get install --no-install-recommends -y \
+        python3-pip python3-numpy python3-curtsies \
+        python-pip python-numpy python-curtsies
 
     feedback "Dependencies installed for the GoPiGo3"
 }
