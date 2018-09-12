@@ -115,15 +115,14 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                     sleep(servo_delay)
 
                     distance = distance_sensor.read()
-                    current_servo_position += step
                     possible_routes += 1
-
                     # print("left", distance, 90 - current_servo_position)
 
                     if distance > distance_trigger:
                         sonar_samples.append([distance, 90 - current_servo_position])
                     else:
                         deadends += 1
+                    current_servo_position += step
 
                 to_the_right = False
                 current_servo_position = rightmost_degrees
@@ -141,15 +140,14 @@ def obstacleFinder(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
                     sleep(servo_delay)
 
                     distance = distance_sensor.read()
-                    current_servo_position -= step
                     possible_routes += 1
-
                     # print("right", distance, 90 - current_servo_position)
 
                     if distance > distance_trigger:
                         sonar_samples.append([distance, 90 - current_servo_position])
                     else:
                         deadends += 1
+                    current_servo_position -= step
 
                 to_the_right = True
                 current_servo_position = leftmost_degrees

@@ -7,6 +7,9 @@ When the target is too close to the robot, the GoPiGo3 robot stops. The robot wi
 
 This project can run with Python 2 and 3.
 
+## On DexterOS
+In DexterOS it's not needed to install or configure anything. Any required dependency is already installed on it. Just make sure you've got the right physical configuration (sensors, servos, etc) and then run the script this way `python program-name.py`.
+
 ## Attention
 
 When the GoPiGo3 is low on battery, the script may inadvertently stop. Check the batteries before heading over to the forums.
@@ -15,7 +18,7 @@ When the GoPiGo3 is low on battery, the script may inadvertently stop. Check the
 
 ## About the script
 
-There are a couple of constants that can be set within the script:
+The DI-Sensor has to be connected to an I2C port with a Grove cable. Apart from that, there are a couple of constants that can be set within the script:
 
 * `DEBUG` : By default it's set to `False`, but if you wish to see more then set it to `True`.
 * `MAX_DISTANCE` : The maximum distance the sensor can detect in millimeters.

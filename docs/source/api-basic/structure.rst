@@ -191,6 +191,7 @@ Sensor/Actuator
    easysensors.Servo
    easysensors.Servo.rotate_servo
    easysensors.Servo.reset_servo
+   easysensors.Servo.disable_servo
    easysensors.Remote
    easysensors.Remote.read
    easysensors.Remote.get_remote_code
@@ -232,7 +233,6 @@ Base Sensor
   easysensors.AnalogSensor
   easysensors.AnalogSensor.read
   easysensors.AnalogSensor.percent_read
-  easysensors.AnalogSensor.read
   easysensors.AnalogSensor.write_freq
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
