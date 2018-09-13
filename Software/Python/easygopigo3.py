@@ -210,6 +210,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
+    def spin_right(self):
+        """
+        Rotate the `GoPiGo3` towards the right while staying on the same spot.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | This differs from the right() method as both wheels will be rotating but in different directions.
+             | This causes the robot to spin in place, as if doing a pirouette
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed()* -1)
+
     def left(self):
         """
         Move the `GoPiGo3`_ to the left.
@@ -224,6 +239,41 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         self.set_motor_dps(self.MOTOR_LEFT, 0)
         self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+
+    def spin_left(self):
+        """
+        Rotate the `GoPiGo3` towards the left while staying on the same spot.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | This differs from the left() method as both wheels will be rotating but in different directions.
+             | This causes the robot to spin in place, as if doing a pirouette
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * -1)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() )
+
+    def steer(self, left_percent, right_percent):
+        """
+        Control each motor in order to get a variety of turning movements. 
+        Each motor is assigned a percentage of the current speed value. 
+        While there is no limit on the values of `left_percent` and `right_percent`, they are expected to be between -100 and 100
+
+        @param int left_percent: percentage of current speed value that gets applied to left motor
+        @param int right_percent: percentage of current speed value that gets applied to right motor
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | Setting both left_percent and right_percent to 100 will result in the same behavior as the forward() method.
+             | Setting both left_percent and right_percent to 0 will stop the GoPiGo
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * left_percent / 100)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() * right_percent / 100)
 
     def forward(self):
         """
