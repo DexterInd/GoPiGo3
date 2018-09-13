@@ -408,7 +408,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         @param int radius_cm: Radius in cm of the circle to drive. Default is 0 (turn in place)
         """
         speed = self.get_speed()
-        radius = radius_cm / 10
+        radius = radius_cm * 10
 
         # the total distance to drive in mm
         drive_distance = math.pi * abs(radius) * abs(degrees) / 180 # / 180 is shorter than radius * 2 / 360
