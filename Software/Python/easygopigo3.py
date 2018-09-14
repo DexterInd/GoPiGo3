@@ -8,6 +8,7 @@ import sys
 # import select
 import time
 import os
+import math
 from I2C_mutex import Mutex
 import easysensors
 try:
@@ -183,48 +184,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
 
-
-    def backward(self):
-        """
-        Move the `GoPiGo3`_ backward.
-
-        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
-
-        """
-        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed() * -1)
-
-    def right(self):
-        """
-        Move the `GoPiGo3`_ to the right.
-
-        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
-
-        .. important::
-             | The robot will activate only the left motor, whilst the right motor will be completely stopped.
-             | This causes the robot to rotate in very short circles.
-
-        """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_dps(self.MOTOR_RIGHT, 0)
-
-    def left(self):
-        """
-        Move the `GoPiGo3`_ to the left.
-
-        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
-        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
-
-        .. important::
-             | The robot will activate only the right motor, whilst the left motor will be completely stopped.
-             | This causes the robot to rotate in very short circles.
-
-        """
-        self.set_motor_dps(self.MOTOR_LEFT, 0)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
-
     def forward(self):
         """
         Move the `GoPiGo3`_ forward.
@@ -346,6 +305,169 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight + degrees) is False:
                 time.sleep(0.1)
         return
+
+
+    def backward(self):
+        """
+        Move the `GoPiGo3`_ backward.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to ``300`` - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
+                           self.get_speed() * -1)
+
+    def right(self):
+        """
+        Move the `GoPiGo3`_ to the right.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | The robot will activate only the left motor, whilst the right motor will be completely stopped.
+             | This causes the robot to rotate in very short circles.
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, 0)
+
+    def spin_right(self):
+        """
+        Rotate the `GoPiGo3` towards the right while staying on the same spot.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | This differs from the right() method as both wheels will be rotating but in different directions.
+             | This causes the robot to spin in place, as if doing a pirouette
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed()* -1)
+
+    def left(self):
+        """
+        Move the `GoPiGo3`_ to the left.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | The robot will activate only the right motor, whilst the left motor will be completely stopped.
+             | This causes the robot to rotate in very short circles.
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, 0)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+
+    def spin_left(self):
+        """
+        Rotate the `GoPiGo3` towards the left while staying on the same spot.
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | This differs from the left() method as both wheels will be rotating but in different directions.
+             | This causes the robot to spin in place, as if doing a pirouette
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * -1)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() )
+
+    def steer(self, left_percent, right_percent):
+        """
+        Control each motor in order to get a variety of turning movements. 
+        Each motor is assigned a percentage of the current speed value. 
+        While there is no limit on the values of `left_percent` and `right_percent`, they are expected to be between -100 and 100
+
+        @param int left_percent: percentage of current speed value that gets applied to left motor
+        @param int right_percent: percentage of current speed value that gets applied to right motor
+
+        For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
+        Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
+
+        .. important::
+             | Setting both left_percent and right_percent to 100 will result in the same behavior as the forward() method.
+             | Setting both left_percent and right_percent to 0 will stop the GoPiGo
+
+        """
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * left_percent / 100)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() * right_percent / 100)
+
+
+
+    def orbit(self, degrees, radius_cm=0, blocking=True):
+        """
+        Control the GoPiGo so it will orbit around an object
+
+        @param int degrees: Degrees to steer. 360 for full rotation. Negative for left turn.
+        @param int radius_cm: Radius in cm of the circle to drive. Default is 0 (turn in place)
+        """
+        speed = self.get_speed()
+        radius = radius_cm * 10
+
+        # the total distance to drive in mm
+        drive_distance = math.pi * abs(radius) * abs(degrees) / 180 # / 180 is shorter than radius * 2 / 360
+        
+        # the distance in mm to add to one motor and subtract from the other
+        drive_difference = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
+        
+        # the number of degrees each wheel needs to turn on average to get the necessary distance 
+        distance_degrees = ((drive_distance / self.WHEEL_CIRCUMFERENCE) * 360)
+        
+        # the difference between motor travel in degrees
+        difference_degrees = ((drive_difference / self.WHEEL_CIRCUMFERENCE) * 360)
+        
+        # the distance each wheel needs to turn
+        left_target  = (distance_degrees + difference_degrees)
+        right_target = (distance_degrees - difference_degrees)
+        
+        # if it's a left turn
+        if degrees < 0:
+            MOTOR_FAST = self.MOTOR_RIGHT
+            MOTOR_SLOW = self.MOTOR_LEFT
+            fast_target = right_target
+            slow_target = left_target
+        else:
+            MOTOR_FAST = self.MOTOR_LEFT
+            MOTOR_SLOW = self.MOTOR_RIGHT
+            fast_target = left_target
+            slow_target = right_target
+        
+        # determine driving direction from the speed
+        direction = 1
+        if speed < 0:
+            direction = -1
+            speed = -speed
+        
+        # calculate the motor speed for each motor
+        fast_speed = speed
+        slow_speed = abs((speed * slow_target) / fast_target)
+        
+        # set the motor speeds
+        self.set_motor_limits(MOTOR_FAST, dps = fast_speed)
+        self.set_motor_limits(MOTOR_SLOW, dps = slow_speed)
+        
+        # get the starting position of each motor
+        StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
+        StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        
+        # Set each motor target position
+        self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + (left_target * direction)))
+        self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + (right_target * direction)))
+        
+        if blocking:
+            while self.target_reached(
+                    StartPositionLeft + (left_target * direction),
+                    StartPositionRight + (right_target * direction)) is False:
+                time.sleep(0.1)
+        
+        return
+
 
     def target_reached(self, left_target_degrees, right_target_degrees):
         """
