@@ -28,24 +28,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 '''
 from __future__ import print_function
 from __future__ import division
-from builtins import input
 # the above lines are meant for Python3 compatibility.
 # they force the use of Python3 functionality for print(), 
 # the integer division and input()
 # mind your parentheses!
 
-import line_sensor
+import easygopigo3 as easy
 import time
 
-def get_sensorval():
-	while True:
-		val=line_sensor.read_sensor()
-		if val[0]!=-1:
-			return val
-		#else:
-			#Read once more to clear buffer and remove junk values
-		#	val=line_sensor.read_sensor()
-while True:
-	l0,l1,l2,l3,l4=get_sensorval()
-	print (l0,l1,l2,l3,l4)
-	#time.sleep(.05)
+sensor_readings = None
+
+gpg = easy.EasyGoPiGo3()
+
+try:
+    my_linefollower = gpg.init_line_follower()
+    time.sleep(0.1)
+except:
+    print('Line Follower not responding')
+    time.sleep(0.2)
+    exit()
+my_linefollower.read_position()
+my_linefollower.read_position()
+
+
+# start
+gpg.forward()
+while not  my_linefollower.read_position() == "black":
+    if my_linefollower.read_position() == 'center':
+        gpg.forward()
+    if my_linefollower.read_position() == 'left':
+        gpg.left()
+    if my_linefollower.read_position() == 'right':
+        gpg.right()
+gpg.stop()
+
