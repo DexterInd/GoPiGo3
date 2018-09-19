@@ -116,7 +116,11 @@ GoPiGo3 Movement
    easygopigo3.EasyGoPiGo3.stop
    easygopigo3.EasyGoPiGo3.backward
    easygopigo3.EasyGoPiGo3.right
+   easygopigo3.EasyGoPiGo3.spin_right
    easygopigo3.EasyGoPiGo3.left
+   easygopigo3.EasyGoPiGo3.spin_right
+   easygopigo3.EasyGoPiGo3.steer
+   easygopigo3.EasyGoPiGo3.orbit
    easygopigo3.EasyGoPiGo3.forward
    easygopigo3.EasyGoPiGo3.drive_cm
    easygopigo3.EasyGoPiGo3.drive_inches

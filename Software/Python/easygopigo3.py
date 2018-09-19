@@ -337,12 +337,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         Rotate the `GoPiGo3` towards the right while staying on the same spot.
 
+        This differs from the :py:meth:`~easygopigo3.EasyGoPiGo3.right` method as both wheels will be rotating but in different directions.
+        This causes the robot to spin in place, as if doing a pirouette.
+
         For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
-             | This differs from the right() method as both wheels will be rotating but in different directions.
-             | This causes the robot to spin in place, as if doing a pirouette
+             This is a particularity of :py:meth:`~easygopigo3.EasyGoPiGo3.steer` method, thus you can achieve the same by calling ``steer(100, -100)``.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
@@ -367,12 +369,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         Rotate the `GoPiGo3` towards the left while staying on the same spot.
 
+        This differs from the :py:meth:`~easygopigo3.EasyGoPiGo3.left` method as both wheels will be rotating but in different directions. 
+        This causes the robot to spin in place, as if doing a pirouette.
+
         For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
-             | This differs from the left() method as both wheels will be rotating but in different directions.
-             | This causes the robot to spin in place, as if doing a pirouette
+             This is a particularity of :py:meth:`~easygopigo3.EasyGoPiGo3.steer` method, thus you can achieve the same by calling ``steer(-100, 100)``.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * -1)
@@ -380,19 +384,23 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def steer(self, left_percent, right_percent):
         """
-        Control each motor in order to get a variety of turning movements. 
-        Each motor is assigned a percentage of the current speed value. 
-        While there is no limit on the values of `left_percent` and `right_percent`, they are expected to be between -100 and 100
+        Control each motor in order to get a variety of turning movements.
 
-        @param int left_percent: percentage of current speed value that gets applied to left motor
-        @param int right_percent: percentage of current speed value that gets applied to right motor
+        Each motor is assigned a percentage of the current speed value. 
+        While there is no limit on the values of ``left_percent`` and ``right_percent`` parameters,
+        they are expected to be between **-100** and **100**.
+
+        :param int left_percent: Percentage of current speed value that gets applied to left motor. The range is between **-100** (for backward rotation) and **100** (for forward rotation).
+        :param int right_percent: Percentage of current speed value that gets applied to right motor. The range is between **-100** (for backward rotation) and **100** (for forward rotation).
 
         For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
         Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
-             | Setting both left_percent and right_percent to 100 will result in the same behavior as the forward() method.
-             | Setting both left_percent and right_percent to 0 will stop the GoPiGo
+             Setting both ``left_percent`` and ``right_percent`` parameters to **100** will result in the same behavior as the :py:meth:`~easygopigo3.EasyGoPiGo3.forward` method.
+             The other behavior for :py:meth:`~easygopigo3.EasyGoPiGo3.backward` method will be experienced if both parameters are set to **-100**.
+             
+             Setting both ``left_percent`` and ``right_percent`` to **0** will stop the GoPiGo from moving.
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * left_percent / 100)
@@ -400,12 +408,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
 
 
-    def orbit(self, degrees, radius_cm=0, blocking=True):
+    def orbit(self, degrees, radius_cm = 0, blocking = True):
         """
         Control the GoPiGo so it will orbit around an object
 
-        @param int degrees: Degrees to steer. 360 for full rotation. Negative for left turn.
-        @param int radius_cm: Radius in cm of the circle to drive. Default is 0 (turn in place)
+        :param int degrees: Degrees to steer. **360** for full rotation. Negative for left turn.
+        :param int radius_cm: Radius in `cm` of the circle to drive. Default is **0** (turn in place).
+        :param boolean blocking = True: Set it as a blocking or non-blocking method.
         """
         speed = self.get_speed()
         radius = radius_cm * 10

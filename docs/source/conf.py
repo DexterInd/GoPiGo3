@@ -104,7 +104,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GoPiGo3'
-copyright = u'2017, Dexter Industries'
+copyright = u'2018, Dexter Industries'
 author = u'Robert Lucian Chiriac'
 
 # The version info for the project you're documenting, acts as replacement for
