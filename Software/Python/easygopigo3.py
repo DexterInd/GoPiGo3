@@ -344,7 +344,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
-             This is a particularity of :py:meth:`~easygopigo3.EasyGoPiGo3.steer` method, thus you can achieve the same by calling ``steer(100, -100)``.
+             You can achieve the same effect by calling ``steer(100, -100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
@@ -376,7 +376,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         Default ``speed`` is set to **300** - see :py:meth:`~easygopigo3.EasyGoPiGo3.__init__`.
 
         .. important::
-             This is a particularity of :py:meth:`~easygopigo3.EasyGoPiGo3.steer` method, thus you can achieve the same by calling ``steer(-100, 100)``.
+             You can achieve the same effect by calling ``steer(-100, 100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * -1)
