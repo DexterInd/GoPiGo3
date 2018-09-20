@@ -118,7 +118,7 @@ GoPiGo3 Movement
    easygopigo3.EasyGoPiGo3.right
    easygopigo3.EasyGoPiGo3.spin_right
    easygopigo3.EasyGoPiGo3.left
-   easygopigo3.EasyGoPiGo3.spin_right
+   easygopigo3.EasyGoPiGo3.spin_left
    easygopigo3.EasyGoPiGo3.steer
    easygopigo3.EasyGoPiGo3.orbit
    easygopigo3.EasyGoPiGo3.forward
