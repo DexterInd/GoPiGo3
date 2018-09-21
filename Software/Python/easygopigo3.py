@@ -408,7 +408,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
 
 
-    def orbit(self, degrees, radius_cm = 0, blocking = True):
+    def orbit(self, degrees, radius_cm=0, blocking=True):
         """
         Control the GoPiGo so it will orbit around an object
 
