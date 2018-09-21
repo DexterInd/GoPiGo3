@@ -3,6 +3,7 @@ import time
 
 # needed for duck typing
 import gopigo3
+import operator
 
 mutex = Mutex()
 
@@ -29,7 +30,6 @@ def debug(in_str):
 
 try:
     from line_follower import line_sensor
-    from line_follower import scratch_line
 
     # is_line_follower_accessible not really used, just in case
     is_line_follower_accessible = True
@@ -37,7 +37,6 @@ except:
     try:
         sys.path.insert(0, '/home/pi/GoPiGo/Software/Python/line_follower')
         import line_sensor
-        import scratch_line
         is_line_follower_accessible = True
     except:
         is_line_follower_accessible = False
@@ -1772,8 +1771,15 @@ class LineFollower(Sensor):
             Sensor.__init__(self, port, "INPUT", gpg, use_mutex)
             if line_sensor.read_sensor() == [-1, -1, -1, -1, -1]:
                 raise IOError("Line Follower not responding")
+            self.white_line = line_sensor.get_white_line()
+            self.black_line = line_sensor.get_black_line()
+            self._calculate_threshold()
         except:
             raise
+
+    def _calculate_threshold(self):
+        self.range_sensor = list(map(operator.sub, self.black_line, self.white_line))
+        self.threshold = [a+b/2 for a,b in zip(self.white_line, self.range_sensor)]
 
     def read_raw_sensors(self):
         """
@@ -1802,7 +1808,9 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
 
         """
-        return line_sensor.get_white_line()
+        self.white_line = line_sensor.get_white_line()
+        self._calculate_threshold()
+        return self.white_line
 
     def get_black_calibration(self):
         """
@@ -1815,7 +1823,9 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
 
         """
-        return line_sensor.get_black_line()
+        self.black_line = line_sensor.get_black_line()
+        self._calculate_threshold()
+        return self.black_line
 
     def read(self):
         """
@@ -1830,7 +1840,17 @@ class LineFollower(Sensor):
              Please use :py:meth:`~easysensors.LineFollower.get_black_calibration` or :py:meth:`~easysensors.LineFollower.get_white_calibration` methods before calling this method.
 
         """
-        five_vals = scratch_line.absolute_line_pos()
+        raw_vals = line_sensor.get_sensorval()
+        five_vals = [0]*5
+        for i in range(5):
+            if raw_vals[i] == -1:
+                five_vals[i] = -1
+            elif raw_vals[i] > self.threshold[i]:
+                five_vals[i] = 1
+            else:
+                five_vals[i] = 0
+        # reverse the readings so the one on the left shows up at the left
+        five_vals = five_vals[::-1]
 
         return five_vals
 
