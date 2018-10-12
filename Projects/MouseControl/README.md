@@ -25,3 +25,6 @@ is prompted to input a value which represents the mode of operation:
 When closing the app, press the `CTRL-C` combination of keys and move the mouse around just a little bit, so that the process stops. That's because the script uses blocking methods and while the mouse is stationary (and no buttons are pressed), the script is in a state of *"waiting"*.  
 
 ![](http://i.imgur.com/K5ZK8fj.gif)
+
+## On DexterOS
+In DexterOS it's not needed to install or configure anything. Any required dependency is already installed on it. Just make sure you've got the right physical configuration (sensors, servos, etc) and then run the script this way `python program-name.py`.

@@ -116,7 +116,11 @@ GoPiGo3 Movement
    easygopigo3.EasyGoPiGo3.stop
    easygopigo3.EasyGoPiGo3.backward
    easygopigo3.EasyGoPiGo3.right
+   easygopigo3.EasyGoPiGo3.spin_right
    easygopigo3.EasyGoPiGo3.left
+   easygopigo3.EasyGoPiGo3.spin_left
+   easygopigo3.EasyGoPiGo3.steer
+   easygopigo3.EasyGoPiGo3.orbit
    easygopigo3.EasyGoPiGo3.forward
    easygopigo3.EasyGoPiGo3.drive_cm
    easygopigo3.EasyGoPiGo3.drive_inches
@@ -191,6 +195,7 @@ Sensor/Actuator
    easysensors.Servo
    easysensors.Servo.rotate_servo
    easysensors.Servo.reset_servo
+   easysensors.Servo.disable_servo
    easysensors.Remote
    easysensors.Remote.read
    easysensors.Remote.get_remote_code
@@ -232,7 +237,6 @@ Base Sensor
   easysensors.AnalogSensor
   easysensors.AnalogSensor.read
   easysensors.AnalogSensor.percent_read
-  easysensors.AnalogSensor.read
   easysensors.AnalogSensor.write_freq
 
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
