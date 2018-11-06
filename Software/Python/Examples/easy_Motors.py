@@ -37,8 +37,6 @@ time.sleep(1)
 
 print("Drive the motors 50 cm and then stop.")
 gpg.drive_cm(50, True)
-
-print("Wait 1 second.")
 time.sleep(1)
 
 print("Turn right 1 second.")
