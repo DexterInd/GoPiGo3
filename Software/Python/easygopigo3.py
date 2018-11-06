@@ -410,11 +410,16 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def orbit(self, degrees, radius_cm=0, blocking=True):
         """
-        Control the GoPiGo so it will orbit around an object
-
+        Control the GoPiGo so it will orbit around an object.  
+        
         :param int degrees: Degrees to steer. **360** for full rotation. Negative for left turn.
         :param int radius_cm: Radius in `cm` of the circle to drive. Default is **0** (turn in place).
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
+
+        .. important:: 
+           Note that while in non-blocking mode the speed cannot be changed before the end of the orbit as it would negate all orbit calculations. 
+           After a non-blocking call, :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed` has to be called before any other movement.
+
         """
         speed = self.get_speed()
         radius = radius_cm * 10
@@ -476,8 +481,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionRight + (right_target * direction)) is False:
                 time.sleep(0.1)
         
-        # reset to original speed
-        self.set_speed(speed)
+            # reset to original speed once done
+            # if non-blocking, then the user is responsible in resetting the speed
+            self.set_speed(speed)
         
         return
 
