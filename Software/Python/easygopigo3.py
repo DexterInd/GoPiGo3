@@ -449,13 +449,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         
         # determine driving direction from the speed
         direction = 1
+        speed_with_direction = speed
         if speed < 0:
             direction = -1
-            speed = -speed
+            speed_with_direction = -speed
         
         # calculate the motor speed for each motor
-        fast_speed = speed
-        slow_speed = abs((speed * slow_target) / fast_target)
+        fast_speed = speed_with_direction
+        slow_speed = abs((speed_with_direction * slow_target) / fast_target)
         
         # set the motor speeds
         self.set_motor_limits(MOTOR_FAST, dps = fast_speed)
@@ -474,6 +475,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionLeft + (left_target * direction),
                     StartPositionRight + (right_target * direction)) is False:
                 time.sleep(0.1)
+        
+        # reset to original speed
+        self.set_speed(speed)
         
         return
 
