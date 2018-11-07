@@ -6,14 +6,14 @@ Driving Around
 
 Driving the GoPiGo3 around is only a matter of choosing the right methods from the :py:class:`~easygopigo3.EasyGoPiGo3` class.
 In all of our examples, the :py:mod:`~easygopigo3` is required and needs to be imported and a :py:class:`~easygopigo3.EasyGoPiGo3` object
-has to be instantiated this way:
+can be instantiated this way:
 
 .. code-block:: python
 
    from easygopigo3 import EasyGoPiGo3 # importing the EasyGoPiGo3 class
    gpg = EasyGoPiGo3() # instantiating a EasyGoPiGo3 object
 
-Instantiating :py:class:`~easygopigo3.EasyGoPiGo3` object can fail if the GoPiGo3 is not present.
+Instantiating :py:class:`~easygopigo3.EasyGoPiGo3` object can fail if the GoPiGo3 is not present or there's a firmware mismatch.
 Check the :py:class:`~easygopigo3.EasyGoPiGo3.__init__` constructor of this class to see what exceptions can be raised.
 
 =======================
