@@ -30,9 +30,9 @@ gpg = EasyGoPiGo3()
 print("Move the motors forward freely for 1 second.")
 gpg.forward()
 time.sleep(1)
+gpg.stop()
 
 print("Stop the motors for 1 second.")
-gpg.stop()
 time.sleep(1)
 
 print("Drive the motors 50 cm and then stop.")

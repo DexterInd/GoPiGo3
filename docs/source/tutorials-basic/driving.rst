@@ -42,13 +42,13 @@ Next, move the robot forward for exactly one second and right after that continu
     print("Move the motors forward freely for 1 second.")
     gpg.forward()
     time.sleep(1)
+    gpg.stop()
 
 Stop the motors for a second.
 
 .. code-block:: python
 
     print("Stop the motors for 1 second.")
-    gpg.stop()
     time.sleep(1)
 
 And then move forward again, but this time for 50 centimeters and once the moving function ends, wait a second until the next block of code
