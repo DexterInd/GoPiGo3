@@ -43,7 +43,7 @@ Next, move the robot forward for exactly one second and right after that continu
     gpg.forward()
     time.sleep(1)
 
-Stop the motors for a second
+Stop the motors for a second.
 
 .. code-block:: python
 
@@ -61,7 +61,7 @@ gets executed. Notice that :py:meth:`~easygopigo3.EasyGoPiGo3.drive_cm` is a blo
     time.sleep(1)
 
 
-Then right for a second
+Then right for a second.
 
 .. code-block:: python
 
@@ -69,7 +69,7 @@ Then right for a second
     gpg.right()
     time.sleep(1)
 
-And likewise to the left
+And likewise to the left.
 
 .. code-block:: python
 
