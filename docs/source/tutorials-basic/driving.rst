@@ -29,11 +29,11 @@ We first need to import the :py:class:`easygopigo3` and the :py:mod:`python:time
 
     # import the time library for the sleep function
     import time
-    import easygopigo3 as easy
+    from easygopigo3 import EasyGoPiGo3
 
     # create an instance of the GoPiGo3 class.
     # gpg will be the GoPiGo3 object.
-    gpg = easy.EasyGoPiGo3()
+    gpg = EasyGoPiGo3()
 
 Next, move the robot forward for exactly one second and right after that continue to the next block of code.
 
@@ -162,6 +162,10 @@ Going Forward at Increasing Speed
 
 In this example, we make the GoPiGo3 go forward at an ever increasing speed. We start of with a speed of ``50`` and end up going at ``300``.
 :py:meth:`~easygopigo3.EasyGoPiGo3.forward`, :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed` and :py:meth:`~easygopigo3.EasyGoPiGo3.stop` methods are used.
+
+.. warning::
+
+   This example will not work with versions released before November 2018. Do an update before running it.
 
 .. code-block:: python
 
