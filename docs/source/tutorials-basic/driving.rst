@@ -1,7 +1,7 @@
 .. _tutorials-basic-driving-chapter:
 
 **************************
-Driving the GoPiGo3 Around
+Driving Around
 **************************
 
 Driving the GoPiGo3 around is only a matter of choosing the right methods from the :py:class:`~easygopigo3.EasyGoPiGo3` class.

@@ -1,7 +1,7 @@
 .. _tutorials-basic-distance-sensor:
 
 **********************************
-Measuring with the Distance Sensor
+Measuring Distance
 **********************************
 
 ========
