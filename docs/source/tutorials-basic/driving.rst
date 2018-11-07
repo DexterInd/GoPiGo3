@@ -179,10 +179,9 @@ In this example, we make the GoPiGo3 go forward at an ever increasing speed. We 
 
    # start moving the robot at an ever increasing speed
    gpg.forward()
-   while time() <= end:
+   while current_speed <= end_speed:
      sleep(0.1)
      gpg.set_speed(current_speed)
-     gpg.forward()
      current_speed += step
 
    # and then stop it
