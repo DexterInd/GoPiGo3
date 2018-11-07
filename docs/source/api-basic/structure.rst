@@ -103,6 +103,8 @@ Functions Short-List
 Here's a short summary of the methods of all classes that are documented. We start off with a couple of lists for the methods/functions/methods of the :py:mod:`easygopigo3` module and then
 we finish with another few for the :py:mod:`easysensors` module, so that we can create a visual distinction one from another and thus make it more easy to search around.
 
+.. _gopigo3-movement-api-methods:
+
 """""""""""""""""""""""""""""""""""""
 GoPiGo3 Movement
 """""""""""""""""""""""""""""""""""""
