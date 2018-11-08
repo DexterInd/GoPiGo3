@@ -111,6 +111,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.sensor_1 = None
         self.sensor_2 = None
         self.DEFAULT_SPEED = 300
+        self.NO_LIMIT_SPEED = 1000
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
@@ -193,7 +194,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed())
+                           self.NO_LIMIT_SPEED)
 
     def drive_cm(self, dist, blocking=True):
         """
@@ -316,7 +317,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed() * -1)
+                           self.NO_LIMIT_SPEED * -1)
 
     def right(self):
         """
@@ -330,7 +331,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              | This causes the robot to rotate in very short circles.
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
     def spin_right(self):
@@ -347,8 +348,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              You can achieve the same effect by calling ``steer(100, -100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed()* -1)
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * -1)
 
     def left(self):
         """
@@ -363,7 +364,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, 0)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED)
 
     def spin_left(self):
         """
@@ -379,8 +380,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              You can achieve the same effect by calling ``steer(-100, 100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * -1)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() )
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED * -1)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED )
 
     def steer(self, left_percent, right_percent):
         """
@@ -403,8 +404,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              Setting both ``left_percent`` and ``right_percent`` to **0** will stop the GoPiGo from moving.
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * left_percent / 100)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() * right_percent / 100)
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED * left_percent / 100)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * right_percent / 100)
 
 
 
