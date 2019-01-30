@@ -348,6 +348,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              You can achieve the same effect by calling ``steer(100, -100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
+
         self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
         self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * -1)
 
@@ -408,7 +409,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * right_percent / 100)
 
 
-
     def orbit(self, degrees, radius_cm=0, blocking=True):
         """
         Control the GoPiGo so it will orbit around an object.  
@@ -420,7 +420,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         .. important:: 
            Note that while in non-blocking mode the speed cannot be changed before the end of the orbit as it would negate all orbit calculations. 
            After a non-blocking call, :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed` has to be called before any other movement.
-
         """
         speed = self.get_speed()
         radius = radius_cm * 10
