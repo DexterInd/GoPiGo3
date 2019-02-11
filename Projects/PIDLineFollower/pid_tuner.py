@@ -36,11 +36,12 @@ def drawMenu():
         "i" : "Decrease the Kp parameter",
         "k" : "Decrease the Ki parameter",
         "m" : "Decrease the Kd parameter",
+        "r" : "Reset integral area for Ki parameter to 0.0",
         "w" : "Calibrate the line follower on a white surface",
         "b" : "Calibrate the line follower on a black surface"
     }
 
-    order_of_keys = ["<ESC>", "x", "<SPACE>", "u", "j", "n", "i", "k", "m", "w", "b"]
+    order_of_keys = ["<ESC>", "x", "<SPACE>", "u", "j", "n", "i", "k", "m", "r", "w", "b"]
     try:
         for key in order_of_keys:
             print("\r[key {:8}] :  {}".format(key, keybindings[key]))
@@ -148,6 +149,8 @@ def Main():
                 Ki -= 0.001
             if key == "m":
                 Kd -= 100.0
+            if key == "r":
+                integralArea = 0.0
             if key == "w":
                 lf.set_calibration('white')
             if key == "b":
