@@ -93,14 +93,15 @@ def controller():
         # calculate motor speedss
         leftMotorSpeed = int(motorSpeed - correction)
         rightMotorSpeed = int(motorSpeed + correction)
-        if leftMotorSpeed <= 0: leftMotorSpeed = 1
-        if leftMotorSpeed >= 300: leftMotorSpeed = 299
-        if rightMotorSpeed <= 0: rightMotorSpeed = 1
-        if rightMotorSpeed >= 300: rightMotorSpeed = 299
+
+        if leftMotorSpeed == 0: leftMotorSpeed = 1
+        if rightMotorSpeed == 0: rightMotorSpeed = 1
+        # if leftMotorSpeed >= 300: leftMotorSpeed = 299
+        # if rightMotorSpeed >= 300: rightMotorSpeed = 299
 
         # update motor speeds
-        gpg.set_motor_limits(gpg.MOTOR_LEFT, dps=leftMotorSpeed)
-        gpg.set_motor_limits(gpg.MOTOR_RIGHT, dps=rightMotorSpeed)
+        gpg.set_motor_dps(gpg.MOTOR_LEFT, dps=leftMotorSpeed)
+        gpg.set_motor_dps(gpg.MOTOR_RIGHT, dps=rightMotorSpeed)
 
         # make the loop work at a given frequency
         end = time()
@@ -133,7 +134,7 @@ def Main():
                 stopper.set()
                 break
             if key == "x":
-                gpg.set_speed(motorSpeed)
+                gpg.set_motor_dps(gpg.MOTOR_LEFT + gpg.MOTOR_RIGHT, dps=motorSpeed)
                 gpg.forward()
             if key == "<SPACE>":
                 gpg.stop()
