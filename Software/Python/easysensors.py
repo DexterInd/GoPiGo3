@@ -29,14 +29,14 @@ def debug(in_str):
 
 
 try:
-    from line_follower import line_sensor
+    from di_sensors.easy_line_follower import EasyLineFollower
 
     # is_line_follower_accessible not really used, just in case
     is_line_follower_accessible = True
 except:
     try:
-        sys.path.insert(0, '/home/pi/GoPiGo/Software/Python/line_follower')
-        import line_sensor
+        sys.path.insert(0, '/home/pi/DI_Sensors/Python/di_sensors')
+        from easylinefollower import EasyLineFollower
         is_line_follower_accessible = True
     except:
         is_line_follower_accessible = False
@@ -1764,22 +1764,17 @@ class LineFollower(Sensor):
 
         """
         if is_line_follower_accessible is False:
-            raise ImportError("Line Follower library not found")
+            raise ImportError("di_sensors library not found")
 
         try:
             self.set_descriptor("Line Follower")
             Sensor.__init__(self, port, "INPUT", gpg, use_mutex)
-            if line_sensor.read_sensor() == [-1, -1, -1, -1, -1]:
-                raise IOError("Line Follower not responding")
-            self.white_line = line_sensor.get_white_line()
-            self.black_line = line_sensor.get_black_line()
-            self._calculate_threshold()
+            self._lf = EasyLineFollower(port)
+
+            if self._lf.module_id == 0:
+                raise OSError("line follower is not reachable")
         except:
             raise
-
-    def _calculate_threshold(self):
-        self.range_sensor = list(map(operator.sub, self.black_line, self.white_line))
-        self.threshold = [a+b/2 for a,b in zip(self.white_line, self.range_sensor)]
 
     def read_raw_sensors(self):
         """
@@ -1790,12 +1785,7 @@ class LineFollower(Sensor):
         :raises IOError: If the line follower is not responding.
 
         """
-        five_vals = line_sensor.read_sensor()
-
-        if five_vals != [-1, -1, -1, -1, -1]:
-            return five_vals
-        else:
-            raise IOError("Line Follower not responding")
+        return self._lf.read()
 
     def get_white_calibration(self):
         """
@@ -1808,9 +1798,7 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
 
         """
-        self.white_line = line_sensor.get_white_line()
-        self._calculate_threshold()
-        return self.white_line
+        return self._lf.set_calibration('white')
 
     def get_black_calibration(self):
         """
@@ -1823,9 +1811,7 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
 
         """
-        self.black_line = line_sensor.get_black_line()
-        self._calculate_threshold()
-        return self.black_line
+        return self._lf.set_calibration('black')
 
     def read(self):
         """
@@ -1840,19 +1826,7 @@ class LineFollower(Sensor):
              Please use :py:meth:`~easysensors.LineFollower.get_black_calibration` or :py:meth:`~easysensors.LineFollower.get_white_calibration` methods before calling this method.
 
         """
-        raw_vals = line_sensor.get_sensorval()
-        five_vals = [0]*5
-        for i in range(5):
-            if raw_vals[i] == -1:
-                five_vals[i] = -1
-            elif raw_vals[i] > self.threshold[i]:
-                five_vals[i] = 1
-            else:
-                five_vals[i] = 0
-        # reverse the readings so the one on the left shows up at the left
-        five_vals = five_vals[::-1]
-
-        return five_vals
+        return self._lf.read('bivariate')
 
     def read_position(self):
         """
@@ -1872,31 +1846,20 @@ class LineFollower(Sensor):
             This isn't the most "intelligent" algorithm for following a black line, but it proves the point and it works.
 
         """
-        five_vals = [-1, -1, -1, -1, -1]
+        estimated_position, lost_line = self._lf.read('weighted-avg')
 
-
-        five_vals = self.read()
-
-        if five_vals == [0, 0, 1, 0, 0] or five_vals == [0, 1, 1, 1, 0]:
-            return "center"
-        if five_vals == [1, 1, 1, 1, 1]:
+        if lost_line == 1:
             return "black"
-        if five_vals == [0, 0, 0, 0, 0]:
+        elif lost_line == 2:
             return "white"
-        if five_vals == [0, 1, 1, 0, 0] or \
-           five_vals == [0, 1, 0, 0, 0] or \
-           five_vals == [1, 0, 0, 0, 0] or \
-           five_vals == [1, 1, 0, 0, 0] or \
-           five_vals == [1, 1, 1, 0, 0] or \
-           five_vals == [1, 1, 1, 1, 0]:
-            return "left"
-        if five_vals == [0, 0, 0, 1, 0] or \
-           five_vals == [0, 0, 1, 1, 0] or \
-           five_vals == [0, 0, 0, 0, 1] or \
-           five_vals == [0, 0, 0, 1, 1] or \
-           five_vals == [0, 0, 1, 1, 1] or \
-           five_vals == [0, 1, 1, 1, 1]:
-            return "right"
+        else:
+            if estimated_position >= 0.4 and estimated_position <= 0.6:
+                return "center"
+            if estimated_position >= 0.0 and estimated_position < 0.4:
+                return "left"
+            if estimated_position > 0.6 and estimated_position <= 1.0:
+                return "right"
+        
         return "unknown"
 
     def read_position_str(self):
@@ -1914,9 +1877,7 @@ class LineFollower(Sensor):
             * ``'bbbww'`` - when the line follower reaches an intersection.
 
         """
-        five_vals  = self.read()
-        out_str = "".join(["b" if sensor_val == 1 else "w" for sensor_val in five_vals])
-        return out_str
+        return self._lf.read('bivariate-str')
 ##########################
 
 
