@@ -1798,7 +1798,8 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
 
         """
-        return self._lf.set_calibration('white')[::-1]
+        self._lf.set_calibration('white')
+        return self._lf.get_calibration('white')[::-1]
 
     def get_black_calibration(self):
         """
@@ -1811,7 +1812,8 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
 
         """
-        return self._lf.set_calibration('black')[::-1]
+        self._lf.set_calibration('black')
+        return self._lf.get_calibration('black')[::-1]
 
     def read(self):
         """
