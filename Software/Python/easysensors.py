@@ -1785,7 +1785,7 @@ class LineFollower(Sensor):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self._lf.read()
+        return self._lf.read()[::-1]
 
     def get_white_calibration(self):
         """
@@ -1798,7 +1798,7 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
 
         """
-        return self._lf.set_calibration('white')
+        return self._lf.set_calibration('white')[::-1]
 
     def get_black_calibration(self):
         """
@@ -1811,7 +1811,7 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
 
         """
-        return self._lf.set_calibration('black')
+        return self._lf.set_calibration('black')[::-1]
 
     def read(self):
         """
@@ -1826,7 +1826,7 @@ class LineFollower(Sensor):
              Please use :py:meth:`~easysensors.LineFollower.get_black_calibration` or :py:meth:`~easysensors.LineFollower.get_white_calibration` methods before calling this method.
 
         """
-        return self._lf.read('bivariate')
+        return self._lf.read('bivariate')[::-1]
 
     def read_position(self):
         """
@@ -1856,9 +1856,9 @@ class LineFollower(Sensor):
             if estimated_position >= 0.4 and estimated_position <= 0.6:
                 return "center"
             if estimated_position >= 0.0 and estimated_position < 0.4:
-                return "left"
-            if estimated_position > 0.6 and estimated_position <= 1.0:
                 return "right"
+            if estimated_position > 0.6 and estimated_position <= 1.0:
+                return "left"
         
         return "unknown"
 
@@ -1877,7 +1877,8 @@ class LineFollower(Sensor):
             * ``'bbbww'`` - when the line follower reaches an intersection.
 
         """
-        return self._lf.read('bivariate-str')
+        return self._lf.read('bivariate-str')[::-1]
+        
 ##########################
 
 
