@@ -1727,10 +1727,12 @@ class DHTSensor(Sensor):
 
 class LineFollower(Sensor):
     """
-    Class for interacting with the `Line Follower`_ sensor.
+    Class for interacting with the `Line Follower`_ or the `Old Line Follower`_ sensor.
 
     With this sensor, you can make your robot follow a black line on a white background.
-    The `Line Follower`_ sensor has 5 IR sensors.
+    The `Line Follower`_ sensor has 6 IR sensors and the `Old Line Follower`_ has 5. This class can
+    be used interchangeably for both sensors.
+
     Each IR sensor is capable of diferentiating a black surface from a white one.
     In order to create an object of this class, we would do it like in the following example.
 
@@ -1744,7 +1746,8 @@ class LineFollower(Sensor):
          line_follower.read_raw_sensors()
 
     .. warning::
-         This class requires the :py:mod:`line_sensor` library.
+         This class requires the :py:mod:`di_sensors` library. Check the :py:class:`di_sensors.easy_line_follower.EasyLineFollower`
+         class to find out more about its implementation.
 
     """
 
@@ -1752,15 +1755,15 @@ class LineFollower(Sensor):
         """
         Constructor for initalizing a :py:class:`~easysensors.LineFollower` object.
 
-        :param str port = "I2C": The port to which we have connected the `Line Follower`_ sensor.
+        :param str port = "I2C": The port to which we have connected the line follower sensor. Can also be ``"AD1"``/``"AD2"`` for the `Line Follower`_ sensor.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
-        :raises ImportError: If the :py:mod:`line_follower` module couldn't be found.
+        :raises ImportError: If the ``di_sensors`` library couldn't be found.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
         :raises IOError: If the line follower is not responding.
 
-        The only value the ``port`` parameter can take is ``"I2C"``.
-        The I2C ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
+        The only value the ``port`` parameter can take for the `Old Line Follower`_ is the ``"I2C"`` and for the new `Line Follower`_ it can also be ``"AD1"`` and ``"AD2"``.
+        The ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
         if is_line_follower_accessible is False:
@@ -1769,7 +1772,10 @@ class LineFollower(Sensor):
         try:
             self.set_descriptor("Line Follower")
             Sensor.__init__(self, port, "INPUT", gpg, use_mutex)
-            self._lf = EasyLineFollower(port)
+            if port == "AD1" or port == "AD2":
+                self._lf = EasyLineFollower(port, module_id = 2)
+            else:
+                self._lf = EasyLineFollower(port)
 
             if self._lf.module_id == 0:
                 raise OSError("line follower is not reachable")
@@ -1778,9 +1784,9 @@ class LineFollower(Sensor):
 
     def read_raw_sensors(self):
         """
-        Read the 5 IR sensors of the `Line Follower`_ sensor.
+        Read the 5/6 IR sensors of the `Old Line Follower`_/`Line Follower`_ sensor.
 
-        :returns: A list with 5 10-bit numbers that represent the readings from the line follower device.
+        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the old line follower and 6 for the new.
         :rtype: list[int]
         :raises IOError: If the line follower is not responding.
 
@@ -1792,7 +1798,7 @@ class LineFollower(Sensor):
         Place the `GoPiGo3`_ robot on top of a white-colored surface.
         After that, call this method for calibrating the robot on a white surface.
 
-        :returns: A list with 5 10-bit numbers that represent the readings of line follower sensor.
+        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the old line follower and 6 for the new.
         :rtype: list[int]
 
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
@@ -1806,7 +1812,7 @@ class LineFollower(Sensor):
         Place the `GoPiGo3`_ robot on top of a black-colored surface.
         After that, call this method for calibrating the robot on a black surface.
 
-        :returns: A list with 5 10-bit numbers that represent the readings of line follower sensor.
+        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the old line follower and 6 for the new.
         :rtype: list[int]
 
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
@@ -1817,15 +1823,11 @@ class LineFollower(Sensor):
 
     def read(self):
         """
-        Reads the 5 IR sensors of the `Line Follower`_ sensor.
+        Read the 5/6 IR sensors of the `Old Line Follower`_/`Line Follower`_ sensor.
 
-        :returns: A list with 5 numbers that represent the readings of the line follower device. The values are either **0** (for black) or **1** (for white).
+        :returns: A list with 5/6 numbers that represent the readings of the line follower device. The values are either **0** (for black) or **1** (for white).
         :rtype: list[int]
-
-        .. warning::
-             If an error occurs, a list of **5 numbers** with values set to **-1** will be returned.
-             This may be caused by bad calibration values.
-             Please use :py:meth:`~easysensors.LineFollower.get_black_calibration` or :py:meth:`~easysensors.LineFollower.get_white_calibration` methods before calling this method.
+        :raises IOError: If the line follower is not responding.
 
         """
         return self._lf.read('bivariate')[::-1]
@@ -1836,6 +1838,7 @@ class LineFollower(Sensor):
 
         :returns: String that's indicating the location of the black line.
         :rtype: str
+        :raises IOError: If the line follower is not responding.
 
         The strings this method can return are the following:
             * ``"center"`` - when the line is found in the middle.
@@ -1866,14 +1869,15 @@ class LineFollower(Sensor):
 
     def read_position_str(self):
         """
-        Returns a string of five letters indicating what the line sensor is seeing.
+        Returns a string of five/six letters indicating what the line sensor is seeing - the number of letters depends on which line follower is used.
 
         ``'b'`` indicates that specific sensor has detected a black line while ``'w'`` indicates that specific sensor has detected a white line.
 
         :returns: String indicating what the line follower just read.
         :rtype: str
+        :raises IOError: If the line follower is not responding.
 
-        Here's an example of what could get returned:
+        Here's an example of what could get returned when you're using the old line follower that only has 5 IR sensors:
             * ``'bbbbb'`` - when the line follower reads black on all sensors.
             * ``'wwbww'`` - when the line follower is perfectly centered.
             * ``'bbbww'`` - when the line follower reaches an intersection.
