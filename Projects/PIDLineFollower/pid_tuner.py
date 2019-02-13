@@ -54,11 +54,12 @@ gpg = EasyGoPiGo3()
 lf = EasyLineFollower()
 
 stepSize = 0.1
-loopFreq = 30.0
+loopFreq = 100.0
 setPoint = 0.5
 motorSpeed = 300
 leftMotorSpeed = 0
 rightMotorSpeed = 0
+stopMotors = True
 Kp = 0.0
 Ki = 0.0
 Kd = 0.0
@@ -66,7 +67,7 @@ Kd = 0.0
 integralArea = 0.0
 
 def controller():
-    global stopper, gpg, lf, stepSize, loopFreq, setPoint, leftMotorSpeed, rightMotorSpeed, motorSpeed, Kp, Ki, Kd
+    global stopper, gpg, lf, stepSize, loopFreq, setPoint, motorSpeed, leftMotorSpeed, rightMotorSpeed,stopMotors, Kp, Ki, Kd
     global integralArea
     loopPeriod = 1 / loopFreq
     
@@ -78,7 +79,7 @@ def controller():
 
         # <0.5 when line is on the right
         # >0.5 when line is on the left
-        current = lf.read('weighted-avg')
+        current, _ = lf.read('weighted-avg')
 
         # calculate correction
         error = current - setPoint
@@ -100,8 +101,9 @@ def controller():
         # if rightMotorSpeed >= 300: rightMotorSpeed = 299
 
         # update motor speeds
-        gpg.set_motor_dps(gpg.MOTOR_LEFT, dps=leftMotorSpeed)
-        gpg.set_motor_dps(gpg.MOTOR_RIGHT, dps=rightMotorSpeed)
+        if stopMotors is False:
+            gpg.set_motor_dps(gpg.MOTOR_LEFT, dps=leftMotorSpeed)
+            gpg.set_motor_dps(gpg.MOTOR_RIGHT, dps=rightMotorSpeed)
 
         # make the loop work at a given frequency
         end = time()
@@ -120,7 +122,7 @@ def Main():
     controlThread = Thread(target = controller)
     controlThread.start()
 
-    global stopper, gpg, lf, stepSize, motorSpeed, leftMotorSpeed, rightMotorSpeed, Kp, Ki, Kd
+    global stopper, gpg, lf, stepSize, motorSpeed, leftMotorSpeed, rightMotorSpeed, stopMotors, Kp, Ki, Kd
     global integralArea
     with Input(keynames = "curtsies", sigint_event = True) as input_generator:
         while True:
@@ -134,9 +136,10 @@ def Main():
                 stopper.set()
                 break
             if key == "x":
-                gpg.set_motor_dps(gpg.MOTOR_LEFT + gpg.MOTOR_RIGHT, dps=motorSpeed)
-                gpg.forward()
+                stopMotors = False
             if key == "<SPACE>":
+                stopMotors = True
+                sleep(0.1)
                 gpg.stop()
             if key == "u":
                 Kp += 2.0

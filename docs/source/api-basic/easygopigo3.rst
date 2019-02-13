@@ -26,7 +26,8 @@ EasyGoPiGo3
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _line follower: https://www.dexterindustries.com/shop/line-follower-sensor
+.. _old line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
