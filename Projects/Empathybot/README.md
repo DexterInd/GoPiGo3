@@ -6,7 +6,7 @@ In this project we built emotional intelligence to our robot.  We developed a Ra
 
 ![ GoPiGo ](https://github.com/DexterInd/GoPiGo/raw/master/Projects/Empathybot/Emotions.jpg)
 
-This folder contains the code you need to build Empathybot!  [You can see the full project here.](http://www.dexterindustries.com/projects/empathybot-raspberry-pi-robot-with-emotional-intelligence/)
+This folder contains the code you need to build Empathybot!
 
 # Details
 
@@ -52,20 +52,3 @@ The GoPiGo is a delightful and complete robot for the Raspberry Pi that turns yo
 - [Dexter Industries] (http://www.dexterindustries.com/GoPiGo)
 - [Kickstarter Campaign] (http://kck.st/Q6vVOP)
 - [Raspberry Pi] (http://www.raspberrypi.org/)
-
-## License
-GoPiGo for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
-Copyright (C) 2016  Dexter Industries
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
