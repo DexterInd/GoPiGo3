@@ -6,8 +6,6 @@ In this project we built emotional intelligence to our robot.  We developed a Ra
 
 ![ GoPiGo ](https://github.com/DexterInd/GoPiGo/raw/master/Projects/Empathybot/Emotions.jpg)
 
-This folder contains the code you need to build Empathybot!
-
 # Details
 
 In this tutorial, we build a robot that responds to human emtions.  We developed a Raspberry Pi Robot with the GoPiGo that will drive up to you, read your emotions, and then try to have a conversation with you, based on how you’re feeling.  We will show you how you too can build your own DIY emotion-reading robot with a Raspberry Pi.
