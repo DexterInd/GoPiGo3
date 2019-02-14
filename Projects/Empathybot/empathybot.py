@@ -59,7 +59,7 @@ def takephoto():
 def parse_response(json_response):
 	# print json_response
 	try:
-		# print json.dumps(response, indent=4, sort_keys=True)	#Print it out and make it somewhat pretty.
+		#print(json.dumps(json_response, indent=4, sort_keys=True))	#Print it out and make it somewhat pretty.
 		anger = json_response['responses'][0]['faceAnnotations'][0]['angerLikelihood']
 		surprise = json_response['responses'][0]['faceAnnotations'][0]['surpriseLikelihood']
 		sorrow = json_response['responses'][0]['faceAnnotations'][0]['sorrowLikelihood']
@@ -102,13 +102,13 @@ def take_emotion():
 		image_content = base64.b64encode(image.read())
 		service_request = service.images().annotate(body={
 			'requests': [{
-			'image': {
-			'content': image_content.decode('UTF-8')
-			},
-			'features': [{
-			'type': 'FACE_DETECTION',
-			'maxResults': 10
-			}]
+				'image': {
+					'content': image_content.decode('UTF-8')
+				},
+				'features': [{
+					'type': 'FACE_DETECTION',
+					'maxResults': 10
+				}]
 			}]
 		})
 		response = service_request.execute()
