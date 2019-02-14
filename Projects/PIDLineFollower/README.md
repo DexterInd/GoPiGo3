@@ -42,6 +42,6 @@ For the old line follower, the following parameters work best for the GoPiGo3:
 To run the program, first be sure to have installed both the GoPiGo3 and DI_Sensors libraries and then
 run `python pid_controller.py` to run the program.
 
-Make use of the 2 available commands in the menu to calibrate each line follower on a white and black surface.
+Make use of the 2 available commands (`w` and `b`) in the menu to calibrate each line follower on a white and black surface.
 
 Next, update the Kp/Ki/Kd parameters accordingly by using the appropriate commands listed in the menu and then finally let the GoPiGo3 run freely.
