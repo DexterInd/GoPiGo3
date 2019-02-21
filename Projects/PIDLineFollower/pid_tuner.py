@@ -3,7 +3,7 @@ from __future__ import division
 
 from curtsies import Input
 from easygopigo3 import EasyGoPiGo3
-from easy_line_follower import EasyLineFollower
+from di_sensors.easy_line_follower import EasyLineFollower
 from threading import Thread, Event
 import signal
 
@@ -30,27 +30,36 @@ def drawMenu():
         "<ESC>" : "Exit",
         "x" : "Move the GoPiGo3 forward",
         "<SPACE>" : "Stop the GoPiGo3 from moving",
-        "u" : "Increase the Kp parameter",
-        "j" : "Increase the Ki parameter",
-        "n" : "Increase the Kd parameter",
-        "i" : "Decrease the Kp parameter",
-        "k" : "Decrease the Ki parameter",
-        "m" : "Decrease the Kd parameter",
-        "r" : "Reset integral area for Ki parameter to 0.0",
+        "1" : "Increase loop frequency",
+        "2" : "Decrease loop frequency",
+        "3" : "Increase GoPiGo3 speed",
+        "4" : "Decrease GoPiGo3 speed",
+        "u" : "Increase the Kp gain",
+        "j" : "Increase the Ki gain",
+        "n" : "Increase the Kd gain",
+        "i" : "Decrease the Kp gain",
+        "k" : "Decrease the Ki gain",
+        "m" : "Decrease the Kd gain",
+        "r" : "Reset integral area for Ki gain to 0.0",
         "w" : "Calibrate the line follower on a white surface",
         "b" : "Calibrate the line follower on a black surface"
     }
 
-    order_of_keys = ["<ESC>", "x", "<SPACE>", "u", "j", "n", "i", "k", "m", "r", "w", "b"]
+    order_of_keys = ["<ESC>", "x", "<SPACE>", "1", "2", "3", "4", "u", "j", "n", "i", "k", "m", "r", "w", "b"]
     try:
         for key in order_of_keys:
             print("\r[key {:8}] :  {}".format(key, keybindings[key]))
     except KeyError:
         print("Error: Keys found in order_of_keys don't match with those in keybindings.")
+    print()
 
 stopper = Event()
 
-gpg = EasyGoPiGo3()
+try:
+    gpg = EasyGoPiGo3()
+except Exception as err:
+    print(str(err))
+    exit(1)
 lf = EasyLineFollower()
 
 stepSize = 0.1
@@ -74,42 +83,48 @@ def controller():
     integralArea = 0.0
     previousError = 0.0
 
-    while not stopper.is_set():
-        start = time()
+    try:
+        while not stopper.is_set():
+            start = time()
 
-        # <0.5 when line is on the right
-        # >0.5 when line is on the left
-        current, _ = lf.read('weighted-avg')
+            # <0.5 when line is on the right
+            # >0.5 when line is on the left
+            current, _ = lf.read('weighted-avg')
 
-        # calculate correction
-        error = current - setPoint
-        if Ki < 0.0001 and Ki > -0.0001:
-            integralArea = 0.0
-        else:
-            integralArea += error
-        correction = Kp * error + Ki * integralArea + Kd * (error - previousError) 
-        # print(Kp * error, Ki * integralArea, Kd * (error - previousError))
-        previousError = error
+            # calculate correction
+            error = current - setPoint
+            if Ki < 0.0001 and Ki > -0.0001:
+                integralArea = 0.0
+            else:
+                integralArea += error
+            correction = Kp * error + Ki * integralArea + Kd * (error - previousError) 
+            # print(Kp * error, Ki * integralArea, Kd * (error - previousError))
+            previousError = error
 
-        # calculate motor speedss
-        leftMotorSpeed = int(motorSpeed - correction)
-        rightMotorSpeed = int(motorSpeed + correction)
+            # calculate motor speedss
+            leftMotorSpeed = int(motorSpeed - correction)
+            rightMotorSpeed = int(motorSpeed + correction)
 
-        if leftMotorSpeed == 0: leftMotorSpeed = 1
-        if rightMotorSpeed == 0: rightMotorSpeed = 1
-        # if leftMotorSpeed >= 300: leftMotorSpeed = 299
-        # if rightMotorSpeed >= 300: rightMotorSpeed = 299
+            if leftMotorSpeed == 0: leftMotorSpeed = 1
+            if rightMotorSpeed == 0: rightMotorSpeed = 1
+            # if leftMotorSpeed >= 300: leftMotorSpeed = 299
+            # if rightMotorSpeed >= 300: rightMotorSpeed = 299
 
-        # update motor speeds
-        if stopMotors is False:
-            gpg.set_motor_dps(gpg.MOTOR_LEFT, dps=leftMotorSpeed)
-            gpg.set_motor_dps(gpg.MOTOR_RIGHT, dps=rightMotorSpeed)
+            # update motor speeds
+            if stopMotors is False:
+                gpg.set_motor_dps(gpg.MOTOR_LEFT, dps=leftMotorSpeed)
+                gpg.set_motor_dps(gpg.MOTOR_RIGHT, dps=rightMotorSpeed)
 
-        # make the loop work at a given frequency
-        end = time()
-        delayDiff = end - start
-        if loopPeriod - delayDiff > 0:
-            sleep(loopPeriod - delayDiff)
+            # make the loop work at a given frequency
+            end = time()
+            delayDiff = end - start
+            if loopPeriod - delayDiff > 0:
+                sleep(loopPeriod - delayDiff)
+    except Exception as err:
+        print(str(err))
+        stopper.set()
+    finally:
+        gpg.stop()     
 
 def Main():
 
@@ -122,7 +137,7 @@ def Main():
     controlThread = Thread(target = controller)
     controlThread.start()
 
-    global stopper, gpg, lf, stepSize, motorSpeed, leftMotorSpeed, rightMotorSpeed, stopMotors, Kp, Ki, Kd
+    global stopper, gpg, lf, stepSize, loopFreq, motorSpeed, leftMotorSpeed, rightMotorSpeed, stopMotors, Kp, Ki, Kd
     global integralArea
     with Input(keynames = "curtsies", sigint_event = True) as input_generator:
         while True:
@@ -131,6 +146,10 @@ def Main():
             # then send() function returns None
             key = input_generator.send(period)
 
+            if stopper.is_set():
+                # exit
+                gpg.stop()
+                break
             if key == "<ESC>":
                 # exit
                 stopper.set()
@@ -141,6 +160,14 @@ def Main():
                 stopMotors = True
                 sleep(0.1)
                 gpg.stop()
+            if key == "1":
+                loopFreq += 1.0
+            if key == "2":
+                loopFreq -= 1.0
+            if key == "3":
+                motorSpeed += 1
+            if key == "4":
+                motorSpeed -= 1
             if key == "u":
                 Kp += 2.0
             if key == "j":
@@ -161,7 +188,7 @@ def Main():
                 lf.set_calibration('black')
 
             if key is not None:
-                print('Kp={:3f} Ki={:3f} Kd={:3f} L={:3d} R={:3d} ErrorArea={:3f}'.format(Kp, Ki, Kd, leftMotorSpeed, rightMotorSpeed, integralArea))
+                print('Kp={:3f} Ki={:3f} Kd={:3f} L={:3d} R={:3d} ErrorArea={:3f} LoopFreq={:3d} Speed={:3d}'.format(Kp, Ki, Kd, leftMotorSpeed, rightMotorSpeed, integralArea, int(loopFreq), motorSpeed))
     
     controlThread.join()
 
