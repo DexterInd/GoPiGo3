@@ -26,3 +26,4 @@ In all these tutorials, you will need:
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
 .. _black line follower: https://www.dexterindustries.com/shop/line-follower-sensor/
+.. _red line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/

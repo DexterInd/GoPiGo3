@@ -44,5 +44,6 @@ If you wish to initialize an object for the `Distance Sensor`_, a better way is 
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _black line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _black line follower: https://www.dexterindustries.com/shop/line-follower-sensor/
+.. _red line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/

@@ -964,7 +964,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         Initialises a :py:class:`~easysensors.LineFollower` object and then returns it.
 
-        :param str port = "I2C": The only option for this parameter for the `Old Line Follower`_ is ``"I2C"`` and for the `Line Follower`_ is also ``"AD1"``/``"AD2"``. The default value for this parameter is already set to ``"I2C"``.
+        :param str port = "I2C": The only option for this parameter for the `Red Line Follower`_ is ``"I2C"`` and for the `Black Line Follower`_ is also ``"AD1"``/``"AD2"``. The default value for this parameter is already set to ``"I2C"``.
         :returns: An instance of the :py:class:`~easysensors.LineFollower` class and with the port set to ``port``'s value.
 
         The ``"I2C"``, ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
