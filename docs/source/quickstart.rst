@@ -58,7 +58,7 @@ There are a number of digital and analog sensors that can be connected to the Go
    * The DI `Light and Color Sensor`_.
    * The DI `Temperature Humidity Pressure Sensor`_.
    * The DI `Distance Sensor`_.
-   * The DI `Line Follower`_/`Old Line Follower`_.
+   * The DI `Black Line Follower`_/`Red Line Follower`_.
 
 For more on getting started with these sensors, please check the `DI-Sensors`_ documentation.
 
@@ -79,8 +79,8 @@ For more on getting started with these sensors, please check the `DI-Sensors`_ d
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _line follower: https://dexterindustries.com/shop/line-follower-sensor
-.. _old line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _black line follower: https://dexterindustries.com/shop/line-follower-sensor
+.. _red line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3

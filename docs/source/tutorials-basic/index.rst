@@ -10,7 +10,7 @@ Please make sure you have followed all the instructions found in :ref:`Getting S
 In all these tutorials, you will need:
 
   1. A `GoPiGo3`_ robot.
-  2. A sensor/actuator if requested in the tutorial : i.e.: a `Grove Buzzer`_, a `Line Follower`_, etc.
+  2. A sensor/actuator if requested in the tutorial : i.e.: a `Grove Buzzer`_, a `Black Line Follower`_, etc.
 
 .. toctree::
    :maxdepth: 1
@@ -25,4 +25,4 @@ In all these tutorials, you will need:
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
-.. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _black line follower: https://www.dexterindustries.com/shop/line-follower-sensor/
