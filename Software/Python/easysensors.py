@@ -1785,7 +1785,7 @@ class LineFollower(EasyLineFollower):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self.read()[::-1]
+        return self.sensor.read_sensors()[::-1]
 
     def get_white_calibration(self):
         """
@@ -1815,7 +1815,7 @@ class LineFollower(EasyLineFollower):
         self.set_calibration('black')
         return self.get_calibration('black')[::-1]
 
-    def read_binary(self):
+    def read(self):
         """
         Read the 5/6 IR sensors of the `Red Line Follower`_/`Black Line Follower`_ sensor.
 
@@ -1824,7 +1824,7 @@ class LineFollower(EasyLineFollower):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self.read('bivariate')[::-1]
+        return self.read_bivariate()[::-1]
 
     def read_position(self):
         """
@@ -1845,7 +1845,7 @@ class LineFollower(EasyLineFollower):
             This isn't the most "intelligent" algorithm for following a black line, but it proves the point and it works.
 
         """
-        estimated_position, lost_line = self.read('weighted-avg')
+        estimated_position, lost_line = self.read_weighted_avg()
 
         if lost_line == 1:
             return "black"
@@ -1877,7 +1877,7 @@ class LineFollower(EasyLineFollower):
             * ``'bbbww'`` - when the line follower reaches an intersection.
 
         """
-        return self._lf.read('bivariate-str')[::-1]
+        return self._lf.read_bivariate_str()[::-1]
         
 ##########################
 
