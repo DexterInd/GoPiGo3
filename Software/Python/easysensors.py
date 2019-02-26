@@ -1785,7 +1785,7 @@ class LineFollower(EasyLineFollower):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self.sensor.read_sensors()[::-1]
+        return self.read()[::-1]
 
     def get_white_calibration(self):
         """
@@ -1815,7 +1815,7 @@ class LineFollower(EasyLineFollower):
         self.set_calibration('black')
         return self.get_calibration('black')[::-1]
 
-    def read(self):
+    def read_binary(self):
         """
         Read the 5/6 IR sensors of the `Red Line Follower`_/`Black Line Follower`_ sensor.
 
@@ -1877,7 +1877,7 @@ class LineFollower(EasyLineFollower):
             * ``'bbbww'`` - when the line follower reaches an intersection.
 
         """
-        return self._lf.read_bivariate_str()[::-1]
+        return self.read_bivariate_str()[::-1]
         
 ##########################
 

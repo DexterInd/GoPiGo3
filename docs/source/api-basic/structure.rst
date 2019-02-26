@@ -191,7 +191,7 @@ Sensor/Actuator
    easysensors.LineFollower.read_raw_sensors
    easysensors.LineFollower.get_white_calibration
    easysensors.LineFollower.get_black_calibration
-   easysensors.LineFollower.read
+   easysensors.LineFollower.read_binary
    easysensors.LineFollower.read_position
    easysensors.LineFollower.read_position_str
    easysensors.Servo
