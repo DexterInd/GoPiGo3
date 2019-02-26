@@ -40,6 +40,8 @@ except:
         is_line_follower_accessible = True
     except:
         is_line_follower_accessible = False
+        class EasyLineFollower:
+            pass
 
 #############################################################
 # SENSORS
@@ -1725,7 +1727,7 @@ class DHTSensor(Sensor):
         else:
             return [temp, humidity]
 
-class LineFollower(Sensor):
+class LineFollower(EasyLineFollower):
     """
     Class for interacting with the `Black Line Follower`_ or the `Red Line Follower`_ sensor.
 
@@ -1751,7 +1753,7 @@ class LineFollower(Sensor):
 
     """
 
-    def __init__(self, port="I2C", gpg=None, use_mutex=False):
+    def __init__(self, port="I2C", use_mutex=False):
         """
         Constructor for initalizing a :py:class:`~easysensors.LineFollower` object.
 
@@ -1769,18 +1771,10 @@ class LineFollower(Sensor):
         if is_line_follower_accessible is False:
             raise ImportError("di_sensors library not found")
 
-        try:
-            self.set_descriptor("Line Follower")
-            Sensor.__init__(self, port, "INPUT", gpg, use_mutex)
-            if port == "AD1" or port == "AD2":
-                self._lf = EasyLineFollower(port, sensor_id = 2)
-            else:
-                self._lf = EasyLineFollower(port)
+        super(LineFollower, self).__init__(port)
 
-            if self._lf._sensor_id == 0:
-                raise OSError("line follower is not reachable")
-        except:
-            raise
+        if self._sensor_id == 0:
+            raise OSError("line follower is not reachable")
 
     def read_raw_sensors(self):
         """
@@ -1791,7 +1785,7 @@ class LineFollower(Sensor):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self._lf.read()[::-1]
+        return self.read()[::-1]
 
     def get_white_calibration(self):
         """
@@ -1804,8 +1798,8 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
 
         """
-        self._lf.set_calibration('white')
-        return self._lf.get_calibration('white')[::-1]
+        self.set_calibration('white')
+        return self.get_calibration('white')[::-1]
 
     def get_black_calibration(self):
         """
@@ -1818,10 +1812,10 @@ class LineFollower(Sensor):
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
 
         """
-        self._lf.set_calibration('black')
-        return self._lf.get_calibration('black')[::-1]
+        self.set_calibration('black')
+        return self.get_calibration('black')[::-1]
 
-    def read(self):
+    def read_binary(self):
         """
         Read the 5/6 IR sensors of the `Red Line Follower`_/`Black Line Follower`_ sensor.
 
@@ -1830,7 +1824,7 @@ class LineFollower(Sensor):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self._lf.read('bivariate')[::-1]
+        return self.read('bivariate')[::-1]
 
     def read_position(self):
         """
@@ -1851,7 +1845,7 @@ class LineFollower(Sensor):
             This isn't the most "intelligent" algorithm for following a black line, but it proves the point and it works.
 
         """
-        estimated_position, lost_line = self._lf.read('weighted-avg')
+        estimated_position, lost_line = self.read('weighted-avg')
 
         if lost_line == 1:
             return "black"

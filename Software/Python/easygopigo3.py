@@ -980,7 +980,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LineFollower` class.
 
         """
-        return easysensors.LineFollower(port, self, use_mutex=self.use_mutex)
+        return easysensors.LineFollower(port, use_mutex=self.use_mutex)
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -1176,9 +1176,7 @@ def LineFollower(port="I2C", gpg=None, use_mutex=False):
     """
     Use :py:class:`easysensors.LineFollower` instead
     """
-    if not isinstance(gpg, gopigo3.GoPiGo3):
-        raise TypeError("Use a GoPiGo3 object for the gpg parameter.")
-    return old_instantiation(gpg.init_line_follower, "line follower", port, gpg, use_mutex)
+    return easysensors.LineFollower(port, use_mutex=use_mutex)
 
 def Servo(port="SERVO1", gpg=None, use_mutex=False):
     """
