@@ -111,6 +111,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.sensor_1 = None
         self.sensor_2 = None
         self.DEFAULT_SPEED = 300
+        self.NO_LIMIT_SPEED = 1000
         self.set_speed(self.DEFAULT_SPEED)
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
@@ -193,7 +194,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed())
+                           self.NO_LIMIT_SPEED)
 
     def drive_cm(self, dist, blocking=True):
         """
@@ -316,7 +317,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
-                           self.get_speed() * -1)
+                           self.NO_LIMIT_SPEED * -1)
 
     def right(self):
         """
@@ -330,7 +331,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              | This causes the robot to rotate in very short circles.
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
     def spin_right(self):
@@ -347,8 +348,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              You can achieve the same effect by calling ``steer(100, -100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed())
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed()* -1)
+
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * -1)
 
     def left(self):
         """
@@ -363,7 +365,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT, 0)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed())
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED)
 
     def spin_left(self):
         """
@@ -379,8 +381,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              You can achieve the same effect by calling ``steer(-100, 100)`` (method :py:meth:`~easygopigo3.EasyGoPiGo3.steer`).
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * -1)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() )
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED * -1)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED )
 
     def steer(self, left_percent, right_percent):
         """
@@ -403,18 +405,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              Setting both ``left_percent`` and ``right_percent`` to **0** will stop the GoPiGo from moving.
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * left_percent / 100)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() * right_percent / 100)
-
+        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED * left_percent / 100)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * right_percent / 100)
 
 
     def orbit(self, degrees, radius_cm=0, blocking=True):
         """
-        Control the GoPiGo so it will orbit around an object
-
+        Control the GoPiGo so it will orbit around an object.  
+        
         :param int degrees: Degrees to steer. **360** for full rotation. Negative for left turn.
         :param int radius_cm: Radius in `cm` of the circle to drive. Default is **0** (turn in place).
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
+
+        .. important:: 
+           Note that while in non-blocking mode the speed cannot be changed before the end of the orbit as it would negate all orbit calculations. 
+           After a non-blocking call, :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed` has to be called before any other movement.
         """
         speed = self.get_speed()
         radius = radius_cm * 10
@@ -449,13 +454,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         
         # determine driving direction from the speed
         direction = 1
+        speed_with_direction = speed
         if speed < 0:
             direction = -1
-            speed = -speed
+            speed_with_direction = -speed
         
         # calculate the motor speed for each motor
-        fast_speed = speed
-        slow_speed = abs((speed * slow_target) / fast_target)
+        fast_speed = speed_with_direction
+        slow_speed = abs((speed_with_direction * slow_target) / fast_target)
         
         # set the motor speeds
         self.set_motor_limits(MOTOR_FAST, dps = fast_speed)
@@ -474,6 +480,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                     StartPositionLeft + (left_target * direction),
                     StartPositionRight + (right_target * direction)) is False:
                 time.sleep(0.1)
+        
+            # reset to original speed once done
+            # if non-blocking, then the user is responsible in resetting the speed
+            self.set_speed(speed)
         
         return
 
