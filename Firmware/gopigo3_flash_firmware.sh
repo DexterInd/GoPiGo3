@@ -12,7 +12,7 @@ echo "Updating the GoPiGo3 Firmware with '$FIRMWARE_FILE'."
 RPI_VERSION=$(python3 -c "import auto_detect_rpi; print (auto_detect_rpi.getRPIGenerationCode())")
 # set default to RPi 1 interface config file
 INTERFACE_FILE="rpi1.cfg"
-if [ "$RPI_VERSION" == "RPI2" ] || [ "$RPI_VERSION" == "RPI3" ] || [ "$RPI_VERSION" == "RPI3B+" ]; then
+if [ "$RPI_VERSION" == "RPI2" ] || [ "$RPI_VERSION" == "RPI3" ] || [ "$RPI_VERSION" == "RPI3B+" ] || [ "$RPI_VERSION" == "RPI3A+" ]; then
     # use RPi 2 interface config file
     INTERFACE_FILE="rpi2.cfg"
 fi
