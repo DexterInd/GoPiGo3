@@ -14,7 +14,7 @@ fi
 
 if [ "$INTERFACE_FILE" == "none" ]; then
     # unsupported RPI
-    echo "Unsupported RPi version '$RPI_VERSION'. Please report."
+    echo "Unsupported RPi version '$RPI_VERSION'. Please report to support@dexterindustries.com"
 else
     echo "Using interface file '$INTERFACE_FILE' for RPi version '$RPI_VERSION'."
 
