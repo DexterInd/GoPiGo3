@@ -79,8 +79,8 @@ For more on getting started with these sensors, please check the `DI-Sensors`_ d
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _black line follower: https://dexterindustries.com/shop/line-follower-sensor
-.. _red line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _line follower sensor (black board): https://www.dexterindustries.com/shop/line-follower-sensor/
+.. _line follower sensor (red board): https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
 .. _gopigo3 package: https://pypi.python.org/pypi/gopigo3

@@ -1729,10 +1729,10 @@ class DHTSensor(Sensor):
 
 class LineFollower(EasyLineFollower):
     """
-    Class for interacting with the `Black Line Follower`_ or the `Red Line Follower`_ sensor.
+    Class for interacting with the `Line Follower Sensor (black board)`_ or the `Line Follower (red board)`_ sensor.
 
     With this sensor, you can make your robot follow a black line on a white background.
-    The `Black Line Follower`_ sensor has 6 IR sensors and the `Red Line Follower`_ has 5. This class can
+    The `Line Follower Sensor (black board)`_ sensor has 6 IR sensors and the `Line Follower Sensor (red board)`_ has 5. This class can
     be used interchangeably for both sensors.
 
     Each IR sensor is capable of diferentiating a black surface from a white one.
@@ -1757,14 +1757,14 @@ class LineFollower(EasyLineFollower):
         """
         Constructor for initalizing a :py:class:`~easysensors.LineFollower` object.
 
-        :param str port = "I2C": The port to which we have connected the line follower sensor. Can also be ``"AD1"``/``"AD2"`` for the `Black Line Follower`_ sensor.
+        :param str port = "I2C": The port to which we have connected the line follower sensor. Can also be ``"AD1"``/``"AD2"`` for the `Line Follower Sensor (black board)`_ sensor.
         :param easygopigo3.EasyGoPiGo3 gpg = None: The :py:class:`~easygopigo3.EasyGoPiGo3` object that we need for instantiating this object.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
         :raises ImportError: If the ``di_sensors`` library couldn't be found.
         :raises TypeError: If the ``gpg`` parameter is not a :py:class:`~easygopigo3.EasyGoPiGo3` object.
         :raises IOError: If the line follower is not responding.
 
-        The only value the ``port`` parameter can take for the `Red Line Follower`_ is the ``"I2C"`` and for the new `Black Line Follower`_ it can also be ``"AD1"`` and ``"AD2"``.
+        The only value the ``port`` parameter can take for the `Line Follower Sensor (red board)`_ is the ``"I2C"`` and for the new `Line Follower Sensor (black board)`_ it can also be ``"AD1"`` and ``"AD2"``.
         The ports' location on the `GoPiGo3`_ robot can be seen in the following graphical representation: :ref:`hardware-ports-section`.
 
         """
@@ -1778,9 +1778,9 @@ class LineFollower(EasyLineFollower):
 
     def read_raw_sensors(self):
         """
-        Read the 5/6 IR sensors of the `Red Line Follower`_/`Black Line Follower`_ sensor.
+        Read the 5/6 IR sensors of the `Line Follower Sensor (red board)`_/`Line Follower Sensor (black board)`_ sensor.
 
-        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the Red line follower and 6 for the new.
+        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the line follower (red board) and 6 for the line follower (black board).
         :rtype: list[int]
         :raises IOError: If the line follower is not responding.
 
@@ -1792,7 +1792,7 @@ class LineFollower(EasyLineFollower):
         Place the `GoPiGo3`_ robot on top of a white-colored surface.
         After that, call this method for calibrating the robot on a white surface.
 
-        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the red line follower and 6 for the new.
+        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the line follower (red board) and 6 for the line follower (black board).
         :rtype: list[int]
 
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_black_calibration` method also needs to be called.
@@ -1806,7 +1806,7 @@ class LineFollower(EasyLineFollower):
         Place the `GoPiGo3`_ robot on top of a black-colored surface.
         After that, call this method for calibrating the robot on a black surface.
 
-        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the red line follower and 6 for the new.
+        :returns: A list with 5/6 10-bit numbers that represent the readings of line follower sensor. 5 values for the line follower (red board) and 6 for the line follower (black board).
         :rtype: list[int]
 
         Also, for fully calibrating the sensor, the :py:class:`~easysensors.LineFollower.get_white_calibration` method also needs to be called.
@@ -1817,7 +1817,7 @@ class LineFollower(EasyLineFollower):
 
     def read_binary(self):
         """
-        Read the 5/6 IR sensors of the `Red Line Follower`_/`Black Line Follower`_ sensor.
+        Read the 5/6 IR sensors of the `Line Follower Sensor (red board)`_/`Line Follower Sensor (black board)`_ sensor.
 
         :returns: A list with 5/6 numbers that represent the readings of the line follower device. The values are either **0** (for black) or **1** (for white).
         :rtype: list[int]
@@ -1871,7 +1871,7 @@ class LineFollower(EasyLineFollower):
         :rtype: str
         :raises IOError: If the line follower is not responding.
 
-        Here's an example of what could get returned when you're using the red line follower that only has 5 IR sensors:
+        Here's an example of what could get returned when you're using the line follower (red board) that only has 5 IR sensors:
             * ``'bbbbb'`` - when the line follower reads black on all sensors.
             * ``'wwbww'`` - when the line follower is perfectly centered.
             * ``'bbbww'`` - when the line follower reaches an intersection.
