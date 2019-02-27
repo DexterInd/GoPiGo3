@@ -1824,7 +1824,7 @@ class LineFollower(EasyLineFollower):
         :raises IOError: If the line follower is not responding.
 
         """
-        return self.read_bivariate()[::-1]
+        return self.position_01()[::-1]
 
     def read_position(self):
         """
@@ -1845,7 +1845,7 @@ class LineFollower(EasyLineFollower):
             This isn't the most "intelligent" algorithm for following a black line, but it proves the point and it works.
 
         """
-        estimated_position, lost_line = self.read_weighted_avg()
+        estimated_position, lost_line = self.position_val()
 
         if lost_line == 1:
             return "black"
@@ -1877,7 +1877,7 @@ class LineFollower(EasyLineFollower):
             * ``'bbbww'`` - when the line follower reaches an intersection.
 
         """
-        return self.read_bivariate_str()[::-1]
+        return self.position_bw()[::-1]
         
 ##########################
 
