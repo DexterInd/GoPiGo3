@@ -58,7 +58,7 @@ There are a number of digital and analog sensors that can be connected to the Go
    * The DI `Light and Color Sensor`_.
    * The DI `Temperature Humidity Pressure Sensor`_.
    * The DI `Distance Sensor`_.
-   * The DI `Black Line Follower`_/`Red Line Follower`_.
+   * The DI `Line Follower Sensor (black board)`_/`Line Follower Sensor (red board)`_.
 
 For more on getting started with these sensors, please check the `DI-Sensors`_ documentation.
 

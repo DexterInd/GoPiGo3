@@ -1729,7 +1729,7 @@ class DHTSensor(Sensor):
 
 class LineFollower(EasyLineFollower):
     """
-    Class for interacting with the `Line Follower Sensor (black board)`_ or the `Line Follower (red board)`_ sensor.
+    Class for interacting with the `Line Follower Sensor (black board)`_ or the `Line Follower Sensor (red board)`_ sensor.
 
     With this sensor, you can make your robot follow a black line on a white background.
     The `Line Follower Sensor (black board)`_ sensor has 6 IR sensors and the `Line Follower Sensor (red board)`_ has 5. This class can
