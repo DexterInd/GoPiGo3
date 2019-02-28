@@ -7,6 +7,17 @@ import operator
 
 mutex = Mutex()
 
+try:
+    from di_sensors import easy_line_follower, easy_distance_sensor
+    di_sensors_available = True
+except ImportError as err:
+    di_sensors_available = False
+    print(str(err))
+except Exception as err:
+    di_sensors_available = False
+    print(str(err))
+
+
 def _ifMutexAcquire(mutex_enabled=False):
     """
     Acquires the I2C if the ``use_mutex`` parameter of the constructor was set to ``True``.
@@ -1710,6 +1721,17 @@ class DHTSensor(Sensor):
             return "Runtime error"
         else:
             return [temp, humidity]
+
+
+def LineFollower(port, use_mutex=False):
+    if di_sensors_available is False:
+        raise ImportError("di_sensors library not available")
+
+    lf = easy_line_follower.EasyLineFollower(port, use_mutex=use_mutex)
+    if lf._sensor_id == 0:
+        raise OSError("line follower is not reachable")
+
+    return lf
         
 ##########################
 
