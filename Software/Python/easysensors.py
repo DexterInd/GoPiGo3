@@ -1723,7 +1723,19 @@ class DHTSensor(Sensor):
             return [temp, humidity]
 
 
-def LineFollower(port, use_mutex=False):
+def LineFollower(port="I2C", gpg=None, use_mutex=False):
+    """
+    Returns an instantiated object of :py:class:`di_sensors.easy_line_follower.EasyLineFollower`. 
+
+    This is a replacement function for the line follower class that used to be found here - it has not moved to :py:mod:`di_sensors` library.
+
+    :param str port = "I2C": The port to which we have connected the line follower sensor. Can also be ``"AD1"``/``"AD2"`` for the `Line Follower`_ sensor.
+    :param easygopigo3.EasyGoPiGo3 gpg = None: This is no longer required. Just skip this parameter.
+    :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
+    :raises ImportError: If the ``di_sensors`` library couldn't be found.
+    :raises IOError: If the line follower is not responding.
+
+    """
     if di_sensors_available is False:
         raise ImportError("di_sensors library not available")
 

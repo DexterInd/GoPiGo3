@@ -101,6 +101,12 @@ Remote
    :special-members:
    :show-inheritance:
 
+======================================
+LineFollower
+======================================
+
+.. autofunction:: easysensors.LineFollower
+
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _shop: https://www.dexterindustries.com/shop/
