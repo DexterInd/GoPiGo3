@@ -87,8 +87,8 @@ def controller():
         while not stopper.is_set():
             start = time()
 
-            # <0.5 when line is on the right
-            # >0.5 when line is on the left
+            # <0.5 when line is on the left
+            # >0.5 when line is on the right
             current, _ = lf.read('weighted-avg')
 
             # calculate correction
@@ -102,8 +102,8 @@ def controller():
             previousError = error
 
             # calculate motor speedss
-            leftMotorSpeed = int(motorSpeed - correction)
-            rightMotorSpeed = int(motorSpeed + correction)
+            leftMotorSpeed = int(motorSpeed + correction)
+            rightMotorSpeed = int(motorSpeed - correction)
 
             if leftMotorSpeed == 0: leftMotorSpeed = 1
             if rightMotorSpeed == 0: rightMotorSpeed = 1
