@@ -1191,6 +1191,9 @@ def LineFollower(port="I2C", gpg=None, use_mutex=False):
     """
     Use :py:class:`di_sensors.easy_line_follower.EasyLineFollower` instead
     """
+    if di_sensors_available is False:
+        raise ImportError("di_sensors library not available")
+
     lf = easy_line_follower.EasyLineFollower(port, use_mutex=use_mutex)
     if lf._sensor_id == 0:
         raise OSError("line follower is not reachable")
