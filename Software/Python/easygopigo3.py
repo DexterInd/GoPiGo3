@@ -11,6 +11,7 @@ import os
 import math
 from I2C_mutex import Mutex
 import easysensors
+
 try:
     from di_sensors import easy_distance_sensor
 except ImportError as e:
@@ -19,9 +20,17 @@ except ImportError as e:
 except Exception as e:
     print("Importing di_sensors error: {}".format(e))
 
+try:
+    from di_sensors import easy_line_follower, easy_distance_sensor
+    di_sensors_available = True
+except ImportError as err:
+    di_sensors_available = False
+    print(str(err))
+except Exception as err:
+    di_sensors_available = False
+    print(str(err))
 
 mutex = Mutex(debug=False)
-
 
 hardware_connected = True
 try:
@@ -980,7 +989,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LineFollower` class.
 
         """
-        return easysensors.LineFollower(port, use_mutex=self.use_mutex)
+        if di_sensors_available is False:
+            raise ImportError("di_sensors library not found")
+
+        lf = easy_line_follower.EasyLineFollower(port, use_mutex=self.use_mutex)
+        if lf._sensor_id == 0:
+            raise OSError("line follower is not reachable")
+
+        return lf
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -1018,11 +1034,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
         """
-        try:
-            return easy_distance_sensor.EasyDistanceSensor(use_mutex=self.use_mutex)
-        except ImportError as e:
-            print("DI Sensors are not installed: {}".format(e))
-            raise
+        if di_sensors_available is False:
+            raise ImportError("di_sensors library not available")
+            
+        return easy_distance_sensor.EasyDistanceSensor(use_mutex=self.use_mutex)
 
 
     def init_dht_sensor(self, sensor_type = 0):
