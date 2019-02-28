@@ -971,10 +971,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     def init_line_follower(self, port = "I2C"):
         """
-        Initialises a :py:class:`~easysensors.LineFollower` object and then returns it.
+        Initialises a :py:class:`~di_sensors.easy_line_follower.EasyLineFollower` object and then returns it.
 
-        :param str port = "I2C": The only option for this parameter for the `Line Follower Sensor (red board)`_ is ``"I2C"`` and for the `Line Follower Sensor (black board)`_ is also ``"AD1"``/``"AD2"``. The default value for this parameter is already set to ``"I2C"``.
-        :returns: An instance of the :py:class:`~easysensors.LineFollower` class and with the port set to ``port``'s value.
+        :param str port = "I2C": The only option for this parameter for the `Line Follower Sensor (red board)`_ is ``"I2C"`` and for the `Line Follower Sensor (black board)`_ it can also be ``"AD1"``/``"AD2"``. The default value for this parameter is already set to ``"I2C"``.
+        :returns: An instance of the :py:class:`~di_sensors.easy_line_follower.EasyLineFollower` class and with the port set to ``port``'s value.
 
         The ``"I2C"``, ``"AD1"`` and ``"AD2"`` ports are mapped to the following :ref:`hardware-ports-section`.
 
@@ -986,7 +986,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
 
-        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~easysensors.LineFollower` class.
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_line_follower.EasyLineFollower` class.
 
         """
         if di_sensors_available is False:
@@ -1036,7 +1036,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         if di_sensors_available is False:
             raise ImportError("di_sensors library not available")
-            
+
         return easy_distance_sensor.EasyDistanceSensor(use_mutex=self.use_mutex)
 
 
@@ -1189,9 +1189,13 @@ def Remote(port="AD1", gpg=None, use_mutex=False):
 
 def LineFollower(port="I2C", gpg=None, use_mutex=False):
     """
-    Use :py:class:`easysensors.LineFollower` instead
+    Use :py:class:`di_sensors.easy_line_follower.EasyLineFollower` instead
     """
-    return easysensors.LineFollower(port, use_mutex=use_mutex)
+    lf = easy_line_follower.EasyLineFollower(port, use_mutex=use_mutex)
+    if lf._sensor_id == 0:
+        raise OSError("line follower is not reachable")
+
+    return lf
 
 def Servo(port="SERVO1", gpg=None, use_mutex=False):
     """

@@ -75,15 +75,6 @@ ButtonSensor
    :show-inheritance:
 
 =====================================
-LineFollower
-=====================================
-
-.. autoclass:: easysensors.LineFollower
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
 Servo
 =====================================
 

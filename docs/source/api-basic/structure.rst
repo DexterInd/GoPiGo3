@@ -188,12 +188,6 @@ Sensor/Actuator
    easysensors.MotionSensor.motion_detected
    easysensors.ButtonSensor
    easysensors.ButtonSensor.is_button_pressed
-   easysensors.LineFollower.read_raw_sensors
-   easysensors.LineFollower.get_white_calibration
-   easysensors.LineFollower.get_black_calibration
-   easysensors.LineFollower.read_binary
-   easysensors.LineFollower.read_position
-   easysensors.LineFollower.read_position_str
    easysensors.Servo
    easysensors.Servo.rotate_servo
    easysensors.Servo.reset_servo
