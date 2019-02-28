@@ -133,6 +133,7 @@ def Main():
     drawMenu()
 
     refresh_rate = 20.0
+    period = 1.0 / refresh_rate
 
     controlThread = Thread(target = controller)
     controlThread.start()
@@ -141,10 +142,12 @@ def Main():
     global integralArea
     with Input(keynames = "curtsies", sigint_event = True) as input_generator:
         while True:
-            period = 1 / refresh_rate
             # if nothing is captured in [period] seconds
             # then send() function returns None
             key = input_generator.send(period)
+
+            if key is None:
+                continue
 
             if stopper.is_set():
                 # exit
@@ -169,13 +172,13 @@ def Main():
             if key == "4":
                 motorSpeed -= 1
             if key == "u":
-                Kp += 2.0
+                Kp += 5.0
             if key == "j":
                 Ki += 0.001
             if key == "n":
                 Kd += 100.0
             if key == "i":
-                Kp -= 2.0
+                Kp -= 5.0
             if key == "k":
                 Ki -= 0.001
             if key == "m":
@@ -187,8 +190,7 @@ def Main():
             if key == "b":
                 lf.set_calibration('black')
 
-            if key is not None:
-                print('Kp={:3f} Ki={:3f} Kd={:3f} L={:3d} R={:3d} ErrorArea={:3f} LoopFreq={:3d} Speed={:3d}'.format(Kp, Ki, Kd, leftMotorSpeed, rightMotorSpeed, integralArea, int(loopFreq), motorSpeed))
+            print('Kp={:3f} Ki={:3f} Kd={:3f} L={:3d} R={:3d} ErrorArea={:3f} LoopFreq={:3d} Speed={:3d}'.format(Kp, Ki, Kd, leftMotorSpeed, rightMotorSpeed, integralArea, int(loopFreq), motorSpeed))
     
     controlThread.join()
 

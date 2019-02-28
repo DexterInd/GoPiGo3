@@ -1,6 +1,6 @@
 ## PID-based Controller for the Line Follower
 
-This is a project you can use to tune your GoPiGo + Black/Line Line Follower to follow a black/white line.
+This is a project you can use to tune your GoPiGo + Line Follower (bot the red and black boards) to follow a black/white line.
 
 It all starts with the sensor of your choice: be it the old line follower (the red one) or the new one,
 which has a much higher poll rate, the sensors are more accurate and reliable, has a reduced power consumption and has a smaller footprint. 
@@ -21,7 +21,7 @@ To find out more on interfacing with either sensor, check out the DI_Sensors [do
 
 #### The Black Line Follower
 
-For the black line follower, the following parameters work best for the GoPiGo3:
+For the line follower (black board), the following parameters work best for the GoPiGo3:
 
 1. Base Speed = 300
 1. Loop Frequency = 100
@@ -31,7 +31,7 @@ For the black line follower, the following parameters work best for the GoPiGo3:
 
 #### The Red Line Follower
 
-For the red line follower, the following parameters work best for the GoPiGo3:
+For the line follower (red board), the following parameters work best for the GoPiGo3:
 
 1. Base Speed = 300
 1. Loop Frequency = 30
@@ -48,4 +48,4 @@ Make use of the 2 available commands (`w` and `b`) in the menu to calibrate each
 
 Next, update the Kp/Ki/Kd gains accordingly by using the appropriate commands listed in the menu and then finally let the GoPiGo3 run freely.
 
-_Note: Pay attention to the maximum update rate of both line followers: the black line follower updates at a maximum rate of ~130Hz with the poll rate going up to ~500Hz whilst the red line follower can do ~50Hz at most (both the update & poll rate)._
+_Note: Pay attention to the maximum update rate of both line followers: the line follower (black board) updates at a maximum rate of ~130Hz with the poll rate going up to ~500Hz whilst the line follower (red board) can do ~50Hz at most (both the update & poll rate)._
