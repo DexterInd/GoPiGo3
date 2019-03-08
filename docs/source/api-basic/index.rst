@@ -15,4 +15,5 @@ API GoPiGo3 - Basic
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
-.. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _line follower sensor (black board): https://www.dexterindustries.com/shop/line-follower-sensor/
+.. _line follower sensor (red board): https://www.dexterindustries.com/shop/line-follower-for-gopigo/
