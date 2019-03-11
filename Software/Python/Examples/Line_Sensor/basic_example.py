@@ -44,6 +44,9 @@ def get_sensorval():
 		#else:
 			#Read once more to clear buffer and remove junk values
 		#	val=line_sensor.read_sensor()
+		
+print("THIS IS DEPRECATED. IT WILL ONLY WORK WITH THE RED LINE FOLLOWER")
+
 while True:
 	l0,l1,l2,l3,l4=get_sensorval()
 	print (l0,l1,l2,l3,l4)

@@ -75,15 +75,6 @@ ButtonSensor
    :show-inheritance:
 
 =====================================
-LineFollower
-=====================================
-
-.. autoclass:: easysensors.LineFollower
-   :members:
-   :special-members:
-   :show-inheritance:
-
-=====================================
 Servo
 =====================================
 
@@ -110,6 +101,12 @@ Remote
    :special-members:
    :show-inheritance:
 
+======================================
+LineFollower
+======================================
+
+.. autofunction:: easysensors.LineFollower
+
 .. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _shop: https://www.dexterindustries.com/shop/
@@ -125,7 +122,8 @@ Remote
 .. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
 .. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
 .. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _line follower: https://www.dexterindustries.com/shop/line-follower-for-gopigo/
+.. _line follower sensor (black board): https://www.dexterindustries.com/shop/line-follower-sensor/
+.. _line follower sensor (red board): https://www.dexterindustries.com/shop/line-follower-for-gopigo/
 .. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
 .. _repository: https://www.dexterindustries.com/GoPiGo/get-started-with-the-gopigo3-raspberry-pi-robot/3-program-your-raspberry-pi-robot/python-programming-language/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
