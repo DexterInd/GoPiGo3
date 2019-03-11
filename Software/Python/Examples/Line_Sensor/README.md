@@ -1,6 +1,8 @@
 # LINE FOLLOWER SENSOR
 
-These files showcase how to use the line follower with a GoPiGo3.
+# THIS REPO IS DEPRECATED
+
+These files showcase how to use the RED line follower with a GoPiGo3 (the black line follower will not work)
 
 For these files to work, the DI Sensors drivers must first be installed. On Raspbian for Robots they are pre-installed already.
 
