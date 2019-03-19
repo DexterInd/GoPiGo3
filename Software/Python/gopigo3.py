@@ -202,15 +202,17 @@ class GoPiGo3(object):
     GROVE_LOW  = 0
     GROVE_HIGH = 1
 
-    def __init__(self, addr = 8, detect = True):
+    def __init__(self, addr=8, detect=True, wheel_base_width=117):
         """
         Do any necessary configuration, and optionally detect the GoPiGo3
+        
+        :param int addr: Optionally set the SPI address to something other than 8
+        :param bool detect: Optionally disable the detection of the GoPiGo3 hardware. This can be used for debugging and testing when the GoPiGo3 would otherwise not pass the detection tests
+        :param int wheel_base_width: adjust the distance between the two wheels (center to center) in order to gain better out from turn_degrees() and other methods
 
-        * Optionally set the SPI address to something other than 8
-        * Optionally disable the detection of the GoPiGo3 hardware. This can be used for debugging
-          and testing when the GoPiGo3 would otherwise not pass the detection tests.
         """
         
+        WHEEL_BASE_WIDTH = wheel_base_width
         # Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
         subprocess.call('gpio mode 12 ALT0', shell=True)
         subprocess.call('gpio mode 13 ALT0', shell=True)
