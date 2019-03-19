@@ -205,7 +205,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                            self.NO_LIMIT_SPEED)
 
-    def drive_cm(self, dist, blocking=True):
+    def drive_cm(self, dist, blocking=True, tolerance=5):
         """
         Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
 
@@ -241,10 +241,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if blocking:
             while self.target_reached(
                     StartPositionLeft + WheelTurnDegrees,
-                    StartPositionRight + WheelTurnDegrees) is False:
+                    StartPositionRight + WheelTurnDegrees, 
+                    tolerance=tolerance) is False:
                 time.sleep(0.1)
 
-    def drive_inches(self, dist, blocking=True):
+    def drive_inches(self, dist, blocking=True, tolerance=5):
         """
         Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
 
@@ -260,9 +261,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue moving.
 
         """
-        self.drive_cm(dist * 2.54, blocking)
+        self.drive_cm(dist * 2.54, blocking, tolerance)
 
-    def drive_degrees(self, degrees, blocking=True):
+    def drive_degrees(self, degrees, blocking=True, tolerance=5):
         """
         Move the `GoPiGo3`_ forward / backward for ``degrees / 360`` wheel rotations.
 
@@ -312,7 +313,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if blocking:
             while self.target_reached(
                     StartPositionLeft + degrees,
-                    StartPositionRight + degrees) is False:
+                    StartPositionRight + degrees, 
+                    tolerance=tolerance) is False:
                 time.sleep(0.1)
         return
 
@@ -418,7 +420,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * right_percent / 100)
 
 
-    def orbit(self, degrees, radius_cm=0, blocking=True):
+    def orbit(self, degrees, radius_cm=0, blocking=True, tolerance=5):
         """
         Control the GoPiGo so it will orbit around an object.  
         
@@ -487,7 +489,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if blocking:
             while self.target_reached(
                     StartPositionLeft + (left_target * direction),
-                    StartPositionRight + (right_target * direction)) is False:
+                    StartPositionRight + (right_target * direction), 
+                    tolerance=tolerance) is False:
                 time.sleep(0.1)
         
             # reset to original speed once done
@@ -497,7 +500,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         return
 
 
-    def target_reached(self, left_target_degrees, right_target_degrees):
+    def target_reached(self, left_target_degrees, right_target_degrees, tolerance=5):
         """
         Checks if (*wheels have rotated for a given number of degrees*):
 
@@ -572,7 +575,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                  * :py:meth:`~easygopigo3.EasyGoPiGo3.forward`
 
         """
-        tolerance = 5
+
         min_left_target = left_target_degrees - tolerance
         max_left_target = left_target_degrees + tolerance
         min_right_target = right_target_degrees - tolerance
@@ -655,7 +658,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             # do no conversion
         return average
 
-    def turn_degrees(self, degrees, blocking=True):
+    def turn_degrees(self, degrees, blocking=True, tolerance=2):
         """
         Makes the `GoPiGo3`_ robot turn at a specific angle while staying in the same spot.
 
@@ -710,7 +713,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if blocking:
             while self.target_reached(
                     StartPositionLeft + WheelTurnDegrees,
-                    StartPositionRight - WheelTurnDegrees) is False:
+                    StartPositionRight - WheelTurnDegrees, 
+                    tolerance=tolerance) is False:
                 time.sleep(0.1)
 
 
