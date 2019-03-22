@@ -17,7 +17,7 @@ from Tkinter import *
 import tkMessageBox
 import atexit
 
-    
+
 def error_box(in_string):
     '''
     Code to generate popup window
@@ -83,9 +83,15 @@ except Exception as e:
     distance_sensor = None
     
 if distance_sensor != None:
-    print ("Distance sensor is detected")
-else:
-    print ("No distance sensor detected")
+    print ("Distance Sensor is detected")
+
+try: 
+    sys.path.insert(0, '/home/pi/Dexter/DI_Sensors/Scratch/')
+    import diSensorsScratch
+    diSensorsScratch.detect_all()
+    disensors_available=True
+except:
+    disensors_available=False
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder
@@ -292,13 +298,12 @@ SENSOR_LED_POWER_GROUP = SENSOR_LED_GROUP+4
 SENSOR_LIGHT_GROUP = 15
 SENSOR_LIGHT_PORT1_GROUP = SENSOR_LIGHT_GROUP+2
 SENSOR_LIGHT_PORT2_GROUP = SENSOR_LIGHT_GROUP+3
-SENSOR_LINE_GROUP = 19
-SENSOR_SERVO_GROUP = 20
+SENSOR_SERVO_GROUP = 19
 SENSOR_SERVO_ANGLE_GROUP = SENSOR_SERVO_GROUP+1
-SENSOR_BUTTON_GROUP = 22
+SENSOR_BUTTON_GROUP = 21
 SENSOR_BUTTON_PORT1_GROUP = SENSOR_BUTTON_GROUP+1
 SENSOR_BUTTON_PORT2_GROUP = SENSOR_BUTTON_GROUP+2
-SENSOR_DHT_GROUP = 25
+SENSOR_DHT_GROUP = 24
 
 def set_sensor_regex_string():
     regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))"
@@ -309,7 +314,6 @@ def set_sensor_regex_string():
     regex_buzzer = "(BUZ(?:Z(?:E(?:R)?)?)?\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
     regex_LED = "(LED\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
     regex_light = "((?:light|lite|lit)\s*"+regex_ADport+"?)"
-    regex_line = "(LINE)"    
     regex_servo = "(SERVO\s*[1|2|s])\s*(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)"
     regex_button=("BUTTON\s*"+regex_ADport)
     regex_dht=("(DHT)\s*")
@@ -318,7 +322,6 @@ def set_sensor_regex_string():
                     regex_buzzer + "$|^" +
                     regex_LED + "$|^" +
                     regex_light + "$|^" +
-                    regex_line + "$|^" +
                     regex_servo + "$|^" +
                     regex_button+ "$|^" +
                     regex_dht+"$")
@@ -442,9 +445,7 @@ def handle_GoPiGo3_Sensor_msg(msg):
     elif regObj.group(SENSOR_LIGHT_GROUP):
         sensors = handle_light(regObj)
 
-    elif regObj.group(SENSOR_LINE_GROUP):
-        sensors = handle_line_sensor(regObj)
-        
+
     elif regObj.group(SENSOR_SERVO_GROUP):
         sensors = handle_servos(regObj)        
     
@@ -510,57 +511,7 @@ def handle_one_servo(port, angle):
     if servo:
         servo.rotate_servo(angle) 
     
-    return ({port:angle})       
- 
-            
-def handle_line_sensor(regObj):
-    
-    if en_debug:
-        print ("line follower!")
-        
-    sensors = {}
-    explanation = [
-    "Completely to the left", 
-    "Way to the left",
-    "Going left",
-    "Slightly to the left",
-    "Center", 
-    "Slightly to the right",
-    "Going right",
-    "Way to the right",
-    "Completely to the right",
-    "Reading black everywhere",
-    "Reading white everywhere",
-    "Technical difficulties"
-    ]
-    try:
-        import sys
-        # NOTE: for now te line follower is still kept in the GoPiGo folder
-        sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
-        # import line_sensor
-        import scratch_line
-
-    except ImportError:
-        print ("Line sensor libraries not found")
-        return({'line':-3,'line explanation': "technical difficulties"})
-
-    try:
-        line=scratch_line.line_sensor_val_scratch()
-        time.sleep(0.01)
-        line=scratch_line.line_sensor_val_scratch()
-        if en_debug:
-            print ("Line Sensor Readings: {}".format(str(line)))
-        sensors["line follower"] = line
-        sensors["line explanation"] = explanation[line+4]
-
-    except Exception as e:
-        if debug:
-            print ("Error reading Line sensor: {}",format(str(e)))
-        sensors["line"] = -3
-    
-    return sensors
-
-
+    return ({port:angle})
 def handle_light(regObj):
     sensors = {}
     light_reading = 0
@@ -639,7 +590,7 @@ def handle_distance(regObj):
         # Port wasn't specified, do we have a DI distance sensor?
         if distance_sensor is not None:
             distance = distance_sensor.read()
-            sensors["distance"] = distance
+            sensors["Distance Sensor"] = distance
         
         # if no distance sensor, then default to port AD1
         else:
@@ -1087,6 +1038,10 @@ if __name__ == '__main__':
                 pivotsensors = PivotPiScratch.handlePivotPi(msg)
                 # print "Back from PivotPi",pivotsensors
                 s.sensorupdate(pivotsensors)
+
+            elif disensors_available and diSensorsScratch.isDiSensorsMsg(msg):
+                disensors = diSensorsScratch.handleDiSensors(msg)
+                s.sensorupdate(disensors)
 
             else:
                 if en_debug:
