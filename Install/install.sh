@@ -77,6 +77,14 @@ enable_spi() {
 
 }
 
+install_wifi_antenna() {
+    sudo cp -f $GOPIGO3_DIR/Install/antenna_wifi.service /etc/systemd/system/antenna_wifi.service
+    sudo chown root:root /etc/systemd/system/antenna_wifi.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable antenna_wifi.service
+    sudo systemctl start antenna_wifi.service
+}
+
 # Enable GoPiGo3 Power Services in Systemd
 # Make sure the gopigo3_power.py program will run at boot
 
@@ -93,3 +101,4 @@ check_root_user
 install_dependencies
 install_wiringpi
 enable_spi
+install_wifi_antenna

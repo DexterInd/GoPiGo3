@@ -94,14 +94,8 @@ ENV/
 .ropeproject
 
 # End of https://www.gitignore.io/api/python
-sftp-config.json
-sftp-config-alt.json
-sftp-config-alt2.json
-sftp-config-alt3.json
-sftp-config-alt4.json
-sftp-config-alt5.json
-sftp-config-alt6.json
+sftp-config*
 .json
 
 .ftpconfig
-.vscode/sftp.json
+.vscode/*
