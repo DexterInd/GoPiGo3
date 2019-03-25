@@ -1039,6 +1039,7 @@ if __name__ == '__main__':
                 # print "Back from PivotPi",pivotsensors
                 s.sensorupdate(pivotsensors)
 
+            # DI SENSORS
             elif disensors_available and diSensorsScratch.isDiSensorsMsg(msg):
                 disensors = diSensorsScratch.handleDiSensors(msg)
                 s.sensorupdate(disensors)
