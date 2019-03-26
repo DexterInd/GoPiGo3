@@ -1,0 +1,13 @@
+[Unit]
+Description=Antenna Wifi Indicator
+
+[Service]
+Type=idle
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/bin/bash /home/pi/Dexter/GoPiGo3/Install/antenna_wifi.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
