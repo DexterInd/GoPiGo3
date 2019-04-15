@@ -448,7 +448,7 @@ class AnalogSensor(Sensor):
                 return 0
         except Exception as e:
             print("Analog Read fail-all: {}".format(e))
-        print("Analog Read: {}".format(self.value))
+        # print("Analog Read: {}".format(self.value))
         return self.value
 
     def percent_read(self):
