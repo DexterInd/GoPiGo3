@@ -131,7 +131,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # should there be a problem doing that then save the current default configuration
         try:
             self.load_robot_constants()
-        except (FileNotFoundError, KeyError, json.JSONDecodeError):
+        except Exception:
             pass
 
         self.sensor_1 = None
