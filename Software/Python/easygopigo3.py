@@ -153,7 +153,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :raises FileNotFoundError: When the file is non-existent.
         :raises KeyError: If one of the keys is not part of the dictionary.
         :raises ValueError: If the saved values are not positive numbers (floats or ints).
-        :raises IOError: When the file is not accessible (i.e. permission errors).
+        :raises TypeError: If the saved values are not numbers.
+        :raises IOError: When the file cannot be accessed.
+        :raises PermissionError: When there are not enough permissions to access the file.
 
         Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
         and edit their own config file if they don't want to go through saving the values by using the API.
@@ -181,7 +183,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         Save the current wheel diameter and wheel base width constants (from within this object's context) for the GoPiGo3 to file for future use.
 
         :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
-        :raises IOError: When the file can't be created (i.e. due to permission errors).
+        :raises IOError: When the file cannot be accessed.
+        :raises PermissionError: When there are not enough permissions to create the file.
 
         Here's how the JSON config file will end up looking like. The values can differ from case to case.
 
