@@ -166,7 +166,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             }
 
         """
-        with open('r', config_file_path) as json_file:
+        with open(config_file_path, 'r') as json_file:
             data = json.load(json_file)
             if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0:
                 self.WHEEL_DIAMETER = data['wheel-diameter']
@@ -193,7 +193,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             }
 
         """
-        with open('w', config_file_path) as json_file:
+        with open(config_file_path, 'w') as json_file:
             data = {
                 "wheel-diameter": self.WHEEL_DIAMETER,
                 "wheel-base-width": self.WHEEL_BASE_WIDTH
