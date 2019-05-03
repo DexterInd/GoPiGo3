@@ -98,7 +98,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         This constructor sets the variables to the following values:
 
-        :param config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
@@ -112,8 +112,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         the GoPiGo3 has a skewed trajectory due to minor differences in these two constants: the **wheel diameter** and the **wheel base width**. In most cases, this won't be the case.
 
         By-default, the constructor tries to read the ``config_file_path`` file and silently fails if something goes wrong: wrong permissions, non-existent file, improper key values and so on.
-        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_config` method and for saving the constants to a file call 
-        :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_config` method.
+        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_constants` method and for saving the constants to a file call 
+        :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_constants` method.
 
         """
         try:
@@ -130,7 +130,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # load wheel diameter & wheel base width
         # should there be a problem doing that then save the current default configuration
         try:
-            self.load_robot_config()
+            self.load_robot_constants()
         except (FileNotFoundError, KeyError, json.JSONDecodeError):
             pass
 
@@ -143,11 +143,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.right_eye_color = (0, 255, 255)
         self.use_mutex = use_mutex
 
-    def load_robot_config(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+    def load_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """
         Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
 
-        :param config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        This method gets called by the constructor.
+
+        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
         :raises FileNotFoundError: When the file is non-existent.
         :raises KeyError: If one of the keys is not part of the dictionary.
         :raises ValueError: If the saved values are not positive numbers (floats or ints).
@@ -159,7 +161,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         .. code-block:: json
         
             {
-                "wheel-diameter": 66.5
+                "wheel-diameter": 66.5,
                 "wheel-base-width": 117
             }
 
@@ -174,11 +176,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             else:
                 raise ValueError('positive values required')
 
-    def save_robot_config(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+    def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """
         Save the current wheel diameter and wheel base width constants (from within this object's context) for the GoPiGo3 to file for future use.
 
-        :param config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
         :raises IOError: When the file can't be created (i.e. due to permission errors).
 
         Here's how the JSON config file will end up looking like. The values can differ from case to case.
@@ -186,7 +188,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         .. code-block:: json
         
             {
-                "wheel-diameter": 66.5
+                "wheel-diameter": 66.5,
                 "wheel-base-width": 117
             }
 
@@ -198,7 +200,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             }
             json.dump(data, json_file)
 
-    def set_robot_config(self, wheel_diameter, wheel_base_width):
+    def set_robot_constants(self, wheel_diameter, wheel_base_width):
         """
         Set new wheel diameter and wheel base width values for the GoPiGo3.
 
@@ -210,8 +212,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         The GoPiGo3 class instantiates itself with default values for both constants:
 
         1. ``wheel_diameter`` is by-default set to **66.5** *mm*.
-        1. ``wheel_base_width`` is by-default set to **117** *mm*.
-        
+
+        2. ``wheel_base_width`` is by-default set to **117** *mm*.
+
         """
         self.WHEEL_DIAMETER = wheel_diameter
         self.WHEEL_CIRCUMFERENCE = self.WHEEL_DIAMETER * pi
