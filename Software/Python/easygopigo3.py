@@ -9,8 +9,10 @@ import sys
 import time
 import os
 import math
-from I2C_mutex import Mutex
+import json
 import easysensors
+from I2C_mutex import Mutex
+from math import pi
 
 try:
     from di_sensors import easy_distance_sensor
@@ -92,10 +94,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self, use_mutex=False):
+    def __init__(self, config_file_path="/home/pi/Dexter/gpg3_config.json", use_mutex=False):
         """
         This constructor sets the variables to the following values:
 
+        :param config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
         :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
@@ -104,6 +107,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :raises IOError: When the GoPiGo3 is not detected. It also debugs a message in the terminal.
         :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
         :raises Exception: For any other kind of exceptions.
+
+        The ``config_file_path`` parameter represents the path to a JSON file. The presence of this configuration file is optional and is only required in cases where
+        the GoPiGo3 has a skewed trajectory due to minor differences in these two constants: the **wheel diameter** and the **wheel base width**. In most cases, this won't be the case.
+
+        By-default, the constructor tries to read the ``config_file_path`` file and silently fails if something goes wrong: wrong permissions, non-existent file, improper key values and so on.
+        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_config` method and for saving the constants to a file call 
+        :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_config` method.
 
         """
         try:
@@ -117,6 +127,13 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         except Exception as e:
             raise e
 
+        # load wheel diameter & wheel base width
+        # should there be a problem doing that then save the current default configuration
+        try:
+            self.load_robot_config()
+        except (FileNotFoundError, KeyError, json.JSONDecodeError):
+            pass
+
         self.sensor_1 = None
         self.sensor_2 = None
         self.DEFAULT_SPEED = 300
@@ -125,6 +142,81 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.left_eye_color = (0, 255, 255)
         self.right_eye_color = (0, 255, 255)
         self.use_mutex = use_mutex
+
+    def load_robot_config(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+        """
+        Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
+
+        :param config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :raises FileNotFoundError: When the file is non-existent.
+        :raises KeyError: If one of the keys is not part of the dictionary.
+        :raises ValueError: If the saved values are not positive numbers (floats or ints).
+        :raises IOError: When the file is not accessible (i.e. permission errors).
+
+        Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
+        and edit their own config file if they don't want to go through saving the values by using the API.
+
+        .. code-block:: json
+        
+            {
+                "wheel-diameter": 66.5
+                "wheel-base-width": 117
+            }
+
+        """
+        with open('r', config_file_path) as json_file:
+            data = json.load(json_file)
+            if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0:
+                self.WHEEL_DIAMETER = data['wheel-diameter']
+                self.WHEEL_CIRCUMFERENCE = self.WHEEL_DIAMETER * pi
+                self.WHEEL_BASE_WIDTH = data['wheel-base-width']
+                self.WHEEL_BASE_CIRCUMFERENCE = self.WHEEL_BASE_WIDTH * pi
+            else:
+                raise ValueError('positive values required')
+
+    def save_robot_config(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+        """
+        Save the current wheel diameter and wheel base width constants (from within this object's context) for the GoPiGo3 to file for future use.
+
+        :param config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :raises IOError: When the file can't be created (i.e. due to permission errors).
+
+        Here's how the JSON config file will end up looking like. The values can differ from case to case.
+
+        .. code-block:: json
+        
+            {
+                "wheel-diameter": 66.5
+                "wheel-base-width": 117
+            }
+
+        """
+        with open('w', config_file_path) as json_file:
+            data = {
+                "wheel-diameter": self.WHEEL_DIAMETER,
+                "wheel-base-width": self.WHEEL_BASE_WIDTH
+            }
+            json.dump(data, json_file)
+
+    def set_robot_config(self, wheel_diameter, wheel_base_width):
+        """
+        Set new wheel diameter and wheel base width values for the GoPiGo3.
+
+        :param float wheel_diameter: Diameter of the GoPiGo3 wheels as measured in millimeters.
+        :param float wheel_base_width: The distance between the 2 centers of the 2 wheels as measured in millimeters.
+
+        This should only be required in rare cases when the GoPiGo3's trajectory is skewed due to minor differences in the wheel-to-body measurements.
+
+        The GoPiGo3 class instantiates itself with default values for both constants:
+
+        1. ``wheel_diameter`` is by-default set to **66.5** *mm*.
+        1. ``wheel_base_width`` is by-default set to **117** *mm*.
+        
+        """
+        self.WHEEL_DIAMETER = wheel_diameter
+        self.WHEEL_CIRCUMFERENCE = self.WHEEL_DIAMETER * pi
+        self.WHEEL_BASE_WIDTH = wheel_base_width
+        self.WHEEL_BASE_CIRCUMFERENCE = self.WHEEL_BASE_WIDTH * pi
 
     def volt(self):
         """
