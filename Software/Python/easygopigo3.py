@@ -171,10 +171,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         with open(config_file_path, 'r') as json_file:
             data = json.load(json_file)
             if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0:
-                self.WHEEL_DIAMETER = data['wheel-diameter']
-                self.WHEEL_CIRCUMFERENCE = self.WHEEL_DIAMETER * pi
-                self.WHEEL_BASE_WIDTH = data['wheel-base-width']
-                self.WHEEL_BASE_CIRCUMFERENCE = self.WHEEL_BASE_WIDTH * pi
+                self.set_robot_constants(data['wheel-diameter'], data['wheel-base-width'])
             else:
                 raise ValueError('positive values required')
 
