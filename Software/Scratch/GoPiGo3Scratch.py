@@ -310,7 +310,7 @@ def set_sensor_regex_string():
     
     # group 1 distance
     # group 2 port (optional)
-    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*"+regex_ADport+"?)"
+    regex_distance = "((?:get(?:_)?)?di(?:s)?t(?:ance)?\s*"+regex_ADport+"?)"
     regex_buzzer = "(BUZ(?:Z(?:E(?:R)?)?)?\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
     regex_LED = "(LED\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
     regex_light = "((?:light|lite|lit)\s*"+regex_ADport+"?)"
