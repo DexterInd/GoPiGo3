@@ -156,6 +156,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :raises TypeError: If the saved values are not numbers.
         :raises IOError: When the file cannot be accessed.
         :raises PermissionError: When there are not enough permissions to access the file.
+        :raises json.JSONDecodeError: When the config file fails at parsing. 
 
         Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
         and edit their own config file if they don't want to go through saving the values by using the API.
