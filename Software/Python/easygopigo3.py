@@ -1042,7 +1042,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         try:
             d = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
         except Exception as e:
-            print(e)
+            # print(e)
             d = None
 
         return d
