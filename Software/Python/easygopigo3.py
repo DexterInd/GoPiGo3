@@ -1032,12 +1032,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
+            
+             | If the devices share the same address, like two distance sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
 
         """
         if di_sensors_available is False:
             raise ImportError("di_sensors library not available")
+        
+        try:
+            d = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
+        except Exception as e:
+            print(e)
+            d = None
 
-        return easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
+        return d
 
 
     def init_dht_sensor(self, sensor_type = 0):
