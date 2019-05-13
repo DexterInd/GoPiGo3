@@ -51,8 +51,9 @@ def cleanup():
 def detect_distance_sensor():
     '''
     Detect up to 3 different distance_sensors, keep track of them all
+    I2C is tracked on its own, AD1 and AD2 are tracked in known_sensors
     '''
-    global distance_sensor, known_sensors
+    global distance_sensor
 
     # I2C
     try:
@@ -69,27 +70,27 @@ def detect_distance_sensor():
     try:
         distance_sensor_AD1 = gpg.init_distance_sensor(port="AD1")
     except Exception as e:
-        print(e)
+        # print(e)
         distance_sensor_AD1 = None
         
     if distance_sensor_AD1 != None:
         print ("Distance Sensor on AD1 is detected")
         known_sensors["AD1"] = distance_sensor_AD1
-    else:
-        print ("Distance Sensor on AD1 NOT detected") 
+    # else:
+        # print ("Distance Sensor on AD1 NOT detected") 
 
     # AD2
     try:
         distance_sensor_AD2 = gpg.init_distance_sensor(port="AD2")
     except Exception as e:
-        print(e)
+        # print(e)
         distance_sensor_AD2 = None
         
     if distance_sensor_AD2 != None:
         print ("Distance Sensor on AD2 is detected")
         known_sensors["AD2"] = distance_sensor_AD2
-    else:
-        print ("Distance Sensor on AD2 NOT detected") 
+    # else:
+        # print ("Distance Sensor on AD2 NOT detected") 
 
 
 ##################################################################
