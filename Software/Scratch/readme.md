@@ -41,7 +41,7 @@ GoPiGo3 Add-Ons:
 ![GoPiGo3 Add Ons](gopigo3addons.png "Overview of GoPiGo3 add-ons in Scratch.")
 
 GoPiGo3 Deprecated Sensors:
-![GoPiGo3 Deprecated Sensors](gopipo3deprecated.png "Overview of GoPiGo3 add-ons in Scratch.")
+![GoPiGo3 Deprecated Sensors](gopigo3deprecated.png "Overview of GoPiGo3 add-ons in Scratch.")
 
 ## See Also
 
