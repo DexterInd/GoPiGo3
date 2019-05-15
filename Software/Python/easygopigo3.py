@@ -1017,11 +1017,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         Initialises a :py:class:`~di_sensors.easy_distance_sensor.EasyDistanceSensor` object and then returns it.
 
-        :param str port = "I2C": The only option for this parameter is ``"I2C"``. The parameter has ``"I2C"`` as a default value.
+        :param str port = "I2C": The options for this parameter are ``"I2C"`` by default, ``"AD1"``, or ``"AD2"``.
         :returns: An instance of the :py:class:`~di_sensors.easy_distance_sensor.EasyDistanceSensor` class and with the port set to ``port``'s value.
         :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
 
-        The ``"I2C"`` ports are mapped to the following :ref:`hardware-ports-section`.
+        The ports are mapped to the following :ref:`hardware-ports-section`.
 
         The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_distance_sensor.EasyDistanceSensor` class.
 
@@ -1032,12 +1032,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
+            
+             | If the devices share the same address, like two distance sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
 
         """
         if di_sensors_available is False:
             raise ImportError("di_sensors library not available")
+        
+        try:
+            d = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
+        except Exception as e:
+            # print(e)
+            d = None
 
-        return easy_distance_sensor.EasyDistanceSensor(use_mutex=self.use_mutex)
+        return d
 
 
     def init_dht_sensor(self, sensor_type = 0):

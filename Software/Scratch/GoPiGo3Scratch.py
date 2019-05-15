@@ -9,6 +9,11 @@ import math
 import time
 import sys
 import easygopigo3 as easy
+import easysensors
+try:
+    from di_sensors import easy_distance_sensor
+except:
+    pass
 import os # needed to create folders
 
 ## Add what's required to have modal popup windows
@@ -17,7 +22,7 @@ from Tkinter import *
 import tkMessageBox
 import atexit
 
-    
+
 def error_box(in_string):
     '''
     Code to generate popup window
@@ -42,6 +47,50 @@ def cleanup():
     except:
         pass
     print ("Scratch Interpreter closed")
+
+def detect_distance_sensor():
+    '''
+    Detect up to 3 different distance_sensors, keep track of them all
+    I2C is tracked on its own, AD1 and AD2 are tracked in known_sensors
+    '''
+    global distance_sensor
+
+    # I2C
+    try:
+        distance_sensor = gpg.init_distance_sensor()
+    except:
+        distance_sensor = None
+        
+    if distance_sensor != None:
+        print ("Distance Sensor on I2C is detected")
+    # else:
+    #     print ("Distance Sensor on I2C NOT detected")   
+
+    # AD1
+    try:
+        distance_sensor_AD1 = gpg.init_distance_sensor(port="AD1")
+    except Exception as e:
+        # print(e)
+        distance_sensor_AD1 = None
+        
+    if distance_sensor_AD1 != None:
+        print ("Distance Sensor on AD1 is detected")
+        known_sensors["AD1"] = distance_sensor_AD1
+    # else:
+        # print ("Distance Sensor on AD1 NOT detected") 
+
+    # AD2
+    try:
+        distance_sensor_AD2 = gpg.init_distance_sensor(port="AD2")
+    except Exception as e:
+        # print(e)
+        distance_sensor_AD2 = None
+        
+    if distance_sensor_AD2 != None:
+        print ("Distance Sensor on AD2 is detected")
+        known_sensors["AD2"] = distance_sensor_AD2
+    # else:
+        # print ("Distance Sensor on AD2 NOT detected") 
 
 
 ##################################################################
@@ -77,15 +126,14 @@ try:
 except:
     pivotpi_available=False
     
-try:
-    distance_sensor = gpg.init_distance_sensor()
-except Exception as e:
-    distance_sensor = None
-    
-if distance_sensor != None:
-    print ("Distance sensor is detected")
-else:
-    print ("No distance sensor detected")
+
+try: 
+    sys.path.insert(0, '/home/pi/Dexter/DI_Sensors/Scratch/')
+    import diSensorsScratch
+    diSensorsScratch.detect_all()
+    disensors_available=True
+except:
+    disensors_available=False
 
 defaultCameraFolder="/home/pi/Desktop/"
 cameraFolder = defaultCameraFolder
@@ -189,22 +237,25 @@ ENCODER_VALUE_GROUP = ENCODER_GROUP+11
 # HELPER FUNCTIONS
 ##################################################################
 
-def get_sensor_instance(port,sensor_class):
+def get_sensor_instance(port, sensor_class):
     '''
     Checks if an instance of the requested sensor already exists for 
         the desired port. If it does, return that one
     If there's nothing on that port, or there's another sensor,
         then create the requested sensor and return this new one
     '''
-    if known_sensors[port] == None or \
-       isinstance(known_sensors[port], sensor_class) is False:
-       
-        try:
-            known_sensors[port] = sensor_class(port,gpg)
-        except Exception as e:
-            print("create_sensor_instance {}".format(e))
-            known_sensors[port] = None
-            
+    try:
+        if known_sensors[port] == None or \
+            isinstance(known_sensors[port], sensor_class) is False:
+            try:
+                known_sensors[port] = sensor_class(port, gpg)
+            except Exception as e:
+                print("get_sensor_instance {}".format(e))
+                known_sensors[port] = None
+    except Exception as e:
+        print("get_sensor_instance 2 {}".format(e))
+        known_sensors[port] = None
+
     # print(known_sensors[port])
     return(known_sensors[port])
 
@@ -292,24 +343,22 @@ SENSOR_LED_POWER_GROUP = SENSOR_LED_GROUP+4
 SENSOR_LIGHT_GROUP = 15
 SENSOR_LIGHT_PORT1_GROUP = SENSOR_LIGHT_GROUP+2
 SENSOR_LIGHT_PORT2_GROUP = SENSOR_LIGHT_GROUP+3
-SENSOR_LINE_GROUP = 19
-SENSOR_SERVO_GROUP = 20
+SENSOR_SERVO_GROUP = 19
 SENSOR_SERVO_ANGLE_GROUP = SENSOR_SERVO_GROUP+1
-SENSOR_BUTTON_GROUP = 22
+SENSOR_BUTTON_GROUP = 21
 SENSOR_BUTTON_PORT1_GROUP = SENSOR_BUTTON_GROUP+1
 SENSOR_BUTTON_PORT2_GROUP = SENSOR_BUTTON_GROUP+2
-SENSOR_DHT_GROUP = 25
+SENSOR_DHT_GROUP = 24
 
 def set_sensor_regex_string():
     regex_ADport = "(((?:AD|A|D)?1)|((?:AD|A|D)?2))"
     
     # group 1 distance
     # group 2 port (optional)
-    regex_distance = "((?:get(?:_))?di(?:s)?t(?:ance)?\s*"+regex_ADport+"?)"
+    regex_distance = "((?:get(?:_)?)?di(?:s)?t(?:ance)?\s*"+regex_ADport+"?)"
     regex_buzzer = "(BUZ(?:Z(?:E(?:R)?)?)?\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
     regex_LED = "(LED\s*"+regex_ADport+"\s*([0-9.]+|off|on))"
-    regex_light = "((?:light|lite|lit)\s*"+regex_ADport+"?)"
-    regex_line = "(LINE)"    
+    regex_light = "((?:grove_light|grove_lite|grove_lit)\s*"+regex_ADport+"?)"
     regex_servo = "(SERVO\s*[1|2|s])\s*(0{0,2}[0-9]|0?[1-9][0-9]|1[0-7][0-9]|180)"
     regex_button=("BUTTON\s*"+regex_ADport)
     regex_dht=("(DHT)\s*")
@@ -318,7 +367,6 @@ def set_sensor_regex_string():
                     regex_buzzer + "$|^" +
                     regex_LED + "$|^" +
                     regex_light + "$|^" +
-                    regex_line + "$|^" +
                     regex_servo + "$|^" +
                     regex_button+ "$|^" +
                     regex_dht+"$")
@@ -442,9 +490,7 @@ def handle_GoPiGo3_Sensor_msg(msg):
     elif regObj.group(SENSOR_LIGHT_GROUP):
         sensors = handle_light(regObj)
 
-    elif regObj.group(SENSOR_LINE_GROUP):
-        sensors = handle_line_sensor(regObj)
-        
+
     elif regObj.group(SENSOR_SERVO_GROUP):
         sensors = handle_servos(regObj)        
     
@@ -461,7 +507,7 @@ def handle_GoPiGo3_Sensor_msg(msg):
 def handle_dht(regObj):
     
     port = "SERIAL"
-    dht_sensor = get_sensor_instance(port, easy.DHTSensor)
+    dht_sensor = get_sensor_instance(port, easysensors.DHTSensor)
     
     if dht_sensor:
         sensors = {"Temperature": dht_sensor.read_temperature(),
@@ -478,7 +524,7 @@ def handle_button(regObj):
 
     port = "AD2" if regObj.group(SENSOR_BUTTON_PORT2_GROUP) else "AD1"
     
-    button_sensor = get_sensor_instance(port, easy.ButtonSensor)
+    button_sensor = get_sensor_instance(port, easysensors.ButtonSensor)
 
     if button_sensor:
         sensors = {"{}: Button Pressed".format(port):known_sensors[port].is_button_pressed()}
@@ -505,69 +551,19 @@ def handle_servos(regObj):
 
 def handle_one_servo(port, angle):
     
-    servo = get_sensor_instance(port, easy.Servo)
+    servo = get_sensor_instance(port, easysensors.Servo)
     
     if servo:
         servo.rotate_servo(angle) 
     
-    return ({port:angle})       
- 
-            
-def handle_line_sensor(regObj):
-    
-    if en_debug:
-        print ("line follower!")
-        
-    sensors = {}
-    explanation = [
-    "Completely to the left", 
-    "Way to the left",
-    "Going left",
-    "Slightly to the left",
-    "Center", 
-    "Slightly to the right",
-    "Going right",
-    "Way to the right",
-    "Completely to the right",
-    "Reading black everywhere",
-    "Reading white everywhere",
-    "Technical difficulties"
-    ]
-    try:
-        import sys
-        # NOTE: for now te line follower is still kept in the GoPiGo folder
-        sys.path.insert(0, '/home/pi/Dexter/GoPiGo/Software/Python/line_follower')
-        # import line_sensor
-        import scratch_line
-
-    except ImportError:
-        print ("Line sensor libraries not found")
-        return({'line':-3,'line explanation': "technical difficulties"})
-
-    try:
-        line=scratch_line.line_sensor_val_scratch()
-        time.sleep(0.01)
-        line=scratch_line.line_sensor_val_scratch()
-        if en_debug:
-            print ("Line Sensor Readings: {}".format(str(line)))
-        sensors["line follower"] = line
-        sensors["line explanation"] = explanation[line+4]
-
-    except Exception as e:
-        if debug:
-            print ("Error reading Line sensor: {}",format(str(e)))
-        sensors["line"] = -3
-    
-    return sensors
-
-
+    return ({port:angle})
 def handle_light(regObj):
     sensors = {}
     light_reading = 0
     
     port = "AD2" if regObj.group(SENSOR_LIGHT_PORT2_GROUP) else "AD1"
 
-    light = get_sensor_instance(port, easy.LightSensor)
+    light = get_sensor_instance(port, easysensors.LightSensor)
     
     if light:
         light_reading = light.percent_read()   
@@ -590,7 +586,7 @@ def handle_led(regObj):
     except:
         power = 100 if regObj.group(SENSOR_LED_POWER_GROUP)=="on" else 0
         
-    Led = get_sensor_instance(port, easy.Led)
+    Led = get_sensor_instance(port, easysensors.Led)
     
     if Led:   
         Led.light_on(power)
@@ -610,7 +606,7 @@ def handle_buzzer(regObj):
     except:
         power = 100 if regObj.group(SENSOR_BUZZER_POWER_GROUP)=="on" else 0
 
-    Buzzer = get_sensor_instance(port, easy.Buzzer)   
+    Buzzer = get_sensor_instance(port, easysensors.Buzzer)   
     if Buzzer:     
         Buzzer.sound(power)
     
@@ -619,45 +615,73 @@ def handle_buzzer(regObj):
 
 def handle_distance(regObj):
     '''
-    if a port is provided, assume it's ultrasonic sensor
- 
-    If no port is provided :
-        Try to deal with Distance Sensor first. 
-        if Distance sensor fails, attempt US sensor on port AD1
+    if a port is provided, use it otherwise assume it's I2C
+    if a dexterind distance sensor is detected on that port, use it.
 
     '''
+    distance_sensor_output_str = "Distance Sensor"
+    def read_ultrasonic(port="AD1"):
+        UltraSonicSensor = get_sensor_instance(port, easysensors.UltraSonicSensor)
+        print("reading from ultrasonic sensor on port {}".format(port))
+        distance = UltraSonicSensor.read()
+        if distance == 0:
+            known_sensors[port] = None
+        sensors["{}: distance".format(port)] = distance
+
     if regObj.group(SENSOR_DISTANCE_PORT2):
         port = "AD2" 
     elif regObj.group(SENSOR_DISTANCE_PORT1):
         port = "AD1" 
     else:
-        port = None
+        port = ""
+
+    # print("using {} ".format(port))
   
     sensors = {}  # default sensors 
-    
-    if port is None:
-        # Port wasn't specified, do we have a DI distance sensor?
-        if distance_sensor is not None:
-            distance = distance_sensor.read()
-            sensors["distance"] = distance
-        
-        # if no distance sensor, then default to port AD1
-        else:
-            # print("no port provided, going with AD1")
-            port = "AD1"
-    
-    # don't use an else here even if it's tempting
-    # as port can be modified in the first if block  
-    if port:
-        UltraSonicSensor = get_sensor_instance(port, easy.UltraSonicSensor)   
+    global distance_sensor
 
-        if UltraSonicSensor:                            
-            # print("reading from ultrasonic sensor on port {}".format(port))
-            distance = UltraSonicSensor.read()
-            sensors["{}: distance".format(port)] = distance
-        else:
-            sensors["{}: distance".format(port)] = "Unknown Error"
+    # if no port was supplied, assume a distance sensor on I2C
+    # we no longer support the ultrasonic sensor on AD1 without it being specified
+    if port == "" or port == "I2C":
+        try:
+            if distance_sensor == None:
+                # we didn't find a distance sensor on this port
+                # but maybe one got added
+                # print("checking if one just got added")
+                distance_sensor = gpg.init_distance_sensor()
             
+            # print("taking reading")
+            distance = distance_sensor.read()
+            print("reading done: {}".format(distance))
+            
+            # a value of 0 means we couldn't read the distance sensor
+            if distance == 0:
+                distance_sensor = None
+                sensors[distance_sensor_output_str] = 0
+            else:
+                sensors[distance_sensor_output_str] = distance
+        except Exception as e:
+            # the read failed, distance sensor probably disconnected
+            print(e)
+            distance_sensor = None
+            sensors[distance_sensor_output_str] = 0
+
+    if port == "AD1" or port == "AD2":
+        try:
+            sensor = get_sensor_instance(port,  easy_distance_sensor.EasyDistanceSensor)
+            distance = sensor.read()
+            print("distance from di sensor {}".format(distance))
+            if distance == 0:
+                # this implies we couldn't read the distance sensor, 
+                # possibly disconnected
+                known_sensors[port] = None
+            sensors["{}: {}".format(port, distance_sensor_output_str)] = distance
+        except Exception as e:
+            # couldn't detect a dexterind distance sensor. 
+            # Fall back on ultrasonic sensor and pray for the best
+            # print(e)
+            read_ultrasonic(port)
+
     return (sensors)
         
   
@@ -996,6 +1020,8 @@ if __name__ == '__main__':
         if en_debug:
             print ("GoPiGo3 Scratch: Unable to Broadcast")
 
+    detect_distance_sensor()
+
     while True:
         try:
             m = s.receive()
@@ -1087,6 +1113,10 @@ if __name__ == '__main__':
                 pivotsensors = PivotPiScratch.handlePivotPi(msg)
                 # print "Back from PivotPi",pivotsensors
                 s.sensorupdate(pivotsensors)
+
+            elif disensors_available and diSensorsScratch.isDiSensorsMsg(msg):
+                disensors = diSensorsScratch.handleDiSensors(msg)
+                s.sensorupdate(disensors)
 
             else:
                 if en_debug:
