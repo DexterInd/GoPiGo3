@@ -1043,6 +1043,7 @@ if __name__ == '__main__':
                     e = sys.exc_info()[1]
                     logger.info("Error taking picture")
                     s.sensorupdate({'camera':"Error"})
+            # SPEAK MODULE
             elif (msg[:5].lower()=="SPEAK".lower()):
                 try:
                     from subprocess import call
@@ -1059,6 +1060,7 @@ if __name__ == '__main__':
                 pivotsensors = PivotPiScratch.handlePivotPi(msg)
                 # print "Back from PivotPi",pivotsensors
                 s.sensorupdate(pivotsensors)
+            # DI SENSORS
             elif disensors_available and diSensorsScratch.isDiSensorsMsg(msg):
                 disensors = diSensorsScratch.handleDiSensors(msg)
                 s.sensorupdate(disensors)
