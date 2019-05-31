@@ -4,6 +4,9 @@ import struct
 
 logger = logging.getLogger(__name__)
 
+# for more on the serial interface (SPI, uart, I2C) check this link
+# https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:porting_guide#general-format
+
 LINE_REQUEST_GET_FEATURES = 0x30
 LINE_RESPONSE_GET_FEATURES = 0x31
 LINE_REQUEST_SET_MODE = 0x36
