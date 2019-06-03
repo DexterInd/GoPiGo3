@@ -2,6 +2,8 @@ import di_i2c
 import logging
 import struct
 
+from collections import namedtuple
+
 logger = logging.getLogger(__name__)
 
 # for more on the serial interface (SPI, uart, I2C) check this link
@@ -32,6 +34,9 @@ LINE_FLAG_INTERSECTION_PRESENT = 0x04
 
 LINE_MAX_INTERSECTION_LINES = 6
 
+VECTOR_SIZE = 6
+INTERSECTION_SIZE = 4 + 4 * LINE_MAX_INTERSECTION_LINES
+BARCODE_SIZE = 4
 
 def unpack_bytes(bytes_list,
                  big_endian=True):
@@ -52,6 +57,11 @@ def unpack_bytes(bytes_list,
 
     return out
 
+
+Vector = namedtuple('Vector', 'x0 y0 x1 y1 index flags')
+IntersectionLine = namedtuple('IntersectionLine', 'index reserved angle')
+Intersection = namedtuple('Intersection', 'x y size reserved lines')
+Barcode = namedtuple('Barcode', 'x y flags code')
 
 class Pixy2I2C():
 
@@ -203,59 +213,121 @@ class Pixy2I2C():
             logger.debug('detected block from pixy2 w/ sigmap={}, maxblocks={}'.format(sigmap, maxblocks))
             return data[1:]
 
+    def __get_main_features(self, payload_length):
+        """
+        Continues reading the data that contains the detected main features from Pixy2.
+
+        :param payload_length: How long the payload is in bytes.
+        :return: A dict with 'vectors', 'intersections' or 'barcodes' keys or None
+        if there's nothing detected or if there's an error.
+        """
+        # read from the I2C device
+        inp = self.i2c_bus.read_list(reg=None, len=payload_length + 2)
+        check_sum = struct.unpack('<H', bytes(inp[:2]))[0]
+
+        # if the checksum doesn't match
+        inp = inp[2:]
+        if check_sum != sum(inp):
+            logger.debug('checksum doesn\'t match for the main features')
+            return None
+
+        # parse the read data
+        out = {}
+        length = payload_length
+        offset = 0
+
+        # read until the index reaches the end of the data list
+        while offset < length:
+            ftype = inp[offset]
+            fsize = inp[offset + 1]
+
+            # check for line vectors
+            idx = offset + 2
+            if ftype == LINE_VECTOR:
+                fdata = inp[idx: idx + fsize]
+                size = int(len(fdata) / VECTOR_SIZE)
+                out['vectors'] = []
+                for i in range(size):
+                    vector_data = fdata[i * VECTOR_SIZE: (i + 1) * VECTOR_SIZE]
+                    vector = Vector(*vector_data)
+                    out['vectors'].append(vector)
+
+            # check for intersections
+            elif ftype == LINE_INTERSECTION:
+                fdata = inp[idx: idx + fsize]
+                size = int(len(fdata) / INTERSECTION_SIZE)
+                out['intersections'] = []
+                for i in range(size):
+                    data = fdata[i * INTERSECTION_SIZE: (i + 1) * INTERSECTION_SIZE]
+                    intersect = Intersection(*data[:4], [])
+                    data = data[4:]
+                    for line in range(intersect.size):
+                        intersect_line = IntersectionLine(
+                            index=data[4 * line],
+                            reserved=data[4 * line + 1],
+                            angle=struct.unpack('<h', bytes(data[4 * line + 2: 4 * line + 4]))[0]
+                        )
+                        intersect.lines.append(intersect_line)
+                    out['intersections'].append(intersect)
+
+            # check for barcodes
+            elif ftype == LINE_BARCODE:
+                fdata = inp[idx: idx + fsize]
+                size = int(len(fdata) / BARCODE_SIZE)
+                out['barcodes'] = []
+                for i in range(size):
+                    barcode_data = fdata[i * BARCODE_SIZE: (i + 1) * BARCODE_SIZE]
+                    barcode = Barcode(*barcode_data)
+                    out['barcodes'].append(barcode)
+
+            else:
+                return None
+
+            offset += fsize + 2
+
+        return out
+
     def get_main_features(self, features):
         """
+        Gets the main features from the Pixy2.
+
+        The main features are returned under the form of named tuples: Vector, Intersection
+        and Barcode.
         
-        :param features:
-        :return:
+        :param features: LINE_VECTOR, LINE_INTERSECTION, LINE_BARCODE or LINE_ALL_FEATURES.
+        :return: A dict with 'vectors', 'intersections' or 'barcodes' keys or None
+        if there's nothing detected or if there's an error. For each key a list of
+        tuples of Vector, Intersection and respectively Barcode types is present.
         """
         # 2 sync bytes, type packet, length payload, request type, features
         out = [
             174, 193, 48, 2, features, 7
         ]
         logger.debug('detect main features on the pixy2')
+
+        # make a request to get the main features
         inp = self.i2c_bus.transfer(out, 4)
+        mtype = inp[2]
         payload_length = inp[3]
-        inp = self.i2c_bus.read_list(reg=None, len=payload_length)
 
-        # if we have detected something
-        if payload_length > 2:
-            check_sum = struct.unpack('<H', bytes(inp[:2]))[0]
-        # otherwise just cancel the process
+        # if we got a response saying there are features
+        if mtype == LINE_RESPONSE_GET_FEATURES:
+            # if there's something in the payload
+            if payload_length > 0:
+                # get the features
+                response = self.__get_main_features(payload_length)
+                if response is None:
+                    logger.debug('error/no features detected on the pixy2')
+                else:
+                    logger.debug('detected main features on the pixy2')
+                return response
+            # or if there isn't then return none
+            else:
+                logger.debug('no features detected on the pixy2')
+                return None
+        # otherwise just return none
         else:
-            logger.debug('no features detected on the pixy2')
             return None
-
-        # if the checksum doesn't match
-        if check_sum != sum(inp[2:]):
-            logger.debug('checksum doesn\'t match for the main features')
-            return None
-        inp = inp[2:]
-
-        # read the actual features (vectors, intersections, barcodes)
-        length = len(inp)
-        current = 0
-        data_dict = {}
-        # labels = {
-        #     1: 'vector',
-        #     2: 'intersection',
-        #     4: 'barcode'
-        # }
-        labels = iter(['vector', 'intersection', 'barcode'])
-        while current < length:
-            ftype, flength = struct.unpack('<2B', bytes(inp[:2]))
-            inp = inp[2:]
-            print('type={}, fl={} list={} current={} length={}'.format(ftype, flength, len(inp[:flength]), current, length))
-            data = struct.unpack('<' + str(flength) + 'B', bytes(inp[:flength]))
-
-            # add the data to the output dictionary
-            label = next(labels)
-            data_dict[label] = data
-
-            # and update the number of bytes read
-            current += 2 + flength
-
-        return data_dict
 
     def set_mode(self, mode):
         """
