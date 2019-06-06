@@ -62,6 +62,7 @@ Vector = namedtuple('Vector', 'x0 y0 x1 y1 index flags')
 IntersectionLine = namedtuple('IntersectionLine', 'index reserved angle')
 Intersection = namedtuple('Intersection', 'x y size reserved lines')
 Barcode = namedtuple('Barcode', 'x y flags code')
+RGBPixel = namedtuple('RGBPixel', 'r g b')
 
 class Pixy2I2C():
 
@@ -92,7 +93,7 @@ class Pixy2I2C():
         """
         Return the width and height of the camera.
 
-        :return: width, height (0-511)
+        :return: width, height (0-511). None if the checksum didn't match.
         """
         out = [
             # 2 sync bytes, type packet, length payload, unused type
@@ -100,9 +101,13 @@ class Pixy2I2C():
         ]
         logger.debug('get resolution from pixy2')
         inp = self.i2c_bus.transfer(out, 10)
-        width, height = struct.unpack('<HH', bytes(inp[6:10]))
 
-        return width, height
+        checksum = struct.unpack('<H', bytes(inp[4:6]))[0]
+        if checksum == sum(inp[6:10]):
+            width, height = struct.unpack('<HH', bytes(inp[6:10]))
+            return width, height
+        else:
+            return None
 
     def set_camera_brightness(self, brightness):
         """
@@ -293,7 +298,7 @@ class Pixy2I2C():
 
         The main features are returned under the form of named tuples: Vector, Intersection
         and Barcode.
-        
+
         :param features: LINE_VECTOR, LINE_INTERSECTION, LINE_BARCODE or LINE_ALL_FEATURES.
         :return: A dict with 'vectors', 'intersections' or 'barcodes' keys or None
         if there's nothing detected or if there's an error. For each key a list of
@@ -336,23 +341,95 @@ class Pixy2I2C():
         :return: Nothing.
         """
         out = [
-            # 2 sync bytes
+            # 2 sync bytes, type packet, length payload, mode
             174, 193, 54, 1, mode
         ]
         logger.debug('set pixy2 mode to 0x{:02X}'.format(mode))
         self.i2c_bus.transfer(out, 10)
 
     def set_next_turn(self, angle):
-        pass
+        """
+        Set the next turn angle.
+
+        :param angle: Angle between -90 and 90.
+        :return: Nothing.
+        """
+        _angle = struct.pack('<h', angle)
+        # 2 sync bytes, type packet, length payload, angle
+        out = [
+            174, 193, 58, 2
+        ] + list(_angle)
+
+        logger.debug('set pixy2 next turn angle to {}'.format(angle))
+        self.i2c_bus.transfer(out, 10)
 
     def set_default_turn(self, angle):
-        pass
+        """
+        Set the default next turn.
 
-    def set_vector(self, angle):
-        pass
+        :param angle: Angle between -90 and 90.
+        :return: Nothing.
+        """
+        _angle = struct.pack('<h', angle)
+        # 2 sync bytes, type packet, length payload, angle
+        out = [
+            174, 193, 60, 2
+        ] + list(_angle)
 
-    def reverse_vector(self, angle):
-        pass
+        logger.debug('set pixy2 default turn angle to {}'.format(angle))
+        self.i2c_bus.transfer(out, 10)
 
-    def get_rgb(self, x, y, r, g, b, saturate):
-        pass
+    def set_vector(self, index):
+        """
+        Track vector based on the given index.
+
+        :param index: Index of vector to track. Values from 0-255.
+        :return: Nothing
+        """
+        out = [
+            # 2 sync bytes, type packet, length payload, index
+            174, 193, 56, 1, index
+        ]
+
+        logger.debug('set vector index to track to {} on pixy2'.format(index))
+        self.i2c_bus.transfer(out, 10)
+
+    def reverse_vector(self):
+        """
+        Reverse all vectors.
+
+        :return: Nothing.
+        """
+        out = [
+            # 2 sync bytes, type packet, length payload
+            174, 193, 62, 0
+        ]
+        logger.debug('get reverse vectors instead on pixy2')
+        self.i2c_bus.transfer(out, 10)
+
+    def get_rgb(self, x, y, saturate):
+        """
+        Read pixel at given coordinates.
+
+        :param x: X coordinate. Values between 0-315.
+        :param y: Y coordinate. Values between 0-207.
+        :param saturate: 0 to not saturate or 1 to saturate.
+        :return: None when checksum is bad and an RGBPixel tuple when it's successful.
+        """
+        _x = struct.pack('<h', x)
+        _y = struct.pack('<h', y)
+        # 2 sync bytes, type packet, length payload, x, y, saturate
+        out = [
+            174, 193, 112, 5
+        ] + list(_x) + list(_y) + [saturate]
+
+        logger.debug('read pixel from x={},y={} on pixy2'.format(x, y))
+        inp = self.i2c_bus.transfer(out, 9)
+
+        # do checksum and return the pixel
+        checksum = struct.unpack('<H', bytes(inp[4:6]))[0]
+        if checksum == sum(inp[6:9]):
+            pixel = RGBPixel(*inp[6:9])
+            return pixel
+        else:
+            return None

@@ -22,10 +22,10 @@ if __name__ == "__main__":
     string = 'width {} height {}'.format(*resolution)
     logger.info(string)
 
-    # # set brightness for pixy2
-    # for brightness in range(0, 150, 30):
-    #     device.set_camera_brightness(brightness)
-    #     sleep(0.5)
+    # set brightness for pixy2
+    for brightness in range(0, 150, 30):
+        device.set_camera_brightness(brightness)
+        sleep(0.5)
 
     # set servos pans
     for pan in range(0, 512, 128):
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # turn the lamp on an off
     counter = 0
-    for i in range(11):
+    for i in range(10):
         device.set_lamp(counter % 2)
         counter += 1
         sleep(0.05)
@@ -66,11 +66,34 @@ if __name__ == "__main__":
         logger.info(string)
 
     # get main features
+    retries = 10
+    counter = 0
+    device.set_lamp(1)
     while True:
         features = device.get_main_features(features=1)
+        sleep(0.1)
+        counter += 1
         if features is not None:
             break
+        if counter == retries:
+            break
 
-    formatted = json.dumps(features, indent=2, sort_keys=True)
-    logger.info(formatted)
+    if counter != retries:
+        formatted = json.dumps(features, indent=2, sort_keys=True)
+        logger.info(formatted)
 
+    # set the next turn's angle
+    device.set_next_turn(0)
+
+    # set the default turn angle
+    device.set_default_turn(0)
+
+    # select the vector to track
+    device.set_vector(0)
+
+    # double reverse the vectors
+    device.reverse_vector()
+    device.reverse_vector()
+
+    # # turn the lamp off
+    # device.set_lamp(0)
