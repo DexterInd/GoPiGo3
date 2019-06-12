@@ -30,8 +30,6 @@ The code we're analyzing in this tutorial is the following one.
 
     # create the LED instance, passing the port and GPG
     my_led = gpg.init_led("AD1")
-    # or
-    # my_LED = easy.Led("AD1", GPG)
 
     # loop 100 times
     for i in range(100):

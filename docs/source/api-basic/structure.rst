@@ -149,6 +149,16 @@ GoPiGo3 LEDs
    easygopigo3.EasyGoPiGo3.close_right_eye
    easygopigo3.EasyGoPiGo3.close_eyes
 
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+GoPiGo3 Constants
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+
+.. autosummary::
+   easygopigo3.EasyGoPiGo3.load_robot_constants
+   easygopigo3.EasyGoPiGo3.save_robot_constants
+   easygopigo3.EasyGoPiGo3.set_robot_constants
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 GoPiGo3 Init Methods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

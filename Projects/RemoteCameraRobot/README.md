@@ -53,4 +53,4 @@ On reboot, connect to the WiFi service "Dex".
 
 Here's a YouTube video of this project:
 
-[![Alt text](https://img.youtube.com/vi/Tu_-Al6Smhg/0.jpg)](https://www.youtube.com/watch?v=Tu_-Al6Smhg)
+[![Alt text](https://img.youtube.com/vi/jyg_nt28ktk/0.jpg)](https://youtu.be/jyg_nt28ktk)
