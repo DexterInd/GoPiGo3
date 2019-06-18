@@ -328,6 +328,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # get the starting position of each motor
         StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
         StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
+        left_motor_encoder = StartPositionLeft
+        right_motor_encoder = StartPositionRight
 
         self.set_motor_position(self.MOTOR_LEFT,
                                 (StartPositionLeft + WheelTurnDegrees))
@@ -335,10 +337,33 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                 (StartPositionRight + WheelTurnDegrees))
 
         if blocking:
-            while self.target_reached(
-                    StartPositionLeft + WheelTurnDegrees,
-                    StartPositionRight + WheelTurnDegrees) is False:
+            target_reached = False
+            while target_reached is False:
+                # protect against a SPI error if microcontroller failed and resets
+                try:
+                    target_reached = self.target_reached(
+                            StartPositionLeft + WheelTurnDegrees,
+                            StartPositionRight + WheelTurnDegrees)
+
+                    # take current encoder positions
+                    left_motor_encoder = self.get_motor_encoder(self.MOTOR_LEFT)
+                    right_motor_encoder = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+                except: 
+                    # microcontroller failed
+                    # reset speed and encoder positions to last known values
+                    self.set_speed(self.speed)
+                    if left_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_LEFT, -left_motor_encoder)
+                    if right_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_RIGHT, -right_motor_encoder)
+                    self.set_motor_position(self.MOTOR_LEFT,
+                                            (StartPositionLeft + WheelTurnDegrees))
+                    self.set_motor_position(self.MOTOR_RIGHT,
+                                            (StartPositionRight + WheelTurnDegrees))
+
                 time.sleep(0.1)
+
 
     def drive_inches(self, dist, blocking=True):
         """
@@ -406,9 +431,26 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
 
         if blocking:
-            while self.target_reached(
-                    StartPositionLeft + degrees,
-                    StartPositionRight + degrees) is False:
+            target_reached = False
+            while target_reached is False:
+                # protect against microcontroller resetting
+                try:
+                    target_reached = self.target_reached(
+                        StartPositionLeft + degrees,
+                        StartPositionRight + degrees)
+
+                    # keep last known values
+                    left_motor_encoder = self.get_motor_encoder(self.MOTOR_LEFT)
+                    right_motor_encoder = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+                except: 
+                    # microcontroller failed. Reset last known values
+                    self.set_speed(self.speed)
+                    if left_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_LEFT, -left_motor_encoder)
+                    if right_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_RIGHT, -right_motor_encoder)
+                    self.set_speed(self.speed)
                 time.sleep(0.1)
         return
 
@@ -581,9 +623,25 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + (right_target * direction)))
         
         if blocking:
-            while self.target_reached(
-                    StartPositionLeft + (left_target * direction),
-                    StartPositionRight + (right_target * direction)) is False:
+            target_reached = False
+            while target_reached is False:
+                # protect against microcontroller resetting
+                try:
+                    target_reached = self.target_reached(
+                        StartPositionLeft + (left_target * direction),
+                        StartPositionRight + (right_target * direction))
+                    # keep last known valid values
+                    left_motor_encoder = self.get_motor_encoder(self.MOTOR_LEFT)
+                    right_motor_encoder = self.get_motor_encoder(self.MOTOR_RIGHT)
+
+                except: 
+                    # microcontroller got reset. 
+                    # re-use last known values
+                    self.set_speed(self.speed)
+                    if left_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_LEFT, -left_motor_encoder)
+                    if right_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_RIGHT, -right_motor_encoder)
                 time.sleep(0.1)
         
             # reset to original speed once done
@@ -604,7 +662,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         :param int left_target_degrees: Target degrees for the *left* wheel.
         :param int right_target_degrees: Target degrees for the *right* wheel.
-
+        :raises IOError: When the microcontroller has suffered a reset.
+        
         :return: Whether both wheels have reached their target.
         :rtype: boolean.
 
@@ -674,8 +733,24 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         min_right_target = right_target_degrees - tolerance
         max_right_target = right_target_degrees + tolerance
 
-        current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
-        current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
+        # check if microcontroller got reset
+        try:
+            left_motor_speed = self.get_motor_status(self.MOTOR_LEFT)[1]
+            right_motor_speed = self.get_motor_status(self.MOTOR_RIGHT)[1]
+        except:
+            raise IOError ("microcontroller reset get_motor_status")
+
+        if left_motor_speed == -128:
+            raise IOError("microcontroller reset left motor")
+        if right_motor_speed == -128:
+            raise IOError("microcontroller reset right motor")
+
+        # in case microcontroller gets reset, 
+        try:
+            current_left_position = self.get_motor_encoder(self.MOTOR_LEFT)
+            current_right_position = self.get_motor_encoder(self.MOTOR_RIGHT)
+        except: 
+            raise IOError("microcontroller reset spi")
 
         if current_left_position > min_left_target and \
            current_left_position < max_left_target and \
@@ -804,9 +879,26 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
                                 (StartPositionRight - WheelTurnDegrees))
 
         if blocking:
-            while self.target_reached(
-                    StartPositionLeft + WheelTurnDegrees,
-                    StartPositionRight - WheelTurnDegrees) is False:
+            target_reached = False
+            left_motor_encoder = StartPositionLeft
+            right_motor_encoder = StartPositionRight
+            while target_reached is False:
+                # protect against microcontroller reset
+                try:
+                    target_reached = self.target_reached(
+                        StartPositionLeft + WheelTurnDegrees,
+                        StartPositionRight - WheelTurnDegrees)
+
+                    # keep track of last known valid values
+                    left_motor_encoder = self.get_motor_encoder(self.MOTOR_LEFT)
+                    right_motor_encoder = self.get_motor_encoder(self.MOTOR_RIGHT)
+                except:
+                    # microcontroller got reset, re-use last known values
+                    self.set_speed(self.speed)
+                    if left_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_LEFT, -left_motor_encoder )
+                    if right_motor_encoder != 0:
+                        self.offset_motor_encoder(self.MOTOR_RIGHT, -right_motor_encoder )
                 time.sleep(0.1)
 
 
