@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from __future__ import print_function
+import subprocess
 
 # try to import the auto_detection library
 try:
@@ -33,9 +34,18 @@ right_led=0
 left_eye=0
 right_eye=0
 v=gpg.volt()
-f=gpg.get_version_firmware()
+wheel_diameter = gpg.WHEEL_DIAMETER
+wheel_base_width = gpg.WHEEL_BASE_WIDTH
 
+firmware_version=gpg.get_version_firmware()
+calibration_straigt_line = [
+    "Measure a distance of 2m or 6'and click the corresponding button. " ,
+    "Change the wheel circumference value as needed and try again until satisfied."]
+calibration_turn = [
+    "Click the button to have the robot do a full rotation. ",
+    "Change the distance between wheels value as needed and try again until satisfied."]
 ICON_PATH = "/home/pi/Dexter/GoPiGo3/Software/Python/Examples/Control_Panel/"
+
 
 class MainPanel(wx.Panel):
     """"""
@@ -47,9 +57,33 @@ class MainPanel(wx.Panel):
         self.SetBackgroundColour(wx.WHITE)
         self.frame = parent
 
+
+        title_font = wx.Font( 15,
+                        wx.FONTSTYLE_NORMAL,
+                        wx.FONTFAMILY_DEFAULT,
+                        wx.FONTSTYLE_NORMAL,
+                        wx.FONTWEIGHT_BOLD)
+        title_font.SetUnderlined(False)
+
+        small_font = wx.Font( 10,
+                        wx.FONTSTYLE_NORMAL,
+                        wx.FONTFAMILY_DEFAULT,
+                        wx.FONTSTYLE_NORMAL,
+                        wx.FONTWEIGHT_BOLD)
+        small_font.SetUnderlined(False)
+
         # main sizer
         main_sizer = wx.BoxSizer(wx.VERTICAL)
-        main_sizer.AddSpacer(30)
+        # Two horizontal sections
+        top_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        # top has two vertical sections
+        control_sizer = wx.BoxSizer(wx.VERTICAL)
+        vital_signs_sizer = wx.BoxSizer(wx.VERTICAL)
+
+        # bottom has just one section
+        calibration_sizer = wx.BoxSizer(wx.VERTICAL)
 
         if no_auto_detect == True:
             detected_robot = auto_detect_robot.autodetect()
@@ -62,32 +96,32 @@ class MainPanel(wx.Panel):
                 warning_sizer.Add(detected_robot_str, 0, wx.EXPAND| wx.ALIGN_CENTER)
                 main_sizer.Add(warning_sizer, 0, wx.ALIGN_CENTER)
 
-        led_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        left_led_button = wx.Button(self, label="Left LED")
+
+        # Remote Control
+        control_label = wx.StaticText(self, -1, label="Remote Control:")
+        control_label.SetFont(title_font)
+
+        left_led_button = wx.Button(self, label="Left Blinker")
         self.Bind(wx.EVT_BUTTON, self.left_led_button_OnButtonClick, left_led_button)
-        right_led_button = wx.Button(self, label="Right LED")
+        right_led_button = wx.Button(self, label="Right Blinker")
         self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)       
 
-        led_sizer.AddSpacer(30)
+        led_sizer = wx.BoxSizer(wx.HORIZONTAL)
         led_sizer.Add(left_led_button, 0, wx.ALIGN_CENTER)
-        led_sizer.AddSpacer(80)
+        led_sizer.AddSpacer(70)
         led_sizer.Add(right_led_button, 0, wx.ALIGN_CENTER)
-        led_sizer.AddSpacer(30)
 
-        eyesSizer = wx.BoxSizer(wx.HORIZONTAL)
+        eyes_sizer = wx.BoxSizer(wx.HORIZONTAL)
         left_eye_button = wx.Button(self, label="Left eye")
         self.Bind(wx.EVT_BUTTON, self.left_eye_button_OnButtonClick, left_eye_button)
-        icon_sizer = wx.BoxSizer(wx.HORIZONTAL)
         bmp = wx.Bitmap(ICON_PATH+"dex.png",type=wx.BITMAP_TYPE_PNG)
         robotbitmap=wx.StaticBitmap(self, bitmap=bmp)
         right_eye_button = wx.Button(self, label="Right eye")
         self.Bind(wx.EVT_BUTTON, self.right_eye_button_OnButtonClick, right_eye_button)
 
-        eyesSizer.AddSpacer(30)
-        eyesSizer.Add(right_eye_button, 0)
-        eyesSizer.Add(robotbitmap, 0)
-        eyesSizer.Add(left_eye_button, 0)
-        eyesSizer.AddSpacer(30)
+        eyes_sizer.Add(right_eye_button, 0, wx.ALIGN_CENTER)
+        eyes_sizer.Add(robotbitmap, 0, wx.ALIGN_CENTER)
+        eyes_sizer.Add(left_eye_button, 0, wx.ALIGN_CENTER)
 
         fwd_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fwd_button = wx.Button(self, label="Forward")
@@ -98,7 +132,7 @@ class MainPanel(wx.Panel):
         left_button = wx.Button(self, label="Left")
         self.Bind(wx.EVT_BUTTON, self.left_button_OnButtonClick, left_button)
         stop_button = wx.Button(self, label="Stop")
-        stop_button.SetBackgroundColour('red')
+        stop_button.SetForegroundColour('red')
         self.Bind(wx.EVT_BUTTON, self.stop_button_OnButtonClick, stop_button)
         right_button = wx.Button(self, label="Right")
         self.Bind(wx.EVT_BUTTON, self.right_button_OnButtonClick, right_button)
@@ -107,74 +141,152 @@ class MainPanel(wx.Panel):
         middle_sizer.Add(stop_button,  0, wx.ALIGN_CENTER)
         middle_sizer.Add(right_button,  0, wx.ALIGN_CENTER)
 
-        bwdSizer = wx.BoxSizer(wx.HORIZONTAL)
+        bwd_sizer = wx.BoxSizer(wx.HORIZONTAL)
         bwd_button = wx.Button(self, label="Back")
         self.Bind(wx.EVT_BUTTON, self.bwd_button_OnButtonClick, bwd_button)
-        bwdSizer.Add(bwd_button,  0, wx.ALIGN_CENTER)
+        bwd_sizer.Add(bwd_button,  0, wx.ALIGN_CENTER)
+
+        # Vital Signs Values
+
+        vital_signs_label = wx.StaticText(self, -1, label="Vital Signs:")
+        vital_signs_label.SetFont(title_font)
 
         batterySizer = wx.BoxSizer(wx.HORIZONTAL)
         battery_button = wx.Button(self, label="Check Battery Voltage")
         self.Bind(wx.EVT_BUTTON, self.battery_button_OnButtonClick, battery_button)
         self.battery_label = wx.StaticText(self, label=str(round(v,1))+"V")
-        batterySizer.AddSpacer(30)
         batterySizer.Add(battery_button, 0, wx.ALIGN_LEFT )
-        batterySizer.AddSpacer(20)
+        batterySizer.AddSpacer(22)
         batterySizer.Add( self.battery_label,0, wx.ALIGN_CENTER|wx.EXPAND )
 
         firmwareSizer = wx.BoxSizer(wx.HORIZONTAL)
         firmware_button = wx.Button(self,-1,label="Check Firmware Version")
         self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)        
-        self.firmware_label = wx.StaticText(self,-1,label=str(f))
-        firmwareSizer.AddSpacer(30)
+        self.firmware_label = wx.StaticText(self,-1,label=str(firmware_version))
         firmwareSizer.Add(firmware_button, 0, wx.ALIGN_LEFT)
         firmwareSizer.AddSpacer(15)
         firmwareSizer.Add( self.firmware_label, 0, wx.ALIGN_CENTER|wx.EXPAND )
 
+        calibration_label = wx.StaticText(self, -1, label="Driving Calibration:")
+        calibration_label.SetFont(title_font)
+
+        calibrationDriveSizer = wx.BoxSizer(wx.VERTICAL)
+
+        # drive_straight_label = []
+        # for i in range(len(calibration_straigt_line)): # number of lines of instructions
+        #     drive_straight_label.append(wx.StaticText(self, -1,label=calibration_straigt_line[i]))
+        #     drive_straight_label[i].SetFont(small_font)
+        #     calibrationDriveSizer.Add(drive_straight_label[i], 0, wx.ALIGN_LEFT)
+
+        calibrationDriveInternalSizer = wx.BoxSizer(wx.HORIZONTAL)
+        wheel_diameter_label = wx.StaticText(self, -1, label="Wheel Diameter:")
+        self.wheel_diameter_input = wx.TextCtrl(self, value=str(wheel_diameter), size=(60, 40))
+        # self.Bind(wx.EVT_TEXT, self.wheel_diameter_input_OnChanged, self.wheel_diameter_input)
+        calibrationDriveInternalSizer.Add(wheel_diameter_label, 0, wx.ALIGN_CENTER)
+        calibrationDriveInternalSizer.Add( self.wheel_diameter_input, 0, wx.ALIGN_CENTER|wx.EXPAND )
+        calibrationDriveInternalSizer.AddSpacer(15)
+
+        drive_straight_2m_button = wx.Button(self,-1,label="Drive 2m")
+        self.Bind(wx.EVT_BUTTON, self.drive_straight_2m_button_OnButtonClick, drive_straight_2m_button)
+        drive_straight_6feet_button = wx.Button(self,-1,label="Drive 6 feet")
+        self.Bind(wx.EVT_BUTTON, self.drive_straight_6feet_button_OnButtonClick, drive_straight_6feet_button)
+        calibrationDriveInternalSizer.Add( drive_straight_2m_button, 0, wx.ALIGN_CENTER|wx.EXPAND )
+        calibrationDriveInternalSizer.AddSpacer(15)
+        calibrationDriveInternalSizer.Add( drive_straight_6feet_button, 0, wx.ALIGN_CENTER|wx.EXPAND )
+        calibrationDriveSizer.Add(calibrationDriveInternalSizer, 0, wx.ALIGN_LEFT)
+
+        calibrationTurnSizer = wx.BoxSizer(wx.VERTICAL)
+
+        # turn_straight_label = []
+        # for i in range(len(calibration_turn)): # number of lines of instructions
+        #     turn_straight_label.append(wx.StaticText(self, -1, label=calibration_turn[i]))
+        #     turn_straight_label[i].SetFont(small_font)
+        #     calibrationTurnSizer.Add(turn_straight_label[i], 0, wx.ALIGN_LEFT)
+
+        calibrationTurnInternalSizer = wx.BoxSizer(wx.HORIZONTAL)
+        wheel_base_label = wx.StaticText(self, -1, label="Distance Between Wheels:")
+        self.wheel_base_input = wx.TextCtrl(self, value=str(wheel_base_width), size=(60, 40))
+
+        calibrationTurnInternalSizer.Add(wheel_base_label, 0, wx.ALIGN_CENTER)
+        calibrationTurnInternalSizer.Add( self.wheel_base_input, 0, wx.ALIGN_CENTER|wx.EXPAND )
+        calibrationTurnInternalSizer.AddSpacer(15)
+
+        spin_one_rotation_button = wx.Button(self,-1,label="Spin 1 Rotation")
+        self.Bind(wx.EVT_BUTTON, self.spin_one_rotation_button_OnButtonClick, spin_one_rotation_button)
+        calibrationTurnInternalSizer.Add( spin_one_rotation_button, 0, wx.ALIGN_CENTER|wx.EXPAND )
+        calibrationTurnSizer.Add(calibrationTurnInternalSizer, 0, wx.ALIGN_LEFT)
+
+
+
         # Exit
         exit_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        exit_button = wx.Button(self, label="Exit")
+        exit_button = wx.Button(self, label="Cancel")
         exit_button.Bind(wx.EVT_BUTTON, self.onClose)
-        exit_sizer.Add(exit_button,0, wx.ALIGN_RIGHT)
-        exit_sizer.AddSpacer(30)
+        save_button = wx.Button(self, label="Save and Exit")
+        save_button.Bind(wx.EVT_BUTTON, self.onSave)
+                                                       # The distance between wheels is invalid.
+        self.msg_label = wx.StaticText(self, -1, size=(400,30), label="")
+        exit_sizer.Add(self.msg_label, 1, wx.ALIGN_LEFT|wx.EXPAND)
+        exit_sizer.Add(exit_button, 0, wx.ALIGN_RIGHT|wx.RIGHT, 20)
+        exit_sizer.Add(save_button, 0, wx.ALIGN_RIGHT)
 
-        main_sizer.Add(led_sizer, 0, wx.ALIGN_CENTER)
-        main_sizer.Add(eyesSizer, 0, wx.ALIGN_CENTER)
-        main_sizer.AddSpacer(20)
-        main_sizer.Add(fwd_sizer, 0, wx.ALIGN_CENTER)
-        main_sizer.Add(middle_sizer, 0, wx.ALIGN_CENTER)
-        main_sizer.Add(bwdSizer, 0, wx.ALIGN_CENTER)
-        main_sizer.AddSpacer(30)
-        main_sizer.Add(batterySizer, 0, wx.ALIGN_LEFT)
-        main_sizer.Add(firmwareSizer, 0, wx.ALIGN_LEFT)
-        main_sizer.AddSpacer(20)
-        main_sizer.Add(exit_sizer,0,wx.ALIGN_RIGHT)
+        
+
+        # Fill remote control section
+        control_sizer.Add(control_label, 0, wx.ALIGN_LEFT)
+        control_sizer.Add(led_sizer, 0, wx.ALIGN_CENTER)
+        control_sizer.Add(eyes_sizer, 0, wx.ALIGN_CENTER)
+        control_sizer.Add(fwd_sizer, 0, wx.ALIGN_CENTER|wx.TOP,10)
+        control_sizer.Add(middle_sizer, 0, wx.ALIGN_CENTER)
+        control_sizer.Add(bwd_sizer, 0, wx.ALIGN_CENTER)
+
+        # Fill check buttons
+        vital_signs_sizer.Add(vital_signs_label, 0, wx.ALIGN_LEFT|wx.BOTTOM, 10)
+        vital_signs_sizer.Add(batterySizer, 0, wx.ALIGN_LEFT|wx.TOP,9)
+        vital_signs_sizer.Add(firmwareSizer, 0, wx.ALIGN_LEFT|wx.TOP,20)
+
+        # Fill calibration section
+        calibration_sizer.Add(calibration_label, 0, wx.ALIGN_LEFT|wx.BOTTOM, 5)
+        calibration_sizer.Add(calibrationDriveSizer, 0, wx.ALIGN_LEFT|wx.TOP|wx.BOTTOM|wx.LEFT, 10,30)
+        calibration_sizer.Add(calibrationTurnSizer, 0, wx.ALIGN_LEFT|wx.TOP|wx.BOTTOM|wx.LEFT, 10,30)
+
+        top_sizer.Add(control_sizer, 0, wx.ALIGN_LEFT|wx.BOTTOM|wx.RIGHT, 20)
+        top_sizer.Add(vital_signs_sizer, 0, wx.ALIGN_LEFT|wx.LEFT, 40)
+
+        bottom_sizer.Add(calibration_sizer, 0)
+
+        main_sizer.Add(top_sizer, 0, wx.LEFT|wx.TOP, 30)
+        main_sizer.Add(bottom_sizer, 0, wx.LEFT|wx.TOP, 30)
+        main_sizer.Add(exit_sizer, 1, wx.ALIGN_RIGHT|wx.TOP|wx.RIGHT, 10)
+
         self.SetSizerAndFit(main_sizer)
 
     def battery_button_OnButtonClick(self,event):
         global v
-        # v=gopigo.volt()
         v=round(gpg.volt(),1)
         self.battery_label.SetLabel(str(v)+"V")
         
     def firmware_button_OnButtonClick(self,event):
-        global f
-        f=gpg.get_version_firmware()
-        self.firmware_label.SetLabel(str(f))
+        global firmware_version
+        firmware_version=gpg.get_version_firmware()
+        self.firmware_label.SetLabel(str(firmware_version))
 
     def left_button_OnButtonClick(self,event):
-        f=gpg.left()
+        gpg.left()
 
     def stop_button_OnButtonClick(self,event):
-        f=gpg.stop()
+        if process:
+            process.terminate()
+        gpg.stop()
 
     def right_button_OnButtonClick(self,event):
-        f=gpg.right()
+        gpg.right()
 
     def fwd_button_OnButtonClick(self,event):
-        f=gpg.forward()
+        gpg.forward()
 
     def bwd_button_OnButtonClick(self,event):
-        f=gpg.backward()
+        gpg.backward()
 
     def left_led_button_OnButtonClick(self,event):
         global left_led
@@ -212,14 +324,119 @@ class MainPanel(wx.Panel):
             gpg.close_left_eye()
             left_eye=0
 
+    # def wheel_diameter_input_OnChanged(self, event):
+    #     global wheel_diameter
+    #     try:
+    #         #basic entry validation. Maybe use regex in the future? 
+    #         #right now,  10e1000 is considered valid
+    #         wheel_diameter = float(event.GetString())
+    #     except:
+    #         pass
+
+
+    def drive_straight_2m_button_OnButtonClick(self, event):
+        global process
+        try:
+            diam = float(self.wheel_diameter_input.GetValue())
+        except:
+            self.msg_label.SetLabel("Wheel diameter is invalid.")
+            return
+        
+        try:
+            base = float(self.wheel_base_input.GetValue())
+        except:
+            self.msg_label.SetLabel("The distance between wheels is invalid.")
+            return
+
+        try:
+            command = "import easygopigo3 as e; g = e.EasyGoPiGo3(); g.set_robot_constants({}, {});g.drive_cm(200)".format(float(self.wheel_diameter_input.GetValue()), float(self.wheel_base_input.GetValue()))
+            process = subprocess.Popen(['python', '-c', command], stdout=subprocess.PIPE)
+            self.msg_label.SetLabel("")
+        except Exception as e:
+            print(e)
+            self.msg_label.SetLabel("One of the values is invalid")
+            pass
+
+    def drive_straight_6feet_button_OnButtonClick(self, event):
+        global process
+
+        global process
+        try:
+            diam = float(self.wheel_diameter_input.GetValue())
+        except:
+            self.msg_label.SetLabel("Wheel diameter is invalid.")
+            return
+        
+        try:
+            base = float(self.wheel_base_input.GetValue())
+        except:
+            self.msg_label.SetLabel("The distance between wheels is invalid.")
+            return
+
+        try:
+            command = "import easygopigo3 as e; g = e.EasyGoPiGo3(); g.set_robot_constants({}, {});g.drive_inches(6*12)".format(float(self.wheel_diameter_input.GetValue()), float(self.wheel_base_input.GetValue()))
+            process = subprocess.Popen(['python', '-c', command], stdout=subprocess.PIPE)
+            self.msg_label.SetLabel("")
+        except Exception as e:
+            print(e)
+            pass
+
+    def spin_one_rotation_button_OnButtonClick(self, event):
+        global process
+        try:
+            diam = float(self.wheel_diameter_input.GetValue())
+        except:
+            self.msg_label.SetLabel("Wheel diameter is invalid.")
+            return
+        
+        try:
+            base = float(self.wheel_base_input.GetValue())
+        except:
+            self.msg_label.SetLabel("The distance between wheels is invalid.")
+            return
+        try:
+            command = "import easygopigo3 as e; g = e.EasyGoPiGo3(); g.set_robot_constants({}, {});g.turn_degrees(360)".format(float(self.wheel_diameter_input.GetValue()), float(self.wheel_base_input.GetValue()))
+            process = subprocess.Popen(['python', '-c', command], stdout=subprocess.PIPE)
+            self.msg_label.SetLabel("")
+        except Exception as e:
+            print(e)
+            pass
+
+
     def onClose(self, event):	# Close the entire program.
         self.frame.Close()
+
+    def onSave(self, event):
+        '''
+        Since there is no entry validation, the call to float could fail depending on what the user entered.
+        In that case, do not save the entries and do not close the window.
+        '''
+        global process
+        try:
+            diam = float(self.wheel_diameter_input.GetValue())
+        except:
+            self.msg_label.SetLabel("Wheel diameter is invalid.")
+            return
+        
+        try:
+            base = float(self.wheel_base_input.GetValue())
+        except:
+            self.msg_label.SetLabel("The distance between wheels is invalid.")
+            return
+
+        try:
+            gpg.set_robot_constants(float(self.wheel_diameter_input.GetValue()), float(self.wheel_base_input.GetValue()))
+            gpg.save_robot_constants()
+            self.msg_label.SetLabel("")
+            self.onClose(event)
+        except Exception:
+            pass
 
 
 class MainFrame(wx.Frame):
     def __init__(self):
         wx.Log.SetVerbose(False)
-        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(475,500))
+        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(650,600))
         panel = MainPanel(self)
         self.Center()
 
