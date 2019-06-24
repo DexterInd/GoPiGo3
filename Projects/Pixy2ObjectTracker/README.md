@@ -20,11 +20,11 @@ We used a Grove cable to connect to the Pixy2. Basically, we've chopped the othe
 
 Here are a two GIFs with this robot:
 
-![Imgur](https://i.imgur.com/xabwSex.gif)
+<img src="https://i.imgur.com/xabwSex.gif?raw=true" width="480px">
 
 In the above figure, we can see what the Pixy2 camera actually detects: it's a can of spray and it's red. Setting up the recognition of this object can be done via the PixyMon monitor.
 
-![Imgur](https://i.imgur.com/jhHS0dI.gif)
+<img src="https://i.imgur.com/jhHS0dI.gif?raw=true" width="480px">
 
 And in the above GIF, we can see how the GoPiGo3 follows the said object. Pretty neat!
 
