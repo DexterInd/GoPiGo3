@@ -16,15 +16,15 @@ In our case, we decided to make the Pixy2 communicate with the Raspberry Pi over
 
 ![Imgur](https://i.imgur.com/AMuOqZV.jpg)
 
-We used a Grove cable to connect to the Pixy2. Basically, we've chopped the other end of the cable and use 3 header pins to connect that to the Pixy2: an `SDA`, `SCL` and `GND`. The intact Grove connector gets plugged in the I2C port. You can find out more about the Pixy2's GPIO pins [here](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:porting_guide).
+We used a Grove cable to connect to the Pixy2. Basically, we've chopped the other end of the cable and use 3 header pins to connect that to the Pixy2: an `SDA`, `SCL` and `GND`. The intact Grove connector gets plugged into the I2C port. You can find out more about the Pixy2's GPIO pins [here](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:porting_guide).
 
 Here are a two GIFs with this robot:
 
-<img src="https://i.imgur.com/xabwSex.gif?raw=true" width="480px">
+<img src="https://i.imgur.com/WUjJPBo.gif?raw=true" width="480px">
 
 In the above figure, we can see what the Pixy2 camera actually detects: it's a can of spray and it's red. Setting up the recognition of this object can be done via the PixyMon monitor.
 
-<img src="https://i.imgur.com/jhHS0dI.gif?raw=true" width="480px">
+<img src="https://i.imgur.com/Pluk9in.gif?raw=true" width="480px">
 
 And in the above GIF, we can see how the GoPiGo3 follows the said object. Pretty neat!
 
