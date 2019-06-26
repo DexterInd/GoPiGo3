@@ -27,14 +27,14 @@ Last but not least, it is recommended to use an additional power source for the 
 
 For setting up the Pixy2, there are 2 options: either set up the Pixy2 for the laptop or for your Raspberry Pi. This set up is only required for configuring the Pixy2 and not for the actual usage of the robot. Regardless, the instructions on setting this up can be found on Pixy2's documentation right [here](https://pixycam.com/downloads-pixy2/).
 
-There are a couple of dependencies for this project: `numpy==1.12.1`, `opencv-python==3.4.4.19`, `getkey==0.6.5`, `recordclass==0.11.1` and `pixy2==0.1.0`.
+Apart from that, there are a couple of other dependencies for this project too (*specifically for the script that has to run on the Pi*): `numpy==1.12.1`, `opencv-python==3.4.4.19`, `getkey==0.6.5`, `recordclass==0.11.1` and `pixy2==0.1.0`.
 
 To install the `pixy2` package run the following command:
 ```bash
 pip3 install git+https://github.com/RobertLucian/pixy2.git@v0.1.0
 ```
 
-All the rest of the packages mentioned above can be either installed with pip or with apt-get. 
+All the rest of the packages mentioned above can be either installed with pip or with apt-get. Python >= 3.5.x is the accepted version of Python for this project.
 
 
 ## On Calibration
