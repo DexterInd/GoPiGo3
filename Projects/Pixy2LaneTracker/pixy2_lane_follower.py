@@ -3,6 +3,8 @@ import pixy2
 import cv2
 import numpy as np
 import math
+import logging
+import json
 
 from easygopigo3 import EasyGoPiGo3
 from threading import Thread
@@ -46,13 +48,9 @@ def window_based_interpolation(magnitude, height, width):
 
 def detect_lanes_from_vector_frame(frame, height, width):
     # region of interest
-    # a = (0, height - 1)
-    # b = (25, 30)
-    # c = (53, 30)
-    # d = (width - 1, height - 1)
     a = (-26, height - 1)
-    b = (23, 26)
-    c = (58, 26)
+    b = (17, 26) # 23
+    c = (64, 26) # 58
     d = (width - 1 + 26, height - 1)
     roi = [a, b, c, d]
     pts1 = np.float32(roi)
@@ -126,8 +124,10 @@ def video_worker(queue, event_stopper):
     scale = 5
     font = cv2.FONT_HERSHEY_SIMPLEX
 
+    # while the event hasn't been set
     while not event_stopper.is_set():
-
+        
+        # get the data off of the queue
         if not queue.empty():
             data = queue.get()
         else:
@@ -146,6 +146,7 @@ def video_worker(queue, event_stopper):
         nh = scale * height
         nw = scale * width
 
+        # draw the vectors on the first image
         img = np.zeros([nh, nw], dtype=np.uint8)
         for vector in frame:
             cv2.line(img,
@@ -161,20 +162,35 @@ def video_worker(queue, event_stopper):
             cv2.putText(img, 'Mag {}'.format(int(magnitude)),
                         (int(1.0 * nh), int(0.15 * nw)), font, 0.5, 255, 1, cv2.LINE_AA)
 
+        # generated the warped image as seen from the bird's eye perspective
         warped = np.zeros([win_size, win_size], dtype=np.uint8)
         for lane in lanes:
             a = tuple(lane[0,:])
             b = tuple(lane[1,:])
             cv2.line(warped, a, b, color=255, thickness=1)
 
+        # show them
         cv2.imshow('Pixy2 Stream - Lane Follower', img)
         cv2.imshow('Warped Image of the Lanes', warped)
+
+        # and add a mandatory waiKey call
         cv2.waitKey(int(1000 / fps))
 
+    # close all windows (2 of them)
     cv2.destroyAllWindows()
 
 def runner(event_stopper):
 
+    try:
+        with open('config.json', 'r') as f:
+            config = json.load(f)
+    except Exception as err:
+        logger.exception(err)
+        event_stopper.set()
+        return
+
+    # start another process to render the graphical representation
+    # of what the camera sees
     queue = MQueue(5)
     video_process = Process(target=video_worker, args=(queue, event_stopper))
     video_process.start()
@@ -184,20 +200,24 @@ def runner(event_stopper):
         # initialize devices
         pixy = pixy2.Pixy2I2C(address=0x54)
         gopigo3 = EasyGoPiGo3()
+        logger.info('initialized pixy2 and gopigo3')
 
         # turn on the built-in LED for better visibility
         pixy.set_lamp(1)
+        logger.info('turn on pixy2 lamp')
 
         # set it to follow white lanes
         pixy.set_mode(pixy2.LINE_MODE_WHITE_LINE)
+        logger.info('set pixy2 line mode on white')
 
         # get the number of frames per second
         fps = pixy.get_fps()
         period = 1 / fps
+        logger.info('pixy2 running at {} fps'.format(fps))
 
         # camera resolution
         width, height = pixy.get_resolution()
-        print(width, height)
+        logger.info('pixy2 camera width={} height={}'.format(width, height))
 
         # keep previous measurements for smoothing out the data
         previous_angle = 0
@@ -205,26 +225,22 @@ def runner(event_stopper):
         previous_ema_angle = 0
         previous_ema_magnitude = 0
         frame_index = 0
-        alfa = 0.10 # 0.2
-        yotta = 0.2 # magnitude importance
+        alfa = config['alfa']
+        yotta = config['yotta'] # magnitude importance
+        logger.info('alfa (exp. moving average factor) = {:3.2f}'.format(alfa))
+        logger.info('yotta (magnitude importance) = {:3.2f}'.format(yotta))
 
-        # Kp = 1.75
-        # Ki = 0.0016
-        # Kd = 9.0
-        #
-        # Kp_surrogate = 12.0
-        # Ki_surrogate = 0.004
-        # Kd_surrogate = 2.0
-
-        c1 = PID(Kp=1.75, Ki=0.0016, Kd=9.0, previous_error=0.0, integral_area=0.0)
-        c2 = PID(Kp=12.0, Ki=0.0040, Kd=2.0, previous_error=0.0, integral_area=0.0)
-        pid_switch_point = 63
-
+        # the 2 PIDs
+        c1 = PID(Kp=config['pid1']['Kp'], Ki=config['pid1']['Ki'], Kd=config['pid1']['Kd'], previous_error=0.0, integral_area=0.0)
+        c2 = PID(Kp=config['pid2']['Kp'], Ki=config['pid2']['Ki'], Kd=config['pid2']['Kd'], previous_error=0.0, integral_area=0.0)
+        pid_switch_point = config['pid-switch-point']
+        logger.info('PID 1 = {}'.format(str(c1)))
+        logger.info('PID 2 = {}'.format(str(c2)))
+        logger.info('PID switchpoint = {}'.format(pid_switch_point))
+        
         set_point = 0
-        max_motor_speed = 350
-        # previous_error = 0
-        # integral_area = 0
-        # integral_area_surrogate = 0
+        max_motor_speed = config['max-motor-speed']
+        logger.info('max motor speed = {}'.format(max_motor_speed))
 
         while not event_stopper.is_set():
 
@@ -245,9 +261,12 @@ def runner(event_stopper):
                 sleep(period)
                 continue
 
+            # calculate the heading of the lane and detect how long the lane is
             lanes, win_size, roi = detect_lanes_from_vector_frame(frame, height, width)
             angle, magnitude = calculate_direction_and_magnitude(lanes, win_size, previous_angle, previous_magnitude)
 
+            # run the determined heading and magnitude through an exponential moving average function
+            # this has the effect of smoothing the results and of ignoring the short term noise
             ema_angle = exponential_moving_average(angle, previous_ema_angle, alfa)
             ema_magnitude = exponential_moving_average(magnitude, previous_ema_magnitude, alfa)
 
@@ -257,6 +276,10 @@ def runner(event_stopper):
             previous_ema_angle = ema_angle
             previous_ema_magnitude = ema_magnitude
 
+            angle = ema_angle
+            magnitude = ema_magnitude
+            
+            # push the processed information to the graphical renderer (on a separate process)
             if not queue.full():
                 queue.put({
                     'frame_idx': frame_index,
@@ -271,29 +294,33 @@ def runner(event_stopper):
 
             # run the pid controller
             error = angle - set_point
-            # integral_area += error
-            # integral_area_surrogate += error
-            # if magnitude >= 63:
-            #     integral_area = 0.0
-            #     correction = Kp_surrogate * error + Ki_surrogate * integral_area_surrogate + Kd_surrogate * (error - previous_error)
-            # else:
-            #     integral_area_surrogate = 0.0
-            #     correction = Kp * error + Ki * integral_area + Kd * (error - previous_error)
-            # previous_error = error
             c1.integral_area += error
             c2.integral_area += error
+            pid1 = True
             if magnitude < pid_switch_point:
                 c = c1
                 c2.integral_area = 0.0
             else:
                 c = c2
                 c1.integral_area = 0.0
+                pid1 = False
+            
+            # calculate the correction
             correction = c.Kp * error + c.Ki * c.integral_area + c.Kd * (error - c.previous_error)
+            c1.previous_error = error
+            c2.previous_error = error
 
+            # determine motor speeds
             left_motor_speed = int(((1 - yotta) + yotta * magnitude / 100) * max_motor_speed + correction)
             right_motor_speed = int(((1 - yotta) + yotta * magnitude / 100) * max_motor_speed - correction)
 
-            # print(magnitude, left_motor_speed, right_motor_speed, correction)
+            logger.debug('using PID {} | angle: {:3d} magnitude: {:3d} | left speed: {:3d} right speed: {:3d}'.format(
+                1 if pid1 else 0,
+                int(angle),
+                int(magnitude),
+                left_motor_speed,
+                right_motor_speed
+            ))
 
             # actuate the motors
             gopigo3.set_motor_dps(gopigo3.MOTOR_LEFT, dps=left_motor_speed)
@@ -312,8 +339,9 @@ def runner(event_stopper):
         pixy.set_lamp(0)
         gopigo3.stop()
 
-    except Exception:
+    except Exception as e:
         event_stopper.set()
+        logger.exception(e)
     finally:
         video_process.join()
 
@@ -331,5 +359,9 @@ def main():
     event_stopper.set()
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.ERROR)
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+
     signal.signal(signal.SIGINT, lambda signum, frame: print("Press ESC to close the app."))
     main()
