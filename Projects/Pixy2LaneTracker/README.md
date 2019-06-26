@@ -27,6 +27,15 @@ Last but not least, it is recommended to use an additional power source for the 
 
 For setting up the Pixy2, there are 2 options: either set up the Pixy2 for the laptop or for your Raspberry Pi. This set up is only required for configuring the Pixy2 and not for the actual usage of the robot. Regardless, the instructions on setting this up can be found on Pixy2's documentation right [here](https://pixycam.com/downloads-pixy2/).
 
+There are a couple of dependencies for this project: `numpy==1.12.1`, `opencv-python==3.4.4.19`, `getkey==0.6.5`, `recordclass==0.11.1` and `pixy2==0.1.0`.
+
+To install the `pixy2` package run the following command:
+```bash
+pip3 install git+https://github.com/RobertLucian/pixy2.git@v0.1.0
+```
+
+All the rest of the packages mentioned above can be either installed with pip or with apt-get. 
+
 
 ## On Calibration
 
@@ -85,15 +94,6 @@ The track I've built can be observed in *figure 5*.
 *Figure 5 - Picture of the track - 1 is for the distance between the inner edges of the lane and 2 is for the 32 cm radius of the sharp curve*.
 
 ## Usage
-
-There are a couple of dependencies for this project: `numpy==1.12.1`, `opencv-python==3.4.4.19`, `getkey==0.6.5`, `recordclass==0.11.1` and `pixy2==0.1.0`.
-
-To install the `pixy2` package run the following command:
-```bash
-pip3 install git+https://github.com/RobertLucian/pixy2.git@v0.1.0
-```
-
-All the rest of the packages mentioned above can be either installed with pip or with apt-get. 
 
 After the dependencies get installed, the project's script can be run like this:
 ```bash
