@@ -64,9 +64,10 @@ When running the robot's script, 2 windows will show up on your screen:
 
 1. A window showing you exactly what the robot sees as a collection of white vectors. Generally, the robot only has to see the 2 lines of the lane.
 
-1. Another window showing a warped image of what the robot sees as if a bird is watching over the robot from up top. When the Pixy2 is **properly tilted**, the lane will appear as 2 straight parallel lines. Use this as a feedback to calibrate the tilt of the Pixy2. This can be observed in *figure 4*.
+1. Another window showing a warped image of what the robot sees as if a bird is watching over the robot from up top. When the Pixy2 is **properly tilted**, the lane will appear as 2 straight parallel lines. Use this as feedback to calibrate the tilt of the Pixy2. This can be observed in *figure 4*.
 
 ![Imgur](https://i.imgur.com/brGRa95.gif)
+
 *Figure 4 - Seeing what the robot sees*
 
 ## Track Properties
