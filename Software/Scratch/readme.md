@@ -38,10 +38,10 @@ GoPiGo3 Sensors:
 ![GoPiGo3 Sensors](gopigo3sensors.png "Overview of GoPiGo3 Dexter Industries sensors in Scratch.")
 
 GoPiGo3 Add-Ons:
-![GoPiGo3 Add Ons](gopipo3addons.png "Overview of GoPiGo3 add-ons in Scratch.")
+![GoPiGo3 Add Ons](gopigo3addons.png "Overview of GoPiGo3 add-ons in Scratch.")
 
 GoPiGo3 Deprecated Sensors:
-![GoPiGo3 Deprecated Sensors](gopipo3deprecated.png "Overview of GoPiGo3 add-ons in Scratch.")
+![GoPiGo3 Deprecated Sensors](gopigo3deprecated.png "Overview of GoPiGo3 add-ons in Scratch.")
 
 ## See Also
 
