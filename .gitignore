@@ -102,3 +102,5 @@ sftp-config*
 
 # PyCharm configuration files
 .idea/
+
+.DS_Store
