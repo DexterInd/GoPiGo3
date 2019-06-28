@@ -79,6 +79,10 @@ When running the robot's script, 2 windows will show up on your screen:
 
 *Figure 4 - Seeing what the robot sees*
 
+![Imgur](https://i.imgur.com/qY7WfFH.gif)
+
+*Figure 5 - What the robot sees at 500% speedup*
+
 ## Track Properties
 
 The track also needs to have a couple of properties:
@@ -88,10 +92,10 @@ The track also needs to have a couple of properties:
 1. The most sharp curve can have a radius of *32 cm*.
 1. There can only be 2 type of curves on the track because there are 2 PID controllers: say one type has a radius of 32 cm and the other has 78 cm. Theoretically, even with 2 PIDs there could be a wider range of permitted curves, but they should mostly have a small deviation. Like curves from 25-35 cm and then another range starting with 70 and going up to 100. It is possible, although the tuning process would be harder. The simplest option is in just having 2 types and that's it. 
 
-The track I've built can be observed in *figure 5*.
+The track that has been built can be observed in *figure 6*.
 
 ![Imgur](https://i.imgur.com/Uco9PAz.jpg)
-*Figure 5 - Picture of the track - 1 is for the distance between the inner edges of the lane and 2 is for the 32 cm radius of the sharp curve*.
+*Figure 6 - Picture of the track - 1 is for the distance between the inner edges of the lane and 2 is for the 32 cm radius of the sharp curve*.
 
 ## Usage
 
@@ -103,3 +107,12 @@ python3 pixy2_lane_follower.py
 Here's a video of how the robot follows the lane. Pretty cool, ain't that right?
 
 [![Youtube Video](https://img.youtube.com/vi/JyMkOBQr7ho/0.jpg)](https://www.youtube.com/watch?v=JyMkOBQr7ho)
+
+## Dataset
+
+There is a dataset that contains a set of samples collected from the Pixy2 that is formatted this way: the first element of the list is a tuple of the width and height and the 2nd one is the framerate of the captured samples. The dataset is saved as a serialized object. The dataset has been generated with the following [notebook](Pixy2DatasetGenerator.ipynb). The dataset is found in `dataset` directory. The exact way of unserializing the dataset can be seen in the following notebooks.
+
+To experiment with the dataset, 2 notebooks have been created. One called [Pixy2LaneFollowerOnDataset](Pixy2LaneFollowerOnDataset.ipynb) does come with a solution that's inefficient and very slow. [Pixy2LaneFollowerEfficientOnDataset](Pixy2LaneFollowerEfficientOnDataset.ipynb) has a solution that's appropriate for the Pixy2. Since the Pixy2 only retrieves a list of vectors, it only makes sense to do operations directly on those vectors and not convert it to an image beforehand like it's done in the former notebook.
+
+
+
