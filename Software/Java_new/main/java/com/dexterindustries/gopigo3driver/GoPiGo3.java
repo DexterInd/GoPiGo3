@@ -21,7 +21,7 @@ public class GoPiGo3 {
     // SPI device
     public static SpiDevice spi = null;
 
-    private final byte[] spi_array_out = new byte[32]; //TODO: double check this size
+    private final byte[] spi_array_out = new byte[32];
     private byte[] spi_array_in = null;
     
     private byte[] GroveType = new byte[2]; //[0,0] by default
@@ -54,11 +54,11 @@ public class GoPiGo3 {
     }
     
     public enum GROVE_STATE {
-    	VALID_DATA ((byte)1),
-    	NOT_CONFIGURED ((byte)2),
-    	CONFIGURING ((byte)3),
-    	NO_DATA ((byte)4),
-    	I2C_ERROR ((byte)5);
+    	VALID_DATA ((byte)0),
+    	NOT_CONFIGURED ((byte)1),
+    	CONFIGURING ((byte)2),
+    	NO_DATA ((byte)3),
+    	I2C_ERROR ((byte)4);
     	
     	private final byte value;
     	
@@ -80,9 +80,9 @@ public class GoPiGo3 {
     /**
      * Builder for output arrays
      * @author Ken Fogel
-     * @param args
+     * @param args A series of bytes with which to build the array that will be passed to the spi system. The first byte is usually the address, the second byte is the command you wish to execute, and others depend on the command.
      */
-    public void spiArrayBuilder(byte... args) {
+    private void spiArrayBuilder(byte... args) {
         Arrays.fill(spi_array_out, (byte) 0);
 
         for (int x = 0; x < args.length; ++x) {
@@ -90,16 +90,20 @@ public class GoPiGo3 {
         }
     }
     
-    public void spi_array_builder(byte... args) {
+    /**
+     * Builder for output arrays. Does the same thing as spiArrayBuilder.
+     * @param args A series of bytes with which to build the array that will be passed to the spi system. The first byte is usually the address, the second byte is the command you wish to execute, and others depend on the command.
+     */
+    private void spi_array_builder(byte... args) {
     	spiArrayBuilder(args);
     }
 
     /**
-     * Run a specific motor
+     * Set the motor power in percent
      * 
-     *
-     * @param power
-     * @throws IOException
+     * @param motor The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT
+     * @param power The amount of power, ranging from -100 to 100
+     * @throws IOException if spi writing fails
      */
     public void set_motor_power(byte motor, byte power) throws IOException {
        	spiArrayBuilder(ADDRESS, SET_MOTOR_PWM, motor, power);
@@ -109,9 +113,9 @@ public class GoPiGo3 {
     /**
      * Sets motor target position in degrees
      * 
-     * @param motor
-     * @param position
-     * @throws IOException
+     * @param motor The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT
+     * @param position The position you wish the motor stop at, in degrees.
+     * @throws IOException if spi writing fails
      */
     public void set_motor_position(byte motor, double position) throws IOException {
     	int position_raw = (int)(position * MOTOR_TICKS_PER_DEGREE);
@@ -127,7 +131,7 @@ public class GoPiGo3 {
      * Run both motors
      * 
      * @author Ken Fogel
-     * @param power
+     * @param power The amount of power, ranging from -100 to 100
      * @throws IOException
      */
     public void setBothMotorsPower(byte power) throws IOException {
@@ -143,7 +147,7 @@ public class GoPiGo3 {
      * 
      * @param motor	The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
      * @param dps 	The speed limit in degrees per second, with 0 being no limit
-     * @throws IOException
+     * @throws IOException if spi writing fails
      */
     public void set_motor_dps(byte motor, int dps) throws IOException {
     	dps = (int)(dps * MOTOR_TICKS_PER_DEGREE);
@@ -154,12 +158,12 @@ public class GoPiGo3 {
     }
    
     /** 
-     * Set the motor speed limit
+     * Set the motor speed limit.
      * 
      * @param motor	The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
      * @param power The power limit in percent (0 to 100), with 0 being no limit (100)
      * @param dps 	The speed limit in degrees per second, with 0 being no limit
-     * @throws IOException
+     * @throws IOException if spi writing fails
      */
     public void set_motor_limits(byte motor, byte power, int dps) throws IOException {
     	dps = (int)(dps * MOTOR_TICKS_PER_DEGREE);
@@ -172,30 +176,39 @@ public class GoPiGo3 {
     
     /**
      * Overloaded version of set_motor_limits for cases where there is no power limit
-     * @param motor
-     * @param dps
-     * @throws IOException
+     * @param motor The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+     * @param dps The speed limit in degrees per second, with 0 being no limit
+     * @throws IOException if spi writing fails
      */
     public void set_motor_limits(byte motor, int dps) throws IOException {
     	set_motor_limits(motor, (byte)0, dps);
     }
 
-
+    /**
+     * Stops a motor.
+     * @param motor The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+     * @throws IOException if spi writing fails
+     */
     public void stopMotor(byte motor) throws IOException {
         this.set_motor_power(motor, (byte)0);
     }
 
+    /**
+     * Stops both motors.
+     * @throws IOException if spi writing fails
+     */
     public void stopMotors() throws IOException {
         this.set_motor_power(MOTOR_LEFT, (byte) 0);
         this.set_motor_power(MOTOR_RIGHT, (byte) 0);
     }
     
     /**
-     * Read a motor encoder in degrees
+     * Read a motor encoder in degrees.
+     * Note that this MUST be one motor at a time.
      * 
-     * @param 	motor
-     * @return	The position of the encoder
-     * @throws 	IOException
+     * @param 	motor The motor port. MOTOR_LEFT or MOTOR_RIGHT.
+     * @return	The position of the encoder representing the current location of the motor.
+     * @throws 	IOException if spi writing fails or if the user tries to get both motor encoders at once
      */
     public int get_motor_encoder(byte motor) throws IOException {
     	byte message_type;
@@ -213,12 +226,24 @@ public class GoPiGo3 {
     	return (int)(encoder / MOTOR_TICKS_PER_DEGREE);
     }
     
+    /**
+     * Offset a motor encoder. 
+     * Note that this function will substract the offset from the current encoder value, so calling offset_motor_encoder(motor, get_motor_encoder(motor)) is an easy way to reset one to zero.
+     * @param motor The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+     * @param offset The encoder offset you wish
+     * @throws IOException if spi writing fails
+     */
     public void offset_motor_encoder(byte motor, int offset) throws IOException {
     	offset = (int)(offset * MOTOR_TICKS_PER_DEGREE);
     	spiArrayBuilder(ADDRESS, OFFSET_MOTOR_ENCODER, motor, (byte)((offset >>> 24) & 0xff), (byte)((offset >>> 16) & 0xff), (byte)((offset >>> 8) & 0xff), (byte)(offset & 0xff));
     	spi.write(spi_array_out);
     }
     
+    /**
+     * Resets a motor encoder to zero.
+     * @param motor The motor port(s). MOTOR_LEFT and/or MOTOR_RIGHT.
+     * @throws IOException if spi connection fails
+     */
     public void reset_motor_encoder(byte motor) throws IOException {
     	if((motor & MOTOR_LEFT) > 0) {
     		offset_motor_encoder(MOTOR_LEFT, get_motor_encoder(MOTOR_LEFT));
@@ -266,13 +291,13 @@ public class GoPiGo3 {
   
     
     /**
-     * Set an LED
+     * Set an LED's color
      * 
      * @param led	LED_LEFT_EYE, LED_RIGHT_EYE, LED_LEFT_BLINKER, LED_RIGHT_BLINKER, and/or LED_WIFI.
      * @param red	The LED's Red color component (0-255)
      * @param green	The LED's Green color component (0-255)
      * @param blue	The LED's Blue color component (0-255)
-     * @throws IOException
+     * @throws IOException if spi connection fails
      */
     public void set_led(int led, int red, int green, int blue) throws IOException {
     	if(led < 0 || led > 255) {
@@ -306,7 +331,7 @@ public class GoPiGo3 {
     
     /**
      * Treats the return value from writing to the spi as a string. The string
-     * begins at index 4 in the spi_array_in. If the spi_array_in[3] equals -91
+     * begins at index 4 in the spi_array_in. If the spi_array_in[3] does not equal -91
      * then the information requested is invalid.
      * @author Ken Fogel
      * @param msg_type
@@ -360,7 +385,7 @@ public class GoPiGo3 {
     }
     
     /**
-     * Synonym to spi_read
+     * Reads an 8-bit value over SPI. Synonym to spi_read().
      * 
      * @param msg_type
      * @return
@@ -417,7 +442,12 @@ public class GoPiGo3 {
         return returnval;
     }
 
-
+    /**
+     * Sets the grove type for a particular port. Used in setup.
+     * @param port The grove port(s). GROVE_1 and/or GROVE_2
+     * @param type The grove device type.
+     * @throws IOException if spi connection fails
+     */
     public void set_grove_type(byte port, byte type) throws IOException {
     	for(byte p = 0; p < 2; p++) {
     		if(((port >> (p*2)) & 3) == 3) {
@@ -428,16 +458,23 @@ public class GoPiGo3 {
     	spi_array_in = spi.write(spi_array_out);
     }
     
+    /**
+     * Sets a grove analog/digital pin mode as INPUT or OUTPUT.
+     * @param pin The grove pin(s). GROVE_1_1, GROVE_1_2, GROVE_2_1, and/or GROVE_2_2
+     * @param mode The pin mode. GROVE_INPUT_DIGITAL, GROVE_OUTPUT_DIGITAL, GROVE_INPUT_DIGITAL_PULLUP, GROVE_INPUT_DIGITAL_PULLDOWN, GROVE_INPUT_ANALOG, GROVE_OUTPUT_PWM, GROVE_INPUT_ANALOG_PULLUP, or GROVE_INPUT_ANALOG_PULLDOWN.
+     * @throws IOException
+     */
     public void set_grove_mode(byte pin, byte mode) throws IOException {
     	spi_array_builder(ADDRESS, SET_GROVE_MODE, pin, mode);
     	spi_array_in = spi.write(spi_array_out);
     }
     
     /**
-     * Get a grove input pin state
-     * @param pin
+     * Get a grove input pin state.
+     * Note that this method MUST be one pin at a time.
+     * @param pin The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
      * @return
-     * @throws IOException
+     * @throws IOException if SPI contact fails or if the user attempts to scan more than one pin at a time.
      */
     public byte get_grove_state(byte pin) throws IOException {
     	byte message_type;
@@ -457,7 +494,7 @@ public class GoPiGo3 {
     	
     	spi_array_builder(ADDRESS, message_type, (byte)0, (byte)0, (byte)0, (byte)0);
     	spi_array_in = spi.write(spi_array_out);
-    	if(spi_array_in[3] == 0xA5) {
+    	if(spi_array_in[3] == -91) {
     		if(spi_array_in[4] == GROVE_STATE.VALID_DATA.value()) { //no error
     			return spi_array_in[5];
     		}
@@ -467,10 +504,39 @@ public class GoPiGo3 {
     }
     
     /**
-     * Get a grove input pin 12-bit raw ADC reading
-     * @param pin
+     * Gets a grove input pin state and returns the entire array. Useful for debugging purposes.
+     * @param pin The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
      * @return
      * @throws IOException
+     */
+    public byte[] debug_get_grove_state(byte pin) throws IOException {
+    	byte message_type;
+    	if(pin == GROVE_1_1) {
+    		message_type = 	GET_GROVE_STATE_1_1;
+    	}
+    	else if(pin == GROVE_1_2) {
+    		message_type = 	GET_GROVE_STATE_1_2;
+    	}
+    	else if(pin == GROVE_2_1) {
+    		message_type = 	GET_GROVE_STATE_2_1;
+    	}
+    	else if(pin == GROVE_2_2) {
+    		message_type = 	GET_GROVE_STATE_2_2;
+    	}
+    	else throw new IOException("get_grove_state error: Pin(s) unsupported. Must be one at a time.");
+    	
+    	spi_array_builder(ADDRESS, message_type, (byte)0, (byte)0, (byte)0, (byte)0);
+    	spi_array_in = spi.write(spi_array_out);
+    	return spi_array_in;
+    }
+    
+    /**
+     * Get a grove input pin 12-bit raw ADC reading.
+     * Note that this method MUST be one pin at a time.
+     * 
+     * @param pin The grove pin (one at a time). GROVE_1_1, GROVE_1_2, GROVE_2_1, or GROVE_2_2.
+     * @return an int representing the reading.
+     * @throws IOException if SPI contact fails or if the user attemps to scan more than one pin at a time.
      */
     public int get_grove_analog(byte pin) throws IOException {
     	byte message_type;
@@ -490,7 +556,7 @@ public class GoPiGo3 {
     	
     	spi_array_builder(ADDRESS, message_type, (byte)0, (byte)0, (byte)0, (byte)0);
     	spi_array_in = spi.write(spi_array_out);
-    	if(spi_array_in[3] == 0xA5) {
+    	if(spi_array_in[3] == -91) {
     		if(spi_array_in[4] == GROVE_STATE.VALID_DATA.value()) { //no error
     			int returnval = (((spi_array_in[5] << 8) & 0xFF00) | (spi_array_in[6] & 0xFF));
     			return returnval;
@@ -502,8 +568,8 @@ public class GoPiGo3 {
     
     /**
      * Set grove output pin PWM
-     * @param pin
-     * @param duty
+     * @param pin The grove pin(s). GROVE_1_1, GROVE_1_2, GROVE_2_1, and/or GROVE_2_2.
+     * @param duty The pin PWM duty cycle in percent. Reaches from 0 - 100, floating point, but any increments smaller than 0.1 will be floored.
      */
     public void set_grove_pwm_duty(byte pin, double duty) throws IOException {
     	if(duty < 0) { duty = 0; }
@@ -517,8 +583,8 @@ public class GoPiGo3 {
     
     /**
      * Set grove PWM frequency
-     * @param port
-     * @param freq
+     * @param port The grove pin(s). GROVE_1_1, GROVE_1_2, GROVE_2_1, and/or GROVE_2_2.
+     * @param freq The PWM frequency. Range is 3 through 48000Hz. Default is 24000 (24kHz).
      */
     public void set_grove_pwm_frequency(byte port, int freq) throws IOException {
     	if(freq < 3) { freq = 3; }
@@ -526,6 +592,18 @@ public class GoPiGo3 {
     	byte firstByte = (byte)((freq >>> 8) & 0xFF);
     	byte secondByte = (byte)freq;
     	spi_array_builder(ADDRESS, SET_GROVE_PWM_FREQUENCY, port, firstByte, secondByte);
+    	spi_array_in = spi.write(spi_array_out);
+    }
+    
+    /**
+     * Sets a servo position in microseconds.
+     * @param servo The servo(s). SERVO_1 and/or SERVO_2.
+     * @param pulse the pulse width in microseconds. Ranges from 0 to 16666.
+     */
+    public void set_servo(byte servo, int pulse) throws IOException {
+    	byte firstByte = (byte)((pulse >>> 8) & 0xFF);
+    	byte secondByte = (byte)pulse;
+    	spi_array_builder(ADDRESS, SET_SERVO, servo, firstByte, secondByte);
     	spi_array_in = spi.write(spi_array_out);
     }
 }

@@ -26,6 +26,7 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     private final int NO_LIMIT_SPEED = 1000;
     private int[] left_eye_color = {0, 255, 255};
     private int[] right_eye_color = {0, 255, 255};
+    private boolean use_mutex = false;
     
     public EasyGoPiGo3() throws IOException {
     	super();
@@ -33,14 +34,25 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	try {
     		load_robot_constants();
     	}
-    	catch(Exception e) {}
+    	catch(Exception e) {
+    		//No notification
+    	}
     }
     
     /**
-     * Loads robot constants from a json file.
-     * @param config_file_path
-     * @throws IOException
-     * @throws ParseException
+     * Load wheel diameter and wheel base width constants for the GoPiGo3 from file. These constants are used to calculate the amount of power each motor needs to have in order to achieve specific tasks.
+     * The constructor automatically calls this method with the default file path. If you wish to use a different file, you must call this method individually.
+     * 
+     * Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
+     * and edit their own config file if they don't want to go through saving the values by using the API.
+     * {
+      		"wheel-diameter": 66.5,
+      		"wheel-base-width": 117
+       }
+     * 
+     * @param config_file_path Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3. Optional parameter, default is /home/pi/Dexter/gpg3_config.json
+     * @throws IOException if file is not found or cannot be opened
+     * @throws ParseException if the file format is incorrect
      */
     public void load_robot_constants(String config_file_path) throws IOException, ParseException {
     	JSONParser parser = new JSONParser();
@@ -52,10 +64,29 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	}
     }
     
+    /**
+     * Load wheel diameter and wheel base width constants for the GoPiGo3 from the default file, located at /home/pi/Dexter/gpg3_config.json
+     * 
+     * Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
+     * and edit their own config file if they don't want to go through saving the values by using the API.
+     * {
+      		"wheel-diameter": 66.5,
+      		"wheel-base-width": 117
+       }
+     * 
+     * @throws IOException if file is not found or cannot be opened
+     * @throws ParseException if the file format is incorrect
+     */
     public void load_robot_constants() throws IOException, ParseException {
     	load_robot_constants("/home/pi/Dexter/gpg3_config.json");
     }
     
+    /**
+     * Set new wheel diameter and wheel base width values for the GoPiGo3.
+     * 
+     * @param wheel_diameter Diameter of the GoPiGo3 wheels as measured in centimeters.
+     * @param wheel_base_width Distance between the centers of the two wheels as measured in centimeters.
+     */
     private void set_robot_constants(double wheel_diameter, double wheel_base_width) {
     	WHEEL_DIAMETER = wheel_diameter;
     	WHEEL_BASE_WIDTH = wheel_base_width;
@@ -63,6 +94,10 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * Math.PI;
     }
     
+    /**
+     * Returns an array including the robot constants.
+     * @return array of doubles of length 2. In this array, [0] is equal to the current wheel diameter constant and [1] is equal to the current wheel base width.
+     */
     public double[] get_robot_constants() {
     	double[] i = new double[2];
     	i[0] = WHEEL_DIAMETER;
@@ -72,9 +107,9 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     
     /**
      * Saves the current robot parameters to a json file that can be loaded later.
-     * @param config_file_path
-     * @throws IOException
-     * @throws ParseException
+     * @param config_file_path Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3. Optional parameter, default is /home/pi/Dexter/GoPiGo3.json
+     * @throws IOException when the file cannot be accessed, or if the file cannot be written to
+     * @throws ParseException when the file is not in the correct format
      */
     @SuppressWarnings("unchecked") //compiler here gives a warning for obj.put() as the JSONObject classes uses generic types.
     //We know that we're only giving it String, double arguments that are going to be legal at runtime, so suppressing this warning is fine.
@@ -94,10 +129,16 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     		writer.flush();
     	}
     	catch(IOException e) {
-    		System.out.println("Saving robot constants failed");
+    		throw new IOException("File could not be written to.");
     	}
     }
     
+    /**
+     * Saves the current robot parameters to the default json file for future access.
+     * 
+     * @throws IOException when the file cannot be accessed, or if the file cannot be written to
+     * @throws ParseException when the file is not in the correct format
+     */
     public void save_robot_constants() throws IOException, ParseException {
     	save_robot_constants("/home/pi/Dexter/gpg3_config.json");
     }
@@ -106,42 +147,43 @@ public class EasyGoPiGo3 extends GoPiGo3 {
      * Helper method that returns the value of an object as a double.
      * Used to avoid errors with round numbers in JSON being interpreted as long.
      * @param the object you wish to evauate
-     * @return	the value of the object you pass as a double if it is a number. returns -1 if invalid.
+     * @return a double corresponding to the value of the object you pass. returns -1 if invalid.
      */
     private static double double_value(Object value) {
     	return 	(value instanceof Number ? ((Number)value).doubleValue() : -1.0);
     }
     
     /**
-     * Retrieve the battery voltage
+     * This method returns the battery voltage of the GoPiGo3.
      * 
-     * @return
+     * @return the voltage as a double, in decimals. For a fully charged battery, this should be around 9.2 to 9.6V, but different batteries may vary.
      */
     public double volt() {
     	return get_voltage_battery();
     }
     
     /**
-     * Sets the speed of one motor to a specified number in degrees per second.
+     * Sets the speed of both motors to a specified number in degrees per second (of the robot's wheel turning).
+     * NOTE: This function on its own does not start the motors. You should call this function first to set the desired speed, then call forward().
+     * WARNING: 0-1000 DPS is the preferred speed under standard conditions, but you may set it to any number you wish. 
+     * Factors such as battery voltage and robot load may affect what speed the robot actually works at.
+     * Experiments should be run by every user, as every situation is different.
      * 
-     * @param in_speed
-     * @throws IOException
+     * @param in_speed The speed at which the robot is set to run. int values only. Generally should range between 0 to 1000. Any value above 32 767 will be capped down (not that the robot is capable of going at that speed under normal conditions).
+     * @throws IOException if spi contact with the motor fails
      */
     public void set_speed(int in_speed) throws IOException {
+    	if(in_speed > Short.MAX_VALUE) {
+    		in_speed = Short.MAX_VALUE;
+    	}
     	speed = in_speed;
     	set_motor_limits(MOTOR_BOTH, (byte)0, (short)speed);
     }
+
     
     /**
-     * Stops both motors
-     * @throws IOException
-     */
-    public void stop() throws IOException {
-    	set_motor_dps(MOTOR_BOTH, (short)0);
-    }
-    
-    /**
-     * Gets the current speed
+     * Gets the current speed the GoPiGo3 robot is current set to. Note that this is NOT necessarily the speed your robot is actually moving at in reality.
+     * For example, you may call this method while the robot isn't moving.
      * @return	speed	the current speed
      */
     public int get_speed() {
@@ -149,24 +191,33 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * Sets speed to default
-     * @throws IOException
+     * Resets the speed of the robot to its default value.
+     * @throws IOException if spi contact with the motors fails.
      */
     public void reset_speed() throws IOException {
     	set_speed(DEFAULT_SPEED);
     }
+     
+    /**
+     * This method brings the GoPiGo3 robot to a full stop. Used in conjunction with the other methods such as forward().
+     * @throws IOException if spi contact with the motors fails.
+     */
+    public void stop() throws IOException {
+    	set_motor_dps(MOTOR_BOTH, (short)0);
+    }
     
     /**
-     * Moves robot forwards
-     * @throws IOException
+     * Moves the robot forward at the speed set with set_speed().
+     * Default speed is set to 300.
+     * @throws IOException if spi contact with the motors fails.
      */
     public void forward() throws IOException  {
     	set_motor_dps(MOTOR_BOTH, NO_LIMIT_SPEED);
     }
     
     /**
-     * Moves robot backwards
-     * @throws IOException
+     * Moves robot backward at the speed set with set_speed(). Essentially just a reverse of forward().
+     * @throws IOException if spi contact with the motors fails.
      */
     public void backward() throws IOException  {
     	set_motor_dps(MOTOR_BOTH, (NO_LIMIT_SPEED * -1));
@@ -174,6 +225,7 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     
     /**
      * Turns left in a very tight circle
+     * ONLY the right motor will be engaged, while the left motor will be completely stopped.
      * @throws IOException
      */  
     public void left() throws IOException  {
@@ -182,7 +234,8 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * Turns left in place
+     * Turns left in place.
+     * The right motor will be engaged forward, while the left motor will be engaged at the same speed in reverse. This causes the robot to spin on itself without moving.
      * @throws IOException
      */  
     public void spin_left() throws IOException  {
@@ -192,6 +245,7 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     
     /**
      * Turns right in a very tight circle
+     * Only the left motor will be engaged, while the right motor will be completely stopped.
      * @throws IOException
      */
     public void right() throws IOException  {
@@ -200,7 +254,9 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * Turns right in place
+     * Turns right in place.
+     * The left motor will be engaged forward, while the right motor will be engaged at the same speed in reverse. This causes the robot to spin on itself without moving.
+     *
      * @throws IOException
      */
     public void spin_right() throws IOException  {
@@ -209,10 +265,10 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * Resets both the encoders back to **0**.
-     * @param blocking	true: set at blocking method
-     * @throws IOException
-     * @throws InterruptedException
+     * Resets both the encoders back to 0.
+     * @param blocking if this is set to true, this method will halt the progress of the program until the encoders are finished resetting. Optional parameter (defaults to true)
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this thread is interrupted during the sleep call. This ideally should never be happening as the encoders do need some time to execute the reset.
      */
     public void reset_encoders(boolean blocking) throws IOException, InterruptedException {
     	set_motor_power(MOTOR_BOTH, (byte)0);
@@ -227,22 +283,22 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	}
     }
     /**
-     * See reset_encoders(boolean blocking)
+     * Resets both encoders to 0, and halts the progress of the program until the operation is done.
      * 
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this thread is interrupted during the sleep call
      */
     public void reset_encoders() throws IOException, InterruptedException {
     	reset_encoders(true);
     }
     /**
-     *  Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
-     *  For moving the `GoPiGo3`_ robot forward, the ``dist`` parameter has to be *positive*.
-     *	For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
-     * @param dist		The distance you want the robot to go, in cm
+     *  Move the GoPiGo3 forward / backward for dist amount of centimeters.
+     *  For moving the GoPiGo3 robot forward, the dist parameter has to be positive.
+     *	For moving the GoPiGo3 robot backward, the dist parameter has to be negative.
+     * @param dist The distance you want the robot to go, in cm
      * @param blocking	When set to true, will stop the method until the robot is finished moving.
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this thread is interrupted during the sleep call
      */
     public void drive_cm(double dist, boolean blocking) throws IOException, InterruptedException {
     	double dist_mm = dist * 10;
@@ -264,42 +320,50 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	}
     }
     /**
-     * Overloaded version to allow blocking to be an optional parameter.
-     * @param dist
-     * @throws IOException
-     * @throws InterruptedException
+     *  Move the GoPiGo3 forward / backward for dist amount of centimeters, and halts the progress of the thread until it is complete.
+     *  For moving the GoPiGo3 robot forward, the dist parameter has to be positive.
+     *	For moving the GoPiGo3 robot backward, the dist parameter has to be negative.
+     * @param dist The distance you want the robot to go, in cm
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this thread is interrupted during the sleep call
      */
     public void drive_cm(double dist) throws IOException, InterruptedException {
     	drive_cm(dist, true);
     }
     
     /**
-     * 
-     * @param dist
-     * @param blocking
-     * @throws IOException
-     * @throws InterruptedException
+     *  Move the GoPiGo3 forward / backward for dist amount of inches.
+     *  For moving the GoPiGo3 robot forward, the dist parameter has to be positive.
+     *	For moving the GoPiGo3 robot backward, the dist parameter has to be negative.
+     * @param dist The distance you want the robot to go, in cm
+     * @param blocking	When set to true, will stop the method until the robot is finished moving.
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this thread is interrupted during the sleep call
      */
     public void drive_inches(double dist, boolean blocking) throws IOException, InterruptedException {
     	drive_cm(dist*2.54, blocking);
     }
     
     /**
-     * 
-     * @param dist
-     * @throws IOException
-     * @throws InterruptedException
+     *  Move the GoPiGo3 forward / backward for dist amount of inches, and halts the progress of the thread until it is complete.
+     *  For moving the GoPiGo3 robot forward, the dist parameter has to be positive.
+     *	For moving the GoPiGo3 robot backward, the dist parameter has to be negative.
+     * @param dist The distance you want the robot to go, in cm
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this thread is interrupted during the sleep call
      */
     public void drive_inches(double dist) throws IOException, InterruptedException {
     	drive_cm(dist*2.54, true);
     }
+    
     /**
-     * Move the GoPiGo3 forward / backward for degrees/360 wheel rotations.
-     * 
-     * @param degrees
-     * @param blocking
-     * @throws IOException
-     * @throws InterruptedException
+     * Move the GoPiGo3 forward / backward for (degrees/360) wheel rotations.
+     *  For moving the GoPiGo3 robot forward, the dist parameter has to be positive.
+     *	For moving the GoPiGo3 robot backward, the dist parameter has to be negative.
+     * @param degrees distance based on the number of wheel rotations made. Decimals are permitted.
+     * @param blocking Set as blocking or non-blocking method
+     * @throws IOException if spi connection to the motors fails
+     * @throws InterruptedException if this thread is interrupted while it is waiting to reach the target
      */
     public void drive_degrees(double degrees, boolean blocking) throws IOException, InterruptedException {
     	int StartPositionLeft = get_motor_encoder(MOTOR_LEFT);
@@ -318,10 +382,12 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * 
-     * @param degrees
-     * @throws IOException
-     * @throws InterruptedException
+     * Move the GoPiGo3 forward / backward for (degrees/360) wheel rotations, and halts the execution of the rest of the program until this is completed.
+     *  For moving the GoPiGo3 robot forward, the dist parameter has to be positive.
+     *	For moving the GoPiGo3 robot backward, the dist parameter has to be negative.
+     * @param degrees distance based on the number of wheel rotations made. Decimals are permitted.
+     * @throws IOException if spi connection to the motors fails
+     * @throws InterruptedException if this thread is interrupted while it is waiting to reach the target
      */
     public void drive_degrees(double degrees) throws IOException, InterruptedException {
     	drive_degrees(degrees, true);
@@ -342,6 +408,14 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	set_motor_dps(MOTOR_RIGHT, (NO_LIMIT_SPEED * right_percent/100));
     }
     
+    /**
+     * Makes the GoPiGo3 robot turn at a specific angle while staying at the same spot.
+     * This is the method you want to use if you want the robot to turn 90 degrees in place, for example.
+     * @param degrees The degrees at which the GoPiGo3 has to turn. For rotating to the left, degrees should be negative, and for rotating to the right, degrees should be positive.
+     * @param blocking set as blocking or non-blocking method. Optional parameter (defaults to true).
+     * @throws IOException if spi connection fails
+     * @throws InterruptedException if this method is interrupted while waiting to be completed
+     */
     public void turn_degrees(double degrees, boolean blocking) throws IOException, InterruptedException {
     	//distance in mm each wheel needs to travel
     	double WheelTravelDistance = ((WHEEL_BASE_CIRCUMFERENCE * degrees) / 360);
@@ -364,12 +438,19 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	}
     }
     
+    /**
+     * Makes the GoPiGo3 robot turn at a specific angle while staying at the same spot, and halts execution of the rest of the program until it is finished.
+     * This is the method you want to use if you want the robot to turn 90 degrees in place, for example.
+     * @param degrees The degrees at which the GoPiGo3 has to turn. For rotating to the left, degrees should be negative, and for rotating to the right, degrees should be positive.
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void turn_degrees(double degrees) throws IOException, InterruptedException {
     	turn_degrees(degrees, true);
     }
     /**
-     * 
-     * @return an array containing the value of both encoders
+     * Reads both encoder's postion in degrees. When the wheels do a full rotation, the value should change by 360.
+     * @return an array of length 2 containing the value of both encoders. In this array, [0] represents the left encoder and [1] represents the right.
      */
     public int[] read_encoders() throws IOException {
     	int left_encoder = get_motor_encoder(MOTOR_LEFT);
@@ -379,7 +460,9 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * Reads the encoders' position in degrees. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+     * Reads the encoders' position and averages them. 360 degrees represent 1 full rotation (or 360 degrees) of a wheel.
+     * You can use this method, for example, to roughly check whether your robot has moved forward or not. If you need specific values, you should use read_encoders().
+     * You can change the unit you wish to get your response as by varying the units parameter.
      * @param units	By default it's "cm", but it could also be "in" for inches. Anything else will return raw encoder average.
      * @return The average of the two wheel encoder values.
      */
@@ -401,9 +484,9 @@ public class EasyGoPiGo3 extends GoPiGo3 {
      * Control the GoPiGo so it will orbit around an object.  
      * 
      * Note that while in non-blocking mode the speed cannot be changed before the end of the orbit as it would negate all orbit calculations.
-     * After a non-blocking call, set_speed() has to be called before any other movement.
-     * @param degrees	Degrees to steer. **360** for full rotation. Negative for left turn.
-     * @param radius_cm Radius in `cm` of the circle to drive. Default is **0** (turn in place).
+     * WARNING: After a non-blocking call, set_speed() has to be called again before any other movement.
+     * @param degrees	Degrees to steer. 360 for full rotation. Negative for left turn.
+     * @param radius_cm Radius in `cm` of the circle to drive. Default is 0 (turn in place).
      * @param blocking	Set it as a blocking or non-blocking method.
      * @throws IOException
      * @throws InterruptedException
@@ -490,10 +573,10 @@ public class EasyGoPiGo3 extends GoPiGo3 {
      * Checks if (wheels have rotated for a given number of degrees):
      * The left wheel has rotated for left_target_degrees degrees.
      * The right wheel has rotated for right_target_degrees degrees.
-     * If both conditions are met, it returns True, otherwise it's False.
-     * @param left_target_degrees
-     * @param right_target_degrees
-     * @return
+     * If both conditions are met, it returns true, otherwise it's false.
+     * @param left_target_degrees target degrees for left whel
+     * @param right_target_degrees target degrees for right wheel
+     * @return a boolean indicating whether the wheels have reached your target or not
      * @throws IOException
      */
     public boolean target_reached(double left_target_degrees, double right_target_degrees) throws IOException {
@@ -514,8 +597,8 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     
     /**
      * Turns *ON* one of the 2 red blinkers that GoPiGo3 has.
-     * @param id 0/1 for the right/left led or string literals can also be used: "left" or "right"
-     * @throws IOException
+     * @param id 0/1 for the right/left led. String literals can also be used: "left" or "right"
+     * @throws IOException if spi contacts fails.
      */
     public void blinker_on(int id) throws IOException {
     	if(id == 1) {
@@ -526,6 +609,11 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	}
     }
     
+    /**
+     * Turns *ON* one of the 2 red blinkers that GoPiGo3 has.
+     * @param "left" or "right" corresponding to either led. 0/1 can also be used. Other strings will have no effect.
+     * @throws IOException if spi contacts fails.
+     */
     public void blinker_on(String id) throws IOException {
     	if(id.equals("left")) {
     		set_led(LED_LEFT_BLINKER, 255, 0, 0);
@@ -536,8 +624,8 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     }
     
     /**
-     * Turns *ON* one of the 2 red blinkers that GoPiGo3 has. 
-     * @param id 0/1 for the right/left led or string literals can also be used: "left" or "right"
+     * Turns *OFF* one of the 2 red blinkers that GoPiGo3 has. 
+     * @param id 0/1 for the right/left led. String literals can also be used: "left" or "right"
      * @throws IOException
      */
     public void blinker_off(int id) throws IOException {
@@ -549,6 +637,11 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     	}
     }
     
+    /**
+     * Turns *OFF* one of the 2 red blinkers that GoPiGo3 has. 
+     * @param id "left" or "right" corresponding to either led. 0/1 can also be used. Other strings will have no effect.
+     * @throws IOException if spi contact fails
+     */
     public void blinker_off(String id) throws IOException {
     	if(id.equals("left")) {
     		set_led(LED_LEFT_BLINKER, 0, 0, 0);
@@ -560,7 +653,7 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     
    /**
     * Turns *ON* Dexter mascot's left eye.
-    * @throws IOException
+    * @throws IOException if spi contact fails
     */
    public void open_left_eye() throws IOException {
 	   set_led(LED_LEFT_EYE, left_eye_color[0], left_eye_color[1], left_eye_color[2]);
@@ -568,7 +661,7 @@ public class EasyGoPiGo3 extends GoPiGo3 {
    
    /**
     * Turns *ON* Dexter mascot's right eye.
-    * @throws IOException
+    * @throws IOException if spi contact fails
     */
    public void open_right_eye() throws IOException {
 	   set_led(LED_RIGHT_EYE, right_eye_color[0], right_eye_color[1], right_eye_color[2]);
@@ -576,7 +669,7 @@ public class EasyGoPiGo3 extends GoPiGo3 {
    
    /**
     * Turns *ON* both of the Dexter mascot's eyes.
-    * @throws IOException
+    * @throws IOException if spi contact fails
     */
    public void open_eyes() throws IOException {
 	   open_left_eye();
@@ -584,21 +677,21 @@ public class EasyGoPiGo3 extends GoPiGo3 {
    }
    /**
     * Turns *OFF* Dexter mascot's left eye.
-    * @throws IOException
+    * @throws IOException if spi contact fails
     */
    public void close_left_eye() throws IOException {
 	   set_led(LED_LEFT_EYE, 0, 0, 0);
    }
    /**
     * Turns *OFF* Dexter mascot's right eye.
-    * @throws IOException
+    * @throws IOException if spi contact fails
     */
    public void close_right_eye() throws IOException {
 	   set_led(LED_RIGHT_EYE, 0, 0, 0);
    }
    /**
     * Turns *OFF* both of the Dexter mascot's eyes.
-    * @throws IOException
+    * @throws IOException if spi contact fails
     */
    public void close_eyes() throws IOException {
 	   close_left_eye();
@@ -606,11 +699,12 @@ public class EasyGoPiGo3 extends GoPiGo3 {
    }
    
    /**
-    * Sets the LED color for Dexter mascot's left eye.
+    * Sets the LED color for Dexter mascot's left eye. Uses RGB values.
+    * All values can reach between 0 and 255. Any smaller or higher values will be capped.
     * 
-    * @param red
-    * @param green
-    * @param blue
+    * @param red value corresponding to the red color. 
+    * @param green value corresponding to the green color.
+    * @param blue value corresponding to the blue color.
     */
    public void set_left_eye_color(int red, int green, int blue) {
 	   left_eye_color[0] = red;
@@ -620,10 +714,11 @@ public class EasyGoPiGo3 extends GoPiGo3 {
    
    /**
     * Sets the LED color for Dexter mascot's right eye.
+    * All values can reach between 0 and 255. Any smaller or higher values will be capped.
     * 
-    * @param red
-    * @param green
-    * @param blue
+    * @param red balue corresponding to the red color. 
+    * @param green value corresponding to the green color.
+    * @param blue value corresponding to the blue color.
     */
    public void set_right_eye_color(int red, int green, int blue) {
 	   right_eye_color[0] = red;
@@ -633,13 +728,59 @@ public class EasyGoPiGo3 extends GoPiGo3 {
    
    /**
     * Sets the LED color for both of the Dexter mascot's eyes.
+    * All values can reach between 0 and 255. Any smaller or higher values will be capped.
     * 
-    * @param red
-    * @param green
-    * @param blue
+    * @param red value corresponding to the red color. 
+    * @param green value corresponding to the green color.
+    * @param blue value corresponding to the blue color.
     */
    public void set_eye_color(int red, int green, int blue) {
 	   set_left_eye_color(red, green, blue);
 	   set_right_eye_color(red, green, blue);
+   }
+   
+   /**
+    * Initializes a led object and returns it.
+    * @param port Can be either "AD1" or "AD2".
+    * @return an instance of a led object.
+    */
+   public Led init_led(String port) throws IOException, InterruptedException {
+	   return new Led(port, this, use_mutex);
+   }
+   
+   /**
+    * Initializes a buzzer object and returns it.
+    * @param port Can be either "AD1" or "AD2".
+    * @return an instance of a led object.
+    */
+   public Buzzer init_buzzer(String port) throws IOException, InterruptedException {
+	   return new Buzzer(port, this, use_mutex);
+   }
+   
+   /**
+    * Initializes a Servo object and returns it.
+    * @param port Can be either "SERVO1" or "SERVO2".
+    * @return an instance of a led object.
+    */
+   public Servo init_servo(String port) throws IOException, InterruptedException {
+	   return new Servo(port, this, use_mutex);
+   }
+   
+   /**
+    * Initializes a ButtonSensor object and returns it.
+    * @param port Can be either "AD1" or "AD2".
+    * @return an instance of a led object.
+    */
+   public ButtonSensor init_button_sensor(String port) throws IOException, InterruptedException {
+	   return new ButtonSensor(port, this, use_mutex);
+   }
+   
+   /**
+    * Initializes a LoudnessSensor object and returns it.
+    * @param port Can be either "AD1" or "AD2".
+    * @return an instance of a led object.
+    */
+   public LoudnessSensor init_loudness_sensor(String port) throws IOException, InterruptedException {
+	   return new LoudnessSensor(port, this, use_mutex);
    }
 }
