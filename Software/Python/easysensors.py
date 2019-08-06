@@ -482,10 +482,9 @@ class AnalogSensor(Sensor):
 
         """
         self.value = power
-        return_value = self.gpg.set_grove_pwm_duty(self.get_pin(),
-                                                       power)
-        return return_value
+        self.gpg.set_grove_pwm_duty(self.get_pin(), power)
 
+        
     def write_freq(self, freq):
         """
         Sets the frequency of the PWM signal.

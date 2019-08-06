@@ -19,7 +19,7 @@ const SPIDevice = require('spi-device');
 const sleep = require('sleep');
 
 class Gopigo3 {
-    static FIRMWARE_VERSION_REQUIRED   = '0.3.x';
+    static FIRMWARE_VERSION_REQUIRED   = '1.0.x';
     // Make sure the top 2 of 3 numbers match
     static SPI_MAX_SPEED_HZ            = 500000;
     static SPI_MODE                    = 0b00;

@@ -1072,7 +1072,7 @@ if __name__ == '__main__':
             logger.info("GoPiGo3 Scratch: Disconnected from Scratch")
             break
         except (scratch.scratch.ScratchConnectionError, NameError) as e:
-            logger.info("exception error: ", e)
+            logger.info("exception error: {}".format(e))
             while True:
                 logger.info("GoPiGo3 Scratch: Scratch connection error, Retrying")
                 time.sleep(5)
