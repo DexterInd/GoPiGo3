@@ -100,3 +100,7 @@ sftp-config*
 .ftpconfig
 .vscode/*
 
+# PyCharm configuration files
+.idea/
+
+.DS_Store
