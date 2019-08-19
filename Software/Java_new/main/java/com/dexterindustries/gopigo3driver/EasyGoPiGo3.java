@@ -781,6 +781,6 @@ public class EasyGoPiGo3 extends GoPiGo3 {
     * @return an instance of a led object.
     */
    public LoudnessSensor init_loudness_sensor(String port) throws IOException, InterruptedException {
-	   return new LoudnessSensor(port, this, use_mutex);
+	   return new LoudnessSensor(port, this, use_mutex);	
    }
 }

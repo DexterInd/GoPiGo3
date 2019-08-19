@@ -1,11 +1,13 @@
-package com.dexterindustries.gopigo3driver;
+//package com.dexterindustries;
+
 
 import java.time.Duration;
 import java.time.Instant;
 
+import com.dexterindustries.gopigo3driver.*;
 import static com.dexterindustries.gopigo3driver.constants.SPI_MESSAGE_TYPE.*;
 
-public class DemoEasyGoPiGO3 {
+public class DemoEasyGoPiGo3 {
 
     public static void main(String[] args) throws Exception {
 
