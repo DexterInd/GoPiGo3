@@ -28,6 +28,7 @@ except Exception as e:
 
 import atexit
 atexit.register(gpg.stop)
+process = None
 
 left_led=0
 right_led=0
@@ -107,16 +108,16 @@ class MainPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)       
 
         led_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        led_sizer.Add(left_led_button, 0, wx.ALIGN_CENTER)
+        led_sizer.Add(left_led_button, 0, wx.ALIGN_LEFT|wx.TOP,9)
         led_sizer.AddSpacer(70)
-        led_sizer.Add(right_led_button, 0, wx.ALIGN_CENTER)
+        led_sizer.Add(right_led_button, 0, wx.ALIGN_RIGHT|wx.TOP,9)
 
         eyes_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        left_eye_button = wx.Button(self, label="Left eye")
+        left_eye_button = wx.Button(self, label="Left Eye ")
         self.Bind(wx.EVT_BUTTON, self.left_eye_button_OnButtonClick, left_eye_button)
         bmp = wx.Bitmap(ICON_PATH+"dex.png",type=wx.BITMAP_TYPE_PNG)
         robotbitmap=wx.StaticBitmap(self, bitmap=bmp)
-        right_eye_button = wx.Button(self, label="Right eye")
+        right_eye_button = wx.Button(self, label="Right Eye")
         self.Bind(wx.EVT_BUTTON, self.right_eye_button_OnButtonClick, right_eye_button)
 
         eyes_sizer.Add(right_eye_button, 0, wx.ALIGN_CENTER)
@@ -220,7 +221,7 @@ class MainPanel(wx.Panel):
 
         # Exit
         exit_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        exit_button = wx.Button(self, label="Cancel")
+        exit_button = wx.Button(self, label="Exit")
         exit_button.Bind(wx.EVT_BUTTON, self.onClose)
         save_button = wx.Button(self, label="Save and Exit")
         save_button.Bind(wx.EVT_BUTTON, self.onSave)
@@ -233,7 +234,7 @@ class MainPanel(wx.Panel):
         
 
         # Fill remote control section
-        control_sizer.Add(control_label, 0, wx.ALIGN_LEFT)
+        control_sizer.Add(control_label, 0, wx.ALIGN_CENTER|wx.BOTTOM,10)
         control_sizer.Add(led_sizer, 0, wx.ALIGN_CENTER)
         control_sizer.Add(eyes_sizer, 0, wx.ALIGN_CENTER)
         control_sizer.Add(fwd_sizer, 0, wx.ALIGN_CENTER|wx.TOP,10)
@@ -360,7 +361,6 @@ class MainPanel(wx.Panel):
     def drive_straight_6feet_button_OnButtonClick(self, event):
         global process
 
-        global process
         try:
             diam = float(self.wheel_diameter_input.GetValue())
         except:
@@ -436,7 +436,7 @@ class MainPanel(wx.Panel):
 class MainFrame(wx.Frame):
     def __init__(self):
         wx.Log.SetVerbose(False)
-        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(650,600))
+        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(660,600))
         panel = MainPanel(self)
         self.Center()
 
