@@ -16,26 +16,42 @@ You can also [purchase an SD Card with the software on it here](https://www.dext
 You can install the GoPiGo3 on your own operating system with the following commands in the command line:
 1. Clone this repository onto the Raspberry Pi: 
 
-        `sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3`
-2. Run the install script: `sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
-3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
+        sudo git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
+2. Run the install script: 
+
+        sudo bash /home/pi/Dexter/GoPiGo3/Install/install.sh
+3. Reboot the Raspberry Pi to make the settings take effect: 
+        
+        sudo reboot
 
 ## Install/Update Node.js
 This library supports Node.js 8.x version, we provide a couple of bash scripts to install/uninstall the proper Node.js version.
 To install NVM (Node Version Manager), Node.js and NPM:
-1. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/install.sh`
+1. Run the install script: 
+
+        bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/install.sh
+        
 2. Follow the instructions
 
 To uninstall NVM, Node.js and NPM:
-1. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/uninstall.sh`
+1. Run the install script: 
+
+        bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/uninstall.sh
+        
 2. Follow the instructions
 
 # Use in your application
 This library is published as a [NPM package](https://www.npmjs.com/package/node-gopigo3).
 1. Install the package in your project by typing the following command in your project's folder:
-        `npm install node-gopigo3 --save`
+
+        npm install node-gopigo3 --save
+        
 2. Include the package in your application:
-        `const EasyGopigo3 = require('node-gopigo3').EasyGopigo3` or `const Gopigo3 = require('node-gopigo3').Gopigo3`
+        
+        const EasyGopigo3 = require('node-gopigo3').EasyGopigo3
+ or 
+ 
+        const Gopigo3 = require('node-gopigo3').Gopigo3
 
 # How your application may look like
 ```javascript
