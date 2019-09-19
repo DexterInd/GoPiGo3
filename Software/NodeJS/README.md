@@ -49,7 +49,7 @@ This library is published as a [NPM package](https://www.npmjs.com/package/node-
 2. Include the package in your application:
         
         const EasyGopigo3 = require('node-gopigo3').EasyGopigo3
- or 
+    or 
  
         const Gopigo3 = require('node-gopigo3').Gopigo3
 
