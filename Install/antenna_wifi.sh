@@ -9,7 +9,7 @@ if [ -f "/home/pi/Dexter/detected_robot.txt" ] && grep -q GoPiGo3 /home/pi/Dexte
 then
     if iwgetid --scheme
     then
-        python -c "import gopigo3;GPG=gopigo3.GoPiGo3();GPG.set_led(GPG.LED_WIFI,15,3,0)"
+        python -c "import gopigo3;GPG=gopigo3.GoPiGo3();GPG.set_led(GPG.LED_WIFI,3,1,3)"
     else
         python -c "import gopigo3;GPG=gopigo3.GoPiGo3();GPG.set_led(GPG.LED_WIFI,0,0,0)"
     fi
