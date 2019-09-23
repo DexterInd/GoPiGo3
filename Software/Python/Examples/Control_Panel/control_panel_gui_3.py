@@ -54,7 +54,7 @@ class MainPanel(wx.Panel):
     def __init__(self, parent):
 
         wx.Panel.__init__(self, parent=parent)
-        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+        #self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
         self.SetBackgroundColour(wx.WHITE)
         self.frame = parent
 
@@ -105,7 +105,7 @@ class MainPanel(wx.Panel):
         left_led_button = wx.Button(self, label="Left Blinker")
         self.Bind(wx.EVT_BUTTON, self.left_led_button_OnButtonClick, left_led_button)
         right_led_button = wx.Button(self, label="Right Blinker")
-        self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)       
+        self.Bind(wx.EVT_BUTTON, self.right_led_button_OnButtonClick, right_led_button)
 
         led_sizer = wx.BoxSizer(wx.HORIZONTAL)
         led_sizer.Add(left_led_button, 0, wx.ALIGN_LEFT|wx.TOP,9)
@@ -162,7 +162,7 @@ class MainPanel(wx.Panel):
 
         firmwareSizer = wx.BoxSizer(wx.HORIZONTAL)
         firmware_button = wx.Button(self,-1,label="Check Firmware Version")
-        self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)        
+        self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)
         self.firmware_label = wx.StaticText(self,-1,label=str(firmware_version))
         firmwareSizer.Add(firmware_button, 0, wx.ALIGN_LEFT)
         firmwareSizer.AddSpacer(15)
@@ -231,7 +231,7 @@ class MainPanel(wx.Panel):
         exit_sizer.Add(exit_button, 0, wx.ALIGN_RIGHT|wx.RIGHT, 20)
         exit_sizer.Add(save_button, 0, wx.ALIGN_RIGHT)
 
-        
+
 
         # Fill remote control section
         control_sizer.Add(control_label, 0, wx.ALIGN_CENTER|wx.BOTTOM,10)
@@ -266,7 +266,7 @@ class MainPanel(wx.Panel):
         global v
         v=round(gpg.volt(),1)
         self.battery_label.SetLabel(str(v)+"V")
-        
+
     def firmware_button_OnButtonClick(self,event):
         global firmware_version
         firmware_version=gpg.get_version_firmware()
@@ -311,7 +311,7 @@ class MainPanel(wx.Panel):
         global right_eye
         if right_eye==0:
             gpg.open_right_eye()
-            right_eye=1        
+            right_eye=1
         else :
             gpg.close_right_eye()
             right_eye=0
@@ -320,7 +320,7 @@ class MainPanel(wx.Panel):
         global left_eye
         if left_eye==0:
             gpg.open_left_eye()
-            left_eye=1        
+            left_eye=1
         else :
             gpg.close_left_eye()
             left_eye=0
@@ -328,7 +328,7 @@ class MainPanel(wx.Panel):
     # def wheel_diameter_input_OnChanged(self, event):
     #     global wheel_diameter
     #     try:
-    #         #basic entry validation. Maybe use regex in the future? 
+    #         #basic entry validation. Maybe use regex in the future?
     #         #right now,  10e1000 is considered valid
     #         wheel_diameter = float(event.GetString())
     #     except:
@@ -342,7 +342,7 @@ class MainPanel(wx.Panel):
         except:
             self.msg_label.SetLabel("Wheel diameter is invalid.")
             return
-        
+
         try:
             base = float(self.wheel_base_input.GetValue())
         except:
@@ -366,7 +366,7 @@ class MainPanel(wx.Panel):
         except:
             self.msg_label.SetLabel("Wheel diameter is invalid.")
             return
-        
+
         try:
             base = float(self.wheel_base_input.GetValue())
         except:
@@ -388,7 +388,7 @@ class MainPanel(wx.Panel):
         except:
             self.msg_label.SetLabel("Wheel diameter is invalid.")
             return
-        
+
         try:
             base = float(self.wheel_base_input.GetValue())
         except:
@@ -417,7 +417,7 @@ class MainPanel(wx.Panel):
         except:
             self.msg_label.SetLabel("Wheel diameter is invalid.")
             return
-        
+
         try:
             base = float(self.wheel_base_input.GetValue())
         except:
