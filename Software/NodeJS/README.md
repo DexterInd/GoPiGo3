@@ -32,7 +32,7 @@ To install NVM (Node Version Manager), Node.js and NPM:
 2. Follow the instructions
 
 To uninstall NVM, Node.js and NPM:
-1. Run the install script: 
+1. Run the uninstall script: 
 
         bash /home/pi/Dexter/GoPiGo3/Software/NodeJS/uninstall.sh
         
