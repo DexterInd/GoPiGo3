@@ -1142,7 +1142,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         Initialises a :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` object and then returns it.
 
         :param str port = "I2C": The options for this parameter are ``"I2C"`` by default, ``"AD1"``, or ``"AD2"``.
-        :param boolean led_state = False: True Turns the onboard LED on or off. It's best to have it on in order to detect color, and off in order to detect light value.
+        :param boolean led_state = False: Turns the onboard LED on or off. It's best to have it on in order to detect color, and off in order to detect light value.
         :returns: An instance of the :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` class and with the port set to ``port``'s value.
         :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
 
