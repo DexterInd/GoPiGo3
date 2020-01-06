@@ -92,7 +92,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         This constructor sets the variables to the following values:
 
         :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
-        :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
+        :param boolean use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
@@ -1142,7 +1142,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         Initialises a :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` object and then returns it.
 
         :param str port = "I2C": The options for this parameter are ``"I2C"`` by default, ``"AD1"``, or ``"AD2"``.
-        :param boolean led_state = True Turns the onboard LED on or off. It's best to have it on in order to detect color, and off in order to detect light value.
+        :param boolean led_state = False: True Turns the onboard LED on or off. It's best to have it on in order to detect color, and off in order to detect light value.
         :returns: An instance of the :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` class and with the port set to ``port``'s value.
         :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
 
