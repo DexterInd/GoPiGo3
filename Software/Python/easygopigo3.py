@@ -14,23 +14,16 @@ import easysensors
 from I2C_mutex import Mutex
 from math import pi
 
-try:
-    from di_sensors import easy_distance_sensor
-except ImportError as e:
-    # It is quite possible to use the GPG3 without having the di_sensors repo installed
-    pass
-except Exception as e:
-    print("Importing di_sensors error: {}".format(e))
 
 try:
-    from di_sensors import easy_line_follower, easy_distance_sensor
+    from di_sensors import easy_line_follower, easy_distance_sensor, easy_light_color_sensor, inertial_measurement_unit
     di_sensors_available = True
 except ImportError as err:
     di_sensors_available = False
-    print(str(err))
+    print("Importing di_sensors error: {}".format(err))
 except Exception as err:
     di_sensors_available = False
-    print(str(err))
+    print("Importing di_sensors error: {}".format(err))
 
 mutex = Mutex(debug=False)
 
@@ -1143,6 +1136,77 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         return d
 
+    def init_light_color_sensor(self, port = "I2C", led_state=True):
+        """
+
+        Initialises a :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` object and then returns it.
+
+        :param str port = "I2C": The options for this parameter are ``"I2C"`` by default, ``"AD1"``, or ``"AD2"``.
+        :param boolean led_state = True Turns the onboard LED on or off. It's best to have it on in order to detect color, and off in order to detect light value.
+        :returns: An instance of the :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` class and with the port set to ``port``'s value.
+        :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
+
+        The ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_light_color_sensor.EasyLightColorSensor` class.
+
+        .. tip::
+
+             | The sensor can be connected to any of the I2C ports.
+             | You can connect different I2C devices simultaneously provided that:
+
+                * The I2C devices have different addresses.
+                * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
+            
+             | If the devices share the same address, like two light/color sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
+
+        """
+        if di_sensors_available is False:
+            raise ImportError("di_sensors library not available")
+        
+        try:
+            lc = easy_light_color_sensor.EasyLightColorSensor(port=port, led_state=led_state, use_mutex=self.use_mutex)
+        except Exception as e:
+            # print(e)
+            lc = None
+
+        return lc  
+
+    def init_imu_sensor(self, port = "I2C"):
+        """
+
+        Initialises a :py:class:`~di_sensors.easy_inertial_measurement_unit.EasyIMUSensor` object and then returns it.
+
+        :param str port = "AD1": The options for this parameter are ``"AD1"`` by default, ``"AD2"``.
+        :returns: An instance of the :py:class:`~di_sensors.easy_inertial_measurement_unit.EasyIMUSensor` class and with the port set to ``port``'s value.
+        :raises ImportError: When the :py:mod:`di_sensors` module can't be found. Check the `DI-Sensors`_ documentation on how to install the libraries.
+
+        The ports are mapped to the following :ref:`hardware-ports-section`.
+
+        The ``use_mutex`` parameter of the :py:meth:`~easygopigo3.EasyGoPiGo3.__init__` constructor is passed down to the constructor of :py:class:`~di_sensors.easy_inertial_measurement_unit.EasyIMUSensor` class.
+
+        .. tip::
+
+             | The sensor can be connected to any of the I2C ports.
+             | You can connect different I2C devices simultaneously provided that:
+
+                * The I2C devices have different addresses.
+                * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
+            
+             | If the devices share the same address, like two IMU sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
+
+        """
+
+        if di_sensors_available is False:
+            raise ImportError("di_sensors library not available")
+        
+        try:
+            imu = easy_inertial_measurement_unit.EasyIMUSensor(port=port, use_mutex=self.use_mutex)
+        except Exception as e:
+            # print(e)
+            imu = None
+
+        return imu        
 
     def init_dht_sensor(self, sensor_type = 0):
         """
