@@ -17,7 +17,7 @@ while True:
     try:
         mutex.acquire()
         time.sleep(5)
-    	mutex.release()
+        mutex.release()
     except KeyboardInterrupt:
         mutex.release()
         exit()
