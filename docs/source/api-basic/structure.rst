@@ -11,9 +11,16 @@ Before using this chapter's classes, you need to be able to import the following
 
 .. code-block:: python
 
-   import easygopigo3
-   import easysensors
+   import easygopigo3 
+   import easysensors 
+  
+Or you may prefer this approach:
 
+.. code-block:: python
+
+   from easygopigo3 import *
+   from easysensors import *
+   
 If you have issues importing these two modules, then make sure:
 
    * You have followed the steps found in :ref:`Getting Started <getting-started-chapter>` guide.
@@ -47,8 +54,9 @@ These ports have the following functionalities:
 
    .. code-block:: python
 
+      import easygopigo3
       # we need an EasyGoPiGo3 object for instantiating sensor / actuator objects
-      gpg3_obj = EasyGoPiGo3()
+      gpg3_obj = easygopigo3.EasyGoPiGo3()
 
       # we're using the quoted port names from the above graphical representation
 
