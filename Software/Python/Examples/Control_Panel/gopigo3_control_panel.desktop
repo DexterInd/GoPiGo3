@@ -5,5 +5,5 @@ Name=GoPiGo3 Control Panel
 Comment=GoPiGo3 Control Panel
 #Icon=/usr/share/icons/gnome/scalable/devices/input-gaming-symbolic.svg
 Icon=/home/pi/Dexter/GoPiGo3/Software/Python/Examples/Control_Panel/GoPiGo3.png
-Exec=python /home/pi/Dexter/GoPiGo3/Software/Python/Examples/Control_Panel/control_panel_gui_3.py
+Exec=python2 /home/pi/Dexter/GoPiGo3/Software/Python/Examples/Control_Panel/control_panel_gui_3.py
 NoDisplay=true
