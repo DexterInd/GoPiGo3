@@ -110,7 +110,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         try:
-            super(self.__class__, self).__init__()
+            super().__init__()
         except IOError as e:
             print("FATAL ERROR:\nGoPiGo3 is not detected.")
             raise e
