@@ -45,6 +45,7 @@ install_wiringpi() {
 }
 
 install_pigpio() {
+    feedback "Installing pigpio"
     sudo systemctl enable pigpiod
     sudo systemctl start pigpiod
 }
