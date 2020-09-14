@@ -17,6 +17,6 @@ then
 else
     echo "$SERVICE is not running"
     # Run the gopigo3_power.py if GPG3 detected
-    sudo python $REPO_PATH/Software/gopigo3_power.py
+    sudo python3 $REPO_PATH/Software/gopigo3_power.py
     echo "$SERVICE started."
 fi

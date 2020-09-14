@@ -44,6 +44,12 @@ install_wiringpi() {
     # End check if WiringPi installed
 }
 
+install_pigpio() {
+    feedback "Installing pigpio"
+    sudo systemctl enable pigpiod
+    sudo systemctl start pigpiod
+}
+
 enable_spi() {
     feedback "Removing blacklist from /etc/modprobe.d/raspi-blacklist.conf"
 
@@ -99,6 +105,6 @@ sudo sed -i "6i $SERVICECOMMAND $SCRIPTFILE" $SERVICEFILE
 
 check_root_user
 install_dependencies
-install_wiringpi
+install_pigpio
 enable_spi
 install_wifi_antenna

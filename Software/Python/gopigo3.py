@@ -212,9 +212,16 @@ class GoPiGo3(object):
         """
         
         # Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
-        subprocess.call('gpio mode 12 ALT0', shell=True)
-        subprocess.call('gpio mode 13 ALT0', shell=True)
-        subprocess.call('gpio mode 14 ALT0', shell=True)
+        # subprocess.call('gpio mode 12 ALT0', shell=True)
+        # subprocess.call('gpio mode 13 ALT0', shell=True)
+        # subprocess.call('gpio mode 14 ALT0', shell=True)
+
+
+        import pigpio
+        p = pigpio.pi()
+        p.set_mode(9, pigpio.ALT0)
+        p.set_mode(10, pigpio.ALT0)
+        p.set_mode(11, pigpio.ALT0)
         
         self.SPI_Address = addr
         if detect == True:
