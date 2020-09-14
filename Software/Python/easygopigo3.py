@@ -110,7 +110,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         try:
-           if sys.version_info[0] < 3:
+            if sys.version_info[0] < 3:
                 super(self.__class__, self).__init__()
             else:
                 super().__init__()
