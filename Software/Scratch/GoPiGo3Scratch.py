@@ -1044,10 +1044,10 @@ if __name__ == '__main__':
                     logger.info("Error taking picture")
                     s.sensorupdate({'camera':"Error"})
             # SPEAK MODULE
-            elif (msg[:5].lower()=="SPEAK".lower()):
+            elif (msg[:5].lower()=="SPEAK".lower()  or msg[:3].lower()=="SAY".lower() ):
                 try:
                     from subprocess import call
-                    cmd_beg = "espeak -ven+f1 "
+                    cmd_beg = "espeak-ng -ven+f1 "
                     in_text = msg[len("SPEAK"):]
                     cmd_end = " 2>/dev/null"
                     out_str = cmd_beg+"\""+in_text+"\""+cmd_end
