@@ -1048,7 +1048,10 @@ if __name__ == '__main__':
                 try:
                     from subprocess import call
                     cmd_beg = "espeak-ng -ven+f1 "
-                    in_text = msg[len("SPEAK"):]
+                    if msg[:5].lower()=="SPEAK".lower():
+                        in_text = msg[len("SPEAK"):]
+                    else :
+                        in_text = msg[len("SAY"):]
                     cmd_end = " 2>/dev/null"
                     out_str = cmd_beg+"\""+in_text+"\""+cmd_end
                     logger.debug(out_str)
