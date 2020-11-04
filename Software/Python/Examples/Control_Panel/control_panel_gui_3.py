@@ -206,7 +206,8 @@ class MainPanel(wx.Panel):
 
         calibrationTurnInternalSizer = wx.BoxSizer(wx.HORIZONTAL)
         wheel_base_label = wx.StaticText(self, -1, label="Distance Between Wheels:")
-        self.wheel_base_input = wx.TextCtrl(self, value=str(wheel_base_width), size=(60, 40))
+        # allow space for XXX.XX precision on wheel_base_width
+        self.wheel_base_input = wx.TextCtrl(self, value=str(wheel_base_width), size=(70, 40))
 
         calibrationTurnInternalSizer.Add(wheel_base_label, 0, wx.ALIGN_CENTER)
         calibrationTurnInternalSizer.Add( self.wheel_base_input, 0, wx.ALIGN_CENTER|wx.EXPAND )
