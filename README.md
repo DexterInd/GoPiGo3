@@ -25,6 +25,13 @@ curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
 The same command can be used for updating the `GoPiGo3` to the latest version.
 
+# Virtual Environment Installation
+
+```
+curl -kL dexterindustries.com/update_gopigo3 | bash -s -- --user-local --bypass-gui-installation
+```
+
+
 # Installation
 You can install the GoPiGo3 on your own operating system with the following commands in the command line:
 1. Clone this repository onto the Raspberry Pi:
