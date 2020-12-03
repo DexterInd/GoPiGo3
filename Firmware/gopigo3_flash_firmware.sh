@@ -1,5 +1,16 @@
 #! /bin/bash
 
+
+# check if upgrade is needed
+/usr/bin/python3 /home/pi/Dexter/GoPiGo3/Firmware/check_if_firmware_update_is_needed.py
+if [ $? -eq 1 ]
+then
+  echo "Exiting firmware upgrade script file without changing anything."
+  exit
+else
+    echo "Attempting to upgrade firmware."
+fi
+
 # check the RPi version
 RPI_VERSION=$(python3 -c "import auto_detect_rpi; print (auto_detect_rpi.getRPIGenerationCode())")
 
@@ -12,6 +23,8 @@ elif [ "$RPI_VERSION" == "RPI2" ] || [ "$RPI_VERSION" == "RPI3" ] || [ "$RPI_VER
     INTERFACE_FILE="rpi2.cfg"
 elif [ "$RPI_VERSION" == "RPI4" ]; then
     # use rpi4 interface config file
+    echo "Flashing the firmware using a Pi4 is not currently supported"
+    exit
     INTERFACE_FILE="rpi4.cfg"
 fi
 
