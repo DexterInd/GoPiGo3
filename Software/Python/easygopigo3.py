@@ -506,8 +506,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              Setting both ``left_percent`` and ``right_percent`` to **0** will stop the GoPiGo from moving.
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED * left_percent / 100)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * right_percent / 100)
+        self.set_motor_dps(self.MOTOR_LEFT, self.speed * left_percent / 100)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.speed * right_percent / 100)
 
 
     def orbit(self, degrees, radius_cm=0, blocking=True):
