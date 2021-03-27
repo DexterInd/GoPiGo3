@@ -241,7 +241,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         # dist is in cm
         # if dist is negative, this becomes a backward move
-        print(dist, dist_to_obstacle)
+
+        dist_mm = dist * 10
 
         # the number of degrees each wheel needs to turn
         WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
