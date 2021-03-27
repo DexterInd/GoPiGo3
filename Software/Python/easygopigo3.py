@@ -230,7 +230,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
-        :param float dist_to_obstacle: if the distance sensor has been instantiated using the :py:meth:`~init_distance_sensor()` method then this parameter will check for an obstacle in the robot's path and stop the robot as needed, even if the target distance isn't reached.
+        :param float dist_to_obstacle: If the distance sensor has been instantiated using the :py:meth:`~init_distance_sensor()` method then this parameter will check for an obstacle in the robot's path and stop the robot as needed, even if the target distance isn't reached.
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
@@ -242,8 +242,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         # dist is in cm
         # if dist is negative, this becomes a backward move
         print(dist, dist_to_obstacle)
-
-        dist_mm = dist * 10
 
         # the number of degrees each wheel needs to turn
         WheelTurnDegrees = ((dist_mm / self.WHEEL_CIRCUMFERENCE) * 360)
