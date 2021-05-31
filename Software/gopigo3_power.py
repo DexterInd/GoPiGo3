@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # https://www.dexterindustries.com
 #
@@ -14,18 +14,47 @@
 # left floating (high impedance) the GoPiGo3 assumes the RPi has shut down fully.
 # SW should never write GPIO 23 to LOW or set it as an INPUT.
 
-
-import RPi.GPIO as GPIO
 import time
 import os
+in_pin = 22
+out_pin = 23
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(in_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-GPIO.setup(23, GPIO.OUT)
-GPIO.output(23, True)
+    GPIO.setup(out_pin, GPIO.OUT)
+    GPIO.output(out_pin, True)
 
-while True:
-    if GPIO.input(22):
-        os.system("shutdown now -h")
-    time.sleep(0.1)
+    while True:
+        if GPIO.input(in_pin):
+            os.system("shutdown now -h")
+        time.sleep(0.1)
+
+except ModuleNotFoundError:
+    import lgpio as LGPIO
+    h = LGPIO.gpiochip_open(0)
+    LGPIO.gpio_claim_input(h, in_pin, LGPIO.SET_ACTIVE_LOW)
+
+    LGPIO.gpio_claim_output(h, out_pin)
+    LGPIO.gpio_write(h, out_pin, 1)
+
+    previous_state = LGPIO.gpio_read(h, in_pin)
+    print(LGPIO.gpio_read(h, in_pin))
+
+    while True:
+        new_state = LGPIO.gpio_read(h, in_pin)
+        if new_state != previous_state:
+            print(LGPIO.gpio_read(h, in_pin))
+            previous_state = new_state
+        if new_state != 1:
+            # print("fake shutdown")
+            os.system("shutdown now -h")
+        time.sleep(0.1)
+
+except:
+    pass
+
+
+

@@ -216,12 +216,14 @@ class GoPiGo3(object):
         # subprocess.call('gpio mode 13 ALT0', shell=True)
         # subprocess.call('gpio mode 14 ALT0', shell=True)
 
-
-        import pigpio
-        p = pigpio.pi()
-        p.set_mode(9, pigpio.ALT0)
-        p.set_mode(10, pigpio.ALT0)
-        p.set_mode(11, pigpio.ALT0)
+        try:
+            import pigpio
+            p = pigpio.pi()
+            p.set_mode(9, pigpio.ALT0)
+            p.set_mode(10, pigpio.ALT0)
+            p.set_mode(11, pigpio.ALT0)
+        except ModuleNotFoundError:
+            print("pigpio not accessible")
         
         self.SPI_Address = addr
         if detect == True:
@@ -369,7 +371,7 @@ class GoPiGo3(object):
         """
         Read the firmware version
 
-        Returns touple:
+        Returns tuple:
         firmware version, error
         """
         version = self.spi_read_32(self.SPI_MESSAGE_TYPE.GET_FIRMWARE_VERSION)
