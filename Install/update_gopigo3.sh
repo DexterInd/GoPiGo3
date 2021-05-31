@@ -41,7 +41,8 @@ parse_cmdline_arguments() {
   systemwide=true
   userlocal=false
   envlocal=false
-  usepython2exec=true
+  
+  usepython2exec=false
   usepython3exec=true
 
   # selectedbranch=master
