@@ -18,7 +18,7 @@ selectedbranch="master"
 ######## Parse Command Line Arguments ########
 ##############################################
 
-# called way down bellow
+# called way down below
 check_if_run_with_pi() {
   ## if not running with the pi user then exit
   if [ $(id -ur) -ne $(id -ur pi) ]; then
