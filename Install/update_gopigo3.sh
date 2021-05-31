@@ -41,6 +41,7 @@ parse_cmdline_arguments() {
   systemwide=true
   userlocal=false
   envlocal=false
+  usepython2exec=true
   usepython3exec=true
 
   # selectedbranch=master
@@ -126,6 +127,7 @@ parse_cmdline_arguments() {
 
   # create rest of list of arguments for rfrtools call
   rfrtools_options+=("$selectedbranch")
+  [[ $usepython2exec = "true" ]] && rfrtools_options+=("--use-python2-exe-too")
   [[ $usepython3exec = "true" ]] && rfrtools_options+=("--use-python3-exe-too")
   [[ $updaterepo = "true" ]] && rfrtools_options+=("--update-aptget")
   [[ $installdependencies = "true" ]] && rfrtools_options+=("--install-deb-deps")
@@ -143,8 +145,10 @@ parse_cmdline_arguments() {
 # called in <<install_rfrtools_repo>>
 check_dependencies() {
   command -v git >/dev/null 2>&1 || { echo "This script requires \"git\" but it's not installed. Error occurred with RFR_Tools installation." >&2; exit 1; }
-  command -v python2 >/dev/null 2>&1 || { echo "Executable \"python2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 2; }
-  command -v pip2 >/dev/null 2>&1 || { echo "Executable \"pip2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 3; }
+  if [[ $usepython2exec = "true" ]]; then
+    command -v python2 >/dev/null 2>&1 || { echo "Executable \"python2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 2; }
+    command -v pip2 >/dev/null 2>&1 || { echo "Executable \"pip2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 3; }
+  fi
   if [[ $usepython3exec = "true" ]]; then
     command -v python3 >/dev/null 2>&1 || { echo "Executable \"python3\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 4; }
     command -v pip3 >/dev/null 2>&1 || { echo "Executable \"pip3\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 5; }
@@ -199,11 +203,17 @@ clone_gopigo3() {
 
 # called by <<install_python_pkgs_and_dependencies>>
 install_python_packages() {
-  [[ $systemwide = "true" ]] && sudo python2 setup.py install \
+  [[ $systemwide = "true" ]] \ 
+              && [[ $usepython2exec = "true" ]] && sudo python2 setup.py install 
+  [[ $systemwide = "true" ]] \ 
               && [[ $usepython3exec = "true" ]] && sudo python3 setup.py install
-  [[ $userlocal = "true" ]] && python2 setup.py install --user \
+  [[ $userlocal = "true" ]] \
+              && [[ $usepython2exec = "true" ]] && python2 setup.py install --user 
+  [[ $userlocal = "true" ]] \
               && [[ $usepython3exec = "true" ]] && python3 setup.py install --user
-  [[ $envlocal = "true" ]] && python2 setup.py install \
+  [[ $envlocal = "true" ]] \
+              && [[ $usepython2exec = "true" ]] && python2 setup.py install
+  [[ $envlocal = "true" ]] \
               && [[ $usepython3exec = "true" ]] && python3 setup.py install
 }
 
@@ -217,12 +227,14 @@ remove_python_packages() {
   # saves output to file because we want to have the syntax highlight working
   # does this for both root and the current user because packages can be either system-wide or local
   # later on the strings used with the python command can be put in just one string that gets used repeatedly
-  python2 -c "import pkgutil; import os; \
-              eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
-              output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
-  sudo python2 -c "import pkgutil; import os; \
-              eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
-              output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+  if [[ $usepython3exec = "true" ]]; then 
+    python2 -c "import pkgutil; import os; \
+                eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
+                output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+    sudo python2 -c "import pkgutil; import os; \
+                eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
+                output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+  fi
   if [[ $usepython3exec = "true" ]]; then
     python3 -c "import pkgutil; import os; \
                 eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
