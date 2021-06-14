@@ -3,10 +3,13 @@
 The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo3 is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo)
 
 ![ GoPiGo3 Raspberry Pi Robot ](https://raw.githubusercontent.com/DexterInd/GoPiGo3/master/GoPiGo3_Raspberry_Pi_Robot.jpg)
+# GoPiGo OS
 
+GoPiGo OS is an easy to get started with, all packaged OS for the GoPiGo3. It offers Bloxter, and JupyterLab 2.  You can [download it](https://gopigo.io/downloads/gopigo_os) and install it on your SD card.
+### Note:  GoPiGo OS allows you to SSH into the robot and have full access to Linux. You can also use VNC viewer and access the Raspberry Pi Desktop.
 # DexterOS
 
-DexterOS is an easy to get started with, all packaged OS for the GoPiGo3. It offers Bloxter, and JupyterLab.  You can [download it](https://www.dexterindustries.com/download/dexteros) and install it on your SD card.
+DexterOS is now deprecated and replaced by GoPiGo OS. It offers Bloxter, and JupyterLab 1.  You can [download it](https://www.dexterindustries.com/download/dexteros) and install it on your SD card.
 ### Note:  DexterOS does not allow you to SSH into the robot and have full access to Linux. If you want full access, please choose Raspbian for Robots.
 
 # Raspbian for Robots
