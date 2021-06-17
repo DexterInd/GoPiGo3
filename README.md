@@ -55,5 +55,6 @@ Please review the [LICENSE.md] file for license information.
 
 # See Also
 
-- [Dexter Industries](http://www.dexterindustries.com/GoPiGo)
-- [Dexter Industries Forum Support](http://forum.dexterindustries.com/c/gopigo)
+- [Modular Robotics](https://modrobotics.com)
+- [GoPiGo.io](https://gopigo.io)
+- [Forum Support](https://forum.dexterindustries.com/c/gopigo)
