@@ -231,7 +231,6 @@ class GoPiGo3(object):
         p.set_mode(10, pigpio.ALT0)
         p.set_mode(11, pigpio.ALT0)
 
-        print("new init")
         self.SPI_Address = addr
         if detect == True:
             try:
@@ -252,7 +251,6 @@ class GoPiGo3(object):
         # should there be a problem doing that then save the current default configuration
         try:
             self.load_robot_constants()
-            print("Robot constants loaded")
         except Exception as e:
             print("Exception happened while loaded robot constants:")
             print(e)
