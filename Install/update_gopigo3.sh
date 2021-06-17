@@ -266,6 +266,11 @@ install_python_pkgs_and_dependencies() {
     cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
   fi
 
+  # install calibration panel on desktop
+  if [[ -d $PIHOME/Desktop ]]; then
+    cp $GOPIGO3_DIR/Software/Python/Examples/Calibration_Panel/gopigo3_calibration.desktop $PIHOME/Desktop/gopigo3_calibration.desktop
+  fi
+
   # install openocd
   echo "Installing OpenOCD for GoPiGo3"
   curl --silent https://raw.githubusercontent.com/DexterInd/openocd/master/openocd_install.sh | bash
