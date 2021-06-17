@@ -4,6 +4,8 @@ import tkinter.font as tkFont
 import easygopigo3 as easy
 import subprocess
 
+
+# Global GPG 
 try:
     gpg = easy.EasyGoPiGo3()
 except Exception as e:
@@ -11,52 +13,73 @@ except Exception as e:
     print(e)
     exit()
 
+# in case the window is killed by the end user, let's make sure the robot is stopped
 import atexit
 atexit.register(gpg.stop)
 
-# is_spinning = False
+
 ticks = gpg.ENCODER_TICKS_PER_ROTATION
-messages=["Did it achieve the distance?", "If the robot is off by approximately half or double the distance,\nclick 'Retry' to do a second attempt", "Otherwise click 'Fine Tune' to go to fine tuning."]
+messages=["Did it achieve the distance?", 
+          "If the robot is off by approximately half or double the distance,\nclick 'Retry' to do a second attempt", 
+          "Otherwise click 'Fine Tune' to go to fine tuning."]
+
+# detect if we are in the first phase where we have to determine the number of ticks, or if we're passed that
 fine_tuning = False
 retried = False
 
+
+# Disable all main frames
 def enable(children):
    for child in children:
       child.configure(state='normal')
 
+# Enable all main frames
 def enable_all():
     enable(main_window.wheel_diameter_frame.winfo_children())
     enable(main_window.distance_between_wheels_frame.winfo_children())
     enable(main_window.bottom_frame.winfo_children())
 
+# Disable all children of a frame
 def disable(children):
    for child in children:
       child.configure(state='disable')
 
+# enable all children of a frame
 def disable_all():
     disable(main_window.wheel_diameter_frame.winfo_children())
     disable(main_window.distance_between_wheels_frame.winfo_children())
     disable(main_window.bottom_frame.winfo_children())
 
 
+# Callback for the emergency stop button
 def emergency():
     gpg.stop()
 
     # if the popup is up, kill it
     try:
-        win.destroy()
+        popup.destroy()
     except:
         pass
     enable_all()
 
 def finetune():
+    '''
+    Go into fine tuning mode.  This means we have accepted the number of ticks 
+    and won't bring the popup window any more
+    '''
     global fine_tuning
     fine_tuning = True
     main_window.wheel_top_label.config(text="Second Step: Fine Tune the Distance")
-    win.destroy()
+    popup.destroy()
     enable_all()
 
 def retry():
+    '''
+    The user has signaled that the robot is completely off track.
+    Switch to the other number of ticks and try again.
+    Since we only support 6 or 16, if we fall into this method for a second time,
+    then the user has to contact customer service.
+    '''
     global ticks, process, command, retried
 
     if not retried:
@@ -70,13 +93,16 @@ def retry():
         process = subprocess.Popen(['python', '-c', command], stdout=subprocess.PIPE)
     else:
         # User has attempted both configurations
-        win.destroy()
+        popup.destroy()
         enable_all()
         messagebox.showwarning("Customer Service","Please contact Customer Service: support@modrobotics.com")
 
 
 
 def save():
+    '''
+    Save the new constants
+    '''
     diam, base, ticks = get_values()
     if diam > 0 and base > 0 and ticks > 0:
         gpg.set_robot_constants(diam, base, ticks, gpg.MOTOR_GEAR_RATIO)
@@ -93,7 +119,11 @@ def save_exit_app():
 
 
 def get_values():
-    # print("get values")
+    '''
+    Read the values from the various input fields.
+    Ticks is no longer being read, so it's kind off a moot point
+    '''
+
     try:
         diam = float(main_window.wheel_diameter_variable.get())
         # print(diam)
@@ -112,6 +142,10 @@ def get_values():
     return(diam, base, ticks)
 
 def drive_6_feet():
+    '''
+    Get values from the input fields, and drive 6 feet with those values
+    Use a subprocess so the main event loop isn't blocked, and also the emergency stop can work.
+    '''
     global process, command
 
     diam, base, ticks = get_values()
@@ -129,6 +163,10 @@ def drive_6_feet():
 
 
 def drive_2m():
+    '''
+    Get values from the input fields, and drive 2m with those values
+    Use a subprocess so the main event loop isn't blocked, and also the emergency stop can work.
+    '''
     global process, command
 
     diam, base, ticks = get_values()
@@ -147,6 +185,10 @@ def drive_2m():
 
 
 def spin1():
+    '''
+    Get values from the input fields, and attempt a single full spin with those values
+    Use a subprocess so the main event loop isn't blocked, and also the emergency stop can work.
+    '''
     global process
     diam, base, ticks = get_values()
 
@@ -160,46 +202,18 @@ def spin1():
         print(e)
         pass
 
-# def update_encoders():
-#     global is_spinning
-#     # print("updating encoders")
-#     left_ticks_variable.set(abs(gpg.get_motor_encoder(gpg.MOTOR_LEFT)*2))
-#     right_ticks_variable.set(abs(gpg.get_motor_encoder(gpg.MOTOR_RIGHT)*2))
-#     if is_spinning:
-#         # print("calling again")
-#         root.after(50, update_encoders)
-#     else:
-#         print("Done")
-
-# def spin_disk():
-#     global is_spinning
-
-#     is_spinning = not is_spinning
-
-#     if is_spinning:
-#         spin_disk_button_variable.set("Stop spinning....")
-#         disable(wheel_diameter_frame.winfo_children())
-#         disable(distance_between_wheels_frame.winfo_children())
-#         disable(bottom_frame.winfo_children())
-#         gpg.offset_motor_encoder(gpg.MOTOR_LEFT, gpg.get_motor_encoder(gpg.MOTOR_LEFT))
-#         gpg.offset_motor_encoder(gpg.MOTOR_RIGHT, gpg.get_motor_encoder(gpg.MOTOR_RIGHT))
-#         print("calling update_encoders")
-#         root.after(50, update_encoders)
-
-#     else:
-#         spin_disk_button_variable.set("Spin Disk Slowly")
-#         enable(wheel_diameter_frame.winfo_children())
-#         enable(distance_between_wheels_frame.winfo_children())
-#         enable(bottom_frame.winfo_children())
 
 def messageWindow(title, messages):
-    global win
-    win = tk.Toplevel()
-    win.title(title)
-    win.configure( background="white")
-    win.geometry("+{}+{}".format(positionRight, positionDown))
+    '''
+    Popup window which should be called just once.
+    '''
+    global popup
+    popup = tk.Toplevel()
+    popup.title(title)
+    popup.configure( background="white")
+    popup.geometry("+{}+{}".format(positionRight, positionDown))
 
-    top_frame = tk.Frame(master=win, width=400, height=50, padx=5, pady=5, background="white")
+    top_frame = tk.Frame(master=popup, width=400, height=50, padx=5, pady=5, background="white")
     top_frame.pack()
     first_message = True
     for message in messages:
@@ -209,7 +223,7 @@ def messageWindow(title, messages):
         else:
             tk.Label(top_frame, anchor='w', text=message, background="white").pack(padx=5, pady=5)
 
-    buttons = tk.Frame(master=win, padx=5, pady=5, background="white")
+    buttons = tk.Frame(master=popup, padx=5, pady=5, background="white")
     buttons.pack()
 
 
@@ -218,18 +232,11 @@ def messageWindow(title, messages):
     tk.Button(buttons, text='Emergency Stop & Close', width="18", command=emergency, background="#8A2F43", foreground="#FFFFFF").pack(side="left", padx=20, fill="x")
     disable_all()
 
-def secondMessageWindow(title, messages):
-    global win
-    win = tk.Toplevel()
-    win.configure( background="white")
-    win.title(title)
-    win.geometry("+{}+{}".format(positionRight, positionDown))
-    for message in messages:
-        tk.Label(win, text=message, background="white").pack(side="top")
-    tk.Button(win, text='Ok', command=win.destroy).pack(side="left", padx=20)
-
 
 class main(object):
+    '''
+    Main dialog window
+    '''
     global left_ticks_variable, right_ticks_variable, wheel_diameter_variable, distance_between_wheels_variable, spin_disk_button_variable
     global wheel_diameter_frame, distance_between_wheels_frame, bottom_frame
 
