@@ -231,7 +231,6 @@ class GoPiGo3(object):
         p.set_mode(10, pigpio.ALT0)
         p.set_mode(11, pigpio.ALT0)
 
-        print("new init")
         self.SPI_Address = addr
         if detect == True:
             try:
@@ -251,11 +250,9 @@ class GoPiGo3(object):
         # also default ENCODER_TICKS_PER_ROTATION and MOTOR_GEAR_RATIO
         # should there be a problem doing that then save the current default configuration
         try:
-            self.load_robot_constants()
-            print("Robot constants loaded")
+            self.load_robot_constants(config_file_path)
         except Exception as e:
-            print("Exception happened while loaded robot constants:")
-            print(e)
+            # This may happen if the file doesn't exist
             pass
 
     def spi_transfer_array(self, data_out):
