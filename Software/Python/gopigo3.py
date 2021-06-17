@@ -250,10 +250,9 @@ class GoPiGo3(object):
         # also default ENCODER_TICKS_PER_ROTATION and MOTOR_GEAR_RATIO
         # should there be a problem doing that then save the current default configuration
         try:
-            self.load_robot_constants()
+            self.load_robot_constants(config_file_path)
         except Exception as e:
-            print("Exception happened while loaded robot constants:")
-            print(e)
+            # This may happen if the file doesn't exist
             pass
 
     def spi_transfer_array(self, data_out):
