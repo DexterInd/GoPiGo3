@@ -11,6 +11,7 @@ from __future__ import print_function
 from __future__ import division
 #from builtins import input
 hardware_connected = True
+__version__ = "1.3.0"
 
 import subprocess # for executing system calls
 try:
@@ -252,7 +253,6 @@ class GoPiGo3(object):
         try:
             self.load_robot_constants(config_file_path)
         except Exception as e:
-            # This may happen if the file doesn't exist
             pass
 
     def spi_transfer_array(self, data_out):
@@ -364,21 +364,34 @@ class GoPiGo3(object):
         ticks = self.ENCODER_TICKS_PER_ROTATION
         motor_gear_ratio = self.MOTOR_GEAR_RATIO
 
-        with open(config_file_path, 'r') as json_file:
-            data = json.load(json_file)
+        try:
+            with open(config_file_path, 'r') as json_file:
+                data = json.load(json_file)
 
-            # Check for the presence of ticks and positive value
-            if 'ticks' in data:
-                ticks = data['ticks']
+                # Check for the presence of ticks and positive value
+                if 'ticks' in data:
+                    ticks = data['ticks']
 
-            # Check for the presence of motor_gear_ratio
-            if motor_gear_ratio in data:
-                motor_gear_ratio = data['motor_gear_ratio']
+                # Check for the presence of motor_gear_ratio
+                if motor_gear_ratio in data:
+                    motor_gear_ratio = data['motor_gear_ratio']
 
-            if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0 and ticks > 0 and motor_gear_ratio > 0:
-                self.set_robot_constants(data['wheel-diameter'], data['wheel-base-width'], ticks, motor_gear_ratio )
-            else:
-                raise ValueError('positive values required')
+                if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0 and ticks > 0 and motor_gear_ratio > 0:
+                    self.set_robot_constants(data['wheel-diameter'], data['wheel-base-width'], ticks, motor_gear_ratio )
+                else:
+                    raise ValueError('positive values required')
+        except:
+            # This may happen if the file doesn't exist
+            print("config file not found")
+            import pickle
+            from os import path
+            serial_path = path.split(config_file_path)[0]
+            serial_file = serial_path+"/list_of_serial_numbers.pkl"
+            with open(serial_file, 'rb') as f:
+                serials_with_16_ticks = pickle.load(f)
+                if self.get_id() in serials_with_16_ticks:
+                    self.ENCODER_TICKS_PER_ROTATION = 16
+                    self.save_robot_constants(config_file_path)
 
     def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """

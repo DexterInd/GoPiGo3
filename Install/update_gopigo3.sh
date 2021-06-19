@@ -286,6 +286,10 @@ install_gopigp3_power_service() {
   sudo systemctl start gpg3_power.service
 }
 
+install_list_of_serials_with_16_ticks() {
+    cp $GOPIGO3_DIR/Install/list_of_serial_numbers.pkl $DEXTER_PATH/.list_of_serial_numbers.pkl
+}
+
 ################################################
 ######## Call all functions - main part ########
 ################################################
