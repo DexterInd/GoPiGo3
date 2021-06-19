@@ -28,6 +28,11 @@ curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
 The same command can be used for updating the `GoPiGo3` to the latest version.
 
+If you use any of the Dexter sensors (line follower, distance sensor, THP sensor, IMU), you will also need
+```
+curl -kL dexterindustries.com/update_sensors | bash
+```
+
 # Virtual Environment Installation
 
 ```
