@@ -23,8 +23,8 @@ setup(
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
 
-    author = "Dexter Industries",
-    author_email = "contact@dexterindustries.com",
+    author = "Modular Robotics",
+    author_email = "info@modrobotics.com",
 
     license = 'MIT',
     classifiers = [
