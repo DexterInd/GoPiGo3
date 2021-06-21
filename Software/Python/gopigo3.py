@@ -387,15 +387,19 @@ class GoPiGo3(object):
             from os import path
             serial_path = path.split(config_file_path)[0]
             serial_file = serial_path+"/.list_of_serial_numbers.pkl"
-            with open(serial_file, 'rb') as f:
-                serials_with_16_ticks = pickle.load(f)
-                if self.get_id() in serials_with_16_ticks:
-                    self.ENCODER_TICKS_PER_ROTATION = 16
-                    try:
-                        self.save_robot_constants(config_file_path)
-                    except:
-                        # protect against write errors - just in case
-                        pass
+            try:
+                with open(serial_file, 'rb') as f:
+                    serials_with_16_ticks = pickle.load(f)
+                    if self.get_id() in serials_with_16_ticks:
+                        self.ENCODER_TICKS_PER_ROTATION = 16
+                        try:
+                            self.save_robot_constants(config_file_path)
+                        except:
+                            # protect against write errors - just in case
+                            pass
+            except:
+                # protect against list of serial numbers not being there
+                pass
 
     def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """
