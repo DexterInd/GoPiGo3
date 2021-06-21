@@ -382,16 +382,20 @@ class GoPiGo3(object):
                     raise ValueError('positive values required')
         except:
             # This may happen if the file doesn't exist
-            print("config file not found")
+            # print("config file not found")
             import pickle
             from os import path
             serial_path = path.split(config_file_path)[0]
-            serial_file = serial_path+"/list_of_serial_numbers.pkl"
+            serial_file = serial_path+"/.list_of_serial_numbers.pkl"
             with open(serial_file, 'rb') as f:
                 serials_with_16_ticks = pickle.load(f)
                 if self.get_id() in serials_with_16_ticks:
                     self.ENCODER_TICKS_PER_ROTATION = 16
-                    self.save_robot_constants(config_file_path)
+                    try:
+                        self.save_robot_constants(config_file_path)
+                    except:
+                        # protect against write errors - just in case
+                        pass
 
     def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """
