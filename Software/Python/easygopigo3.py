@@ -13,6 +13,8 @@ import json
 import easysensors
 from I2C_mutex import Mutex
 
+__version__ = "1.3.0"
+
 try:
     from di_sensors import easy_line_follower, easy_distance_sensor, easy_light_color_sensor, easy_inertial_measurement_unit
     di_sensors_available = True

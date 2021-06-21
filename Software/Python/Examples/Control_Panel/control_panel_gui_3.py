@@ -37,6 +37,14 @@ v=gpg.volt()
 
 
 firmware_version=gpg.get_version_firmware()
+try:
+    library_version=easy.__version__
+except:
+    library_version=""
+
+ticks = gpg.ENCODER_TICKS_PER_ROTATION
+serial = gpg.get_id()
+
 ICON_PATH = "/home/pi/Dexter/GoPiGo3/Software/Python/Examples/Control_Panel/"
 
 
@@ -151,12 +159,22 @@ class MainPanel(wx.Panel):
         batterySizer.Add( self.battery_label,0, wx.ALIGN_CENTER|wx.EXPAND )
 
         firmwareSizer = wx.BoxSizer(wx.HORIZONTAL)
-        firmware_button = wx.Button(self,-1,label="Check Firmware Version")
-        self.Bind(wx.EVT_BUTTON, self.firmware_button_OnButtonClick, firmware_button)
-        self.firmware_label = wx.StaticText(self,-1,label=str(firmware_version))
-        firmwareSizer.Add(firmware_button, 0, wx.ALIGN_LEFT)
-        firmwareSizer.AddSpacer(15)
+        self.firmware_label = wx.StaticText(self,-1,label="Firmware Version: "+str(firmware_version))
         firmwareSizer.Add( self.firmware_label, 0, wx.ALIGN_CENTER|wx.EXPAND )
+
+        SerialNoSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.serial_label = wx.StaticText(self,-1,label="Serial Number: "+str(serial))
+        SerialNoSizer.Add( self.serial_label, 0, wx.ALIGN_CENTER|wx.EXPAND )
+
+        tickSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.ticks_label = wx.StaticText(self,-1,label="Ticks per Motor: "+str(ticks))
+        tickSizer.Add( self.ticks_label, 0, wx.ALIGN_CENTER|wx.EXPAND )
+
+        versionSizer = wx.BoxSizer(wx.HORIZONTAL)
+        print(library_version)
+        if library_version != "":
+            self.version_label = wx.StaticText(self,-1,label="Driver Version: "+str(library_version))
+            versionSizer.Add( self.version_label, 0, wx.ALIGN_CENTER|wx.EXPAND )
 
         # Exit
         exit_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -177,7 +195,10 @@ class MainPanel(wx.Panel):
         # Fill check buttons
         vital_signs_sizer.Add(vital_signs_label, 0, wx.ALIGN_LEFT|wx.BOTTOM, 10)
         vital_signs_sizer.Add(batterySizer, 0, wx.ALIGN_LEFT|wx.TOP,9)
-        vital_signs_sizer.Add(firmwareSizer, 0, wx.ALIGN_LEFT|wx.TOP,20)
+        vital_signs_sizer.Add(firmwareSizer, 0, wx.ALIGN_LEFT|wx.TOP,10)
+        vital_signs_sizer.Add(SerialNoSizer, 0, wx.ALIGN_LEFT|wx.TOP,10)
+        vital_signs_sizer.Add(tickSizer, 0, wx.ALIGN_LEFT|wx.TOP,10)
+        vital_signs_sizer.Add(versionSizer, 0, wx.ALIGN_LEFT|wx.TOP,10)
 
         main_sizer.Add(control_sizer, 0, wx.LEFT|wx.TOP, 30, 20)
         main_sizer.Add(vital_signs_sizer, 0, wx.LEFT|wx.TOP, 30, 40)
@@ -258,7 +279,7 @@ class MainPanel(wx.Panel):
 class MainFrame(wx.Frame):
     def __init__(self):
         wx.Log.SetVerbose(False)
-        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(460,600))
+        wx.Frame.__init__(self, None, title='GoPiGo3 Control Panel', size=(440,640))
         panel = MainPanel(self)
         self.Center()
 
