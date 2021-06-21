@@ -28,6 +28,11 @@ curl -kL dexterindustries.com/update_gopigo3 | bash
 ```
 The same command can be used for updating the `GoPiGo3` to the latest version.
 
+If you use any of the Dexter sensors (line follower, distance sensor, THP sensor, IMU), you will also need
+```
+curl -kL dexterindustries.com/update_sensors | bash
+```
+
 # Virtual Environment Installation
 
 ```
@@ -37,11 +42,12 @@ curl -kL dexterindustries.com/update_gopigo3 | bash -s -- --user-local --bypass-
 
 # Installation
 You can install the GoPiGo3 on your own operating system with the following commands in the command line:
+(note that the user `pi` is still required)
 1. Clone this repository onto the Raspberry Pi:
 
         git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
 
-2. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Install/install.sh`
+2. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Install/update_gopigo3.sh`
 3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
 
 ### Note: the Pi user must exist while installing the drivers and examples, but you can remove this user afterwards if you want to secure your robot.
@@ -55,5 +61,6 @@ Please review the [LICENSE.md] file for license information.
 
 # See Also
 
-- [Dexter Industries](http://www.dexterindustries.com/GoPiGo)
-- [Dexter Industries Forum Support](http://forum.dexterindustries.com/c/gopigo)
+- [Modular Robotics](https://modrobotics.com)
+- [GoPiGo.io](https://gopigo.io)
+- [Forum Support](https://forum.dexterindustries.com/c/gopigo)
