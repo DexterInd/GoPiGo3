@@ -302,5 +302,6 @@ install_rfrtools_repo
 clone_gopigo3
 install_python_pkgs_and_dependencies
 install_gopigp3_power_service
+install_list_of_serials_with_16_ticks
 
 exit 0
