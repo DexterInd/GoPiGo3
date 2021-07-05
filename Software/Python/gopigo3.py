@@ -330,6 +330,27 @@ class GoPiGo3(object):
                     ((Value >> 24) & 0xFF), ((Value >> 16) & 0xFF), ((Value >> 8) & 0xFF), (Value & 0xFF)]
         self.spi_transfer_array(outArray)
 
+    def _check_serial_number_for_16_ticks(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+        '''
+        Check known list of serial numbers that were shipped with 16 tick motors
+        '''
+        import pickle
+        from os import path
+        serial_path = path.split(config_file_path)[0]
+        serial_file = serial_path+"/.list_of_serial_numbers.pkl"
+        try:
+            with open(serial_file, 'rb') as f:
+                serials_with_16_ticks = pickle.load(f)
+                if self.get_id() in serials_with_16_ticks:
+                    return True
+                else:
+                    return False
+        except:
+            # list_of_serial_numbers file doesn't exist
+            # assume 6 ticks
+            return False
+
+
     def load_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """
         Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
@@ -357,6 +378,9 @@ class GoPiGo3(object):
                 "motor_gear_ratio": 120
             }
 
+        If the file doesn't exist, one gets written for the user.
+        If the file is empty (which may happens on GoPiGo OS), then the file will be overwritten with appropriate default values.
+        If the file has content, the robot constants are redefined based on that content. Should tick and gear_ratio be missing, default values will be supplied.
         """
 
         # default values for ticks and motor_gear_ratio
@@ -380,25 +404,27 @@ class GoPiGo3(object):
                     self.set_robot_constants(data['wheel-diameter'], data['wheel-base-width'], ticks, motor_gear_ratio )
                 else:
                     raise ValueError('positive values required')
-        except:
-            # This may happen if the file doesn't exist
-            # print("config file not found")
-            import pickle
-            from os import path
-            serial_path = path.split(config_file_path)[0]
-            serial_file = serial_path+"/.list_of_serial_numbers.pkl"
+
+        except json.decoder.JSONDecodeError:
+            # config file exists but is empty
+            if self._check_serial_number_for_16_ticks(config_file_path):
+                self.ENCODER_TICKS_PER_ROTATION = 16
             try:
-                with open(serial_file, 'rb') as f:
-                    serials_with_16_ticks = pickle.load(f)
-                    if self.get_id() in serials_with_16_ticks:
-                        self.ENCODER_TICKS_PER_ROTATION = 16
-                        try:
-                            self.save_robot_constants(config_file_path)
-                        except:
-                            # protect against write errors - just in case
-                            pass
+                self.save_robot_constants(config_file_path)
             except:
-                # protect against list of serial numbers not being there
+                # protect against write errors - just in case
+                pass
+
+        except Exception as e:
+            # This may happen if the file doesn't exist
+            if self._check_serial_number_for_16_ticks(config_file_path):
+                self.ENCODER_TICKS_PER_ROTATION = 16
+            else:
+                self.ENCODER_TICKS_PER_ROTATION = 6
+            try:
+                self.save_robot_constants(config_file_path)
+            except:
+                # protect against write errors - just in case
                 pass
 
     def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
