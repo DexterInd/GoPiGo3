@@ -266,6 +266,11 @@ install_python_pkgs_and_dependencies() {
     cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
   fi
 
+  # install calibration panel on desktop
+  if [[ -d $PIHOME/Desktop ]]; then
+    cp $GOPIGO3_DIR/Software/Python/Examples/Calibration_Panel/gopigo3_calibration.desktop $PIHOME/Desktop/gopigo3_calibration.desktop
+  fi
+
   # install openocd
   echo "Installing OpenOCD for GoPiGo3"
   curl --silent https://raw.githubusercontent.com/DexterInd/openocd/master/openocd_install.sh | bash
@@ -281,6 +286,10 @@ install_gopigp3_power_service() {
   sudo systemctl start gpg3_power.service
 }
 
+install_list_of_serials_with_16_ticks() {
+    cp $GOPIGO3_DIR/Install/list_of_serial_numbers.pkl $DEXTER_PATH/.list_of_serial_numbers.pkl
+}
+
 ################################################
 ######## Call all functions - main part ########
 ################################################
@@ -293,5 +302,6 @@ install_rfrtools_repo
 clone_gopigo3
 install_python_pkgs_and_dependencies
 install_gopigp3_power_service
+install_list_of_serials_with_16_ticks
 
 exit 0

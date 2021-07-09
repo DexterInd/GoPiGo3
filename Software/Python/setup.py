@@ -18,13 +18,13 @@ from setuptools import setup, find_packages
 
 setup(
     name = "gopigo3",
-    version = "1.2.0",
+    version = "1.3.0",
 
     description = "Drivers and Examples for using the GoPiGo3 in Python",
     long_description = description,
 
-    author = "Dexter Industries",
-    author_email = "contact@dexterindustries.com",
+    author = "Modular Robotics",
+    author_email = "info@modrobotics.com",
 
     license = 'MIT',
     classifiers = [

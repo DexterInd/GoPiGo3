@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 from __future__ import division
 # from builtins import input
@@ -12,11 +12,11 @@ import math
 import json
 import easysensors
 from I2C_mutex import Mutex
-from math import pi
 
+__version__ = "1.3.0"
 
 try:
-    from di_sensors import easy_line_follower, easy_distance_sensor, easy_light_color_sensor, inertial_measurement_unit
+    from di_sensors import easy_line_follower, easy_distance_sensor, easy_light_color_sensor, easy_inertial_measurement_unit
     di_sensors_available = True
 except ImportError as err:
     di_sensors_available = False
@@ -102,19 +102,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
         :raises Exception: For any other kind of exceptions.
 
-        The ``config_file_path`` parameter represents the path to a JSON file. The presence of this configuration file is optional and is only required in cases where
-        the GoPiGo3 has a skewed trajectory due to minor differences in these two constants: the **wheel diameter** and the **wheel base width**. In most cases, this won't be the case.
-
-        By-default, the constructor tries to read the ``config_file_path`` file and silently fails if something goes wrong: wrong permissions, non-existent file, improper key values and so on.
-        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_constants` method and for saving the constants to a file call 
-        :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_constants` method.
-
         """
         try:
             if sys.version_info[0] < 3:
-                super(self.__class__, self).__init__()
+                super(self.__class__, self).__init__(config_file_path=config_file_path)
             else:
-                super().__init__()
+                super().__init__(config_file_path=config_file_path)
         except IOError as e:
             print("FATAL ERROR:\nGoPiGo3 is not detected.")
             raise e
@@ -124,24 +117,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         except Exception as e:
             raise e
 
-        # load wheel diameter & wheel base width
-        # should there be a problem doing that then save the current default configuration
-        try:
-            self.load_robot_constants()
-        except Exception:
-            pass
-
-        self.distance_sensor = None
-        self.light_color_sensor = None
-        self.imu = None
-        self.line_follower = None
-        if run_init:
-            self.DEFAULT_SPEED = 300
-            self.NO_LIMIT_SPEED = 1000
-            self.set_speed(self.DEFAULT_SPEED)
-            self.left_eye_color = (0, 255, 255)
-            self.right_eye_color = (0, 255, 255)
+        self.sensor_1 = None
+        self.sensor_2 = None
+        self.DEFAULT_SPEED = 300
+        self.NO_LIMIT_SPEED = 1000
+        self.set_speed(self.DEFAULT_SPEED)
+        self.left_eye_color = (0, 255, 255)
+        self.right_eye_color = (0, 255, 255)
         self.use_mutex = use_mutex
+
 
     def volt(self):
         """

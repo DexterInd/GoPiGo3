@@ -11,6 +11,7 @@ from __future__ import print_function
 from __future__ import division
 #from builtins import input
 hardware_connected = True
+__version__ = "1.3.0"
 
 import subprocess # for executing system calls
 try:
@@ -22,6 +23,7 @@ except:
     
 import math       # import math for math.pi constant
 import time
+import json
 
 FIRMWARE_VERSION_REQUIRED = "1.0.x" # Make sure the top 2 of 3 numbers match
 
@@ -36,7 +38,7 @@ if hardware_connected:
 class Enumeration(object):
     def __init__(self, names):  # or *names, with no .split()
         number = 0
-        for line, name in enumerate(names.split('\n')):
+        for _, name in enumerate(names.split('\n')):
             if name.find(",") >= 0:
                 # strip out the spaces
                 while(name.find(" ") != -1):
@@ -202,13 +204,21 @@ class GoPiGo3(object):
     GROVE_LOW  = 0
     GROVE_HIGH = 1
 
-    def __init__(self, addr = 8, detect = True):
+    def __init__(self, addr = 8, detect = True, config_file_path="/home/pi/Dexter/gpg3_config.json"):
         """
         Do any necessary configuration, and optionally detect the GoPiGo3
 
         * Optionally set the SPI address to something other than 8
         * Optionally disable the detection of the GoPiGo3 hardware. This can be used for debugging
           and testing when the GoPiGo3 would otherwise not pass the detection tests.
+
+        The ``config_file_path`` parameter represents the path to a JSON file. The presence of this configuration file is optional and is only required in cases where
+        the GoPiGo3 has a skewed trajectory due to minor differences in these two constants: the **wheel diameter** and the **wheel base width**. In most cases, this won't be the case.
+
+        By-default, the constructor tries to read the ``config_file_path`` file and silently fails if something goes wrong: wrong permissions, non-existent file, improper key values and so on.
+        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_constants` method and for saving the constants to a file call 
+        :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_constants` method.
+
         """
         
         # Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
@@ -216,13 +226,12 @@ class GoPiGo3(object):
         # subprocess.call('gpio mode 13 ALT0', shell=True)
         # subprocess.call('gpio mode 14 ALT0', shell=True)
 
-
         import pigpio
         p = pigpio.pi()
         p.set_mode(9, pigpio.ALT0)
         p.set_mode(10, pigpio.ALT0)
         p.set_mode(11, pigpio.ALT0)
-        
+
         self.SPI_Address = addr
         if detect == True:
             try:
@@ -237,6 +246,14 @@ class GoPiGo3(object):
                vfw.split('.')[1] != FIRMWARE_VERSION_REQUIRED.split('.')[1]:
                 raise FirmwareVersionError("GoPiGo3 firmware needs to be version %s but is currently version %s" \
                                            % (FIRMWARE_VERSION_REQUIRED, vfw))
+
+        # load wheel diameter & wheel base width
+        # also default ENCODER_TICKS_PER_ROTATION and MOTOR_GEAR_RATIO
+        # should there be a problem doing that then save the current default configuration
+        try:
+            self.load_robot_constants(config_file_path)
+        except Exception as e:
+            pass
 
     def spi_transfer_array(self, data_out):
         """
@@ -312,6 +329,161 @@ class GoPiGo3(object):
         outArray = [self.SPI_Address, MessageType,\
                     ((Value >> 24) & 0xFF), ((Value >> 16) & 0xFF), ((Value >> 8) & 0xFF), (Value & 0xFF)]
         self.spi_transfer_array(outArray)
+
+    def _check_serial_number_for_16_ticks(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+        '''
+        Check known list of serial numbers that were shipped with 16 tick motors
+        '''
+        import pickle
+        from os import path
+        serial_path = path.split(config_file_path)[0]
+        serial_file = serial_path+"/.list_of_serial_numbers.pkl"
+        try:
+            with open(serial_file, 'rb') as f:
+                serials_with_16_ticks = pickle.load(f)
+                if self.get_id() in serials_with_16_ticks:
+                    return True
+                else:
+                    return False
+        except:
+            # list_of_serial_numbers file doesn't exist
+            # assume 6 ticks
+            return False
+
+
+    def load_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+        """
+        Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
+
+        This method gets called by the constructor.
+
+        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :raises FileNotFoundError: When the file is non-existent.
+        :raises KeyError: If one of the keys is not part of the dictionary.
+        :raises ValueError: If the saved values are not positive numbers (floats or ints).
+        :raises TypeError: If the saved values are not numbers.
+        :raises IOError: When the file cannot be accessed.
+        :raises PermissionError: When there are not enough permissions to access the file.
+        :raises json.JSONDecodeError: When the config file fails at parsing. 
+
+        Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
+        and edit their own config file if they don't want to go through saving the values by using the API.
+
+        .. code-block:: json
+        
+            {
+                "wheel-diameter": 66.5,
+                "wheel-base-width": 117,
+                "ticks": 6,
+                "motor_gear_ratio": 120
+            }
+
+        If the file doesn't exist, one gets written for the user.
+        If the file is empty (which may happens on GoPiGo OS), then the file will be overwritten with appropriate default values.
+        If the file has content, the robot constants are redefined based on that content. Should tick and gear_ratio be missing, default values will be supplied.
+        """
+
+        # default values for ticks and motor_gear_ratio
+        # in case they are not present in the file we load up
+        ticks = self.ENCODER_TICKS_PER_ROTATION
+        motor_gear_ratio = self.MOTOR_GEAR_RATIO
+
+        try:
+            with open(config_file_path, 'r') as json_file:
+                data = json.load(json_file)
+
+                # Check for the presence of ticks and positive value
+                if 'ticks' in data:
+                    ticks = data['ticks']
+
+                # Check for the presence of motor_gear_ratio
+                if motor_gear_ratio in data:
+                    motor_gear_ratio = data['motor_gear_ratio']
+
+                if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0 and ticks > 0 and motor_gear_ratio > 0:
+                    self.set_robot_constants(data['wheel-diameter'], data['wheel-base-width'], ticks, motor_gear_ratio )
+                else:
+                    raise ValueError('positive values required')
+
+        except json.decoder.JSONDecodeError:
+            # config file exists but is empty
+            if self._check_serial_number_for_16_ticks(config_file_path):
+                self.ENCODER_TICKS_PER_ROTATION = 16
+            try:
+                self.save_robot_constants(config_file_path)
+            except:
+                # protect against write errors - just in case
+                pass
+
+        except Exception as e:
+            # This may happen if the file doesn't exist
+            if self._check_serial_number_for_16_ticks(config_file_path):
+                self.ENCODER_TICKS_PER_ROTATION = 16
+            else:
+                self.ENCODER_TICKS_PER_ROTATION = 6
+            try:
+                self.save_robot_constants(config_file_path)
+            except:
+                # protect against write errors - just in case
+                pass
+
+    def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+        """
+        Save the current wheel diameter and wheel base width constants (from within this object's context) for the GoPiGo3 to file for future use.
+
+        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :raises IOError: When the file cannot be accessed.
+        :raises PermissionError: When there are not enough permissions to create the file.
+
+        Here's how the JSON config file will end up looking like. The values can differ from case to case.
+
+        .. code-block:: json
+        
+            {
+                "wheel-diameter": 66.5,
+                "wheel-base-width": 117,
+                "ticks": 6,
+                "motor_gear_ratio": 120
+            }
+
+        """
+        with open(config_file_path, 'w') as json_file:
+            data = {
+                "wheel-diameter": self.WHEEL_DIAMETER,
+                "wheel-base-width": self.WHEEL_BASE_WIDTH,
+                "ticks": self.ENCODER_TICKS_PER_ROTATION,
+                "motor_gear_ratio": self.MOTOR_GEAR_RATIO
+            }
+            json.dump(data, json_file)
+
+    def set_robot_constants(self, wheel_diameter, wheel_base_width, ticks, motor_gear_ratio):
+        """
+        Set new wheel diameter and wheel base width values for the GoPiGo3.
+
+        :param float wheel_diameter: Diameter of the GoPiGo3 wheels as measured in millimeters.
+        :param float wheel_base_width: The distance between the 2 centers of the 2 wheels as measured in millimeters.
+
+        This should only be required in rare cases when the GoPiGo3's trajectory is skewed due to minor differences in the wheel-to-body measurements.
+
+        The GoPiGo3 class instantiates itself with default values for both constants:
+
+        1. ``wheel_diameter`` is by-default set to **66.5** *mm*.
+
+        2. ``wheel_base_width`` is by-default set to **117** *mm*.
+
+        3. ``ticks`` is by default set to **6**, but GoPiGos manufactured in 2021 need 16.
+
+        4. ``motor_gear_ratio`` is by default set to **120**.
+
+        """
+        self.WHEEL_DIAMETER = wheel_diameter
+        self.WHEEL_CIRCUMFERENCE = self.WHEEL_DIAMETER * math.pi
+        self.WHEEL_BASE_WIDTH = wheel_base_width
+        self.WHEEL_BASE_CIRCUMFERENCE = self.WHEEL_BASE_WIDTH * math.pi
+        self.MOTOR_GEAR_RATIO = motor_gear_ratio
+        self.ENCODER_TICKS_PER_ROTATION = ticks
+        self.MOTOR_TICKS_PER_DEGREE = ((self.MOTOR_GEAR_RATIO * self.ENCODER_TICKS_PER_ROTATION) / 360.0)
+
 
     def get_manufacturer(self):
         """

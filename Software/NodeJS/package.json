@@ -67,7 +67,7 @@
     "i2c-bus": "^1.2.2",
     "lockfile": "^1.0.3",
     "lodash": "^4.17.4",
-    "mathjs": "^3.14.2",
+    "mathjs": ">=7.5.1",
     "readline-sync": "^1.4.7",
     "sleep": "^5.1.1",
     "spi-device": "^0.2.6",
