@@ -95,8 +95,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         :param boolean use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :param boolean run_init = True: Whether to initialize internal values, like speed. Not desired when running concurrent processes.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
-        :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turquoise**.
-        :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turquoise**.
+        :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
+        :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
         :var int DEFAULT_SPEED = 300: Starting speed value: not too fast, not too slow.
         :raises IOError: When the GoPiGo3 is not detected. It also debugs a message in the terminal.
         :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
@@ -117,14 +117,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         except Exception as e:
             raise e
 
-        self.sensor_1 = None
-        self.sensor_2 = None
-        self.DEFAULT_SPEED = 300
-        self.NO_LIMIT_SPEED = 1000
-        self.set_speed(self.DEFAULT_SPEED)
-        self.left_eye_color = (0, 255, 255)
-        self.right_eye_color = (0, 255, 255)
-        self.use_mutex = use_mutex
+        if run_init:
+            self.sensor_1 = None
+            self.sensor_2 = None
+            self.DEFAULT_SPEED = 300
+            self.NO_LIMIT_SPEED = 1000
+            self.set_speed(self.DEFAULT_SPEED)
+            self.left_eye_color = (0, 255, 255)
+            self.right_eye_color = (0, 255, 255)
+            self.use_mutex = use_mutex
 
 
     def volt(self):
@@ -206,7 +207,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                            self.NO_LIMIT_SPEED)
 
-    def drive_cm(self, dist, dist_to_obstacle=0, blocking=True):
+    def drive_cm(self, dist, blocking=True):
         """
         Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
 
@@ -214,7 +215,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
-        :param float dist_to_obstacle: if the distance sensor has been instantiated using the :py:meth:`~init_distance_sensor()` method then this parameter will check for an obstacle in the robot's path and stop the robot as needed, even if the target distance isn't reached.
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
@@ -225,7 +225,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         # dist is in cm
         # if dist is negative, this becomes a backward move
-        print(dist, dist_to_obstacle)
 
         dist_mm = dist * 10
 
@@ -245,12 +244,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             while self.target_reached(
                     StartPositionLeft + WheelTurnDegrees,
                     StartPositionRight + WheelTurnDegrees) is False:
-                if self.distance_sensor and dist_to_obstacle > 0 and self.distance_sensor.read() < dist_to_obstacle:
-                    self.stop()
-                    break
                 time.sleep(0.1)
 
-    def drive_inches(self, dist, dist_to_obstacle=0, blocking=True):
+    def drive_inches(self, dist, blocking=True):
         """
         Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
 
@@ -258,7 +254,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``inches`` the `GoPiGo3`_ has to move.
-        :param float dist_to_obstacle: if the distance sensor has been instantiated using the init_distance_sensor() method then this parameter will check for an obstacle in the robot's path and stop the robot, even if the target distance isn't reached
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
@@ -267,7 +262,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue moving.
 
         """
-        self.drive_cm(dist * 2.54, dist_to_obstacle * 2.54, blocking)
+        self.drive_cm(dist * 2.54, blocking)
 
     def drive_degrees(self, degrees, blocking=True):
         """
@@ -349,7 +344,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
-
 
     def spin_right(self):
         """
@@ -873,8 +867,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-
-
     def init_light_sensor(self, port="AD1"):
         """
         Initialises a :py:class:`~easysensors.LightSensor` object and then returns it.
@@ -1002,11 +994,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if di_sensors_available is False:
             raise ImportError("di_sensors library not found")
 
-        self.line_follower = easy_line_follower.EasyLineFollower(port, use_mutex=self.use_mutex)
-        if self.line_follower._sensor_id == 0:
+        lf = easy_line_follower.EasyLineFollower(port, use_mutex=self.use_mutex)
+        if lf._sensor_id == 0:
             raise OSError("line follower is not reachable")
 
-        return self.line_follower
+        return lf
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -1050,12 +1042,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             raise ImportError("di_sensors library not available")
 
         try:
-            self.distance_sensor = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
+            d = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
         except Exception as e:
             # print(e)
-            self.distance_sensor = None
+            d = None
 
-        return self.distance_sensor
+        return d
 
     def init_light_color_sensor(self, port = "I2C", led_state=True):
         """
@@ -1086,12 +1078,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             raise ImportError("di_sensors library not available")
 
         try:
-            self.light_color_sensor = easy_light_color_sensor.EasyLightColorSensor(port=port, led_state=led_state, use_mutex=self.use_mutex)
+            lc = easy_light_color_sensor.EasyLightColorSensor(port=port, led_state=led_state, use_mutex=self.use_mutex)
         except Exception as e:
             # print(e)
-            self.light_color_sensor = None
+            lc = None
 
-        return self.light_color_sensor
+        return lc
 
     def init_imu_sensor(self, port = "I2C"):
         """
@@ -1122,10 +1114,10 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             raise ImportError("di_sensors library not available")
 
         try:
-            self.imu = easy_inertial_measurement_unit.EasyIMUSensor(port=port, use_mutex=self.use_mutex)
+            imu = easy_inertial_measurement_unit.EasyIMUSensor(port=port, use_mutex=self.use_mutex)
         except Exception as e:
             # print(e)
-            self.imu = None
+            imu = None
 
         return imu
 
