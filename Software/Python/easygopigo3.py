@@ -87,13 +87,12 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self, config_file_path="/home/pi/Dexter/gpg3_config.json", use_mutex=False, run_init=True):
+    def __init__(self, config_file_path="/home/pi/Dexter/gpg3_config.json", use_mutex=False):
         """
         This constructor sets the variables to the following values:
 
         :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
         :param boolean use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
-        :param boolean run_init = True: Whether to initialize internal values, like speed. Not desired when running concurrent processes.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
         :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
@@ -117,15 +116,14 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         except Exception as e:
             raise e
 
-        if run_init:
-            self.sensor_1 = None
-            self.sensor_2 = None
-            self.DEFAULT_SPEED = 300
-            self.NO_LIMIT_SPEED = 1000
-            self.set_speed(self.DEFAULT_SPEED)
-            self.left_eye_color = (0, 255, 255)
-            self.right_eye_color = (0, 255, 255)
-            self.use_mutex = use_mutex
+        self.sensor_1 = None
+        self.sensor_2 = None
+        self.DEFAULT_SPEED = 300
+        self.NO_LIMIT_SPEED = 1000
+        self.set_speed(self.DEFAULT_SPEED)
+        self.left_eye_color = (0, 255, 255)
+        self.right_eye_color = (0, 255, 255)
+        self.use_mutex = use_mutex
 
 
     def volt(self):
