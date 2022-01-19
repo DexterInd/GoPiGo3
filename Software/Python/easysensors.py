@@ -774,7 +774,7 @@ class UltraSonicSensor(AnalogSensor):
         """
 
         try:
-            debug("Ultrasonic Sensor on port " + port)
+            # debug("Ultrasonic Sensor on port " + port)
             AnalogSensor.__init__(self, port, "US", gpg, use_mutex)
             self.set_descriptor("Ultrasonic sensor")
             self.safe_distance = 500
@@ -865,7 +865,7 @@ class UltraSonicSensor(AnalogSensor):
         while len(readings) < 3 and skip < 5:
             try:
                 value = self.gpg.get_grove_value(self.get_port_ID())
-                print ("raw {}".format(value))
+                # print ("raw {}".format(value))
             except gopigo3.ValueError as e:
                 # print("Value Error")
                 # print(e)
