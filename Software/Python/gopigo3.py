@@ -11,7 +11,7 @@ from __future__ import print_function
 from __future__ import division
 #from builtins import input
 hardware_connected = True
-__version__ = "1.3.0"
+__version__ = "1.3.2"
 
 import subprocess # for executing system calls
 try:
@@ -20,12 +20,14 @@ try:
 except:
     hardware_connected = False
     print ("Can't import spidev or fcntl")
-    
+
 import math       # import math for math.pi constant
 import time
 import json
 
 FIRMWARE_VERSION_REQUIRED = "1.0.x" # Make sure the top 2 of 3 numbers match
+
+import pigpio
 
 if hardware_connected:
     GPG_SPI = spidev.SpiDev()
@@ -85,9 +87,9 @@ class GoPiGo3(object):
     MOTOR_GEAR_RATIO           = 120 # Motor gear ratio # 220 for Nicole's prototype
     ENCODER_TICKS_PER_ROTATION = 6   # Encoder ticks per motor rotation (number of magnet positions) # 16 for early prototypes
     MOTOR_TICKS_PER_DEGREE = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0) # encoder ticks per output shaft rotation degree
-    
+
     GROVE_I2C_LENGTH_LIMIT = 32
-    
+
     SPI_MESSAGE_TYPE = Enumeration("""
         NONE,
 
@@ -154,7 +156,7 @@ class GoPiGo3(object):
         US,
         I2C,
     """)
-    
+
     GROVE_STATE = Enumeration("""
         VALID_DATA,
         NOT_CONFIGURED,
@@ -162,7 +164,7 @@ class GoPiGo3(object):
         NO_DATA,
         I2C_ERROR,
     """)
-    
+
     LED_EYE_LEFT      = 0x02
     LED_EYE_RIGHT     = 0x01
     LED_BLINKER_LEFT  = 0x04
@@ -216,21 +218,21 @@ class GoPiGo3(object):
         the GoPiGo3 has a skewed trajectory due to minor differences in these two constants: the **wheel diameter** and the **wheel base width**. In most cases, this won't be the case.
 
         By-default, the constructor tries to read the ``config_file_path`` file and silently fails if something goes wrong: wrong permissions, non-existent file, improper key values and so on.
-        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_constants` method and for saving the constants to a file call 
+        To set custom values to these 2 constants, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_robot_constants` method and for saving the constants to a file call
         :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_constants` method.
 
         """
-        
+
         # Make sure the SPI lines are configured for mode ALT0 so that the hardware SPI controller can use them
         # subprocess.call('gpio mode 12 ALT0', shell=True)
         # subprocess.call('gpio mode 13 ALT0', shell=True)
         # subprocess.call('gpio mode 14 ALT0', shell=True)
 
-        import pigpio
-        p = pigpio.pi()
-        p.set_mode(9, pigpio.ALT0)
-        p.set_mode(10, pigpio.ALT0)
-        p.set_mode(11, pigpio.ALT0)
+        pi_gpio = pigpio.pi()
+        pi_gpio.set_mode(9, pigpio.ALT0)
+        pi_gpio.set_mode(10, pigpio.ALT0)
+        pi_gpio.set_mode(11, pigpio.ALT0)
+        pi_gpio.stop()
 
         self.SPI_Address = addr
         if detect == True:
@@ -364,13 +366,13 @@ class GoPiGo3(object):
         :raises TypeError: If the saved values are not numbers.
         :raises IOError: When the file cannot be accessed.
         :raises PermissionError: When there are not enough permissions to access the file.
-        :raises json.JSONDecodeError: When the config file fails at parsing. 
+        :raises json.JSONDecodeError: When the config file fails at parsing.
 
         Here's how the JSON config file must look like before reading it. Obviously, the supported format is JSON so that anyone can come in
         and edit their own config file if they don't want to go through saving the values by using the API.
 
         .. code-block:: json
-        
+
             {
                 "wheel-diameter": 66.5,
                 "wheel-base-width": 117,
@@ -416,7 +418,7 @@ class GoPiGo3(object):
                 pass
 
         except Exception as e:
-            # This may happen if the file doesn't exist
+            # This may happen if the file doesn't exist\
             if self._check_serial_number_for_16_ticks(config_file_path):
                 self.ENCODER_TICKS_PER_ROTATION = 16
             else:
@@ -438,7 +440,7 @@ class GoPiGo3(object):
         Here's how the JSON config file will end up looking like. The values can differ from case to case.
 
         .. code-block:: json
-        
+
             {
                 "wheel-diameter": 66.5,
                 "wheel-base-width": 117,
@@ -868,7 +870,7 @@ class GoPiGo3(object):
             except (IOError, I2CError):
                 if time.time() > Timeout:
                     raise IOError("grove_i2c_transfer error: Timeout trying to start transaction")
-        
+
         DelayTime = 0
         if len(outArr):
             DelayTime += 1 + len(outArr)
@@ -877,7 +879,7 @@ class GoPiGo3(object):
         DelayTime *= (0.000115) # each I2C byte takes about 115uS at full speed (about 100kbps)
         # No point trying to read the values before they are ready.
         time.sleep(DelayTime) # delay for as long as it will take to do the I2C transaction.
-        
+
         Timeout = time.time() + 0.005 # timeout after 5ms of failed attempted reads
         while True:
             try:
@@ -887,7 +889,7 @@ class GoPiGo3(object):
             except (ValueError, SensorError):
                 if time.time() > Timeout:
                     raise IOError("grove_i2c_transfer error: Timeout waiting for data")
-    
+
     def grove_i2c_start(self, port, addr, outArr, inBytes = 0):
         """
         Start an I2C transaction
@@ -906,16 +908,16 @@ class GoPiGo3(object):
             port_index = 1
         else:
             raise RuntimeError("Port unsupported. Must get one at a time.")
-        
+
         address = ((int(addr) & 0x7F) << 1)
-        
+
         if inBytes > self.GROVE_I2C_LENGTH_LIMIT:
             raise RuntimeError("Read length error. Up to %d bytes can be read in a single transaction." % self.GROVE_I2C_LENGTH_LIMIT)
-        
+
         outBytes = len(outArr)
         if outBytes > self.GROVE_I2C_LENGTH_LIMIT:
             raise RuntimeError("Write length error. Up to %d bytes can be written in a single transaction." % self.GROVE_I2C_LENGTH_LIMIT)
-        
+
         outArray = [self.SPI_Address, message_type, address, inBytes, outBytes]
         outArray.extend(outArr)
         reply = self.spi_transfer_array(outArray)
@@ -940,7 +942,7 @@ class GoPiGo3(object):
             port_index = 1
         else:
             raise IOError("Port unsupported. Must get one at a time.")
-        
+
         if self.GroveType[port_index] == self.GROVE_TYPE.IR_DI_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
@@ -951,7 +953,7 @@ class GoPiGo3(object):
                     raise SensorError("get_grove_value error: Invalid value")
             else:
                 raise IOError("get_grove_value error: No SPI response")
-        
+
         elif self.GroveType[port_index] == self.GROVE_TYPE.IR_EV3_REMOTE:
             outArray = [self.SPI_Address, message_type, 0, 0, 0, 0, 0, 0, 0, 0]
             reply = self.spi_transfer_array(outArray)
