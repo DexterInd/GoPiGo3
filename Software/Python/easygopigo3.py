@@ -12,7 +12,6 @@ import math
 import json
 import easysensors
 from I2C_mutex import Mutex
-from time import sleep
 
 __version__ = "1.3.1"
 
@@ -194,7 +193,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
-        sleep(0.25)
+        time.sleep(0.1)
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, self.MOTOR_FLOAT)
 
     def forward(self):
