@@ -193,6 +193,8 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        time.sleep(0.1)
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, self.MOTOR_FLOAT)
 
     def forward(self):
         """
