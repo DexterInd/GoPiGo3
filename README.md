@@ -10,11 +10,12 @@ GoPiGo OS is an easy to get started with, all packaged OS for the GoPiGo3. It of
 # DexterOS
 
 DexterOS is now deprecated and replaced by GoPiGo OS. It offers Bloxter, and JupyterLab 1.  You can [download it](https://www.dexterindustries.com/download/dexteros) and install it on your SD card.
-### Note:  DexterOS does not allow you to SSH into the robot and have full access to Linux. If you want full access, please choose Raspbian for Robots.
+### Note:  DexterOS does not allow you to SSH into the robot and have full access to Linux. If you want full access, please choose GoPiGo OS.
 
-# Raspbian for Robots
+# Raspbian for Robots (GoPiGo2 or earlier robots)
 
-You can find all software and installation for the GoPiGo3 on an SD Card by using [our operating system Raspbian for Robots](https://www.dexterindustries.com/raspberry-pi-robot-software/).  You can [download and install Raspbian for Robots for free with instructions found here](https://www.dexterindustries.com/howto/install-raspbian-for-robots-image-on-an-sd-card/).  
+You can find all software and installation for the GoPiGo3 on an SD Card by using [our operating system Raspbian for Robots](https://www.dexterindustries.com/raspberry-pi-robot-software/).  You can [download and install Raspbian for Robots for free with instructions found here](https://www.dexterindustries.com/howto/install-raspbian-for-robots-image-on-an-sd-card/).
+### Note:  Raspbian for Robots has been depreciated for any work going forward on the GoPiGo3 robot.  If you are using the GoPiGo3 robot, please download and use GoPiGo OS.
 
 ![ GoPiGo3 Raspberry Pi Robot ](https://raw.githubusercontent.com/DexterInd/GoPiGo3/master/GoPiGo3_Raspberry_Pi_Robot_With_Eyes.jpg)
 
