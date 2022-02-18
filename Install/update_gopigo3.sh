@@ -304,4 +304,19 @@ install_python_pkgs_and_dependencies
 install_gopigp3_power_service
 install_list_of_serials_with_16_ticks
 
+installresult=$(python3 -c "import gopigo3; g = gopigo3.GoPiGo3()" 2>&1)
+if [[ $installresult == *"ModuleNotFoundError"* ]]; then
+   echo "GOPIGO3 SOFTWARE INSTALLATION FAILURE: "+$installresult
+   echo "Suggest installing over Legacy Pi OS (Buster)."
+elif [[ $installresult == *"IOError"* ]]; then
+   echo "No SPI response. GoPiGo3 not detected: "+$installresult
+   echo "Ensure SPI is enabled in raspi-config."
+elif [[ $installresult == *"FirmwareVersionError"* ]]; then
+   echo "GoPiGo3 detected with a firmware issue: "
+   echo $installresult
+   echo "Suggest reflashing the firmware using the script in ~/Dexter/GoPiGo3/Firmware."
+else
+    echo "GOPIGO3 SOFTWARE INSTALLATION SUCCESSFUL."
+fi
+
 exit 0
