@@ -164,7 +164,7 @@ Then, on the Rasperry Pi, from within a terminal, type the following commands.
    cd ~/Desktop/GoPiGo3/Software/Python/Examples
    python easy_Button.py
 
-.. image:: http://i.imgur.com/6SQr3vY.gif
+.. image:: ../images/button.gif
 
 .. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
 .. _grove button: https://www.dexterindustries.com/shop/grove-button/
