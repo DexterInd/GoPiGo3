@@ -144,7 +144,7 @@ Within a terminal on your Raspberry Pi, type the following 2 commands:
     cd ~/Desktop/GoPiGo3/Software/Python/Examples
     python easy_Light_Sensor.py
 
-.. image:: http://i.imgur.com/AyVhrvi.gif
+.. image:: ../images/light_sensor.gif
 
 .. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/

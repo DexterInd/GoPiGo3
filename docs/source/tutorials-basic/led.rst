@@ -120,7 +120,7 @@ For running the analyzed example program, within a terminal on your Raspberry Pi
     cd ~/Desktop/GoPiGo3/Software/Python/Examples
     python easy_LED.py
 
-.. image:: http://i.imgur.com/OhqtJAO.gif
+.. image:: ../images/led.gif
 
 
 .. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
