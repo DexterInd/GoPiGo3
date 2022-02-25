@@ -4,7 +4,7 @@
 Driving Around
 **************************
 
-Driving the GoPiGo3 around is only a matter of choosing the right methods from the :py:class:`~easygopigo3.EasyGoPiGo3` class.
+Driving the awesome GoPiGo3 around is only a matter of choosing the right methods from the :py:class:`~easygopigo3.EasyGoPiGo3` class.
 In all of our examples, the :py:mod:`~easygopigo3` is required and needs to be imported and a :py:class:`~easygopigo3.EasyGoPiGo3` object
 can be instantiated this way:
 
