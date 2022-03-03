@@ -133,7 +133,7 @@ class Sensor(object):
 
     def reconfig_bus(self):
         """
-        Sets the bus properly. Sometimes this needs to be done even after instantiation when two processes are 
+        Sets the bus properly. Sometimes this needs to be done even after instantiation when two processes are
         trying to connect to the GoPiGo and one re-initialises the ports.
         """
         pinmode = self.get_pin_mode()
@@ -484,7 +484,7 @@ class AnalogSensor(Sensor):
         self.value = power
         self.gpg.set_grove_pwm_duty(self.get_pin(), power)
 
-        
+
     def write_freq(self, freq):
         """
         Sets the frequency of the PWM signal.
@@ -865,9 +865,9 @@ class UltraSonicSensor(AnalogSensor):
         while len(readings) < 3 and skip < 5:
             try:
                 value = self.gpg.get_grove_value(self.get_port_ID())
-                # print ("raw {}".format(value))
+                # print ("read_mm raw {}".format(value))
             except gopigo3.ValueError as e:
-                # print("Value Error")
+                # print(f"read_mm Value Error {e}")
                 # print(e)
                 value = 5010   # assume open road ahead
                 time.sleep(0.05)
@@ -1469,7 +1469,7 @@ class Remote(Sensor):
 
         if key > 0 and key < len(self.keycodes)+1:
             string = self.keycodes[self.read()-1]
- 
+
         return string
 ##########################
 
@@ -1580,8 +1580,8 @@ class Servo(Sensor):
 
     def disable_servo(self):
         """
-        Disable (or "float") the `servo`_. 
-        
+        Disable (or "float") the `servo`_.
+
         The effect of this command is that if you then try to rotate the servo manually, it won't resist you, thus meaning that it's not trying to hold a target position.
         """
         self.gpg.set_servo(self.portID, 0)
@@ -1724,7 +1724,7 @@ class DHTSensor(Sensor):
 
 def LineFollower(port="I2C", gpg=None, use_mutex=False):
     """
-    Returns an instantiated object of :py:class:`di_sensors.easy_line_follower.EasyLineFollower`. 
+    Returns an instantiated object of :py:class:`di_sensors.easy_line_follower.EasyLineFollower`.
 
     This is a replacement function for the line follower class that used to be found here - it has not moved to :py:mod:`di_sensors` library.
 
@@ -1743,7 +1743,7 @@ def LineFollower(port="I2C", gpg=None, use_mutex=False):
         raise OSError("line follower is not reachable")
 
     return lf
-        
+
 ##########################
 
 
