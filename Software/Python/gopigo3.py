@@ -399,7 +399,7 @@ class GoPiGo3(object):
                     ticks = data['ticks']
 
                 # Check for the presence of motor_gear_ratio
-                if motor_gear_ratio in data:
+                if 'motor_gear_ratio' in data:
                     motor_gear_ratio = data['motor_gear_ratio']
 
                 if data['wheel-diameter'] > 0 and data['wheel-base-width'] > 0 and ticks > 0 and motor_gear_ratio > 0:
