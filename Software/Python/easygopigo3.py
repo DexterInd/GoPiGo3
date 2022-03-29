@@ -13,7 +13,7 @@ import json
 import easysensors
 from I2C_mutex import Mutex
 
-__version__ = "1.3.2"
+__version__ = "1.3.2.1"
 
 try:
     from di_sensors import easy_line_follower, easy_distance_sensor, easy_light_color_sensor, easy_inertial_measurement_unit
@@ -195,6 +195,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
         time.sleep(0.1)
         self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, self.MOTOR_FLOAT)
+        time.sleep(0.1)
 
     def forward(self):
         """
