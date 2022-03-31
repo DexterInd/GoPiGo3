@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #
-# https://www.dexterindustries.com/GoPiGo/
+# https://GoPiGo.io/
 # https://github.com/DexterInd/GoPiGo3
 #
-# Copyright (c) 2016 Dexter Industries
+# Copyright (c) 2022 Modular Robotics
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 
