@@ -19,7 +19,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../Software/Python'))
-sys.path.insert(0, os.path.abspath('../../DI_Sensors/Python'))
+#sys.path.insert(0, os.path.abspath('../../DI_Sensors/Python'))
 
 from mock import Mock as MagicMock
 class Mock(MagicMock):
