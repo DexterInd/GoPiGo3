@@ -40,7 +40,7 @@ setup(
     ],
     url = "https://github.com/DexterInd/GoPiGo3",
 
-    keywords = ['robot', 'gopigo', 'gopigo3', 'dexter industries', 'learning', 'education'],
+    keywords = ['robot', 'gopigo', 'gopigo3', 'modular robotics', 'learning', 'education'],
 
     packages=find_packages(),
     py_modules = ['gopigo3','easygopigo3', 'easysensors'],
