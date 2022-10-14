@@ -104,3 +104,5 @@ sftp-config*
 .idea/
 
 .DS_Store
+gpg3env/
+.gitignore
