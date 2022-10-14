@@ -153,7 +153,7 @@ check_dependencies() {
   command -v git >/dev/null 2>&1 || { echo "This script requires \"git\" but it's not installed. Error occurred with RFR_Tools installation." >&2; exit 1; }
   if [[ $usepython2exec = "true" ]]; then
   command -v python2 >/dev/null 2>&1 || { echo "Executable \"python2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 2; }
-  command -v pip2 >/dev/null 2>&1 || { echo "Executable \"pip2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 3; }
+  command -v pip >/dev/null 2>&1 || { echo "Executable \"pip2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 3; }
   fi
   if [[ $usepython3exec = "true" ]]; then
     command -v python3 >/dev/null 2>&1 || { echo "Executable \"python3\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 4; }
@@ -317,5 +317,20 @@ clone_gopigo3
 install_python_pkgs_and_dependencies
 install_gopigp3_power_service
 install_list_of_serials_with_16_ticks
+
+installresult=$(python3 -c "import gopigo3; g = gopigo3.GoPiGo3()" 2>&1)
+if [[ $installresult == *"ModuleNotFoundError"* ]]; then
+   echo "GOPIGO3 SOFTWARE INSTALLATION FAILURE: "+$installresult
+   echo "Suggest installing over Legacy Pi OS (Buster)."
+elif [[ $installresult == *"IOError"* ]]; then
+   echo "No SPI response. GoPiGo3 not detected: "+$installresult
+   echo "Ensure SPI is enabled in raspi-config."
+elif [[ $installresult == *"FirmwareVersionError"* ]]; then
+   echo "GoPiGo3 detected with a firmware issue: "
+   echo $installresult
+   echo "Suggest reflashing the firmware using the script in ~/Dexter/GoPiGo3/Firmware."
+else
+    echo "GOPIGO3 SOFTWARE INSTALLATION SUCCESSFUL."
+fi
 
 exit 0

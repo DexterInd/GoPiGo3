@@ -4,7 +4,7 @@
 Driving Around
 **************************
 
-Driving the GoPiGo3 around is only a matter of choosing the right methods from the :py:class:`~easygopigo3.EasyGoPiGo3` class.
+Driving the awesome GoPiGo3 around is only a matter of choosing the right methods from the :py:class:`~easygopigo3.EasyGoPiGo3` class.
 In all of our examples, the :py:mod:`~easygopigo3` is required and needs to be imported and a :py:class:`~easygopigo3.EasyGoPiGo3` object
 can be instantiated this way:
 
@@ -87,7 +87,7 @@ Finally, stop the robot.
 
 If you want to run this by yourself, `here's the script on github <https://github.com/DexterInd/GoPiGo3/blob/master/Software/Python/Examples/easy_Motors.py>`_.
 
-.. image:: https://i.imgur.com/xWzt6c4.gif
+.. image:: ../images/driving1.gif
 
 =======================
 Describing a Square
@@ -108,7 +108,7 @@ methods are required. A square with the side length of 30cm is drawn. The square
      gpg.drive_cm(length) # drive forward for length cm
      gpg.turn_degrees(90) # rotate 90 degrees to the right
 
-.. image:: https://i.imgur.com/6Q7uHq9.gif
+.. image:: ../images/driving2.gif
 
 =====================
 Making Circular Moves
@@ -131,7 +131,7 @@ The radius of the circle is set at 50 centimeters and the robot will move for ha
    gpg.orbit(-180, 50) # return on the initial path
    gpg.turn_degrees(180) # and put it in the initial position
 
-.. image:: https://i.imgur.com/cfdbsID.gif
+.. image:: ../images/driving3.gif
 
 ====================
 Drawing an *8* Shape
@@ -154,7 +154,7 @@ To do this, we have to use :py:meth:`~easygopigo3.EasyGoPiGo3.orbit` and :py:met
    gpg.orbit(270, radius) # to rotate to the right
    gpg.drive_cm(radius * 2) # move forward
 
-.. image:: https://i.imgur.com/SQrRBd8.gif
+.. image:: ../images/driving4.gif
 
 =================================
 Going Forward at Increasing Speed
@@ -191,7 +191,7 @@ In this example, we make the GoPiGo3 go forward at an ever increasing speed. We 
    # and then stop it
    gpg.stop()
 
-.. image:: https://i.imgur.com/v4KqoZr.gif
+.. image:: ../images/driving5.gif
 
 ==============
 Other Examples

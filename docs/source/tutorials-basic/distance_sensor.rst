@@ -101,7 +101,7 @@ After the sensor is connected, on your Raspberry Pi, open up a terminal and type
     cd ~/Desktop/GoPiGo3/Software/Python/Examples
     python easy_Distance_Sensor.py
 
-.. image:: http://i.imgur.com/2yNHhsm.gif
+.. image:: ../images/dist_sensor.gif
 
 .. note::
 

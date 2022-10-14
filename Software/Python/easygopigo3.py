@@ -13,7 +13,7 @@ import json
 import easysensors
 from I2C_mutex import Mutex
 
-__version__ = "1.3.0"
+__version__ = "1.3.2.1"
 
 try:
     from di_sensors import easy_line_follower, easy_distance_sensor, easy_light_color_sensor, easy_inertial_measurement_unit
@@ -87,16 +87,15 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self, config_file_path="/home/pi/Dexter/gpg3_config.json", use_mutex=False, run_init=True):
+    def __init__(self, config_file_path="/home/pi/Dexter/gpg3_config.json", use_mutex=False):
         """
         This constructor sets the variables to the following values:
 
         :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
         :param boolean use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
-        :param boolean run_init = True: Whether to initialize internal values, like speed. Not desired when running concurrent processes.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
-        :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turquoise**.
-        :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turquoise**.
+        :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.
+        :var tuple(int,int,int) right_eye_color = (0,255,255): Set Dex's right eye color to **turqoise**.
         :var int DEFAULT_SPEED = 300: Starting speed value: not too fast, not too slow.
         :raises IOError: When the GoPiGo3 is not detected. It also debugs a message in the terminal.
         :raises gopigo3.FirmwareVersionError: If the GoPiGo3 firmware needs to be updated. It also debugs a message in the terminal.
@@ -194,6 +193,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         """
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT, 0)
+        time.sleep(0.1)
+        self.set_motor_power(self.MOTOR_LEFT + self.MOTOR_RIGHT, self.MOTOR_FLOAT)
+        time.sleep(0.1)
 
     def forward(self):
         """
@@ -206,7 +208,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT + self.MOTOR_RIGHT,
                            self.NO_LIMIT_SPEED)
 
-    def drive_cm(self, dist, dist_to_obstacle=0, blocking=True):
+    def drive_cm(self, dist, blocking=True):
         """
         Move the `GoPiGo3`_ forward / backward for ``dist`` amount of centimeters.
 
@@ -214,7 +216,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``cm`` the `GoPiGo3`_ has to move.
-        :param float dist_to_obstacle: if the distance sensor has been instantiated using the :py:meth:`~init_distance_sensor()` method then this parameter will check for an obstacle in the robot's path and stop the robot as needed, even if the target distance isn't reached.
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
@@ -225,7 +226,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         # dist is in cm
         # if dist is negative, this becomes a backward move
-        print(dist, dist_to_obstacle)
 
         dist_mm = dist * 10
 
@@ -245,12 +245,9 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             while self.target_reached(
                     StartPositionLeft + WheelTurnDegrees,
                     StartPositionRight + WheelTurnDegrees) is False:
-                if self.distance_sensor and dist_to_obstacle > 0 and self.distance_sensor.read() < dist_to_obstacle:
-                    self.stop()
-                    break
                 time.sleep(0.1)
 
-    def drive_inches(self, dist, dist_to_obstacle=0, blocking=True):
+    def drive_inches(self, dist, blocking=True):
         """
         Move the `GoPiGo3`_ forward / backward for ``dist`` amount of inches.
 
@@ -258,7 +255,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         | For moving the `GoPiGo3`_ robot backward, the ``dist`` parameter has to be *negative*.
 
         :param float dist: The distance in ``inches`` the `GoPiGo3`_ has to move.
-        :param float dist_to_obstacle: if the distance sensor has been instantiated using the init_distance_sensor() method then this parameter will check for an obstacle in the robot's path and stop the robot, even if the target distance isn't reached
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
         ``blocking`` parameter can take the following values:
@@ -267,7 +263,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
              * ``False`` so that the method will exit immediately while the `GoPiGo3`_ robot will continue moving.
 
         """
-        self.drive_cm(dist * 2.54, dist_to_obstacle * 2.54, blocking)
+        self.drive_cm(dist * 2.54, blocking)
 
     def drive_degrees(self, degrees, blocking=True):
         """
@@ -350,7 +346,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED)
         self.set_motor_dps(self.MOTOR_RIGHT, 0)
 
-
     def spin_right(self):
         """
         Rotate the `GoPiGo3` towards the right while staying on the same spot.
@@ -388,7 +383,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         Rotate the `GoPiGo3` towards the left while staying on the same spot.
 
-        This differs from the :py:meth:`~easygopigo3.EasyGoPiGo3.left` method as both wheels will be rotating but in different directions. 
+        This differs from the :py:meth:`~easygopigo3.EasyGoPiGo3.left` method as both wheels will be rotating but in different directions.
         This causes the robot to spin in place, as if doing a pirouette.
 
         For setting the motor speed, use :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed`.
@@ -405,7 +400,7 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         """
         Control each motor in order to get a variety of turning movements.
 
-        Each motor is assigned a percentage of the current speed value. 
+        Each motor is assigned a percentage of the current speed value.
         While there is no limit on the values of ``left_percent`` and ``right_percent`` parameters,
         they are expected to be between **-100** and **100**.
 
@@ -418,24 +413,24 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         .. important::
              Setting both ``left_percent`` and ``right_percent`` parameters to **100** will result in the same behavior as the :py:meth:`~easygopigo3.EasyGoPiGo3.forward` method.
              The other behavior for :py:meth:`~easygopigo3.EasyGoPiGo3.backward` method will be experienced if both parameters are set to **-100**.
-             
+
              Setting both ``left_percent`` and ``right_percent`` to **0** will stop the GoPiGo from moving.
 
         """
-        self.set_motor_dps(self.MOTOR_LEFT, self.NO_LIMIT_SPEED * left_percent / 100)
-        self.set_motor_dps(self.MOTOR_RIGHT, self.NO_LIMIT_SPEED * right_percent / 100)
+        self.set_motor_dps(self.MOTOR_LEFT, self.get_speed() * left_percent / 100)
+        self.set_motor_dps(self.MOTOR_RIGHT, self.get_speed() * right_percent / 100)
 
 
     def orbit(self, degrees, radius_cm=0, blocking=True):
         """
-        Control the GoPiGo so it will orbit around an object.  
-        
+        Control the GoPiGo so it will orbit around an object.
+
         :param int degrees: Degrees to steer. **360** for full rotation. Negative for left turn.
         :param int radius_cm: Radius in `cm` of the circle to drive. Default is **0** (turn in place).
         :param boolean blocking = True: Set it as a blocking or non-blocking method.
 
-        .. important:: 
-           Note that while in non-blocking mode the speed cannot be changed before the end of the orbit as it would negate all orbit calculations. 
+        .. important::
+           Note that while in non-blocking mode the speed cannot be changed before the end of the orbit as it would negate all orbit calculations.
            After a non-blocking call, :py:meth:`~easygopigo3.EasyGoPiGo3.set_speed` has to be called before any other movement.
         """
         speed = self.get_speed()
@@ -443,20 +438,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
         # the total distance to drive in mm
         drive_distance = math.pi * abs(radius) * abs(degrees) / 180 # / 180 is shorter than radius * 2 / 360
-        
+
         # the distance in mm to add to one motor and subtract from the other
         drive_difference = ((self.WHEEL_BASE_CIRCUMFERENCE * degrees) / 360)
-        
-        # the number of degrees each wheel needs to turn on average to get the necessary distance 
+
+        # the number of degrees each wheel needs to turn on average to get the necessary distance
         distance_degrees = ((drive_distance / self.WHEEL_CIRCUMFERENCE) * 360)
-        
+
         # the difference between motor travel in degrees
         difference_degrees = ((drive_difference / self.WHEEL_CIRCUMFERENCE) * 360)
-        
+
         # the distance each wheel needs to turn
         left_target  = (distance_degrees + difference_degrees)
         right_target = (distance_degrees - difference_degrees)
-        
+
         # if it's a left turn
         if degrees < 0:
             MOTOR_FAST = self.MOTOR_RIGHT
@@ -468,40 +463,40 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
             MOTOR_SLOW = self.MOTOR_RIGHT
             fast_target = left_target
             slow_target = right_target
-        
+
         # determine driving direction from the speed
         direction = 1
         speed_with_direction = speed
         if speed < 0:
             direction = -1
             speed_with_direction = -speed
-        
+
         # calculate the motor speed for each motor
         fast_speed = speed_with_direction
         slow_speed = abs((speed_with_direction * slow_target) / fast_target)
-        
+
         # set the motor speeds
         self.set_motor_limits(MOTOR_FAST, dps = fast_speed)
         self.set_motor_limits(MOTOR_SLOW, dps = slow_speed)
-        
+
         # get the starting position of each motor
         StartPositionLeft = self.get_motor_encoder(self.MOTOR_LEFT)
         StartPositionRight = self.get_motor_encoder(self.MOTOR_RIGHT)
-        
+
         # Set each motor target position
         self.set_motor_position(self.MOTOR_LEFT, (StartPositionLeft + (left_target * direction)))
         self.set_motor_position(self.MOTOR_RIGHT, (StartPositionRight + (right_target * direction)))
-        
+
         if blocking:
             while self.target_reached(
                     StartPositionLeft + (left_target * direction),
                     StartPositionRight + (right_target * direction)) is False:
                 time.sleep(0.1)
-        
+
             # reset to original speed once done
             # if non-blocking, then the user is responsible in resetting the speed
             self.set_speed(speed)
-        
+
         return
 
 
@@ -873,8 +868,6 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         self.close_left_eye()
         self.close_right_eye()
 
-
-
     def init_light_sensor(self, port="AD1"):
         """
         Initialises a :py:class:`~easysensors.LightSensor` object and then returns it.
@@ -1002,11 +995,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
         if di_sensors_available is False:
             raise ImportError("di_sensors library not found")
 
-        self.line_follower = easy_line_follower.EasyLineFollower(port, use_mutex=self.use_mutex)
-        if self.line_follower._sensor_id == 0:
+        lf = easy_line_follower.EasyLineFollower(port, use_mutex=self.use_mutex)
+        if lf._sensor_id == 0:
             raise OSError("line follower is not reachable")
 
-        return self.line_follower
+        return lf
 
     def init_servo(self, port = "SERVO1"):
         """
@@ -1042,20 +1035,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
-            
+
              | If the devices share the same address, like two distance sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
 
         """
         if di_sensors_available is False:
             raise ImportError("di_sensors library not available")
-        
+
         try:
-            self.distance_sensor = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
+            d = easy_distance_sensor.EasyDistanceSensor(port=port, use_mutex=self.use_mutex)
         except Exception as e:
             # print(e)
-            self.distance_sensor = None
+            d = None
 
-        return self.distance_sensor
+        return d
 
     def init_light_color_sensor(self, port = "I2C", led_state=True):
         """
@@ -1078,20 +1071,20 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
-            
+
              | If the devices share the same address, like two light/color sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
 
         """
         if di_sensors_available is False:
             raise ImportError("di_sensors library not available")
-        
+
         try:
-            self.light_color_sensor = easy_light_color_sensor.EasyLightColorSensor(port=port, led_state=led_state, use_mutex=self.use_mutex)
+            lc = easy_light_color_sensor.EasyLightColorSensor(port=port, led_state=led_state, use_mutex=self.use_mutex)
         except Exception as e:
             # print(e)
-            self.light_color_sensor = None
+            lc = None
 
-        return self.light_color_sensor
+        return lc
 
     def init_imu_sensor(self, port = "I2C"):
         """
@@ -1113,21 +1106,21 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
                 * The I2C devices have different addresses.
                 * The I2C devices are recognizeable by the `GoPiGo3`_ platform.
-            
+
              | If the devices share the same address, like two IMU sensors for example, you can still use them with the GoPiGo3 provided at least one is connected via the ``"AD1"``, or ``"AD2"``, port.
 
         """
 
         if di_sensors_available is False:
             raise ImportError("di_sensors library not available")
-        
+
         try:
-            self.imu = easy_inertial_measurement_unit.EasyIMUSensor(port=port, use_mutex=self.use_mutex)
+            imu = easy_inertial_measurement_unit.EasyIMUSensor(port=port, use_mutex=self.use_mutex)
         except Exception as e:
             # print(e)
-            self.imu = None
+            imu = None
 
-        return imu        
+        return imu
 
     def init_dht_sensor(self, sensor_type = 0):
         """

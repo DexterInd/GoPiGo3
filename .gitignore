@@ -103,6 +103,8 @@ sftp-config*
 # PyCharm configuration files
 .idea/
 
+gpg3env/*
+
 .DS_Store
 gpg3env/
 .gitignore
