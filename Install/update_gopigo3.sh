@@ -1,9 +1,10 @@
 #! /bin/bash
 
-PIHOME=/home/pi
+
+
 DEXTER=Dexter
-DEXTER_PATH=$PIHOME/$DEXTER
-RASPBIAN=$PIHOME/di_update/Raspbian_For_Robots
+DEXTER_PATH=$HOME/$DEXTER
+RASPBIAN=$HOME/di_update/Raspbian_For_Robots
 GOPIGO3_DIR=$DEXTER_PATH/GoPiGo3
 DEXTERSCRIPT=$DEXTER_PATH/lib/Dexter/script_tools
 VERSION=$(sed 's/\..*//' /etc/debian_version)
@@ -49,9 +50,6 @@ parse_cmdline_arguments() {
   else
     usepython2exec=true
   fi
-
-  # selectedbranch=master
-  # "selectedbranch" variable can be found up top in the code
 
   declare -ga rfrtools_options=("--system-wide")
   # iterate through bash arguments
@@ -152,8 +150,8 @@ parse_cmdline_arguments() {
 check_dependencies() {
   command -v git >/dev/null 2>&1 || { echo "This script requires \"git\" but it's not installed. Error occurred with RFR_Tools installation." >&2; exit 1; }
   if [[ $usepython2exec = "true" ]]; then
-  command -v python2 >/dev/null 2>&1 || { echo "Executable \"python2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 2; }
-  command -v pip >/dev/null 2>&1 || { echo "Executable \"pip2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 3; }
+    command -v python2 >/dev/null 2>&1 || { echo "Executable \"python2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 2; }
+    command -v pip >/dev/null 2>&1 || { echo "Executable \"pip2\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 3; }
   fi
   if [[ $usepython3exec = "true" ]]; then
     command -v python3 >/dev/null 2>&1 || { echo "Executable \"python3\" couldn't be found. Error occurred with RFR_Tools installation." >&2; exit 4; }
@@ -171,11 +169,11 @@ install_rfrtools_repo() {
 
   # if rfrtools is not bypassed then install it
   if [[ $install_rfrtools = "true" ]]; then
-    curl --silent -kL https://raw.githubusercontent.com/DexterInd/RFR_Tools/$selectedbranch/scripts/install_tools.sh > $PIHOME/.tmp_rfrtools.sh
-    echo "Installing RFR_Tools. This might take a while.."
-    bash $PIHOME/.tmp_rfrtools.sh ${rfrtools_options[@]} # > /dev/null
+    curl --silent -kL https://raw.githubusercontent.com/DexterInd/RFR_Tools/$selectedbranch/scripts/install_tools.sh > $HOME/.tmp_rfrtools.sh
+    echo "Installing RFR_Tools."
+    bash $HOME/.tmp_rfrtools.sh ${rfrtools_options[@]} # > /dev/null
     ret_val=$?
-    rm $PIHOME/.tmp_rfrtools.sh
+    rm $HOME/.tmp_rfrtools.sh
     if [[ $ret_val -ne 0 ]]; then
       echo "RFR_Tools failed installing with exit code $ret_val. Exiting."
       exit 7
@@ -223,7 +221,7 @@ install_python_packages() {
 remove_python_packages() {
   # the 1st and only argument
   # takes the name of the package that needs to removed
-  rm -f $PIHOME/.pypaths
+  rm -f $HOME/.pypaths
 
   # get absolute path to python package
   # saves output to file because we want to have the syntax highlight working
@@ -232,18 +230,18 @@ remove_python_packages() {
   if [[ $usepython2exec = "true" ]]; then
   python2 -c "import pkgutil; import os; \
               eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
-              output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+              output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $HOME/.pypaths
   sudo python2 -c "import pkgutil; import os; \
               eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
-              output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+              output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $HOME/.pypaths
   fi
   if [[ $usepython3exec = "true" ]]; then
     python3 -c "import pkgutil; import os; \
                 eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
-                output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+                output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $HOME/.pypaths
     sudo python3 -c "import pkgutil; import os; \
                 eggs_loader = pkgutil.find_loader('$1'); found = eggs_loader is not None; \
-                output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $PIHOME/.pypaths
+                output = os.path.dirname(os.path.realpath(eggs_loader.get_filename('$1'))) if found else ''; print(output);" >> $HOME/.pypaths
   fi
 
   # removing eggs for $1 python package
@@ -255,7 +253,7 @@ remove_python_packages() {
       echo "Removing ${path} egg"
       sudo rm -f "${path}"
     fi
-  done < $PIHOME/.pypaths
+  done < $HOME/.pypaths
 }
 
 # called way down bellow
@@ -276,13 +274,13 @@ install_python_pkgs_and_dependencies() {
   popd > /dev/null
 
   # install control panel on desktop
-  if [[ -d $PIHOME/Desktop ]]; then
-    cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $PIHOME/Desktop/gopigo3_control_panel.desktop
+  if [[ -d $HOME/Desktop ]]; then
+    cp $GOPIGO3_DIR/Software/Python/Examples/Control_Panel/gopigo3_control_panel.desktop $HOME/Desktop/gopigo3_control_panel.desktop
   fi
 
   # install calibration panel on desktop
-  if [[ -d $PIHOME/Desktop ]]; then
-    cp $GOPIGO3_DIR/Software/Python/Examples/Calibration_Panel/gopigo3_calibration.desktop $PIHOME/Desktop/gopigo3_calibration.desktop
+  if [[ -d $HOME/Desktop ]]; then
+    cp $GOPIGO3_DIR/Software/Python/Examples/Calibration_Panel/gopigo3_calibration.desktop $HOME/Desktop/gopigo3_calibration.desktop
   fi
 
   # install openocd

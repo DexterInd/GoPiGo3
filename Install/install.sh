@@ -98,7 +98,7 @@ install_wifi_antenna() {
 SERVICEFILE=$GOPIGO3_DIR/Install/gpg3_power.service # This should be changed to the location of the sh file first.
 SCRIPTFILE=$GOPIGO3_DIR/Install/gpg3_power.sh
 SERVICECOMMAND=" ExecStart=/usr/bin/env bash "
-# Remove line 8 from the service file, the default location of the Service File
+# Remove line 6 from the service file, the default location of the Service File
 sudo sed -i '6d' $SERVICEFILE
 # Add new path and file name of gpg3_power.sh to the service file
 sudo sed -i "6i $SERVICECOMMAND $SCRIPTFILE" $SERVICEFILE

@@ -3,7 +3,7 @@
 # 3 Throw a yellow-orangey LED or turn it off
 
 
-# If detected_robot exists and it contains GoPiGo3, or 
+# If detected_robot exists and it contains GoPiGo3, or
 # if it doesn't exist at all on standalone Raspbian
 if [ -f "/home/pi/Dexter/detected_robot.txt" ] && grep -q GoPiGo3 /home/pi/Dexter/detected_robot.txt  || [  ! -f "/home/pi/Dexter/detected_robot.txt" ]
 then
