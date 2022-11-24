@@ -23,13 +23,13 @@ Forward, R/L, Backward
 The most basic commands don't offer control over how much distance the GoPiGo3 travels. They only get called once and then
 it's the responsability of the user to stop the GoPiGo3 from moving, regularly by using the :py:meth:`~easygopigo3.EasyGoPiGo3.stop` command.
 
-We first need to import the :py:class:`easygopigo3` and the :py:mod:`python:time` modules and instantiate a EasyGoPiGo3 object.
+We first need to import the :py:class:`~easygopigo3.EasyGoPiGo3` class and the :py:mod:`python:time` module and instantiate a EasyGoPiGo3 object.
 
 .. code-block:: python
 
     # import the time library for the sleep function
-    import time
     from easygopigo3 import EasyGoPiGo3
+    import time
 
     # create an instance of the GoPiGo3 class.
     # gpg will be the GoPiGo3 object.
