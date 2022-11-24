@@ -6,6 +6,6 @@ dependencies:
   - mock
   - six
   - sphinx==4.2.0
-  - nbsphinx==0.8.1
+  - nbsphinx
   - pip:
     - sphinx_rtd_theme==1.0.0
