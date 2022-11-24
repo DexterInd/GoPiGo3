@@ -71,9 +71,6 @@ These ports have the following functionalities:
 
       # and so on
 
-.. seealso::
-
-   For more technical details on the `GoPiGo3`_ robot, please check our `technical specs`_ page.
 
 =====================================
 Library Structure
@@ -249,6 +246,7 @@ Base Sensor
 .. _connecting to robot: https://gopigo.io/pairing-gopigo-os/
 .. _Tutorials - Basic: tutorials-basic/index.html
 .. _shop: https://gopigo.io/shop/
+.. _repository: https://github.com/DexterInd/GoPiGo3
 .. _distance sensor: https://gopigo.io/distance-sensor/
 .. _light & color sensor: https://gopigo.io/light-and-color-sensor/
 .. _grove loudness sensor: https://gopigo.io/grove-loudness-sensor/
@@ -267,3 +265,7 @@ Base Sensor
 .. _temperature humidity pressure sensor: https://gopigo.io/thp-sensor/
 .. _Raspberry Pi camera: https://gopigo.io/raspberry-pi-camera/
 .. _DI-Sensors: http://di-sensors.readthedocs.io
+.. _Grove Light Sensor: https://wiki.seeedstudio.com/Grove-Light_Sensor/
+.. _Grove sound sensor: https://wiki.seeedstudio.com/Grove-Sound_Sensor/
+.. _grove ultrasonic sensor: https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/
+.. _grove dht sensor: https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/

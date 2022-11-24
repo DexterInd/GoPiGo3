@@ -59,3 +59,7 @@ AnalogSensor
 .. _infrared receiver: https://gopigo.io/shop/grove-infrared-sensor/
 .. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
 .. _forum: http://forum.dexterindustries.com/categories
+.. _Grove Light Sensor: https://wiki.seeedstudio.com/Grove-Light_Sensor/
+.. _Grove sound sensor: https://wiki.seeedstudio.com/Grove-Sound_Sensor/
+.. _grove ultrasonic sensor: https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/
+.. _grove dht sensor: https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/

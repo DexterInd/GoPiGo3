@@ -130,3 +130,7 @@ LineFollower
 .. _temperature humidity pressure sensor: https://gopigo.io/thp-sensor/
 .. _Raspberry Pi camera: https://gopigo.io/raspberry-pi-camera/
 .. _DI-Sensors: http://di-sensors.readthedocs.io
+.. _Grove Light Sensor: https://wiki.seeedstudio.com/Grove-Light_Sensor/
+.. _Grove sound sensor: https://wiki.seeedstudio.com/Grove-Sound_Sensor/
+.. _grove ultrasonic sensor: https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/
+.. _grove dht sensor: https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/
