@@ -44,5 +44,5 @@ setup(
 
     packages=find_packages(),
     py_modules = ['gopigo3','easygopigo3', 'easysensors'],
-    install_requires = ['spidev']
+    install_requires = ['spidev', 'pigpio']
 )

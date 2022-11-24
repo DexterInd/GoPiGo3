@@ -27,7 +27,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex']
+MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex', 'pigpio']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # When building the documentation on Windows with graphviz in mind, use
