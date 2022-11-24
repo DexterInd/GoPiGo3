@@ -48,7 +48,8 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.graphviz',
-    'sphinx.ext.autosummary']
+    'sphinx.ext.autosummary',
+    'sphinx_rtd_theme']
 
 def _check_deps():
     names = {"six": 'six',
