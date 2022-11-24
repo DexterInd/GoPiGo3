@@ -9,7 +9,7 @@ Who are we and what we do.
 **************************
 
 .. image:: images/modular_robotics_logo.png
-   :scale: 40
+   :scale: 10
 
 `Modular Robotics`_ started as a spin-off from Carnegie Mellon University, where founder Eric Schweikardt invented Cubelets_ while working on a PhD. After years of research and development, Cubelets robot blocks were released to the public in 2010. Funding came from National Science Foundation grants and venture capital from the Foundry Group. This began our work of trying to make the world a better place with thousands and thousands of tiny robots.
 In 2019, we added to our product line when we acquired Dexter Industries, the original creators of the GoPiGo.
