@@ -8,10 +8,11 @@ About GoPiGo3
 Who are we and what we do.
 **************************
 
-.. image:: images/dexter-logo.jpg
-   :scale: 100
+.. image:: images/modular_robotics_logo.png
+   :scale: 40
 
-`Dexter Industries`_ is an American educational robotics company that develops robot kits that make programming accessible for everyone.
+`Modular Robotics`_ started as a spin-off from Carnegie Mellon University, where founder Eric Schweikardt invented Cubelets_ while working on a PhD. After years of research and development, Cubelets robot blocks were released to the public in 2010. Funding came from National Science Foundation grants and venture capital from the Foundry Group. This began our work of trying to make the world a better place with thousands and thousands of tiny robots.
+In 2019, we added to our product line when we acquired Dexter Industries, the original creators of the GoPiGo.
 
 ********************************
 What's this documentation about.
@@ -27,5 +28,6 @@ Within this, you will find instructions on:
 
 .. image:: images/gopigo3.jpg
 
-.. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
-.. _dexter industries: https://www.dexterindustries.com
+.. _gopigo3: https://gopigo.io/
+.. _Modular Robotics: https://www.modrobotics.com
+.. _Cubelets: https://www.modrobotics.com

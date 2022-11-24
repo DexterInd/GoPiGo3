@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 ########################################
-Dexter Industries GoPiGo3 Documentation!
+Modular Robotics GoPiGo3 Documentation!
 ########################################
 
 .. image:: images/gpg3_and_logo.jpg

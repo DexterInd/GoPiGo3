@@ -27,7 +27,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex', 'pigpio']
+MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex', 'pigpio', 'di_sensors']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # When building the documentation on Windows with graphviz in mind, use
@@ -121,7 +121,7 @@ copyright = u'2022, Modular Robotics'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "EN"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

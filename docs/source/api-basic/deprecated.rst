@@ -30,20 +30,25 @@ The only exception is the :py:func:`easygopigo3.DistanceSensor` which class no l
 This surrogate function has the same arguments as the other classes and the only port available to use is the ``"I2C"``.
 If you wish to initialize an object for the `Distance Sensor`_, a better way is just to use the :py:class:`~di_sensors.distance_sensor.DistanceSensor` class of `DI-Sensors`_ library on which this library is based upon.
 
+.. _gopigo3: https://gopigo.io/
+.. _assembling instructions: https://gopigo.io/getting-started/
+.. _connecting to robot: https://gopigo.io/pairing-gopigo-os/
+.. _Tutorials - Basic: tutorials-basic/index.html
+.. _shop: https://gopigo.io/shop/
+.. _distance sensor: https://gopigo.io/distance-sensor/
+.. _light & color sensor: https://gopigo.io/light-and-color-sensor/
+.. _grove loudness sensor: https://gopigo.io/grove-loudness-sensor/
+.. _grove buzzer: https://gopigo.io/grove-buzzer/
+.. _grove led: https://gopigo.io/grove-led-red/
+.. _grove button: https://gopigo.io/grove-button/
+.. _grove motion sensor: https://gopigo.io/grove-pir-motion-sensor/
+.. _servo: https://gopigo.io/servo-package/
+.. _line follower sensor: https://gopigo.io/line-follower-for-robots/
+.. _infrared receiver: https://gopigo.io/grove-infrared-receiver/
+.. _infrared remote: https://gopigo.io/remote-control/
+.. _raspbian for robots: https://sourceforge.net/projects/dexterindustriesraspbianflavor/
+.. _forum: http://forum.dexterindustries.com/categories
 .. _DI-Sensors: http://di-sensors.readthedocs.io
-.. _distance sensor: https://www.dexterindustries.com/shop/distance-sensor/
-.. _gopigo3: https://www.dexterindustries.com/shop/gopigo-advanced-starter-kit/
-.. _infrared receiver: https://www.dexterindustries.com/shop/grove-infrared-sensor/
-.. _grove light sensor: https://www.dexterindustries.com/shop/grove-light-sensor/
-.. _grove sound sensor: https://www.dexterindustries.com/shop/grove-sound-sensor/
-.. _grove loudness sensor: http://wiki.seeed.cc/Grove-Loudness_Sensor/
-.. _grove ultrasonic sensor: https://www.dexterindustries.com/shop/ultrasonic-sensor/
-.. _grove buzzer: https://www.dexterindustries.com/shop/grove-buzzer/
-.. _grove led: https://www.dexterindustries.com/shop/grove-red-led/
-.. _grove button: https://www.dexterindustries.com/shop/grove-button/
-.. _grove motion sensor: https://www.dexterindustries.com/shop/grove-pir-motion-sensor/
-.. _grove dht sensor: https://www.dexterindustries.com/shop/temp-humidity/
-.. _servo: https://www.dexterindustries.com/shop/servo-package/
-.. _line follower sensor (black board): https://www.dexterindustries.com/shop/line-follower-sensor/
-.. _line follower sensor (red board): https://www.dexterindustries.com/shop/line-follower-for-gopigo/
-.. _infrared remote: https://www.dexterindustries.com/shop/infrared-remote/
+.. _imu sensor: https://gopigo.io/imu-sensor/
+.. _temperature humidity pressure sensor: https://gopigo.io/thp-sensor/
+.. _Raspberry Pi camera: https://gopigo.io/raspberry-pi-camera/
