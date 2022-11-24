@@ -511,7 +511,7 @@ class AnalogSensor(Sensor):
 
 class LightSensor(AnalogSensor):
     """
-    Class for the `Grove Light Sensor`_.
+    Class for the old `Grove Light Sensor`_.
 
     This class derives from :py:class:`~easysensors.AnalogSensor` class, so all of its attributes and methods are inherited.
     For creating a :py:class:`~easysensors.LightSensor` object we need to call :py:meth:`~easygopigo3.EasyGoPiGo3.init_light_sensor` method like in the following examples.
@@ -1728,7 +1728,7 @@ def LineFollower(port="I2C", gpg=None, use_mutex=False):
 
     This is a replacement function for the line follower class that used to be found here - it has not moved to :py:mod:`di_sensors` library.
 
-    :param str port = "I2C": The port to which we have connected the line follower sensor. Can also be ``"AD1"``/``"AD2"`` for the `Line Follower`_ sensor.
+    :param str port = "I2C": The port to which we have connected the line follower sensor. Can also be ``"AD1"``/``"AD2"`` for the black `Line Follower sensor`_.
     :param easygopigo3.EasyGoPiGo3 gpg = None: This is no longer required. Just skip this parameter.
     :param bool use_mutex = False: When using multiple threads/processes that access the same resource/device, mutexes should be enabled.
     :raises ImportError: If the ``di_sensors`` library couldn't be found.
