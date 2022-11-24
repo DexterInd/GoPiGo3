@@ -10,7 +10,7 @@ Please make sure you have followed all the instructions found in :ref:`Getting S
 In all these tutorials, you will need:
 
   1. A `GoPiGo3`_ robot.
-  2. A sensor/actuator if requested in the tutorial : i.e.: a `Grove Buzzer`_, a `Line Follower`_, etc.
+  2. A sensor/actuator if requested in the tutorial : i.e.: a `Grove Buzzer`_, a `Line Follower sensor`_, etc.
 
 .. toctree::
    :maxdepth: 1
