@@ -12,21 +12,41 @@ To buy a `GoPiGo3`_ robot, please head over to our online `shop`_ and search for
 
 .. image:: images/gopigo3.jpg
 
-***********************
-Assembling GoPiGo3
-***********************
+*********************************
+Getting Familiar with the GoPiGo3
+*********************************
 
-For assembling your `GoPiGo3`_ robot, read the instructions from the following page: `assembling instructions`_.
+The `GoPiGo3`_ offers many connectors and output options, mainly:
+
+* two analog digital ports, known as AD1, and AD2.
+* two I2C ports, which are interchangeable.
+* two servo connectors.
+* one serial port.
+* two "eye" leds for the user to program.
+* one antenna led to give connection feedback.
+* one power led to give power level and boot status feedback.
+* one power button to power it on and off.
+* one power port to connect the 12V battery pack.
+* two motor connectors.
+
+.. image:: images/GoPiGo3-Top-768x565.jpg
+.. image:: images/GoPiGo3-Bottom_annotated-768x565.jpg
 
 ************************
-Connecting to GoPiGo3
+Assembling Your GoPiGo3
 ************************
+
+To assemble your `GoPiGo3`_ robot, read the instructions from the following page: `assembling instructions`_.
+
+***************************
+Connecting to your GoPiGo3
+***************************
 
 To connect to your `GoPiGo3`_ robot with a computer or laptop, read the instructions on the following page: `connecting to robot`_.
 
-***********************
-Program your GoPiGo3
-***********************
+**************************
+Programming your GoPiGo3
+**************************
 
 To program your `GoPiGo3`_ to do what you want, you can follow the rest of instructions found in the `Tutorials - Basic`_ section.
 
@@ -47,9 +67,9 @@ You can install it or update it with the following command in the terminal:
 
    curl -kL dexterindustries.com/update_sensors | bash
 
-********************
-Connect More Sensors
-********************
+***********************
+Connecting More Sensors
+***********************
 
 The `GoPiGo3`_ can also be paired with our in-house sensors.
 There are a number of digital and analog sensors that can be connected to the GoPiGo3.
