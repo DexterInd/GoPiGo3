@@ -140,7 +140,7 @@ int GoPiGo3::detect(bool critical){
   }
   if(strstr(str, FIRMWARE_VERSION_REQUIRED) != str){
     if(critical){
-      sprintf(ErrorStr, "detect error: GoPiGo3 firmware needs to be version %sx but is currently version %s", FIRMWARE_VERSION_REQUIRED, str);
+      sprintf(ErrorStr, "error: GoPiGo3 firmware needs version %sx is currently version %s", FIRMWARE_VERSION_REQUIRED, str);
       fatal_error(ErrorStr);
     }else{
       return ERROR_FIRMWARE_MISMATCH;
@@ -164,6 +164,7 @@ int GoPiGo3::get_version_hardware(char *str){
     return error;
   }
   sprintf(str, "%d.x.x", (value / 1000000));
+  return ERROR_NONE;
 }
 
 int GoPiGo3::get_version_firmware(char *str){
