@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>gopigo3_cpp</name>
-  <version>0.0.0</version>
+  <version>0.0.1</version>
   <description>C++ driver for GoPiGo3</description>
 
-  <maintainer email="Rauch.Christian@gmx.de">Christian Rauch</maintainer>
+  <maintainer email="support@modrobotics.com">Modular Robotics</maintainer>
 
   <license>MIT</license>
 
-  <url type="website">https://www.dexterindustries.com/gopigo3/</url>
+  <url type="website">https://GoPiGo.io</url>
   <url type="website">https://github.com/DexterInd/GoPiGo3</url>
 
 

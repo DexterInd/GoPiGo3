@@ -34,6 +34,10 @@ target_link_libraries(motors gopigo3)
 add_executable(sensors Examples/sensors.cpp)
 target_link_libraries(sensors gopigo3)
 
+# drive
+add_executable(drive Examples/drive.cpp)
+target_link_libraries(drive gopigo3)
+
 ### Installation
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/

@@ -31,6 +31,13 @@
 #include <sys/time.h>         // for clock_gettime
 #include <unistd.h>
 #include <stdexcept>
+#include <cmath>             // for pi
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
 
 // Error values
 #define ERROR_NONE                  0
@@ -239,6 +246,15 @@ class GoPiGo3{
   // Set up the GoPiGo3
     GoPiGo3();
 
+    // Instance Variables
+    float WHEEL_BASE_WIDTH         = 117;     // default distance (mm) from left wheel to right wheel.
+    float WHEEL_DIAMETER           = 66.5;    // defautl wheel diameter (mm)
+    float WHEEL_BASE_CIRCUMFERENCE = WHEEL_BASE_WIDTH * M_PI;  // pi from cmath
+    float WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * M_PI;  // pi from cmath
+    int   MOTOR_GEAR_RATIO         = 120;
+    int   ENCODER_TICKS_PER_ROTATION = 6;  // default GoPiGo3 has 6 ticks, 16 ticks if in .list_of_serial_numbers.pkl file
+    int   MOTOR_TICKS_PER_DEGREE     = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0);  // ticks per degree of wheel shaft rotation
+
   // Confirm that the BrickPi3 is connected and up-to-date
     int     detect(bool critical = true);
 
@@ -252,6 +268,16 @@ class GoPiGo3{
     int     get_version_firmware(char *str);
   // Get the serial number ID that is unique to each BrickPi3
     int     get_id(char *str);
+
+
+  // Check if serial number in file of 16 tick GoPiGo3
+    bool    check_serial_number_for_16_ticks(std::string serial_file_path="/home/pi/Dexter/.list_of_serial_numbers.pkl");
+  // Load wheel diameter, wheel base, ticks per revolution, motor gear ratio from file if exists
+    int     load_robot_constants(std::string config_file_path="/home/pi/Dexter/gpg3_config.json");
+  // Save wheel diameter, wheel base, ticks per revolution, motor gear ratio to JSON file
+    int     save_robot_constants(std::string config_file_path="/home/pi/Dexter/gpg3_config.json");
+  // Set new robot constant values and dependent constants
+    int     set_robot_constants(float wheel_diameter, float wheel_base_width, int ticks, int motor_gear_ratio);
 
   // Control the LED
     int     set_led(uint8_t led, uint8_t red, uint8_t green = 0, uint8_t blue = 0);
@@ -284,7 +310,8 @@ class GoPiGo3{
     int     get_motor_encoder(uint8_t port, int32_t &value);
     // Pass the port. Returns the encoder value.
     int32_t get_motor_encoder(uint8_t port);
-
+    // Set ecoder value to 0
+    int     reset_motor_encoder(uint8_t port);
 
   // Configure grove pin(s)/port(s)
     // Set grove port type
