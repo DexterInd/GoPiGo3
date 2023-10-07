@@ -105,7 +105,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GoPiGo3'
-copyright = u'2022, Modular Robotics'
+copyright = u'2020-2023, Modular Robotics'
 
 
 # The version info for the project you're documenting, acts as replacement for
