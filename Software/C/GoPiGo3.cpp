@@ -443,6 +443,7 @@ int GoPiGo3::set_motor_position(uint8_t port, int32_t position){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_POSITION;
   spi_array_out[2] = port;
+  position = (int) (position * MOTOR_TICKS_PER_DEGREE);
   spi_array_out[3] = ((position >> 24) & 0xFF);
   spi_array_out[4] = ((position >> 16) & 0xFF);
   spi_array_out[5] = ((position >> 8) & 0xFF);
@@ -454,6 +455,7 @@ int GoPiGo3::set_motor_dps(uint8_t port, int16_t dps){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_DPS;
   spi_array_out[2] = port;
+  dps = (int)(dps * MOTOR_TICKS_PER_DEGREE);
   spi_array_out[3] = ((dps >> 8) & 0xFF);
   spi_array_out[4] = (dps & 0xFF);
   return spi_transfer_array(5, spi_array_out, spi_array_in);
@@ -464,6 +466,7 @@ int GoPiGo3::set_motor_limits(uint8_t port, uint8_t power, uint16_t dps){
   spi_array_out[1] = GPGSPI_MESSAGE_SET_MOTOR_LIMITS;
   spi_array_out[2] = port;
   spi_array_out[3] = power;
+  dps = (int)(dps * MOTOR_TICKS_PER_DEGREE);
   spi_array_out[4] = ((dps >> 8) & 0xFF);
   spi_array_out[5] = (dps & 0xFF);
   return spi_transfer_array(6, spi_array_out, spi_array_in);
@@ -495,8 +498,9 @@ int GoPiGo3::get_motor_status(uint8_t port, uint8_t &state, int8_t &power, int32
   state    = spi_array_in[4];
   power    = spi_array_in[5];
   position = ((spi_array_in[6] << 24) | (spi_array_in[7] << 16) | (spi_array_in[8] << 8) | spi_array_in[9]);
+  position = (int)(position / MOTOR_TICKS_PER_DEGREE);
   dps      = ((spi_array_in[10] << 8) | spi_array_in[11]);
-
+  dps      = (int)(dps / MOTOR_TICKS_PER_DEGREE);
   return ERROR_NONE;
 }
 
@@ -504,6 +508,7 @@ int GoPiGo3::offset_motor_encoder(uint8_t port, int32_t position){
   spi_array_out[0] = Address;
   spi_array_out[1] = GPGSPI_MESSAGE_OFFSET_MOTOR_ENCODER;
   spi_array_out[2] = port;
+  position = (int)(position * MOTOR_TICKS_PER_DEGREE);
   spi_array_out[3] = ((position >> 24) & 0xFF);
   spi_array_out[4] = ((position >> 16) & 0xFF);
   spi_array_out[5] = ((position >> 8) & 0xFF);
@@ -513,7 +518,7 @@ int GoPiGo3::offset_motor_encoder(uint8_t port, int32_t position){
 
 int32_t GoPiGo3::get_motor_encoder(uint8_t port){
   int32_t value;
-  get_motor_encoder(port, value);
+  get_motor_encoder(port, value);  // value returned is corrected for MOTOR_TICKS_PER_DEGREE
   return value;
 }
 
@@ -542,7 +547,7 @@ int GoPiGo3::get_motor_encoder(uint8_t port, int32_t &value){
   }
   uint32_t Value;
   int res = spi_read_32(msg_type, Value);
-  value = Value;
+  value = (int)(Value / MOTOR_TICKS_PER_DEGREE);
   return res;
 }
 
