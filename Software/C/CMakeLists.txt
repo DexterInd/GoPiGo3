@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0)
 project(gopigo3_cpp)
 
 ### Build
@@ -37,6 +37,14 @@ target_link_libraries(sensors gopigo3)
 # drive
 add_executable(drive Examples/drive.cpp)
 target_link_libraries(drive gopigo3)
+
+# servo example
+add_executable(servos Examples/servos.cpp)
+target_link_libraries(servos gopigo3)
+
+# vbatt example
+add_executable(vbatt Examples/vbatt.cpp)
+target_link_libraries(vbatt gopigo3)
 
 ### Installation
 
