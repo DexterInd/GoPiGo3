@@ -27,7 +27,9 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex', 'pigpio', 'di_sensors']
+# Do not mock spidev: letting the import fail keeps gopigo3 in
+# hardware-disconnected mode during docs builds.
+MOCK_MODULES = ['fcntl', 'I2C_mutex', 'pigpio', 'di_sensors']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # When building the documentation on Windows with graphviz in mind, use
@@ -52,8 +54,7 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx_rtd_theme']
 
 def _check_deps():
-    names = {"six": 'six',
-             "shutil": 'shutil',
+    names = {"shutil": 'shutil',
              "gopigo3": 'gopigo3',
              "easysensors": 'easysensors',
              "easygopigo3": 'easygopigo3'}
@@ -72,7 +73,6 @@ _check_deps()
 
 # Import only after checking for dependencies.
 import easygopigo3, gopigo3, easysensors
-import six
 
 # if six.PY2:
 #     from distutils.spawn import find_executable
@@ -122,7 +122,7 @@ copyright = u'2020-2023, Modular Robotics'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = "EN"
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

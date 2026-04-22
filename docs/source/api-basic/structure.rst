@@ -88,7 +88,7 @@ Out of these 3 modules, we're only interested in :py:mod:`easygopigo3` and :py:m
    The following graphic isn't just a photo (PNG, JPEG, etc), but it's an interactive graphic on which if you click on a class, you'll land
    on the documentation of a given class.
 
-.. inheritance-diagram:: easysensors easygopigo3
+.. inheritance-diagram:: gopigo3.easysensors gopigo3.easygopigo3
    :parts: 2
 
 For intializing :py:class:`~easysensors.Sensor`-derived objects, there are 2 ways to do it:

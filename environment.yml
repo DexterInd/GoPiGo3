@@ -7,4 +7,5 @@ dependencies:
   - six
   - sphinx==4.2.0
   - pip:
+    - roman
     - sphinx_rtd_theme==1.0.0
