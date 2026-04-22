@@ -15,11 +15,11 @@ time.sleep(0.1)
 
 # start()
 while True:
-        dist =  my_Distance_portI2C.read_mm()
+    dist =  my_Distance_portI2C.read_mm()
     print(dist)
-        if dist == 0:
+    if dist == 0:
         exit()
-        else:
+    else:
         print(".")
         time.sleep(0.1)
 

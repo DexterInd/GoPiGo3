@@ -20,10 +20,26 @@ except Exception:
 import math       # import math for math.pi constant
 import time
 import json
+import subprocess
+import sys
+from pathlib import Path
 
 FIRMWARE_VERSION_REQUIRED = "1.0.x" # Make sure the top 2 of 3 numbers match
 
 if hardware_connected:
+    _svc = subprocess.run(
+        ["systemctl", "is-active", "--quiet", "gopigo3_power"],
+        capture_output=True
+    )
+    if _svc.returncode != 0:
+        _install_cmd = Path(sys.executable).parent / "gopigo3-install-power-service"
+        raise SystemExit(
+            "The GoPiGo3 power service (gopigo3_power) is not running.\n"
+            "Motor control will not work without it.\n"
+            "Install and start it with:\n"
+            f"  sudo {_install_cmd}"
+        )
+
     GPG_SPI = spidev.SpiDev()
     try:
         GPG_SPI.open(0, 1)
@@ -225,7 +241,7 @@ class GoPiGo3:
                 vfw = self.get_version_firmware()
             except IOError:
                 raise IOError(f"No SPI response. GoPiGo3 with address {addr} not connected.")
-            if manufacturer != "Dexter Industries" or board != "GoPiGo3":
+            if manufacturer not in ("Dexter Industries", "Modular Robotics") or board != "GoPiGo3":
                 raise IOError(f"GoPiGo3 with address {addr} not connected.")
             if vfw.split('.')[0] != FIRMWARE_VERSION_REQUIRED.split('.')[0] or \
                vfw.split('.')[1] != FIRMWARE_VERSION_REQUIRED.split('.')[1]:
@@ -237,7 +253,8 @@ class GoPiGo3:
         try:
             self.load_robot_constants(config_file_path)
         except Exception as e:
-            pass
+            print(f"Error loading robot constants from file: {e}. Saving default constants to file.")
+            self.save_robot_constants(config_file_path)
 
     def spi_transfer_array(self, data_out):
         """
@@ -851,13 +868,14 @@ class GoPiGo3:
         # No point trying to read the values before they are ready.
         time.sleep(DelayTime) # delay for as long as it will take to do the I2C transaction.
 
-        Timeout = time.time() + 0.005 # timeout after 5ms of failed attempted reads
+        Timeout = time.time() + 0.020 # timeout after 20ms of failed attempted reads
         while True:
             try:
                 # read the results as soon as they are available
                 values = self.get_grove_value(port)
                 return values
-            except (ValueError, SensorError):
+            except (ValueError, SensorError, GoPiGoValueError, IOError):
+                # IOError covers transient "No SPI response" glitches from the MCU
                 if time.time() > Timeout:
                     raise IOError("grove_i2c_transfer error: Timeout waiting for data")
 

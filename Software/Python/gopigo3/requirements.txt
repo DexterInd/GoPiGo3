@@ -1,0 +1,2 @@
+python-periphery  # I2C hardware bus access (di_i2c.py)
+spidev            # SPI communication with GoPiGo3 MCU (gopigo3.py)

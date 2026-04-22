@@ -1,0 +1,12 @@
+[Unit]
+Description=GoPiGo3 Antenna WiFi Indicator
+After=network.target
+
+[Service]
+Type=idle
+ExecStart=/bin/bash /opt/gopigo3/antenna_wifi.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
