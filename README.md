@@ -5,52 +5,16 @@ The GoPiGo3 is a delightful and complete robot for the Raspberry Pi that turns y
 ![ GoPiGo3 Raspberry Pi Robot ](https://raw.githubusercontent.com/DexterInd/GoPiGo3/master/GoPiGo3_Raspberry_Pi_Robot.jpg)
 # GoPiGo OS
 
-GoPiGo OS is an easy to get started with, all packaged OS for the GoPiGo3. It offers Bloxter, and JupyterLab 2.  You can [download it](https://gopigo.io/downloads/gopigo_os) and install it on your SD card.
-### Note:  GoPiGo OS allows you to SSH into the robot and have full access to Linux. You can also use VNC viewer and access the Raspberry Pi Desktop.
-# DexterOS
+GoPiGo OS is an easy to get started with, all packaged OS for the GoPiGo3. It offers Bloxter, and JupyterLab 2 through a web browser. It offers a direct way to interact with the robot without needing to install additional software on your computer. All you need is a browser. You can [download it](https://gopigo.io/downloads/gopigo_os) and install it on your SD card.
 
-DexterOS is now deprecated and replaced by GoPiGo OS. It offers Bloxter, and JupyterLab 1.  You can [download it](https://www.dexterindustries.com/download/dexteros) and install it on your SD card.
-### Note:  DexterOS does not allow you to SSH into the robot and have full access to Linux. If you want full access, please choose Raspbian for Robots.
+### Note:  GoPiGo OS also allows you to SSH into the robot and have direct access to Raspberry Pi OS. You can also use VNC viewer and access the Raspberry Pi Desktop.
 
-# Raspbian for Robots
+# Raspberry Pi OS
 
-You can find all software and installation for the GoPiGo3 on an SD Card by using [our operating system Raspbian for Robots](https://www.dexterindustries.com/raspberry-pi-robot-software/).  You can [download and install Raspbian for Robots for free with instructions found here](https://www.dexterindustries.com/howto/install-raspbian-for-robots-image-on-an-sd-card/).  
+You can find installation instructions for the GoPiGo3 on Raspberry Pi OS in [Installation_FAQ.md](./Installation_FAQ.md). Raspberry Pi 3B+, 4 and 5 are supported. Raspberry Pi Zero is not supported. Raspberry Pi 5 is not recommended unless you truly need the extra performance, as it is more expensive and has a higher power consumption than the 4. There is a known issue with the power button
+on the Raspberry Pi 5 that comes into conflict with the GoPiGo3's power button, so if you have a Raspberry Pi 5, we recommend using the power button on the GoPiGo3 instead of the one on the Raspberry Pi 5
 
 ![ GoPiGo3 Raspberry Pi Robot ](https://raw.githubusercontent.com/DexterInd/GoPiGo3/master/GoPiGo3_Raspberry_Pi_Robot_With_Eyes.jpg)
-
-You can also [purchase an SD Card with the software on it here](https://www.dexterindustries.com/shop/sd-card-raspbian-wheezy-image-for-raspberry-pi/).  
-
-# Quick Install
-
-In order to quick install the `GoPiGo3` repository, open up a terminal and type the following command:
-```
-curl -kL dexterindustries.com/update_gopigo3 | bash
-```
-The same command can be used for updating the `GoPiGo3` to the latest version.
-
-If you use any of the Dexter sensors (line follower, distance sensor, THP sensor, IMU), you will also need
-```
-curl -kL dexterindustries.com/update_sensors | bash
-```
-
-# Virtual Environment Installation
-
-```
-curl -kL dexterindustries.com/update_gopigo3 | bash -s -- --user-local --bypass-gui-installation
-```
-
-
-# Installation
-You can install the GoPiGo3 on your own operating system with the following commands in the command line:
-(note that the user `pi` is still required)
-1. Clone this repository onto the Raspberry Pi:
-
-        git clone http://www.github.com/DexterInd/GoPiGo3.git /home/pi/Dexter/GoPiGo3
-
-2. Run the install script: `bash /home/pi/Dexter/GoPiGo3/Install/update_gopigo3.sh`
-3. Reboot the Raspberry Pi to make the settings take effect: `sudo reboot`
-
-### Note: the Pi user must exist while installing the drivers and examples, but you can remove this user afterwards if you want to secure your robot.
 
 
 # License
