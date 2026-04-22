@@ -107,3 +107,5 @@ gpg3env/*
 
 .DS_Store
 
+pypi_token.txt
+pypitest_token.txt
