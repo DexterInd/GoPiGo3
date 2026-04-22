@@ -21,7 +21,13 @@ import sys
 sys.path.insert(0, os.path.abspath('../../Software/Python'))
 sys.path.insert(0, os.path.abspath('../../DI_Sensors/Python'))
 
-from mock import Mock as MagicMock
+READTHEDOCS = os.environ.get('READTHEDOCS') == 'True'
+
+try:
+    from unittest.mock import Mock as MagicMock
+except ImportError:
+    from mock import Mock as MagicMock
+
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
@@ -48,31 +54,13 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.graphviz',
-    'sphinx.ext.autosummary',
-    'sphinx_rtd_theme']
+    'sphinx.ext.autosummary']
 
-def _check_deps():
-    names = {"six": 'six',
-             "shutil": 'shutil',
-             "gopigo3": 'gopigo3',
-             "easysensors": 'easysensors',
-             "easygopigo3": 'easygopigo3'}
-    missing = []
-    for name in names:
-        try:
-            __import__(name)
-        except ImportError:
-            missing.append(names[name])
-    if missing:
-        raise ImportError(
-            "The following dependencies are missing to build the "
-            "documentation: {}".format(", ".join(missing)))
-
-_check_deps()
-
-# Import only after checking for dependencies.
-import easygopigo3, gopigo3, easysensors
-import six
+try:
+    import sphinx_rtd_theme
+    extensions.append('sphinx_rtd_theme')
+except ImportError:
+    sphinx_rtd_theme = None
 
 # if six.PY2:
 #     from distutils.spawn import find_executable
@@ -145,9 +133,12 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-import sphinx_rtd_theme
-html_theme = 'sphinx_rtd_theme'
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+if sphinx_rtd_theme is not None:
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+else:
+    html_theme = 'alabaster'
+    html_theme_path = []
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
