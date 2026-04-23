@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=GoPiGo3 Calibration Panel
+Comment=GoPiGo3 Calibration Panel
+Icon=/home/pi/Dexter/GoPiGo3/Software/Python/Examples/Calibration_Panel/drive-config-icon.png
+Exec=/usr/bin/python3 /home/pi/Dexter/GoPiGo3/Software/Python/Examples/Calibration_Panel/calibration_panel_gui.py
+NoDisplay=true                

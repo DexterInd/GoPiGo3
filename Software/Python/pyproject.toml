@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mr-gopigo3"
+version = "0.0.11"
+description = "Drivers and Examples for using the GoPiGo3 in Python"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "MIT"
+authors = [
+    { name = "Modular Robotics", email = "info@modrobotics.com" }
+]
+maintainers = [
+    { name = "Modular Robotics", email = "info@modrobotics.com" }
+]
+keywords = ["robot", "gopigo", "gopigo3", "modular robotics", "learning", "education"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Embedded Systems",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "spidev",                # SPI communication with GoPiGo3 MCU
+    "python-periphery",      # I2C hardware bus access (default backend in di_i2c)
+    "RPi.GPIO",              # GPIO access for gopigo3_power.py power management
+    "mr-rfr-tools>=2.0.2",   # provides I2C_mutex, di_i2c, di_mutex (used by easygopigo3/easysensors)
+    "mr-di-sensors>=0.0.3",  # provides di_sensors (easy_line_follower, easy_distance_sensor, DHT — used by easysensors.py)
+]
+
+[project.urls]
+Homepage = "https://gopigo.io/"
+Repository = "https://github.com/DexterInd/GoPiGo3"
+Documentation = "https://gopigo3.readthedocs.io"
+"Bug Tracker" = "https://github.com/DexterInd/GoPiGo3/issues"
+
+[project.scripts]
+# After `pip install gopigo3`, run this once to install the power management systemd service:
+#   sudo gopigo3-install-power-service
+gopigo3-install-power-service = "gopigo3.scripts.install_power_service:main"
+
+[tool.setuptools]
+py-modules = ["easygopigo3", "easysensors"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gopigo3*"]
+
+[tool.setuptools.package-data]
+# Include all files in the scripts/ subdirectory:
+#   gopigo3_power.py  – power management daemon (launched by systemd)
+#   install_trixie.sh – enables SPI/I2C/VNC on Raspberry Pi OS Trixie
+# Include Calibration Panel and Control Panel assets (icons, .desktop, GUI scripts).
+# Data must be listed under the package key that owns the directory.
+gopigo3 = ["scripts/*"]
+"gopigo3.examples.Calibration_Panel" = ["*"]
+"gopigo3.examples.Control_Panel" = ["*"]

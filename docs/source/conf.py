@@ -33,7 +33,9 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['spidev', 'fcntl', 'I2C_mutex', 'pigpio', 'di_sensors']
+# Do not mock spidev: letting the import fail keeps gopigo3 in
+# hardware-disconnected mode during docs builds.
+MOCK_MODULES = ['fcntl', 'I2C_mutex', 'pigpio', 'di_sensors']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # When building the documentation on Windows with graphviz in mind, use
@@ -54,13 +56,29 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.graphviz',
-    'sphinx.ext.autosummary']
+    'sphinx.ext.autosummary',
+    'sphinx_rtd_theme']
 
-try:
-    import sphinx_rtd_theme
-    extensions.append('sphinx_rtd_theme')
-except ImportError:
-    sphinx_rtd_theme = None
+def _check_deps():
+    names = {"shutil": 'shutil',
+             "gopigo3": 'gopigo3',
+             "easysensors": 'easysensors',
+             "easygopigo3": 'easygopigo3'}
+    missing = []
+    for name in names:
+        try:
+            __import__(name)
+        except ImportError:
+            missing.append(names[name])
+    if missing:
+        raise ImportError(
+            "The following dependencies are missing to build the "
+            "documentation: {}".format(", ".join(missing)))
+
+_check_deps()
+
+# Import only after checking for dependencies.
+import easygopigo3, gopigo3, easysensors
 
 # if six.PY2:
 #     from distutils.spawn import find_executable
@@ -93,7 +111,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GoPiGo3'
-copyright = u'2020-2023, Modular Robotics'
+copyright = u'2020-2026, Modular Robotics'
 
 
 # The version info for the project you're documenting, acts as replacement for
@@ -110,7 +128,7 @@ copyright = u'2020-2023, Modular Robotics'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = "EN"
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
