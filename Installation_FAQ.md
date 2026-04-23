@@ -103,33 +103,26 @@ The setup steps are identical to Option A — the only difference is how the lib
 
 1. Flash Raspberry Pi OS and connect via SSH exactly as described in **Option A, steps 1 and 2**.
 
-2. **Create and activate a virtual environment** (see the [Setting up a Python virtual environment](#setting-up-a-python-virtual-environment) section below):
-
-   ```bash
-   python3 -m venv ~/.venv/gopigo3
-   source ~/.venv/gopigo3/bin/activate
-   ```
-
-3. **Clone the repository** into the directory of your choice, then enter it:
+2. **Clone the repository** into the directory of your choice, then enter it:
 
    ```bash
    git clone https://github.com/DexterInd/GoPiGo3.git
    cd GoPiGo3
    ```
 
-4. **Run the setup script** to install GoPiGo3 and enable SPI, I2C, VNC, the power management service, and desktop shortcuts:
+3. **Run the setup script** to install GoPiGo3 and enable SPI, I2C, VNC, the power management service, and desktop shortcuts:
 
    ```bash
    source Install/install_trixie.sh
    ```
 
-5. **Reboot** to apply interface changes:
+4. **Reboot** to apply interface changes:
 
    ```bash
    sudo reboot
    ```
 
-6. **Test it**
+5. **Test it**
 
 ```bash
 python3 -c 'import gopigo3; print("GoPiGo3 installed successfully!")'
