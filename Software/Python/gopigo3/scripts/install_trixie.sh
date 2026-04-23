@@ -73,12 +73,15 @@ echo "Starting installation for GoPiGo3 ($BRANCH branch)"
 # on Trixie and strips essential settings like camera_auto_detect=1.
 CONFIG=/boot/firmware/config.txt
 
+REBOOT_NEEDED=false
+
 echo "Checking SPI interface..."
 if grep -qE "^dtparam=spi=on" "$CONFIG"; then
     echo "SPI is already enabled — skipping."
 else
     echo "dtparam=spi=on" | sudo tee -a "$CONFIG" > /dev/null
     echo "SPI enabled."
+    REBOOT_NEEDED=true
 fi
 
 echo "Checking I2C interface..."
@@ -87,6 +90,7 @@ if grep -qE "^dtparam=i2c_arm=on" "$CONFIG"; then
 else
     echo "dtparam=i2c_arm=on" | sudo tee -a "$CONFIG" > /dev/null
     echo "I2C enabled."
+    REBOOT_NEEDED=true
 fi
 
 if grep -qi "Lite" /etc/os-release 2>/dev/null; then
@@ -112,6 +116,15 @@ else
 fi
 
 install_power_service() {
+    echo "Checking GoPiGo3 power management service..."
+
+    # Check if the main power service is already installed and running
+    if systemctl is-enabled gopigo3_power >/dev/null 2>&1 && \
+       systemctl is-active gopigo3_power >/dev/null 2>&1; then
+        echo "GoPiGo3 power management service is already installed and running — skipping."
+        return
+    fi
+
     echo "Installing GoPiGo3 power management service..."
     local PYTHON3
     PYTHON3=$(PATH=/usr/local/bin:/usr/bin:/bin command -v python3)
@@ -249,5 +262,78 @@ trust_desktop_launcher() {
 trust_desktop_launcher "$HOME/Desktop/gopigo3_control_panel.desktop"
 trust_desktop_launcher "$HOME/Desktop/gopigo3_calibration.desktop"
 
+configure_shell_activation() {
+    local target_user target_home bashrc_path activation_block
+
+    target_user="${SUDO_USER:-$USER}"
+    target_home=$(getent passwd "$target_user" | cut -d: -f6)
+    if [ -z "$target_home" ]; then
+        target_home="$HOME"
+    fi
+
+    bashrc_path="$target_home/.bashrc"
+    activation_block=$(cat <<EOF
+# >>> GoPiGo3 virtual environment >>>
+if [ -f "$VENV_DIR/bin/activate" ] && [ "\$VIRTUAL_ENV" != "$VENV_DIR" ]; then
+    . "$VENV_DIR/bin/activate"
+fi
+# <<< GoPiGo3 virtual environment <<<
+EOF
+)
+
+    while true; do
+        echo ""
+        read -r -p "Do you want the virtual environment to be activated automatically for you each time you log in? [y/n] " auto_activate
+
+        case "$auto_activate" in
+            [Yy]|[Yy][Ee][Ss])
+                touch "$bashrc_path"
+                if grep -Fq "# >>> GoPiGo3 virtual environment >>>" "$bashrc_path"; then
+                    echo "GoPiGo3 virtual environment auto-activation is already configured in $bashrc_path."
+                else
+                    printf '\n%s\n' "$activation_block" >> "$bashrc_path"
+                    echo "Added GoPiGo3 virtual environment auto-activation to $bashrc_path."
+                fi
+                break
+                ;;
+            [Nn]|[Nn][Oo])
+                if [ -f "$bashrc_path" ]; then
+                    sed -i '/# >>> GoPiGo3 virtual environment >>>/,/# <<< GoPiGo3 virtual environment <<</d' "$bashrc_path"
+                fi
+                echo "To work on GoPiGo3 later, run: source $VENV_DIR/bin/activate"
+                break
+                ;;
+            *)
+                echo "Please answer y or n."
+                ;;
+        esac
+    done
+}
+
+configure_shell_activation
+
 echo ""
-echo "Done. Please reboot for all changes to take effect."
+echo "Done."
+
+if [ "$REBOOT_NEEDED" = true ]; then
+    while true; do
+        read -r -p "Reboot now for all changes to take effect? [y/n] " reboot_now
+
+        case "$reboot_now" in
+            [Yy]|[Yy][Ee][Ss])
+                echo "Rebooting now..."
+                sudo reboot
+                break
+                ;;
+            [Nn]|[Nn][Oo])
+                echo "Please reboot before using the GoPiGo3 so the configuration changes can take effect."
+                break
+                ;;
+            *)
+                echo "Please answer y or n."
+                ;;
+        esac
+    done
+else
+    echo "No reboot required."
+fi
