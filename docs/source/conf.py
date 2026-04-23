@@ -21,7 +21,13 @@ import sys
 sys.path.insert(0, os.path.abspath('../../Software/Python'))
 sys.path.insert(0, os.path.abspath('../../DI_Sensors/Python'))
 
-from mock import Mock as MagicMock
+READTHEDOCS = os.environ.get('READTHEDOCS') == 'True'
+
+try:
+    from unittest.mock import Mock as MagicMock
+except ImportError:
+    from mock import Mock as MagicMock
+
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
@@ -145,9 +151,12 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-import sphinx_rtd_theme
-html_theme = 'sphinx_rtd_theme'
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+if sphinx_rtd_theme is not None:
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+else:
+    html_theme = 'alabaster'
+    html_theme_path = []
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
