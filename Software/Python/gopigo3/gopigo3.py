@@ -32,12 +32,11 @@ if hardware_connected:
         capture_output=True
     )
     if _svc.returncode != 0:
-        _install_cmd = Path(sys.executable).parent / "gopigo3-install-power-service"
         raise SystemExit(
             "The GoPiGo3 power service (gopigo3_power) is not running.\n"
             "Motor control will not work without it.\n"
-            "Install and start it with:\n"
-            f"  sudo {_install_cmd}"
+            "Start it with:\n"
+            "  sudo systemctl start gopigo3_power"
         )
 
     GPG_SPI = spidev.SpiDev()
