@@ -110,3 +110,5 @@ gpg3env/*
 pypi_token.txt
 pypitest_token.txt
 activate.ps1
+.project
+PyPI_PUBLISHING.md
