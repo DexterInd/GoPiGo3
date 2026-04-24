@@ -11,13 +11,23 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
 fi
 
 # install_trixie.sh - Custom install script for the 'trixie' branch
-# Usage: source install_trixie.sh
+#
+# Usage: source install_trixie.sh [local|user]
+#
+# Parameters:
+#   local - Create/use virtual environment at the GoPiGo3 repository root (./venv)
+#   user  - Create/use virtual environment at ~/.venv/gopigo3 (default if omitted)
+#
+# The script will:
+#   - Detect or create a Python virtual environment with --system-site-packages
+#   - Install the mr-gopigo3 package from PyPI
+#   - Enable SPI, I2C, and VNC interfaces
+#   - Install GoPiGo3 power management service
+#   - Create desktop shortcuts for Control and Calibration panels
+#   - Optionally configure automatic virtual environment activation in ~/.bashrc
 
 
 # set -e
-
-# Check for Python virtual environment
-# Usage: bash install_trixie.sh [local|user]
 
 # Default: user-level venv (~/.venv), unless 'local' is specified
 if [ "$1" = "local" ]; then
@@ -49,19 +59,15 @@ if [ -z "$VIRTUAL_ENV" ]; then
     fi
 else
     echo "Python virtual environment detected at $VIRTUAL_ENV."
+    VENV_DIR="$VIRTUAL_ENV"
 fi
 
 SCRIPT_DIR="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install the GoPiGo3 Python package into the active venv.
-# Try PyPI first; fall back to TestPyPI if not found there yet.
 echo "Installing GoPiGo3 Python package..."
-# TODO: switch to PyPI once mr-gopigo3 is published there
-pip install --quiet --upgrade \
-    --index-url https://test.pypi.org/simple/ \
-    --extra-index-url https://pypi.org/simple/ \
-    mr-gopigo3
-echo "GoPiGo3 package installed from TestPyPI ($(pip show mr-gopigo3 | grep ^Version | cut -d' ' -f2))."
+pip install --quiet --upgrade mr-gopigo3
+echo "GoPiGo3 package installed from PyPI ($(pip show mr-gopigo3 | grep ^Version | cut -d' ' -f2))."
 
 # Print info
 BRANCH="trixie"
