@@ -13,7 +13,7 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 | I want the simplest setup and I'm starting from scratch | **Option A** — `pip install` on a fresh Raspberry Pi OS |
 | I want the full source code and example projects | **Option B** — Install via `git clone` |
 
-> **Why is the pre-made image not listed first?** When you download a ready-made image, there is no way to tell it your WiFi password before first boot. You will need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away.
+> **Why isn't there a pre-made image?** When you download a ready-made image, it is a heavy download. Plus there is no way to tell it your WiFi password before first boot. You would need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away. And you get the option of enabling Raspberry Pi Connect.
 
 ---
 
