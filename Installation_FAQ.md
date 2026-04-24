@@ -13,7 +13,7 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 | I want the simplest setup and I'm starting from scratch | **Option A** — `pip install` on a fresh Raspberry Pi OS |
 | I want the full source code and example projects | **Option B** — Install via `git clone` |
 
-> **Why is the pre-made image not listed first?** When you download a ready-made image, there is no way to tell it your WiFi password before first boot. You will need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away.
+> **Why isn't there a pre-made image?** When you download a ready-made image, it is a heavy download. Plus there is no way to tell it your WiFi password before first boot. You would need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away. And you get the option of enabling Raspberry Pi Connect.
 
 ---
 
@@ -44,7 +44,7 @@ This is the recommended approach for most users. You flash a standard Raspberry 
 
 2. **Insert the card, power on the Pi, and SSH in.**
 
-   Insert the microSD card into the Pi and plug in power. After about a minute, open a terminal on your laptop and type:
+   Insert the microSD card into the Pi and plug in power. After about a minute, open a terminal on your laptop and type (replace with your hostname if you chose something other than `gopigo3`):
 
    ```bash
    ssh yourusername@gopigo3.local
@@ -57,12 +57,14 @@ This is the recommended approach for most users. You flash a standard Raspberry 
    > ssh yourusername@192.168.x.x
    > ```
 
-3. **Create and activate a virtual environment** (see the [Setting up a Python virtual environment](#setting-up-a-python-virtual-environment) section below):
+3. **Create and activate a virtual environment**:
 
    ```bash
    python3 -m venv ~/.venv/gopigo3
    source ~/.venv/gopigo3/bin/activate
    ```
+
+   See the [Setting up a Python virtual environment](#setting-up-a-python-virtual-environment) section below for more details.
 
 4. **Install GoPiGo3**:
 
@@ -102,33 +104,39 @@ The setup steps are identical to Option A — the only difference is how the lib
 
 1. Flash Raspberry Pi OS and connect via SSH exactly as described in **Option A, steps 1 and 2**.
 
-2. **Create and activate a virtual environment** (see the [Setting up a Python virtual environment](#setting-up-a-python-virtual-environment) section below):
-
-   ```bash
-   python3 -m venv ~/.venv/gopigo3
-   source ~/.venv/gopigo3/bin/activate
-   ```
-
-3. **Clone the repository** into the directory of your choice, then enter it:
+2. **Clone the repository** into the directory of your choice, then enter it:
 
    ```bash
    git clone https://github.com/DexterInd/GoPiGo3.git
    cd GoPiGo3
    ```
 
-4. **Run the setup script** to install GoPiGo3 and enable SPI, I2C, VNC, the power management service, and desktop shortcuts:
+3. **Run the setup script** to install GoPiGo3 and enable SPI, I2C, VNC, the power management service, and desktop shortcuts:
 
    ```bash
    source Install/install_trixie.sh
    ```
 
-5. **Reboot** to apply interface changes:
+   **Script parameters:**
+   - No parameter (default): Creates/uses a virtual environment at `~/.venv/gopigo3`
+   - `local`: Creates/uses a virtual environment at the GoPiGo3 repository root (`./.venv`)
+
+   Example with parameter:
+   ```bash
+   source Install/install_trixie.sh local
+   ```
+
+   **If you already have a virtual environment:**
+   - If you activate a venv before running the script, it will use your active environment and configure auto-activation for that specific path in your `~/.bashrc`.
+   - If no venv is active, the script will detect existing environments at the default location or create a new one.
+
+4. **Reboot** to apply interface changes:
 
    ```bash
    sudo reboot
    ```
 
-6. **Test it**
+5. **Test it**
 
 ```bash
 python3 -c 'import gopigo3; print("GoPiGo3 installed successfully!")'
@@ -154,15 +162,23 @@ python3 -m venv ~/.venv/gopigo3
 source ~/.venv/gopigo3/bin/activate
 ```
 
+> **If you're using Option B (git clone)**: The `install_trixie.sh` script will automatically create and activate a virtual environment for you if one doesn't exist, so you can skip manual venv setup.
+
 > **Every time you open a new SSH session**, you will need to activate the virtual environment again before running any Python code:
 > ```bash
 > source ~/.venv/gopigo3/bin/activate
 > ```
-> To make this automatic on login, add that line to the end of your `~/.bashrc` file:
-> ```bash
-> echo 'source ~/.venv/gopigo3/bin/activate' >> ~/.bashrc
-> ```
+> The `install_trixie.sh` script will offer to add automatic activation to your `~/.bashrc` file at the end of installation for both Option A and Option B.
 
 ---
+
+### Virtual environment location options
+
+When using `install_trixie.sh`, you can choose where to create the virtual environment:
+
+- **Default (no parameter)**: `~/.venv/gopigo3` — User-level, persists across git updates
+- **`local` parameter**: `./.venv` at repository root — Stays with the cloned repo
+
+If you already have a virtual environment active when running `install_trixie.sh`, the script will use your active environment and configure auto-activation for that specific path. It will not create a new one and will disregard the `local` parameter if given.
 
 
