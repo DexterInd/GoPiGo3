@@ -12,7 +12,6 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 |---|---|
 | I want the simplest setup and I'm starting from scratch | **Option A** — `pip install` on a fresh Raspberry Pi OS |
 | I want the full source code and example projects | **Option B** — Install via `git clone` |
-| I have an ethernet cable + router handy, and want a fully pre-configured image | **Option C** — Download the ready-made image |
 
 > **Why is the pre-made image not listed first?** When you download a ready-made image, there is no way to tell it your WiFi password before first boot. You will need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away.
 
@@ -157,48 +156,4 @@ source ~/.venv/gopigo3/bin/activate
 > echo 'source ~/.venv/gopigo3/bin/activate' >> ~/.bashrc
 > ```
 
----
 
-## Option C — Download the ready-made image ⚠️ Requires ethernet cable + router
-
-We provide a complete Raspberry Pi OS image with GoPiGo3 already installed and configured —
-SPI, I2C, SSH, the power management service, and everything else is already set up.
-
-> **Important:** Because this is a pre-built image, there is no way to enter your WiFi password before first boot.
-> You **must** connect your Raspberry Pi to a router using an **ethernet cable** for the first boot.
-> Once you are connected and logged in, you can configure WiFi from the command line.
-
-### What you need
-- A Raspberry Pi 3B+ *(recommended)*, 4, or 5
-- A microSD card (16 GB or larger)
-- An **ethernet cable** and access to a router
-- A laptop with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) installed
-
-### Steps
-
-1. **Download the image** (about 1–2 GB):
-
-   👉 *(link coming soon)*
-
-2. **Write it to your microSD card**:
-
-   - Open **Raspberry Pi Imager**.
-   - In the **Device** tab, select your Pi model. Click **Next**.
-   - In the **OS** tab, scroll to the bottom and select **"Use custom"** → select the zip file you downloaded. Click **Next**.
-   - In the **Storage** tab, select your microSD card. Click **Next**.
-   - When Imager starts the customisation wizard, click **"Skip customisation"** — do not modify the image, it is already configured.
-   - On the summary screen, click **"Write"** and confirm with **"I understand, erase and write"**.
-
-   > ⚠️ This will erase everything currently on the microSD card.
-
-3. **Connect the Pi to your router with an ethernet cable**, insert the card, and power it on.
-
-4. **Find the Pi's IP address** by logging into your router's admin page (usually `192.168.1.1` or `192.168.0.1` in a browser) and looking for a device named `gopigo3` in the connected devices list.
-
-5. **SSH into the Pi**:
-
-   ```bash
-   ssh gopigo3@gopigo3.local
-   ```
-
-   The default password is printed on the included card or in the image release notes.
