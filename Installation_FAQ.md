@@ -6,6 +6,20 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 
 ---
 
+## Table of Contents
+
+**Installation Options:**
+- [Which option is right for me?](#which-option-is-right-for-me)
+- [Option A — Install using `pip` on a fresh Raspberry Pi OS](#option-a--install-using-pip-on-a-fresh-raspberry-pi-os--easiest)
+- [Option B — Install using `git clone` (Full source + examples)](#option-b--install-using-git-clone-full-source--examples)
+- [Setting up a Python virtual environment](#setting-up-a-python-virtual-environment)
+
+**Frequently Asked Questions:**
+- [What does the install_trixie.sh script do?](#what-does-the-install_trixiesh-script-do)
+- [The power LED keeps on blinking.. What can I do?](#the-power-led-keeps-on-blinking-what-can-i-do)
+
+---
+
 ## Which option is right for me?
 
 | Situation | Recommended option |
@@ -39,7 +53,15 @@ This is the recommended approach for most users. You flash a standard Raspberry 
      - **Localisation** — choose your city (timezone and keyboard fill in automatically). Click **Next**.
      - **User** — enter a username and password you will remember. Click **Next**.
      - **Wi-Fi** — enter your WiFi network name (SSID) and password. Click **Next**.
-     - **Remote Access** — toggle **Enable SSH** to on, then choose **"Use password authentication"**. Click **Next**.
+     - **Remote Access** — toggle **Enable SSH** to on, then choose **"Use password authentication"**. Optionally, you can also enable **Raspberry Pi Connect** here. Click **Next**.
+
+       > **What is Raspberry Pi Connect?** It's a free cloud-based remote access service that lets you connect to your Pi from anywhere in the world through your web browser, without needing to be on the same network. You'll need to sign in with a Raspberry Pi ID (free account).
+       >
+       > **When to enable it:** If you want to access your Pi remotely from outside your local network (e.g., from school, home, or while traveling), or if your network blocks incoming SSH connections.
+       >
+       > **When to skip it:** If you only plan to use the Pi on your local network, or if you prefer not to use cloud services for security/privacy reasons. SSH over local network is sufficient for most classroom use.
+       >
+       > **Note:** Raspberry Pi Connect is a service provided by Raspberry Pi Ltd. Modular Robotics does not provide support for Raspberry Pi Connect. For issues with this service, please contact Raspberry Pi support.
    - On the summary screen, click **"Write"** and confirm.
 
 2. **Insert the card, power on the Pi, and SSH in.**
@@ -180,5 +202,109 @@ When using `install_trixie.sh`, you can choose where to create the virtual envir
 - **`local` parameter**: `./.venv` at repository root — Stays with the cloned repo
 
 If you already have a virtual environment active when running `install_trixie.sh`, the script will use your active environment and configure auto-activation for that specific path. It will not create a new one and will disregard the `local` parameter if given.
+
+---
+
+## Frequently Asked Questions
+
+### What does the install_trixie.sh script do?
+
+The `install_trixie.sh` script performs a complete GoPiGo3 setup:
+
+**Python environment:**
+- Detects or creates a Python virtual environment with `--system-site-packages`
+- Installs the `mr-gopigo3` package from PyPI
+
+**System interfaces:**
+- Enables SPI interface via `dtparam=spi=on` in `/boot/firmware/config.txt`
+- Enables I2C interface via `dtparam=i2c_arm=on` in `/boot/firmware/config.txt`
+- Installs and enables VNC server (desktop versions only, skipped on Lite)
+
+**System services:**
+- Installs `gopigo3_power` service — Monitors GPIO 22 for power button events and maintains GPIO 23 to signal the board that the Pi is running
+- Installs `gopigo3_antenna_wifi` service — Controls the WiFi antenna LED indicator based on network connectivity
+
+**Desktop shortcuts (if desktop environment present):**
+- Creates GoPiGo3 Control Panel shortcut
+- Creates GoPiGo3 Calibration Panel shortcut
+
+**Shell configuration:**
+- Optionally adds automatic virtual environment activation to `~/.bashrc`
+
+**Reboot:**
+- Prompts to reboot if interface changes were made (required for SPI/I2C to activate)
+
+---
+
+### The power LED keeps on blinking.. What can I do?
+
+If the power LED on your GoPiGo3 keeps blinking continuously, it means the `gopigo3_power` service is not running properly. This service is responsible for signaling to the GoPiGo3 board that the Raspberry Pi is fully booted and running.
+
+You may also see this error message when trying to use the GoPiGo3:
+
+```
+The GoPiGo3 power service (gopigo3_power) is not running.
+Motor control will not work without it.
+Start it with:
+  sudo systemctl start gopigo3_power
+```
+
+**Check if the service is running:**
+
+```bash
+sudo systemctl status gopigo3_power
+```
+
+If the service is not running, you'll see `inactive (dead)` or `failed` in the output.
+
+**Check the service logs to diagnose the issue:**
+
+```bash
+sudo journalctl -u gopigo3_power -n 50
+```
+
+This shows the last 50 log entries for the power service. Look for error messages that might explain why it's not running.
+
+**Common issues and solutions:**
+
+1. **Service not enabled** — If the service isn't set to start automatically:
+   ```bash
+   sudo systemctl enable gopigo3_power
+   sudo systemctl start gopigo3_power
+   ```
+
+2. **Service not installed** — Check if the service file exists:
+   ```bash
+   cat /etc/systemd/system/gopigo3_power.service
+   ```
+   If the file doesn't exist, the installation script may not have completed successfully.
+
+3. **Permissions or GPIO access** — The service needs permission to access GPIO pins. Check if there are any permission-related errors in the logs.
+
+4. **Reinstall the service** — If all else fails, re-run the installation script:
+   ```bash
+   source ~/.venv/gopigo3/lib/python3.*/site-packages/gopigo3/scripts/install_trixie.sh
+   ```
+   Or if you installed via git clone:
+   ```bash
+   cd ~/GoPiGo3
+   source Install/install_trixie.sh
+   ```
+
+After making changes, restart the service:
+
+```bash
+sudo systemctl restart gopigo3_power
+```
+
+The power LED should stop blinking and remain solid once the service is running correctly.
+
+**Still having issues?**
+
+If you can't figure out why the power service is not running, contact **info@modrobotics.com** for support. Please include the output of:
+
+```bash
+sudo journalctl -u gopigo3_power -n 50
+```
 
 
