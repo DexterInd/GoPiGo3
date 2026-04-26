@@ -28,6 +28,7 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 | I want the full source code and example projects | **Option B** — Install via `git clone` |
 
 > **Why isn't there a pre-made image?** When you download a ready-made image, it is a heavy download. Plus there is no way to tell it your WiFi password before first boot. You would need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away. And you get the option of enabling Raspberry Pi Connect.
+> **Why isn't there a pre-made image?** When you download a ready-made image, it is a heavy download. Plus there is no way to tell it your WiFi password before first boot. You would need an ethernet cable plugged into a router to connect. Options A and B use the official Raspberry Pi Imager, which lets you enter your WiFi details in advance so you can connect wirelessly right away. And you get the option of enabling Raspberry Pi Connect.
 
 ---
 
@@ -127,6 +128,7 @@ The setup steps are identical to Option A — the only difference is how the lib
 1. Flash Raspberry Pi OS and connect via SSH exactly as described in **Option A, steps 1 and 2**.
 
 2. **Clone the repository** into the directory of your choice, then enter it:
+2. **Clone the repository** into the directory of your choice, then enter it:
 
    ```bash
    git clone https://github.com/DexterInd/GoPiGo3.git
@@ -153,11 +155,26 @@ The setup steps are identical to Option A — the only difference is how the lib
    - If no venv is active, the script will detect existing environments at the default location or create a new one.
 
 4. **Reboot** to apply interface changes:
+   **Script parameters:**
+   - No parameter (default): Creates/uses a virtual environment at `~/.venv/gopigo3`
+   - `local`: Creates/uses a virtual environment at the GoPiGo3 repository root (`./.venv`)
+
+   Example with parameter:
+   ```bash
+   source Install/install_trixie.sh local
+   ```
+
+   **If you already have a virtual environment:**
+   - If you activate a venv before running the script, it will use your active environment and configure auto-activation for that specific path in your `~/.bashrc`.
+   - If no venv is active, the script will detect existing environments at the default location or create a new one.
+
+4. **Reboot** to apply interface changes:
 
    ```bash
    sudo reboot
    ```
 
+5. **Test it**
 5. **Test it**
 
 ```bash
