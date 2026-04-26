@@ -17,6 +17,7 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 **Frequently Asked Questions:**
 - [What does the install_trixie.sh script do?](#what-does-the-install_trixiesh-script-do)
 - [The power LED keeps on blinking.. What can I do?](#the-power-led-keeps-on-blinking-what-can-i-do)
+- [What does "mr" in mr-gopigo3 stand for?](#what-does-mr-in-mr-gopigo3-stand-for)
 
 ---
 
@@ -53,9 +54,10 @@ This is the recommended approach for most users. You flash a standard Raspberry 
      - **Localisation** — choose your city (timezone and keyboard fill in automatically). Click **Next**.
      - **User** — enter a username and password you will remember. Click **Next**.
      - **Wi-Fi** — enter your WiFi network name (SSID) and password. Click **Next**.
-     - **Remote Access** — toggle **Enable SSH** to on, then choose **"Use password authentication"**. Optionally, you can also enable **Raspberry Pi Connect** here. Click **Next**.
+     - **SSH Authentication** — toggle **Enable SSH** to on, then choose **"Use password authentication"**. Click **Next**.
+     - **Raspberry Pi Connect** — Optionally enable Raspberry Pi Connect. Follow the on-screen steps to complete setup (see [Raspberry Pi Connect documentation](https://www.raspberrypi.com/software/connect/) for detailed information). Click **Next**.
 
-       > **What is Raspberry Pi Connect?** It's a free cloud-based remote access service that lets you connect to your Pi from anywhere in the world through your web browser, without needing to be on the same network. You'll need to sign in with a Raspberry Pi ID (free account).
+       > **What is Raspberry Pi Connect?** It's a free cloud-based remote access service that lets you connect to your Pi from anywhere in the world through your web browser, without needing to be on the same network. You'll need to sign in with a Raspberry Pi ID (free account). [Learn more about Raspberry Pi Connect](https://www.raspberrypi.com/software/connect/).
        >
        > **When to enable it:** If you want to access your Pi remotely from outside your local network (e.g., from school, home, or while traveling), or if your network blocks incoming SSH connections.
        >
@@ -306,5 +308,11 @@ If you can't figure out why the power service is not running, contact **info@mod
 ```bash
 sudo journalctl -u gopigo3_power -n 50
 ```
+
+---
+
+### What does "mr" in mr-gopigo3 stand for?
+
+The "mr" stands for **Modular Robotics**. The GoPiGo3 was originally developed by Dexter Industries, but since 2019 it has been under the wing of [Modular Robotics](https://www.modrobotics.com/), maker of Cubelets.
 
 
