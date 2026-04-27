@@ -4,6 +4,45 @@ In this project we remotely control a GoPiGo3 robot via a mobile device or a lap
 
 ![Imgur](http://i.imgur.com/sT2tHuPl.jpg)
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install flask==3.1.3 werkzeug==3.1.6 picamera==1.13
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv remotecamerarobot
+source remotecamerarobot/bin/activate
+pip install -r requirements.txt
+```
+
+### Running the Server
+
+Start the server by typing the following command:
+```bash
+python remote_robot.py
+```
+
+It's going to take a couple of seconds for the server to fire up.
+The web app is set to port `5000` whereas the video stream is found at port `5001`.
+
+Access the web interface at:
+- With Raspbian For Robots: `http://dex.local:5000`
+- Otherwise: `http://<raspberry-pi-ip>:5000`
+
+Make sure your mobile device/laptop is on the same network as your GoPiGo3.
+
 ## Requirements
 
 We need the following components for this project:

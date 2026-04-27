@@ -1,11 +1,51 @@
 # Empathybot: The Raspberry Pi Robot That Reads Human Emotion
-
+⚠️ **IMPORTANT NOTE:** This project is currently not functional due to Google Cloud Vision API changes. The code uses Vision API v1 which has been deprecated. This project requires significant updates to work with the current API version.
 ![ GoPiGo ](https://github.com/DexterInd/GoPiGo/raw/master/Projects/Empathybot/Empathybot.jpg)
 
 In this project we built emotional intelligence to our robot.  We developed a Raspberry Pi Robot with the GoPiGo that will drive up to you, read your emotions, and then try to have a conversation with you, based on how you’re feeling.  We will show you how you too can build your own DIY emotion-reading robot with a Raspberry Pi.
 
 ![ GoPiGo ](https://github.com/DexterInd/GoPiGo/raw/master/Projects/Empathybot/Emotions.jpg)
+## Setup
 
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install DI-Sensors google-api-python-client picamera
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv empathybot
+source empathybot/bin/activate
+pip install -r requirements.txt
+```
+
+### Additional System Requirements
+
+Install espeak for text-to-speech:
+```bash
+sudo apt-get update
+sudo apt-get install espeak
+```
+
+Set up Google Cloud Vision API credentials:
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=vision1-your_file_Name_here.json
+```
+
+### Running the Program
+
+```bash
+python empathybot.py
+```
 # Details
 
 In this tutorial, we build a robot that responds to human emtions.  We developed a Raspberry Pi Robot with the GoPiGo that will drive up to you, read your emotions, and then try to have a conversation with you, based on how you’re feeling.  We will show you how you too can build your own DIY emotion-reading robot with a Raspberry Pi.
@@ -45,7 +85,7 @@ Relevant JSON Responses from Google:
 
 # See Also
 
-The GoPiGo is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo)  
+The GoPiGo is a delightful and complete robot for the Raspberry Pi that turns your Pi into a fully operating robot.  GoPiGo is a mobile robotic platform for the Raspberry Pi developed by [Dexter Industries.](http://www.dexterindustries.com/GoPiGo)
 
 - [Dexter Industries] (http://www.dexterindustries.com/GoPiGo)
 - [Kickstarter Campaign] (http://kck.st/Q6vVOP)

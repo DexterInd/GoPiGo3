@@ -1,10 +1,10 @@
-# GoPiGo3 Pixy2 Lane Tracker Requirements
-# Python packages required for Pixy2 camera-based lane following
+# GoPiGo3 Pixy2 Object Tracker Requirements
+# Python packages required for Pixy2 camera-based object tracking
 
 # Option 1: If reusing an existing GoPiGo3 virtual environment
 # (mr-gopigo3 is already installed, so only install additional packages):
 #   source /path/to/gopigo3/venv/bin/activate
-#   pip install recordclass
+#   pip install pixy2 recordclass scipy getkey
 
 # Option 2: If creating a new virtual environment for this project:
 #   python3 -m venv venv
@@ -14,14 +14,23 @@
 # Core GoPiGo3 library
 mr-gopigo3
 
+# Pixy2 camera library
+pixy2
+
 # Lightweight data structure library
 recordclass
 
+# Scientific computing library (for interpolation)
+scipy
+
+# Keyboard input library
+getkey
+
 # Hardware requirements:
 # - Pixy2 camera connected to GoPiGo3 SPI port
-# - Pixy2 configured with line detection settings
+# - Pixy2 configured with color signatures
 
 # How to run:
-#   python pixy2_lane_follower.py
-# The robot follows lanes detected by the Pixy2 camera
-# Can also use Jupyter notebooks for training and dataset analysis
+#   python pixy2_object_tracker.py
+# The robot tracks and follows colored objects detected by the Pixy2 camera
+# Uses PID control for smooth tracking

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 GoPiGo3 for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
@@ -18,9 +18,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 """
 
-from __future__ import print_function
-from __future__ import division
-
 # module for interfacing with the GoPiGo3 from
 # a terminal with a keyboard
 from keyboarded_robot import GoPiGo3WithKeyboard
@@ -36,8 +33,6 @@ def Main():
     # the keys-to-gopigo3 bindings are defined inside the class
     gopigo3 = GoPiGo3WithKeyboard()
 
-    # draws the GoPiGo3 logo
-    gopigo3.drawLogo()
     # writes some description on the GoPiGo3
     gopigo3.drawDescription()
     # writes the menu for controlling the GoPiGo3 robot

@@ -1,0 +1,30 @@
+# GoPiGo3 PID Line Follower Requirements
+# Python packages required for PID-controlled line following robot
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, so only install additional packages):
+#   source /path/to/gopigo3/venv/bin/activate
+#   pip install DI-Sensors curtsies
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# Dexter Industries sensor library (for Line Follower sensor)
+DI-Sensors
+
+# Terminal UI library for keyboard input
+curtsies
+
+# Hardware requirements:
+# - Dexter Industries Line Follower sensor connected to I2C port
+
+# How to run:
+#   python pid_tuner.py
+# Use keyboard controls to tune PID parameters in real-time:
+# - Follow a line while adjusting Kp, Ki, Kd values
+# - Optimize line following performance

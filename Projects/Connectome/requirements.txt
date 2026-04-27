@@ -1,0 +1,20 @@
+# GoPiGo3 Connectome Requirements
+# Python packages required for C. elegans connectome simulation
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, no additional packages needed):
+#   source /path/to/gopigo3/venv/bin/activate
+#   python GoPiGo3Connectome.py
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# How to run:
+#   python GoPiGo3Connectome.py
+# This simulates a C. elegans worm brain connectome on the GoPiGo3
+# The robot uses the distance sensor as a "nose touch" sensor

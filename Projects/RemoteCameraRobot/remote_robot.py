@@ -139,7 +139,7 @@ def index():
 
 @app.route("/<string:page_name>")
 def page(page_name):
-    return render_template("{}".format(page_name))
+    return render_template(f"{page_name}")
 
 @app.route("/static/<path:path>")
 def send_static(path):

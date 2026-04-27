@@ -1,3 +1,33 @@
+# GoPiGo3 Remote Camera Robot Requirements
+# Python packages required for Flask-based web-controlled robot with camera
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, so only install additional packages):
+#   source /path/to/gopigo3/venv/bin/activate
+#   pip install flask==3.1.3 werkzeug==3.1.6 picamera==1.13
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# Web framework
 flask==3.1.3
 werkzeug==3.1.6
+
+# Raspberry Pi camera module
 picamera==1.13
+
+# Hardware requirements:
+# - Raspberry Pi Camera Module must be enabled
+
+# How to run:
+#   python remote_robot.py
+# Access the web interface at http://<raspberry-pi-ip>:5000
+# Control the robot and view camera feed through your web browser
+
+# Optional: Install as systemd service for auto-start on boot:
+#   sudo bash install_startup.sh

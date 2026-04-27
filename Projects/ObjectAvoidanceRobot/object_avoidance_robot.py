@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 GoPiGo3 for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
@@ -46,18 +46,9 @@ def signal_handler(signal, frame):
 # function for debugging
 def debug(string):
     if DEBUG is True:
-        print("Debug: " + str(string))
+        print(f"Debug: {string}")
 
 def Main():
-
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
-
     # initializing an EasyGoPiGo3 object and a DistanceSensor object
     # used for interfacing with the GoPiGo3 and with the distance sensor
     try:
@@ -123,7 +114,7 @@ def Main():
             gopigo3.forward()
 
         # and last, print some stats
-        print("Current distance : {:4} mm Current speed: {:4} Stopped: {}".format(current_distance, int(determined_speed), gopigo3_stationary is True ))
+        print(f"Current distance : {current_distance:4} mm Current speed: {int(determined_speed):4} Stopped: {gopigo3_stationary is True}")
 
         # give it some time,
         # otherwise you'll have a hard time exiting the script

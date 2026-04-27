@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 GoPiGo3 for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
@@ -17,9 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 """
-
-from __future__ import print_function
-from __future__ import division
 
 # module for interfacing with the GoPiGo3 from
 # a terminal with a keyboard

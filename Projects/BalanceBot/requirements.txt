@@ -1,0 +1,21 @@
+# GoPiGo3 BalanceBot Requirements
+# Python packages required for the Balance Bot project
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, so only install additional packages):
+#   source /path/to/gopigo3/venv/bin/activate
+#   pip install -r requirements.txt
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# Dexter Industries sensor library (for IMU sensor)
+DI-Sensors
+
+# How to run:
+#   python BalanceBot.py

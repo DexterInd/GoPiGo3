@@ -2,9 +2,34 @@
 
 The GoPiGo3Connectome.py Python program provided here can be used with a Raspberry Pi GoPiGo3 robotic kit created by Dexter Industries.
 
-To run this code, type
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed, you can use it directly (no additional packages needed):
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+python GoPiGo3Connectome.py
 ```
-sudo python3 GoPiGo3Connectome.py
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv connectome
+source connectome/bin/activate
+pip install -r requirements.txt
+```
+
+## Running the Program
+
+To run this code, type:
+```bash
+python GoPiGo3Connectome.py
 ```
 
 # Updated for GoPiGo3

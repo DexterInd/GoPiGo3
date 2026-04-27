@@ -8,12 +8,48 @@ In this project, a GoPiGo3 is used in tandem with a Pixy2 to create a robot that
 
 Needless to say, it's a much more fun challange than with a line follower.
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install recordclass
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv pixy2lanetracker
+source pixy2lanetracker/bin/activate
+pip install -r requirements.txt
+```
+
+### Installing Pixy2 Library
+
+Install the Pixy2 library:
+```bash
+pip install git+https://github.com/RobertLucian/pixy2.git@v0.1.0
+```
+
+### Running the Program
+
+```bash
+python pixy2_lane_follower.py
+```
+
 ## Hardware
 
-This is what's needed for this project: 
+This is what's needed for this project:
 
 * A  *GoPiGo3*.
-* A *Pixy2* camera. 
+* A *Pixy2* camera.
 * Zip ties.
 * A custom made cable used for interfacing with the Pixy2 over I2C.
 
@@ -21,7 +57,7 @@ The zip ties are needed to anchor the Pixy2 to the GoPiGo3's chassis. The tilt o
 
 The custom made cable is a Grove cable which has one end replaced with header pins. Those header pins are used to connect to the Pixy2's board. The I2C communication is done through that. To see what the Pixy2's interface looks like, check out [this](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:porting_guide).
 
-Last but not least, it is recommended to use an additional power source for the Pixy2 because this device is quite power hungry that can otherwise lead to a system crash of the Raspberry Pi. 
+Last but not least, it is recommended to use an additional power source for the Pixy2 because this device is quite power hungry that can otherwise lead to a system crash of the Raspberry Pi.
 
 ## Dependencies
 
@@ -53,7 +89,7 @@ In a nutshell, the trick is in lowering the line detection algorithm's sensitivi
 ![Imgur](https://i.imgur.com/nhhU2Eo.jpg)
 *Figure 3 - The Pixy2's Tilt*
 
-The lane follower script loads on start up a config file from the same directory as the script itself: `config.json`. This config file contains the configurations needed for the robot to work well. Setting up the right values can mean the difference between a bad robot driver and an excellent one. The user *has to* tinker with these values because the Pixy2 doesn't have a fix mount support for it and thus every situation will be different. Even sub-millimetric differences in how the Pixy2 is positioned can mean a lot for the robot's computed trajectory. Blame the zip ties! 
+The lane follower script loads on start up a config file from the same directory as the script itself: `config.json`. This config file contains the configurations needed for the robot to work well. Setting up the right values can mean the difference between a bad robot driver and an excellent one. The user *has to* tinker with these values because the Pixy2 doesn't have a fix mount support for it and thus every situation will be different. Even sub-millimetric differences in how the Pixy2 is positioned can mean a lot for the robot's computed trajectory. Blame the zip ties!
 
 The `config.json` file has the following fields:
 
@@ -90,7 +126,7 @@ The track also needs to have a couple of properties:
 1. The distance between the inner edges of the lane has to be *15 cm*.
 1. The width of the lane's lines has to be around *2 (or more) cm*.
 1. The most sharp curve can have a radius of *32 cm*.
-1. There can only be 2 type of curves on the track because there are 2 PID controllers: say one type has a radius of 32 cm and the other has 78 cm. Theoretically, even with 2 PIDs there could be a wider range of permitted curves, but they should mostly have a small deviation. Like curves from 25-35 cm and then another range starting with 70 and going up to 100. It is possible, although the tuning process would be harder. The simplest option is in just having 2 types and that's it. 
+1. There can only be 2 type of curves on the track because there are 2 PID controllers: say one type has a radius of 32 cm and the other has 78 cm. Theoretically, even with 2 PIDs there could be a wider range of permitted curves, but they should mostly have a small deviation. Like curves from 25-35 cm and then another range starting with 70 and going up to 100. It is possible, although the tuning process would be harder. The simplest option is in just having 2 types and that's it.
 
 The track that has been built can be observed in *figure 6*.
 

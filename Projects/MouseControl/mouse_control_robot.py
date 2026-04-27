@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 ## License
  GoPiGo for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
@@ -20,7 +20,6 @@ import sys
 import signal
 from time import sleep
 from easygopigo3 import EasyGoPiGo3
-from builtins import input
 import threading
 import gopigo3
 import atexit
@@ -51,16 +50,8 @@ def getMouseValues(file_input):
 
     buf = file_input.read(3)
 
-    # if ran with Python 3
-    # ord function will throw an exception, since
-    # buf[0] already is an integer, as opposed in Python 2
-    # where buf[0] is a string
-    try:
-        button = ord(buf[0])
-    except TypeError as msg:
-        button = buf[0]
-        if debug is True:
-            print(str(msg))
+    # In Python 3, buf[0] is already an integer
+    button = buf[0]
 
     print(button)
     left_button = (button & 0x1) > 0
@@ -69,20 +60,12 @@ def getMouseValues(file_input):
     x_axis, y_axis = struct.unpack("bb", buf[1:])
 
     if debug is True:
-        print("Left but: {}, Middle but: {}, Right but: {}, x pos: {}, y pos: {}".format(left_button, middle_button, right_button, x_axis, y_axis))
+        print(f"Left but: {left_button}, Middle but: {middle_button}, Right but: {right_button}, x pos: {x_axis}, y pos: {y_axis}")
 
     return (left_button, middle_button, right_button, x_axis, y_axis)
 
 
 def Main():
-
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
 
     print("To move the robot around using the mouse buttons press 1 and enter.")
     print("To move the robot around using the movements of the mouse press 2 and enter.")

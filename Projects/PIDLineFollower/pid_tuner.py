@@ -1,6 +1,3 @@
-from __future__ import print_function
-from __future__ import division
-
 from curtsies import Input
 from easygopigo3 import EasyGoPiGo3
 from di_sensors.easy_line_follower import EasyLineFollower
@@ -8,15 +5,6 @@ from threading import Thread, Event
 import signal
 
 from time import sleep, time
-
-def drawLogo():
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
 
 def drawDescription():
     print("\nPress the following keys to run the features of the GoPiGo3/LineFollower.")
@@ -48,7 +36,7 @@ def drawMenu():
     order_of_keys = ["<ESC>", "x", "<SPACE>", "1", "2", "3", "4", "u", "j", "n", "i", "k", "m", "r", "w", "b"]
     try:
         for key in order_of_keys:
-            print("\r[key {:8}] :  {}".format(key, keybindings[key]))
+            print(f"\r[key {key:8}] :  {keybindings[key]}")
     except KeyError:
         print("Error: Keys found in order_of_keys don't match with those in keybindings.")
     print()
@@ -79,7 +67,7 @@ def controller():
     global stopper, gpg, lf, stepSize, loopFreq, setPoint, motorSpeed, leftMotorSpeed, rightMotorSpeed,stopMotors, Kp, Ki, Kd
     global integralArea
     loopPeriod = 1 / loopFreq
-    
+
     integralArea = 0.0
     previousError = 0.0
 
@@ -97,7 +85,7 @@ def controller():
                 integralArea = 0.0
             else:
                 integralArea += error
-            correction = Kp * error + Ki * integralArea + Kd * (error - previousError) 
+            correction = Kp * error + Ki * integralArea + Kd * (error - previousError)
             # print(Kp * error, Ki * integralArea, Kd * (error - previousError))
             previousError = error
 
@@ -124,11 +112,10 @@ def controller():
         print(str(err))
         stopper.set()
     finally:
-        gpg.stop()     
+        gpg.stop()
 
 def Main():
 
-    drawLogo()
     drawDescription()
     drawMenu()
 
@@ -190,8 +177,8 @@ def Main():
             if key == "b":
                 lf.set_calibration('black')
 
-            print('Kp={:3f} Ki={:3f} Kd={:3f} L={:3d} R={:3d} ErrorArea={:3f} LoopFreq={:3d} Speed={:3d}'.format(Kp, Ki, Kd, leftMotorSpeed, rightMotorSpeed, integralArea, int(loopFreq), motorSpeed))
-    
+            print(f'Kp={Kp:3f} Ki={Ki:3f} Kd={Kd:3f} L={leftMotorSpeed:3d} R={rightMotorSpeed:3d} ErrorArea={integralArea:3f} LoopFreq={int(loopFreq):3d} Speed={motorSpeed:3d}')
+
     controlThread.join()
 
 if __name__ == "__main__":

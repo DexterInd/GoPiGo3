@@ -211,7 +211,7 @@ class GoPiGo3:
     GROVE_LOW  = 0
     GROVE_HIGH = 1
 
-    def __init__(self, addr = 8, detect = True, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+    def __init__(self, addr = 8, detect = True, config_file_path=None):
         """
         Do any necessary configuration, and optionally detect the GoPiGo3
 
@@ -227,6 +227,11 @@ class GoPiGo3:
         :py:meth:`~easygopigo3.EasyGoPiGo3.save_robot_constants` method.
 
         """
+
+        # Default config file path: user home directory
+        if config_file_path is None:
+            import os
+            config_file_path = os.path.join(os.path.expanduser('~'), '.gpg3_config.json')
 
         # SPI pins 9/10/11 (MISO/MOSI/SCLK) must be in ALT0 mode.
         # Ensure SPI is enabled via 'dtparam=spi=on' in /boot/firmware/config.txt
@@ -327,14 +332,17 @@ class GoPiGo3:
                     ((Value >> 24) & 0xFF), ((Value >> 16) & 0xFF), ((Value >> 8) & 0xFF), (Value & 0xFF)]
         self.spi_transfer_array(outArray)
 
-    def _check_serial_number_for_16_ticks(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+    def _check_serial_number_for_16_ticks(self, config_file_path=None):
         '''
         Check known list of serial numbers that were shipped with 16 tick motors
         '''
         import pickle
         from os import path
-        serial_path = path.split(config_file_path)[0]
-        serial_file = serial_path+"/.list_of_serial_numbers.pkl"
+        if config_file_path is None:
+            serial_path = path.expanduser('~')
+        else:
+            serial_path = path.split(config_file_path)[0]
+        serial_file = serial_path+"/.gpg3_list_of_serial_numbers.pkl"
         try:
             with open(serial_file, 'rb') as f:
                 serials_with_16_ticks = pickle.load(f)
@@ -348,13 +356,13 @@ class GoPiGo3:
             return False
 
 
-    def load_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+    def load_robot_constants(self, config_file_path=None):
         """
         Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
 
         This method gets called by the constructor.
 
-        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :param str config_file_path: Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3. If None, uses ~/.gpg3_config.json.
         :raises FileNotFoundError: When the file is non-existent.
         :raises KeyError: If one of the keys is not part of the dictionary.
         :raises ValueError: If the saved values are not positive numbers (floats or ints).
@@ -379,6 +387,11 @@ class GoPiGo3:
         If the file is empty (which may happens on GoPiGo OS), then the file will be overwritten with appropriate default values.
         If the file has content, the robot constants are redefined based on that content. Should tick and gear_ratio be missing, default values will be supplied.
         """
+
+        # Default config file path: user home directory
+        if config_file_path is None:
+            import os
+            config_file_path = os.path.join(os.path.expanduser('~'), '.gpg3_config.json')
 
         # default values for ticks and motor_gear_ratio
         # in case they are not present in the file we load up
@@ -424,11 +437,11 @@ class GoPiGo3:
                 # protect against write errors - just in case
                 pass
 
-    def save_robot_constants(self, config_file_path="/home/pi/Dexter/gpg3_config.json"):
+    def save_robot_constants(self, config_file_path=None):
         """
         Save the current wheel diameter and wheel base width constants (from within this object's context) for the GoPiGo3 to file for future use.
 
-        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :param str config_file_path: Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3. If None, uses ~/.gpg3_config.json.
         :raises IOError: When the file cannot be accessed.
         :raises PermissionError: When there are not enough permissions to create the file.
 
@@ -444,6 +457,11 @@ class GoPiGo3:
             }
 
         """
+        # Default config file path: user home directory
+        if config_file_path is None:
+            import os
+            config_file_path = os.path.join(os.path.expanduser('~'), '.gpg3_config.json')
+
         with open(config_file_path, 'w') as json_file:
             data = {
                 "wheel-diameter": self.WHEEL_DIAMETER,

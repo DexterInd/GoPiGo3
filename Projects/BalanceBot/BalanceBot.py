@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # https://www.dexterindustries.com/GoPiGo3/
 # https://github.com/DexterInd/GoPiGo3
@@ -8,20 +8,17 @@
 # For more information, see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
 #
 # This code is an example for a balancing robot using the GoPiGo3.
-# 
+#
 # Hardware:
-#     * Connect a Dexter Industries IMU sensor to GoPiGo3 AD1 port.  
+#     * Connect a Dexter Industries IMU sensor to GoPiGo3 AD1 port.
 #     Gyro should be placed on the right hand side of the GoPiGo3, next to the por Servo 1, with the Arrow pointing forward.
 #     * Connect a grove IR receiver to GoPiGo3 AD2 port.
 #     IR Receiver should be placed across from the IMU.
 #     * Sensor Mounts: Connect the IR Receiver and the IMU sensor using the Dexter Industries Sensor Mounts.
 #     * IR Remote Control:  Control the robot using the Dexter Industries IR Remote Control
-# 
+#
 # Results:  When you run this program, follow the instruction printed in the terminal.
 # Note: This project is best run on a carpeted surface!
-
-from __future__ import print_function # use python 3 syntax but make it compatible with python 2
-from __future__ import division       #                           ''
 
 import time     # import the time library for the sleep function
 import gopigo3  # import the GoPiGo3 drivers
@@ -80,7 +77,7 @@ def SafeExit():
 def ReadyForBalance():
     # float the motors
     GPG.set_motor_power(GPG.MOTOR_LEFT + GPG.MOTOR_RIGHT, GPG.MOTOR_FLOAT)
-    
+
     # create/access global variables
     global gyroAngle
     global mrcSum
@@ -93,16 +90,16 @@ def ReadyForBalance():
     global TimeOffset
     global tInterval
     global LastTime
-    
+
     # wait for the 'OK' button to be pressed
     print("Stand robot up and then press 'OK' on the remote.")
     while GPG.get_grove_value(PORT_SENSOR_IR) != 3:
         time.sleep(0.1)
-    
+
     # reset the encoders
     GPG.offset_motor_encoder(GPG.MOTOR_LEFT, GPG.get_motor_encoder(GPG.MOTOR_LEFT))
     GPG.offset_motor_encoder(GPG.MOTOR_RIGHT, GPG.get_motor_encoder(GPG.MOTOR_RIGHT))
-    
+
     # set variables to 0
     gyroAngle = 0
     mrcSum = 0
@@ -115,23 +112,23 @@ def ReadyForBalance():
     TimeOffset = 0
     tInterval = LOOP_TIME
     LastTime = time.time() - LOOP_TIME
-    
+
     print("Balancing, so let go of the robot.")
     print("Use Up, Down, Left, and Right on the remote to drive the robot.")
 
 try:
     print("GoPiGo3 BalanceBot.")
-    
+
     # make sure voltage is high enough
     if GPG.get_voltage_battery() < 9:
         print("Battery voltage below 9v; too low to run reliably. Exiting.")
         SafeExit()
-    
+
     # configure the IR remote
     GPG.set_grove_type(PORT_SENSOR_IR, GPG.GROVE_TYPE.IR_DI_REMOTE)
-    
+
     ReadyForBalance()
-    
+
     while True:
         try:
             # loop at exactly the speed specified by LOOP_SPEED, and set tInterval to the actual loop time
@@ -144,10 +141,10 @@ try:
             tInterval = (CurrentTime - LastTime)
             LastTime = CurrentTime
             #print(tInterval, TimeOffset)
-            
+
             # get the remote button being pressed
             Button = GPG.get_grove_value(PORT_SENSOR_IR)
-            
+
             # if an arrow is being pressed, drive or steer accordingly
             if Button == 1:
                 motorControlDrive = DRIVE_SPEED
@@ -164,33 +161,33 @@ try:
             else:
                 motorControlDrive = 0
                 motorControlSteer = 0
-            
+
             # get the gyro rotation rate in degrees per second
             # Gyro should be placed on the right hand side of the GoPiGo3, next to the por Servo 1, with the Arrow pointing forward.
             gyroSpeed = imu.read_gyroscope()[2] # specifically use the Z axis
-            
+
             # This line, if uncommented, allows you to place the gyro on top of the GoPiGo3, arrow pointing upwards.
             # gyroSpeed = -imu.read_gyroscope()[0] # specifically use the X axis
-            
+
             # integrate the gyro to get robot angle
             gyroAngle += gyroSpeed * tInterval
-            
+
             # correct for gyro integration errors (slowly work towards center)
             gyroAngle -= (gyroAngle * KGYROANGLECORRECT * tInterval)
-            
+
             # get the current motor encoder positions
             mrcLeft = GPG.get_motor_encoder(GPG.MOTOR_LEFT)
             mrcRight = GPG.get_motor_encoder(GPG.MOTOR_RIGHT)
-            
+
             # calculate motor speed
             mrcSumPrev = mrcSum
             mrcSum = mrcLeft + mrcRight
             mrcDelta = mrcSum - mrcSumPrev
             motorSpeed = mrcDelta / tInterval
-            
+
             # adjust motor position/target
             motorPos += (mrcDelta - (motorControlDrive * tInterval))
-            
+
             # calculate the motor power
             power = (((KGYROSPEED * gyroSpeed +               # (Deg/Sec from Gyro sensor
                      KGYROANGLE * gyroAngle) / WHEEL_RATIO +  # Deg from integral of gyro) / wheel ratio
@@ -198,18 +195,18 @@ try:
                      KDRIVE     * motorControlDrive +         # To improve start/stop performance
                      KSPEED     * motorSpeed) /               # Motor speed in Deg/Sec
                      (KVOLTAGE * GPG.get_voltage_battery()))  # To maintain similar performance over a voltage range
-            
+
             # if the power is not maxed out, record the time
             if abs(power) < 100:
                 tMotorPosOK = CurrentTime
-            
+
             # calculate the speed for left and right motor, taking into account the desired turn
             motorDiffTarget += motorControlSteer * tInterval
             motorDiff = mrcLeft - mrcRight
             powerSteer = KSTEER * (motorDiffTarget - motorDiff)
             powerLeft = power + powerSteer
             powerRight = power - powerSteer
-            
+
             # clip the motor power to +-100
             if  powerLeft  >  100:
                 powerLeft  =  100
@@ -219,21 +216,21 @@ try:
                 powerRight =  100
             if  powerRight < -100:
                 powerRight = -100
-            
+
             # set the motor power
             GPG.set_motor_power(GPG.MOTOR_LEFT , powerLeft)
             GPG.set_motor_power(GPG.MOTOR_RIGHT, powerRight)
-            
+
             # if the motors have been running at full power for at least TIME_FALL_LIMIT, assume the robot fell.
             if (CurrentTime - tMotorPosOK) > TIME_FALL_LIMIT:
                 print("Robot fell.")
                 ReadyForBalance()
-            
+
         except gopigo3.SensorError as error:
             print(error)
         except IOError as error:
             print(error)
-    
+
 except KeyboardInterrupt:
     print("\nCtrl+C. Exiting.")
     SafeExit()

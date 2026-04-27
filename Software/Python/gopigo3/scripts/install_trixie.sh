@@ -102,13 +102,6 @@ fi
 if grep -qi "Lite" /etc/os-release 2>/dev/null; then
     echo "Raspberry Pi OS Lite detected — skipping VNC (no desktop environment)."
 else
-    if dpkg-query -W -f='${Status}' realvnc-vnc-server 2>/dev/null | grep -q "install ok installed"; then
-        echo "VNC server package already installed."
-    else
-        echo "Installing VNC server..."
-        sudo apt-get install -y --no-install-recommends realvnc-vnc-server
-    fi
-
     if systemctl is-enabled vncserver-x11-serviced >/dev/null 2>&1 && \
        systemctl is-active vncserver-x11-serviced >/dev/null 2>&1; then
         echo "VNC server already enabled and active — skipping."
@@ -165,6 +158,23 @@ install_power_service() {
 }
 
 install_power_service
+
+install_list_of_serials_with_16_ticks() {
+    echo "Installing list of serial numbers with 16 ticks..."
+    local SOURCE_FILE="$SCRIPT_DIR/../../Install/list_of_serial_numbers.pkl"
+
+    if [ ! -f "$SOURCE_FILE" ]; then
+        echo "Warning: $SOURCE_FILE not found. Skipping serial numbers installation."
+        return
+    fi
+
+    # Copy to user's home directory
+    local DEST_FILE="$HOME/.gpg3_list_of_serial_numbers.pkl"
+    cp "$SOURCE_FILE" "$DEST_FILE"
+    echo "Serial numbers list installed to $DEST_FILE."
+}
+
+install_list_of_serials_with_16_ticks
 
 install_calibration_panel() {
     echo "Installing GoPiGo3 Calibration Panel shortcut on desktop..."

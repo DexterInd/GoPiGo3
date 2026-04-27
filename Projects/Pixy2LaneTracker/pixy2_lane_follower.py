@@ -126,7 +126,7 @@ def video_worker(queue, event_stopper):
 
     # while the event hasn't been set
     while not event_stopper.is_set():
-        
+
         # get the data off of the queue
         if not queue.empty():
             data = queue.get()
@@ -153,13 +153,13 @@ def video_worker(queue, event_stopper):
                      (vector.x0 * scale, vector.y0 * scale),
                      (vector.x1 * scale, vector.y1 * scale),
                      color=255, thickness=1)
-            cv2.putText(img, 'Frame {}'.format(frame_index),
+            cv2.putText(img, f'Frame {frame_index}',
                         (int(0.1 * nh), int(0.1 * nw)), font, 0.5, 255, 1, cv2.LINE_AA)
-            cv2.putText(img, 'FPS {}'.format(int(fps)),
+            cv2.putText(img, f'FPS {int(fps)}',
                         (int(0.1 * nh), int(0.15 * nw)), font, 0.5, 255, 1, cv2.LINE_AA)
-            cv2.putText(img, 'Angle {}'.format(int(angle)),
+            cv2.putText(img, f'Angle {int(angle)}',
                         (int(1.0 * nh), int(0.1 * nw)), font, 0.5, 255, 1, cv2.LINE_AA)
-            cv2.putText(img, 'Mag {}'.format(int(magnitude)),
+            cv2.putText(img, f'Mag {int(magnitude)}',
                         (int(1.0 * nh), int(0.15 * nw)), font, 0.5, 255, 1, cv2.LINE_AA)
 
         # generated the warped image as seen from the bird's eye perspective
@@ -213,11 +213,11 @@ def runner(event_stopper):
         # get the number of frames per second
         fps = pixy.get_fps()
         period = 1 / fps
-        logger.info('pixy2 running at {} fps'.format(fps))
+        logger.info(f'pixy2 running at {fps} fps')
 
         # camera resolution
         width, height = pixy.get_resolution()
-        logger.info('pixy2 camera width={} height={}'.format(width, height))
+        logger.info(f'pixy2 camera width={width} height={height}')
 
         # keep previous measurements for smoothing out the data
         previous_angle = 0
@@ -227,20 +227,20 @@ def runner(event_stopper):
         frame_index = 0
         alfa = config['alfa']
         yotta = config['yotta'] # magnitude importance
-        logger.info('alfa (exp. moving average factor) = {:3.2f}'.format(alfa))
-        logger.info('yotta (magnitude importance) = {:3.2f}'.format(yotta))
+        logger.info(f'alfa (exp. moving average factor) = {alfa:3.2f}')
+        logger.info(f'yotta (magnitude importance) = {yotta:3.2f}')
 
         # the 2 PIDs
         c1 = PID(Kp=config['pid1']['Kp'], Ki=config['pid1']['Ki'], Kd=config['pid1']['Kd'], previous_error=0.0, integral_area=0.0)
         c2 = PID(Kp=config['pid2']['Kp'], Ki=config['pid2']['Ki'], Kd=config['pid2']['Kd'], previous_error=0.0, integral_area=0.0)
         pid_switch_point = config['pid-switch-point']
-        logger.info('PID 1 = {}'.format(str(c1)))
-        logger.info('PID 2 = {}'.format(str(c2)))
-        logger.info('PID switchpoint = {}'.format(pid_switch_point))
-        
+        logger.info(f'PID 1 = {str(c1)}')
+        logger.info(f'PID 2 = {str(c2)}')
+        logger.info(f'PID switchpoint = {pid_switch_point}')
+
         set_point = 0
         max_motor_speed = config['max-motor-speed']
-        logger.info('max motor speed = {}'.format(max_motor_speed))
+        logger.info(f'max motor speed = {max_motor_speed}')
 
         while not event_stopper.is_set():
 
@@ -278,7 +278,7 @@ def runner(event_stopper):
 
             angle = ema_angle
             magnitude = ema_magnitude
-            
+
             # push the processed information to the graphical renderer (on a separate process)
             if not queue.full():
                 queue.put({
@@ -304,7 +304,7 @@ def runner(event_stopper):
                 c = c2
                 c1.integral_area = 0.0
                 pid1 = False
-            
+
             # calculate the correction
             correction = c.Kp * error + c.Ki * c.integral_area + c.Kd * (error - c.previous_error)
             c1.previous_error = error
