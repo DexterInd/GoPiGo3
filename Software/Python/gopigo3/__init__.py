@@ -18,7 +18,7 @@ from .easysensors import (
     DHTSensor,
 )
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __all__ = [
     "GoPiGo3",
     "FirmwareVersionError",

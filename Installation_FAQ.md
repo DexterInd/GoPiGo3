@@ -114,7 +114,7 @@ This is the recommended approach for most users. You flash a standard Raspberry 
 ### Test it
 
 ```bash
-python3 -c 'import gopigo3; print("GoPiGo3 installed successfully!")'
+python3 -c 'import gopigo3; g = gopigo3.GoPiGo3(); print("GoPiGo3 installed successfully!")'
 ```
 
 ---
@@ -163,7 +163,7 @@ The setup steps are identical to Option A — the only difference is how the lib
 5. **Test it**
 
 ```bash
-python3 -c 'import gopigo3; print("GoPiGo3 installed successfully!")'
+python3 -c 'import gopigo3; g = gopigo3.GoPiGo3(); print("GoPiGo3 installed successfully!")'
 ```
 
 ### Explore the examples
