@@ -59,7 +59,7 @@ def main():
     _install_service(POWER_SERVICE_NAME, f"""\
 [Unit]
 Description=GoPiGo3 Power Management
-After=multi-user.target
+After=local-fs.target
 
 [Service]
 Type=simple
