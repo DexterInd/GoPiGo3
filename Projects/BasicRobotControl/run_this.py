@@ -33,8 +33,6 @@ def Main():
     # the keys-to-gopigo3 bindings are defined inside the class
     gopigo3 = GoPiGo3WithKeyboard()
 
-    # draws the GoPiGo3 logo
-    gopigo3.drawLogo()
     # writes some description on the GoPiGo3
     gopigo3.drawDescription()
     # writes the menu for controlling the GoPiGo3 robot

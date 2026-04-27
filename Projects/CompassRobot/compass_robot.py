@@ -318,14 +318,6 @@ def Main(trigger):
                           "w": "move"} # the selectable options within the menu
     menu_order = ["<LEFT>", "<RIGHT>", "<UP>", "<DOWN>", "<SPACE>", "w"] # and the order of these options
 
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
-
     # starting the workers/threads
     orientate_thread = threading.Thread(target = orientate, args = (trigger, simultaneous_launcher, sensor_queue))
     robotcontrol_thread = threading.Thread(target = robotControl, args = (trigger, simultaneous_launcher, motor_command_queue, sensor_queue))

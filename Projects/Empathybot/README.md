@@ -1,5 +1,5 @@
 # Empathybot: The Raspberry Pi Robot That Reads Human Emotion
-
+⚠️ **IMPORTANT NOTE:** This project is currently not functional due to Google Cloud Vision API changes. The code uses Vision API v1 which has been deprecated. This project requires significant updates to work with the current API version.
 ![ GoPiGo ](https://github.com/DexterInd/GoPiGo/raw/master/Projects/Empathybot/Empathybot.jpg)
 
 In this project we built emotional intelligence to our robot.  We developed a Raspberry Pi Robot with the GoPiGo that will drive up to you, read your emotions, and then try to have a conversation with you, based on how you’re feeling.  We will show you how you too can build your own DIY emotion-reading robot with a Raspberry Pi.

@@ -49,15 +49,6 @@ def debug(string):
         print(f"Debug: {string}")
 
 def Main():
-
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
-
     # initializing an EasyGoPiGo3 object and a DistanceSensor object
     # used for interfacing with the GoPiGo3 and with the distance sensor
     try:

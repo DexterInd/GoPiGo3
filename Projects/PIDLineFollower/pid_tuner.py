@@ -6,15 +6,6 @@ import signal
 
 from time import sleep, time
 
-def drawLogo():
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
-
 def drawDescription():
     print("\nPress the following keys to run the features of the GoPiGo3/LineFollower.")
     print("Press on the appropriate keys to tune the PID parameters for the line follower.\n")
@@ -125,7 +116,6 @@ def controller():
 
 def Main():
 
-    drawLogo()
     drawDescription()
     drawMenu()
 

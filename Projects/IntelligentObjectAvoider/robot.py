@@ -252,14 +252,6 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
 
 
 def Main(trigger):
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
-
     print("Let your GoPiGo3 move around and avoid any obstacles.")
     print("Pay attention to how your GoPiGo3 moves around.")
     print("Avoid sharp corners / edges as the algorithm wasn't made for advanced stuff.")

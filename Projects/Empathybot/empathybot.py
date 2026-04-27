@@ -154,4 +154,18 @@ def main():
 		back_away()
 
 if __name__ == '__main__':
-    main()
+	print("\n" + "="*70)
+	print("WARNING: Google Cloud Vision API Compatibility Issue")
+	print("="*70)
+	print("\nThis project uses the Google Cloud Vision API v1, which has been")
+	print("deprecated and is no longer compatible with current API versions.")
+	print("\nTo use this project, you would need to:")
+	print("  1. Update to Google Cloud Vision API v2")
+	print("  2. Modify the authentication and API call methods")
+	print("  3. Update the response parsing for the new API structure")
+	print("\nFor more information, visit:")
+	print("https://cloud.google.com/vision/docs/reference/rest")
+	print("\n" + "="*70 + "\n")
+
+	gpg.stop()
+

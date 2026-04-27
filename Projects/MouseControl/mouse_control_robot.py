@@ -67,14 +67,6 @@ def getMouseValues(file_input):
 
 def Main():
 
-    print("   _____       _____ _  _____         ____  ")
-    print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-    print(" | |  __  ___ | |__) || |  __  ___     __) |")
-    print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-    print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-    print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-    print("                                            ")
-
     print("To move the robot around using the mouse buttons press 1 and enter.")
     print("To move the robot around using the movements of the mouse press 2 and enter.")
 

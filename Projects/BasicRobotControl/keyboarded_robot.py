@@ -96,18 +96,6 @@ class GoPiGo3WithKeyboard(object):
 
         return method()
 
-    def drawLogo(self):
-        """
-        Draws the name of the GoPiGo3.
-        """
-        print("   _____       _____ _  _____         ____  ")
-        print("  / ____|     |  __ (_)/ ____|       |___ \ ")
-        print(" | |  __  ___ | |__) || |  __  ___     __) |")
-        print(" | | |_ |/ _ \|  ___/ | | |_ |/ _ \   |__ < ")
-        print(" | |__| | (_) | |   | | |__| | (_) |  ___) |")
-        print("  \_____|\___/|_|   |_|\_____|\___/  |____/ ")
-        print("                                            ")
-
     def drawDescription(self):
         """
         Prints details related on how to operate the GoPiGo3.
