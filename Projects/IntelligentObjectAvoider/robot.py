@@ -228,7 +228,7 @@ def robotController(trigger, put_on_hold, simultaneous_launcher, sensor_queue):
             sleep(0.001)
             continue
 
-        print("Rotating at {} degrees and driving for {} cm".format(rotation, distance_to_walk * how_much_of_distance))
+        print(f"Rotating at {rotation} degrees and driving for {distance_to_walk * how_much_of_distance} cm")
 
         put_on_hold.set()
         gopigo3_robot.turn_degrees(rotation, blocking = True)

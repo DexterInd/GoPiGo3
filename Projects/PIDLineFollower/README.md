@@ -3,9 +3,44 @@
 This is a project you can use to tune your GoPiGo + Line Follower (bot the red and black boards) to follow a black/white line.
 
 It all starts with the sensor of your choice: be it the old line follower (the red one) or the new one,
-which has a much higher poll rate, the sensors are more accurate and reliable, has a reduced power consumption and has a smaller footprint. 
+which has a much higher poll rate, the sensors are more accurate and reliable, has a reduced power consumption and has a smaller footprint.
 
 ![Menu](menu.PNG)
+
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install DI-Sensors curtsies
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv pidlinefollower
+source pidlinefollower/bin/activate
+pip install -r requirements.txt
+```
+
+### Running the Program
+
+```bash
+python pid_tuner.py
+```
+
+Make use of the 2 available commands (`w` and `b`) in the menu to calibrate each line follower on a white and black surface.
+
+Next, update the Kp/Ki/Kd gains accordingly by using the appropriate commands listed in the menu and then finally let the GoPiGo3 run freely.
+
+## Sensors
 
 ### The Black Line Follower
 

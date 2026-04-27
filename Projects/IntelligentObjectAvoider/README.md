@@ -1,5 +1,36 @@
 # Intelligent Object Avoider Robot
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install scikit-learn
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv intelligentobjectavoider
+source intelligentobjectavoider/bin/activate
+pip install -r requirements.txt
+```
+
+### Running the Program
+
+```bash
+python robot.py
+```
+
+Press `CTRL-C` to stop the robot. Wait a couple of seconds until it finishes exiting.
+
 ## Component Requirements
 
 In this project, we make the `GoPiGo3` intelligently avoid obstacles. You need the following:

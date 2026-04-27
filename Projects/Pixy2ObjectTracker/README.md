@@ -2,11 +2,53 @@
 
 A robot that follows a designated object.
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install pixy2 recordclass scipy getkey
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv pixy2objecttracker
+source pixy2objecttracker/bin/activate
+pip install -r requirements.txt
+```
+
+### Installing System Dependencies
+
+Install scipy from system packages:
+```bash
+sudo apt-get update
+sudo apt-get install python3-scipy
+```
+
+Install Pixy2 library:
+```bash
+pip install git+https://github.com/RobertLucian/pixy2.git@v0.1.0
+```
+
+### Running the Program
+
+```bash
+python pixy2_object_tracker.py
+```
+
 ## Quick Overview
 
 ![Imgur](https://i.imgur.com/aABAITV.jpg)
 
-This is a project which uses the Pixy2 module in tandem with the GoPiGo3. The robot's purpose is to follow a designated object, which is color coded. In our case, we decided to go with a red object, because it is differentiated more easily. 
+This is a project which uses the Pixy2 module in tandem with the GoPiGo3. The robot's purpose is to follow a designated object, which is color coded. In our case, we decided to go with a red object, because it is differentiated more easily.
 
 The advantage of using a Pixy2 module along a GoPiGo3 is that a big chunk of the computer-vision processing is offloaded to the Pixy2, thus allowing the Raspberry Pi to "breathe" more easily. This leads to a shorter algorithm on the Pi's side.
 
@@ -45,7 +87,7 @@ sudo pip3 install git+https://github.com/RobertLucian/pixy2.git@v0.1.0
 
 To set this up, connect the Pixy2 to your laptop and run the PixyMon monitor. You can do that on your Raspberry Pi as well, but it's a bit more complicated. The installation instructions for both approaches can be found [here](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:pixy_regular_quick_start).
 
-Next, set your tracked object and use signature `1` as that's the one that's tracked in this project's script. Make sure the color of your object is separable from that of others, because the Pixy2 actually looks for colors instead of shapes. 
+Next, set your tracked object and use signature `1` as that's the one that's tracked in this project's script. Make sure the color of your object is separable from that of others, because the Pixy2 actually looks for colors instead of shapes.
 
 The Pixy2 can be relatively easily mounted with zip ties on the GoPiGo3's chassis and in this particular situation, the angle of tilt is not important.
 

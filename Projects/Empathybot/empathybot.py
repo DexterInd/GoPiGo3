@@ -1,10 +1,10 @@
-#! /usr/local/bin/python
+#!/usr/bin/env python3
 
 distance_from_body = 50	# Distance the GoPiGo will stop from the human body.
 gopigo_speed = 150		# Power of the motors.  Increase or decrease depending on how fast you want to go.
 
 import argparse
-import urllib2
+import urllib.request
 import base64
 import picamera
 import json
@@ -39,22 +39,22 @@ def sound(spk):
 
 	cmd_beg=" espeak -ven-us+f3 -a 200 -s145 -k20 --stdout '"
 	cmd_end="' | aplay"
-	print(cmd_beg+spk+cmd_end)
-	call([cmd_beg+spk+cmd_end], shell=True)
+	print(f"{cmd_beg}{spk}{cmd_end}")
+	call([f"{cmd_beg}{spk}{cmd_end}"], shell=True)
 
 def takephoto():
     date_string = str(datetime.datetime.now())
     camera = picamera.PiCamera()
     camera.resolution = (1600, 1200)
     camera.sharpness = 100
-    date_string = 'image'+date_string+'.jpg'
+    date_string = f'image{date_string}.jpg'
     date_string = date_string.replace(":", "")	# Strip out the colon from date time.
     date_string = date_string.replace(" ", "")	# Strip out the space from date time.
-    print("TAKE PICTURE: " + date_string)
+    print(f"TAKE PICTURE: {date_string}")
     print(date_string)
     camera.capture('image.jpg')
     camera.close()	# We need to close off the resources or we'll get an error.
-    call(["cp /home/pi/image.jpg " + "/home/pi/"+date_string], shell=True)
+    call([f"cp /home/pi/image.jpg /home/pi/{date_string}"], shell=True)
 
 def parse_response(json_response):
 	# print json_response
@@ -65,19 +65,19 @@ def parse_response(json_response):
 		sorrow = json_response['responses'][0]['faceAnnotations'][0]['sorrowLikelihood']
 		blurr = json_response['responses'][0]['faceAnnotations'][0]['blurredLikelihood']
 		joy = json_response['responses'][0]['faceAnnotations'][0]['joyLikelihood']
-		
-		anger_string = (str(anger))
-		surprise_string = (str(surprise))
-		sorrow_string = (str(sorrow))
+
+		anger_string = str(anger)
+		surprise_string = str(surprise)
+		sorrow_string = str(sorrow)
 		# print(str(blurr))
-		happy_string = (str(joy))
-		
-		print("Happy: " + happy_string)
-		print("Angry: " + anger_string)
-		print("Surprise: " + surprise_string)
-		print("Sorrow: " + sorrow_string)
+		happy_string = str(joy)
+
+		print(f"Happy: {happy_string}")
+		print(f"Angry: {anger_string}")
+		print(f"Surprise: {surprise_string}")
+		print(f"Sorrow: {sorrow_string}")
 		# sound("You look pretty. . . . tired.  You must have an infant?")
-		
+
 		if(happy_string != "VERY_UNLIKELY"):
 			sound("You seem happy!  Tell me why you are so happy!")
 		elif(anger_string != "VERY_UNLIKELY"):
@@ -86,10 +86,10 @@ def parse_response(json_response):
 			sound("You seem surprised!  ")
 		else:
 			sound("You seem sad!  Would you like a hug?")
-		
+
 	except:
 		sound("I am sorry, I can not see your face.  May I try again?")
-	
+
 def take_emotion():
 	takephoto() # First take a picture
 	"""Run a label request on a single image"""
@@ -120,33 +120,33 @@ def wait_for_button():
 	while button.is_button_pressed() is False:
 		time.sleep(0.5)
 	print("Button pressed!")
-	
+
 	gpg.forward()
 	while ds.read() > distance_from_body:
 		time.sleep(0.1)
 	gpg.stop()
-	
+
 	sound("Hello!")
 
 def back_away():
 	gpg.drive_cm(-50)
-	
+
 def internet_on():
 	try:
-		urllib2.urlopen('https://google.com', timeout=1)
+		urllib.request.urlopen('https://google.com', timeout=1)
 		return True
-	except urllib2.URLError as err: 
+	except urllib.request.URLError as err:
 		return False
-		
+
 def main():
 
-	sound("Hello!  I  am  empathy  bot!")  
+	sound("Hello!  I  am  empathy  bot!")
 
 	while (internet_on() != True):
 		sound("I am waiting on an internet connection!")
 		time.sleep(15)
 
-	sound("I am ready to empathize!")  
+	sound("I am ready to empathize!")
 	while True:
 		# Wait for button press.
 		wait_for_button()

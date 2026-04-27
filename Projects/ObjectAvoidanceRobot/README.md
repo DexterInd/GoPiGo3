@@ -7,6 +7,35 @@ When the target is too close to the robot, the GoPiGo3 robot stops. The robot wi
 
 This project can run with Python 2 and 3.
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed, you can use it directly (no additional packages needed):
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+python object_avoidance_robot.py
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv objectavoidancerobot
+source objectavoidancerobot/bin/activate
+pip install -r requirements.txt
+```
+
+### Running the Program
+
+```bash
+python object_avoidance_robot.py
+```
+
 ## On DexterOS
 In DexterOS it's not needed to install or configure anything. Any required dependency is already installed on it. Just make sure you've got the right physical configuration (sensors, servos, etc) and then run the script this way `python program-name.py`.
 

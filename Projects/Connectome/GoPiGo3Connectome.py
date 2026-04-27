@@ -4901,7 +4901,7 @@ try:
         #Do we need to switch states at the end of each loop? No, this is done inside the runconnectome()
         #function, called inside each loop.
         if dist > 0 and dist < 25:
-            print("OBSTACLE (Nose Touch) dist:{}".format( dist))
+            print(f"OBSTACLE (Nose Touch) dist:{dist}")
             gpg.set_eye_color(obstacle_color)
             gpg.open_eyes()
             dendriteAccumulate("FLPR")

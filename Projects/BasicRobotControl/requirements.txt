@@ -1,0 +1,22 @@
+# GoPiGo3 Basic Robot Control Requirements
+# Python packages required for keyboard-controlled robot
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, so only install additional packages):
+#   source /path/to/gopigo3/venv/bin/activate
+#   pip install curtsies
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# Terminal UI library for keyboard input
+curtsies
+
+# How to run:
+#   python run_this.py
+# Use arrow keys to control the robot

@@ -1,0 +1,33 @@
+# GoPiGo3 Empathybot Requirements
+# Python packages required for emotion detection robot
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, so only install additional packages):
+#   source /path/to/gopigo3/venv/bin/activate
+#   pip install DI-Sensors google-api-python-client picamera
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# Dexter Industries sensor library
+DI-Sensors
+
+# Google Cloud Vision API client
+google-api-python-client
+
+# Raspberry Pi camera module
+picamera
+
+# Additional system requirements:
+# - Raspberry Pi Camera Module must be enabled
+# - Google Cloud Vision API credentials required
+# - espeak text-to-speech engine (install: sudo apt-get install espeak)
+
+# How to run:
+#   python empathybot.py
+# The robot uses Google Vision API to detect human emotions and responds accordingly

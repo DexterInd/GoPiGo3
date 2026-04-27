@@ -1,0 +1,28 @@
+# GoPiGo3 Mouse Control Requirements
+# Python packages required for USB mouse-controlled robot
+
+# Option 1: If reusing an existing GoPiGo3 virtual environment
+# (mr-gopigo3 is already installed, so only install additional packages):
+#   source /path/to/gopigo3/venv/bin/activate
+#   pip install future
+
+# Option 2: If creating a new virtual environment for this project:
+#   python3 -m venv venv
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+
+# Core GoPiGo3 library
+mr-gopigo3
+
+# Python 2/3 compatibility library
+future
+
+# Additional system requirements:
+# - USB mouse must be connected to Raspberry Pi
+# - May require root permissions to access /dev/input devices
+
+# How to run:
+#   python mouse_control_robot.py
+# Control the robot using a USB mouse:
+# - Move mouse forward/backward to drive
+# - Move mouse left/right to turn

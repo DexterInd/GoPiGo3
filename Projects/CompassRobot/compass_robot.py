@@ -132,7 +132,7 @@ def orientate(trigger, simultaneous_launcher, sensor_queue):
             state = "almost calibrated"
 
         if not compass in values_already_printed:
-            print("The GoPiGo3 is " + state)
+            print(f"The GoPiGo3 is {state}")
         values_already_printed.append(compass)
 
         try:
@@ -276,7 +276,7 @@ def robotControl(trigger, simultaneous_launcher, motor_command_queue, sensor_que
             how_much_to_rotate = int(heading_diff * rotational_factor)
 
             if DEBUG is True:
-                print("direction_degrees {} heading {} error {} heading_diff {}".format(direction_degrees, heading, error, heading_diff))
+                print(f"direction_degrees {direction_degrees} heading {heading} error {error} heading_diff {heading_diff}")
 
             # check if the heading isn't so far from the desired orientation
             # if it needs correction, then rotate the robot
@@ -338,7 +338,7 @@ def Main(trigger):
 
         print("Press the following keys for moving/orientating the robot by the 4 cardinal points")
         for menu_command in menu_order:
-            print("{:8} - {}".format(menu_command, available_commands[menu_command]))
+            print(f"{menu_command:8} - {available_commands[menu_command]}")
     except threading.BrokenBarrierError:
         pass
 

@@ -5,6 +5,39 @@ Make sure you connect a `wireless mouse` to your `Raspberry Pi` and then launch 
 
 ![GoPiGo3 with Mouse](http://i.imgur.com/Rat5EQN.jpg)
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install future
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv mousecontrol
+source mousecontrol/bin/activate
+pip install -r requirements.txt
+```
+
+### Running the Program
+
+```bash
+python mouse_control_robot.py
+```
+
+Press `CTRL-C` and move the mouse slightly to exit.
+
+## How It Works
+
 When the ``mouse_control_robot`` script is launched (with either Python 2 or 3), the user
 is prompted to input a value which represents the mode of operation:
 
@@ -22,7 +55,7 @@ is prompted to input a value which represents the mode of operation:
   * Moving the mouse to the `right`, makes the `GoPiGo3` to move to the right.
   * Not moving the mouse in any direction keeps the robot stationary.
 
-When closing the app, press the `CTRL-C` combination of keys and move the mouse around just a little bit, so that the process stops. That's because the script uses blocking methods and while the mouse is stationary (and no buttons are pressed), the script is in a state of *"waiting"*.  
+When closing the app, press the `CTRL-C` combination of keys and move the mouse around just a little bit, so that the process stops. That's because the script uses blocking methods and while the mouse is stationary (and no buttons are pressed), the script is in a state of *"waiting"*.
 
 ![](http://i.imgur.com/K5ZK8fj.gif)
 

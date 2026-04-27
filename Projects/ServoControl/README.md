@@ -2,8 +2,33 @@
 
 With this program you can test the servo functionality on the GoPiGo3. The available keys are described when the program is launched.
 
-The script can be launched this way:
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install curtsies
 ```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv servocontrol
+source servocontrol/bin/activate
+pip install -r requirements.txt
+```
+
+## Running the Program
+
+The script can be launched this way:
+```bash
 python run_this.py
 ```
 

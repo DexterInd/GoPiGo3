@@ -10,6 +10,35 @@ a set of keyboard combinations will be displayed in the terminal. The 6 availabl
 * `w` key - make the robot move towards a given direction (select one of the above cardinal points).
 * `<SPACE>` key - stops the robot (still allows you to use the `<LEFT>`, `<RIGHT>`, etc commands).
 
+## Setup
+
+### Virtual Environment Options
+
+You have two options for setting up your Python environment:
+
+#### Option 1: Reuse Existing GoPiGo3 Virtual Environment
+
+If you already have a virtual environment with `mr-gopigo3` installed:
+
+```bash
+source /path/to/gopigo3/venv/bin/activate
+pip install curtsies numpy
+```
+
+#### Option 2: Create a New Virtual Environment for This Project
+
+```bash
+python3 -m venv compassrobot
+source compassrobot/bin/activate
+pip install -r requirements.txt
+```
+
+### Running the Program
+
+```bash
+python compass_robot.py
+```
+
 ## Required Components
 
 * A [`GoPiGo3`](https://www.dexterindustries.com/gopigo3/) robot - that includes the board, the actual robot and the battery pack.

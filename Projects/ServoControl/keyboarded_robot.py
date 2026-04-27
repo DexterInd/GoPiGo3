@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 GoPiGo3 for the Raspberry Pi: an open source robotics platform for the Raspberry Pi.
@@ -118,7 +118,7 @@ class GoPiGo3WithKeyboard(object):
         """
         try:
             for key in self.order_of_keys:
-                print("\r[key {:8}] :  {}".format(key, self.keybindings[key][self.KEY_DESCRIPTION]))
+                print(f"\r[key {key:8}] :  {self.keybindings[key][self.KEY_DESCRIPTION]}")
         except KeyError:
             print("Error: Keys found GoPiGo3WithKeyboard.order_of_keys don't match with those in GoPiGo3WithKeyboard.keybindings.")
 
