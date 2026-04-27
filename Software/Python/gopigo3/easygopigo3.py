@@ -82,11 +82,11 @@ class EasyGoPiGo3(gopigo3.GoPiGo3):
 
     """
 
-    def __init__(self, config_file_path="/home/pi/Dexter/gpg3_config.json", use_mutex=False):
+    def __init__(self, config_file_path=None, use_mutex=False):
         """
         This constructor sets the variables to the following values:
 
-        :param str config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :param str config_file_path: Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3. If None, uses ~/.gpg3_config.json.
         :param boolean use_mutex = False: When using multiple threads/processes that access the same resource/device, mutex has to be enabled.
         :var int speed = 300: The speed of the motors should go between **0-1000** DPS.
         :var tuple(int,int,int) left_eye_color = (0,255,255): Set Dex's left eye color to **turqoise**.

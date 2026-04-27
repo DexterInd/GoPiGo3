@@ -159,6 +159,23 @@ install_power_service() {
 
 install_power_service
 
+install_list_of_serials_with_16_ticks() {
+    echo "Installing list of serial numbers with 16 ticks..."
+    local SOURCE_FILE="$SCRIPT_DIR/../../Install/list_of_serial_numbers.pkl"
+
+    if [ ! -f "$SOURCE_FILE" ]; then
+        echo "Warning: $SOURCE_FILE not found. Skipping serial numbers installation."
+        return
+    fi
+
+    # Copy to user's home directory
+    local DEST_FILE="$HOME/.gpg3_list_of_serial_numbers.pkl"
+    cp "$SOURCE_FILE" "$DEST_FILE"
+    echo "Serial numbers list installed to $DEST_FILE."
+}
+
+install_list_of_serials_with_16_ticks
+
 install_calibration_panel() {
     echo "Installing GoPiGo3 Calibration Panel shortcut on desktop..."
 

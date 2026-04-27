@@ -198,7 +198,15 @@ int GoPiGo3::get_id(char *str){
 
 bool GoPiGo3::check_serial_number_for_16_ticks(std::string serial_file_path){
 
-    // Returns true if GoPiGo3 serial is in file "/home/pi/Dexter/.list_of_serial_numbers.pkl"
+    // Returns true if GoPiGo3 serial is in file "~/.gpg3_list_of_serial_numbers.pkl"
+    // Expand ~ to home directory
+    if (serial_file_path[0] == '~') {
+        const char* home = getenv("HOME");
+        if (home) {
+            serial_file_path = std::string(home) + serial_file_path.substr(1);
+        }
+    }
+
     char serial[33] = "00000000000000000000000000000000";
     get_id(serial);
     std::string serials;
@@ -219,7 +227,7 @@ int GoPiGo3::load_robot_constants(std::string config_file_path){
     /*
         Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
         This method gets called by the constructor.
-        :param string config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+        :param string config_file_path = "~/.gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
 
         Here's how the JSON config file must look like before reading it. The supported format is JSON so that anyone can
         edit their own config file if they don't want to go through saving the values by using the API.
@@ -232,19 +240,27 @@ int GoPiGo3::load_robot_constants(std::string config_file_path){
             }
         If the file doesn't exist, one gets written for the user.
         If the file is empty, the file will be overwritten with appropriate default values.
-        If the file has content, the robot constants are redefined based on that content. 
+        If the file has content, the robot constants are redefined based on that content.
         If the tick and gear_ratio are missing, default values will be supplied based on the serial number of the GoPiGo3
     */
 
 
 
-    // Load GoPiGo3 constants from /home/pi/Dexter/gpg3_config.json if exists
-    // otherwise sets default constants based on presence of serial in /home/pi/Dexter/.list_of_serial_numbers.pkl file
+    // Load GoPiGo3 constants from ~/.gpg3_config.json if exists
+    // otherwise sets default constants based on presence of serial in ~/.gpg3_list_of_serial_numbers.pkl file
+
+    // Expand ~ to home directory in config_file_path
+    if (config_file_path[0] == '~') {
+        const char* home = getenv("HOME");
+        if (home) {
+            config_file_path = std::string(home) + config_file_path.substr(1);
+        }
+    }
 
     std::string keys[4] = {"wheel-diameter", "wheel-base-width", "ticks", "motor_gear_ratio"};
 
     // create a JSON string object from the file
-    //    /home/pi/Dexter/gpg3_config.json
+    //    ~/.gpg3_config.json
     //    {"wheel-diameter": 66.1, "wheel-base-width": 105.59, "ticks": 16, "motor_gear_ratio": 120}
     std::string gpg3_config;
     std::ifstream input(config_file_path);
@@ -319,7 +335,7 @@ int GoPiGo3::save_robot_constants(std::string config_file_path){
     /*
         Write wheel diameter, wheel base width, ticks, motor gear ratio constants to JSON config file
 
-        :param string config_file_path = "/home/pi/Dexter/gpg3_config.json": Path to JSON config file.
+        :param string config_file_path = "~/.gpg3_config.json": Path to JSON config file.
 
         The JSON config file written will look like like this:
         .. code-block:: json
@@ -331,10 +347,18 @@ int GoPiGo3::save_robot_constants(std::string config_file_path){
             }
     */
 
+    // Expand ~ to home directory in config_file_path
+    if (config_file_path[0] == '~') {
+        const char* home = getenv("HOME");
+        if (home) {
+            config_file_path = std::string(home) + config_file_path.substr(1);
+        }
+    }
+
     std::string keys[4] = {"wheel-diameter", "wheel-base-width", "ticks", "motor_gear_ratio"};
 
     // create a JSON string object from the keys and "constants"
-    //    /home/pi/Dexter/gpg3_config.json
+    //    ~/.gpg3_config.json
     //    {"wheel-diameter": 66.1, "wheel-base-width": 105.59, "ticks": 16, "motor_gear_ratio": 120}
     std::ostringstream gpg3_config;
 

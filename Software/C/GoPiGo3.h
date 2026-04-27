@@ -271,11 +271,11 @@ class GoPiGo3{
 
 
   // Check if serial number in file of 16 tick GoPiGo3
-    bool    check_serial_number_for_16_ticks(std::string serial_file_path="/home/pi/Dexter/.list_of_serial_numbers.pkl");
+    bool    check_serial_number_for_16_ticks(std::string serial_file_path="~/.gpg3_list_of_serial_numbers.pkl");
   // Load wheel diameter, wheel base, ticks per revolution, motor gear ratio from file if exists
-    int     load_robot_constants(std::string config_file_path="/home/pi/Dexter/gpg3_config.json");
+    int     load_robot_constants(std::string config_file_path="~/.gpg3_config.json");
   // Save wheel diameter, wheel base, ticks per revolution, motor gear ratio to JSON file
-    int     save_robot_constants(std::string config_file_path="/home/pi/Dexter/gpg3_config.json");
+    int     save_robot_constants(std::string config_file_path="~/.gpg3_config.json");
   // Set new robot constant values and dependent constants
     int     set_robot_constants(float wheel_diameter, float wheel_base_width, int ticks, int motor_gear_ratio);
 
