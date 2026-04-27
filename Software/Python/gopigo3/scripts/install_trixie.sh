@@ -161,10 +161,11 @@ install_power_service
 
 install_list_of_serials_with_16_ticks() {
     echo "Installing list of serial numbers with 16 ticks..."
-    local SOURCE_FILE="$SCRIPT_DIR/../../Install/list_of_serial_numbers.pkl"
+    local SOURCE_FILE="$SCRIPT_DIR/../data/list_of_serial_numbers.pkl"
 
     if [ ! -f "$SOURCE_FILE" ]; then
         echo "Warning: $SOURCE_FILE not found. Skipping serial numbers installation."
+        echo "This file is only needed for certain GoPiGo3 boards with 16-tick encoders."
         return
     fi
 

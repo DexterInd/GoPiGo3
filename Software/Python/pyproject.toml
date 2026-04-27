@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mr-gopigo3"
-version = "1.0.2"
+version = "1.0.3"
 description = "Drivers and Examples for using the GoPiGo3 in Python"
 readme = {file = "README.md", content-type = "text/markdown"}
 license = "MIT"
@@ -64,7 +64,8 @@ include = ["gopigo3*"]
 #   gopigo3_power.py  – power management daemon (launched by systemd)
 #   install_trixie.sh – enables SPI/I2C/VNC on Raspberry Pi OS Trixie
 # Include Calibration Panel and Control Panel assets (icons, .desktop, GUI scripts).
+# Include data files (list_of_serial_numbers.pkl for boards with 16-tick encoders).
 # Data must be listed under the package key that owns the directory.
-gopigo3 = ["scripts/*"]
+gopigo3 = ["scripts/*", "data/*"]
 "gopigo3.examples.Calibration_Panel" = ["*"]
 "gopigo3.examples.Control_Panel" = ["*"]
