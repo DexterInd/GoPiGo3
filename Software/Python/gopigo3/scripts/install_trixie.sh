@@ -102,13 +102,6 @@ fi
 if grep -qi "Lite" /etc/os-release 2>/dev/null; then
     echo "Raspberry Pi OS Lite detected — skipping VNC (no desktop environment)."
 else
-    if dpkg-query -W -f='${Status}' realvnc-vnc-server 2>/dev/null | grep -q "install ok installed"; then
-        echo "VNC server package already installed."
-    else
-        echo "Installing VNC server..."
-        sudo apt-get install -y --no-install-recommends realvnc-vnc-server
-    fi
-
     if systemctl is-enabled vncserver-x11-serviced >/dev/null 2>&1 && \
        systemctl is-active vncserver-x11-serviced >/dev/null 2>&1; then
         echo "VNC server already enabled and active — skipping."
