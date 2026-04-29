@@ -15,6 +15,7 @@ The Raspberry Pi is assumed to be **headless** — no monitor, no keyboard attac
 - [Setting up a Python virtual environment](#setting-up-a-python-virtual-environment)
 
 **Frequently Asked Questions:**
+- [How do I install on Raspberry Pi OS Lite?](#how-do-i-install-on-raspberry-pi-os-lite)
 - [What does the install_trixie.sh script do?](#what-does-the-install_trixiesh-script-do)
 - [The power LED keeps on blinking.. What can I do?](#the-power-led-keeps-on-blinking-what-can-i-do)
 - [What does "mr" in mr-gopigo3 stand for?](#what-does-mr-in-mr-gopigo3-stand-for)
@@ -308,6 +309,21 @@ If you can't figure out why the power service is not running, contact **info@mod
 ```bash
 sudo journalctl -u gopigo3_power -n 50
 ```
+
+---
+
+### How do I install on Raspberry Pi OS Lite?
+
+Raspberry Pi OS Lite (terminal-only, no desktop) is fully supported and works great with GoPiGo3. The only differences in installation are that the VNC server step is skipped (since there's no desktop environment)and some packages may need to be installed manually.
+
+Before you start, make sure to run the following two lines to update the package list and install the base tools:
+
+```bash
+sudo apt update
+sudo apt install -y python3-pip git
+```
+
+You can then proceed with the same steps as Options A or B above, but you don't need to worry about the VNC server component — the install script will detect Lite and skip it automatically.
 
 ---
 

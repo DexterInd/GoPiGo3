@@ -27,7 +27,7 @@ fi
 #   - Optionally configure automatic virtual environment activation in ~/.bashrc
 
 
-# set -e
+set -e
 
 # Default: user-level venv (~/.venv), unless 'local' is specified
 if [ "$1" = "local" ]; then
@@ -99,8 +99,29 @@ else
     REBOOT_NEEDED=true
 fi
 
-if grep -qi "Lite" /etc/os-release 2>/dev/null; then
+is_lite_os() {
+    # Detect Lite variants from os-release and fallback to raspi-config desktop mode.
+    if grep -Eiq '^(PRETTY_NAME|NAME|VARIANT)=.*Lite|^VARIANT_ID=.*lite' /etc/os-release 2>/dev/null; then
+        return 0
+    fi
+
+    if command -v raspi-config >/dev/null 2>&1; then
+        local desktop_mode
+        desktop_mode="$(raspi-config nonint get_desktop 2>/dev/null || true)"
+        [ "$desktop_mode" = "1" ] && return 0
+    fi
+
+    return 1
+}
+
+vnc_service_exists() {
+    systemctl list-unit-files --type=service --no-legend 2>/dev/null | grep -q '^vncserver-x11-serviced\.service'
+}
+
+if is_lite_os; then
     echo "Raspberry Pi OS Lite detected — skipping VNC (no desktop environment)."
+elif ! vnc_service_exists; then
+    echo "VNC service not installed — skipping VNC enable step."
 else
     if systemctl is-enabled vncserver-x11-serviced >/dev/null 2>&1 && \
        systemctl is-active vncserver-x11-serviced >/dev/null 2>&1; then
