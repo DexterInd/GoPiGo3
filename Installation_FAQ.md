@@ -84,7 +84,7 @@ This is the recommended approach for most users. You flash a standard Raspberry 
 3. **Create and activate a virtual environment**:
 
    ```bash
-   python3 -m venv ~/.venv/gopigo3
+   python3 -m venv --system-site-packages ~/.venv/gopigo3
    source ~/.venv/gopigo3/bin/activate
    ```
 
@@ -180,7 +180,7 @@ You only need to do this once. Run these commands on the Pi after SSHing in:
 
 ```bash
 # Create a virtual environment at ~/.venv/gopigo3
-python3 -m venv ~/.venv/gopigo3
+python3 -m venv --system-site-packages ~/.venv/gopigo3
 
 # Activate it (your prompt will change to show '(gopigo3)')
 source ~/.venv/gopigo3/bin/activate
