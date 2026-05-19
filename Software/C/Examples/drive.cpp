@@ -4,14 +4,14 @@
 
      BUILDING:
         Use cmake:
-           - cd /home/pi/Dexter/GoPiGo3/Software/C
+           - cd ~/GoPiGo3/Software/C
            - cmake CMakeLists.txt
            - make
 
      USAGE:
-         - /home/pi/Dexter/GoPiGo3/Software/C/drive
+         - ~/GoPiGo3/Software/C/drive
            or
-         - cd /home/pi/Dexter/GoPiGo3/Software/C
+         - cd ~/GoPiGo3/Software/C
            ./drive
 
          - press q to quit program (only way, ctrl-c does not exit)

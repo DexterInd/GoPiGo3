@@ -1,9 +1,15 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 project(gopigo3_cpp)
+
+# Set the output directory for all executables to a folder named 'bin'
+# CMAKE_BINARY_DIR is the root of your build directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 ### Build
 
 include_directories(.)
+
+
 
 ## GoPiGo3 library
 add_library(gopigo3 SHARED GoPiGo3.cpp)

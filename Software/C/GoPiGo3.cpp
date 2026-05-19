@@ -2,14 +2,18 @@
  *  https://www.dexterindustries.com/GoPiGo3/
  *  https://github.com/DexterInd/GoPiGo3
  *
- *  Copyright (c) 2017 Dexter Industries
+ *  Copyright (c) 2026 Modular Robotics
  *  Released under the MIT license (http://choosealicense.com/licenses/mit/).
  *  For more information see https://github.com/DexterInd/GoPiGo3/blob/master/LICENSE.md
  *
  *  C++ drivers for the GoPiGo3
+ *  2026-05-19 Updated for new GoPiGo API Install (config in $HOME)
  */
 
 #include <GoPiGo3.h>
+#include <string>
+#include <iostream>
+
 
 GoPiGo3::GoPiGo3(){
   if(spi_file_handle < 0){
@@ -101,7 +105,7 @@ int GoPiGo3::detect(bool critical){
   char str[21];
   int error;
   // assign error to the value returned by get_manufacturer, and if not 0:
-  if(error = get_manufacturer(str)){
+  if((error = get_manufacturer(str))){
     if(critical){
       fatal_error("detect error: get_manufacturer failed. Perhaps the GoPiGo3 is not connected, or the address is incorrect.");
     }else{
@@ -117,7 +121,7 @@ int GoPiGo3::detect(bool critical){
   }
 
   // assign error to the value returned by get_board, and if not 0:
-  if(error = get_board(str)){
+  if((error = get_board(str))){
     if(critical){
       fatal_error("detect error: get_board failed");
     }else{
@@ -133,7 +137,7 @@ int GoPiGo3::detect(bool critical){
   }
 
   // assign error to the value returned by get_version_firmware, and if not 0:
-  if(error = get_version_firmware(str)){
+  if((error = get_version_firmware(str))){
     if(critical){
       fatal_error("detect error: get_version_firmware failed");
     }else{
@@ -197,15 +201,8 @@ int GoPiGo3::get_id(char *str){
 
 
 bool GoPiGo3::check_serial_number_for_16_ticks(std::string serial_file_path){
-
-    // Returns true if GoPiGo3 serial is in file "~/.gpg3_list_of_serial_numbers.pkl"
-    // Expand ~ to home directory
-    if (serial_file_path[0] == '~') {
-        const char* home = getenv("HOME");
-        if (home) {
-            serial_file_path = std::string(home) + serial_file_path.substr(1);
-        }
-    }
+    // Returns true if GoPiGo3 serial is in file "$HOME/.gpg3_list_of_serial_numbers.pkl"
+    if(serial_file_path.empty()) serial_file_path = getHomePath(".gpg3_list_of_serial_numbers.pkl");
 
     char serial[33] = "00000000000000000000000000000000";
     get_id(serial);
@@ -227,7 +224,8 @@ int GoPiGo3::load_robot_constants(std::string config_file_path){
     /*
         Load wheel diameter and wheel base width constants for the GoPiGo3 from file.
         This method gets called by the constructor.
-        :param string config_file_path = "~/.gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
+
+        :param string config_file_path = "$HOME/.gpg3_config.json": Path to JSON config file that stores the wheel diameter and wheel base width for the GoPiGo3.
 
         Here's how the JSON config file must look like before reading it. The supported format is JSON so that anyone can
         edit their own config file if they don't want to go through saving the values by using the API.
@@ -240,29 +238,22 @@ int GoPiGo3::load_robot_constants(std::string config_file_path){
             }
         If the file doesn't exist, one gets written for the user.
         If the file is empty, the file will be overwritten with appropriate default values.
-        If the file has content, the robot constants are redefined based on that content.
+        If the file has content, the robot constants are redefined based on that content. 
         If the tick and gear_ratio are missing, default values will be supplied based on the serial number of the GoPiGo3
     */
 
 
-
-    // Load GoPiGo3 constants from ~/.gpg3_config.json if exists
-    // otherwise sets default constants based on presence of serial in ~/.gpg3_list_of_serial_numbers.pkl file
-
-    // Expand ~ to home directory in config_file_path
-    if (config_file_path[0] == '~') {
-        const char* home = getenv("HOME");
-        if (home) {
-            config_file_path = std::string(home) + config_file_path.substr(1);
-        }
-    }
+    // Load GoPiGo3 constants from $HOME/.gpg3_config.json if exists
+    // otherwise sets default constants based on presence of serial in $HOME/.gpg3_list_of_serial_numbers.pkl file
 
     std::string keys[4] = {"wheel-diameter", "wheel-base-width", "ticks", "motor_gear_ratio"};
 
     // create a JSON string object from the file
-    //    ~/.gpg3_config.json
-    //    {"wheel-diameter": 66.1, "wheel-base-width": 105.59, "ticks": 16, "motor_gear_ratio": 120}
+    //    $HOME/.gpg3_config.json
+    //    {"wheel-diameter": 66.5, "wheel-base-width": 117.0, "ticks": 16, "motor_gear_ratio": 120}
     std::string gpg3_config;
+    if(config_file_path.empty()) config_file_path = getHomePath(".gpg3_config.json");
+
     std::ifstream input(config_file_path);
     std::stringstream buffer;
     input >> buffer.rdbuf();
@@ -335,7 +326,7 @@ int GoPiGo3::save_robot_constants(std::string config_file_path){
     /*
         Write wheel diameter, wheel base width, ticks, motor gear ratio constants to JSON config file
 
-        :param string config_file_path = "~/.gpg3_config.json": Path to JSON config file.
+        :param string config_file_path = "$HOME/.gpg3_config.json": Path to JSON config file.
 
         The JSON config file written will look like like this:
         .. code-block:: json
@@ -347,18 +338,10 @@ int GoPiGo3::save_robot_constants(std::string config_file_path){
             }
     */
 
-    // Expand ~ to home directory in config_file_path
-    if (config_file_path[0] == '~') {
-        const char* home = getenv("HOME");
-        if (home) {
-            config_file_path = std::string(home) + config_file_path.substr(1);
-        }
-    }
-
     std::string keys[4] = {"wheel-diameter", "wheel-base-width", "ticks", "motor_gear_ratio"};
 
     // create a JSON string object from the keys and "constants"
-    //    ~/.gpg3_config.json
+    //    $HOME/.gpg3_config.json
     //    {"wheel-diameter": 66.1, "wheel-base-width": 105.59, "ticks": 16, "motor_gear_ratio": 120}
     std::ostringstream gpg3_config;
 
@@ -368,7 +351,7 @@ int GoPiGo3::save_robot_constants(std::string config_file_path){
     gpg3_config << "\"" << keys[2] << "\"" << ": " << ENCODER_TICKS_PER_ROTATION << ", " ;
     gpg3_config << "\"" << keys[3] << "\"" << ": " << MOTOR_GEAR_RATIO << "}" ;
 
-    // std::cout << "gpg3_config: " << gpg3_config.str() << std::endl;
+    if(config_file_path.empty()) config_file_path = getHomePath(".gpg3_config.json");
 
     std::ofstream outfile(config_file_path);
     outfile << gpg3_config.str();
@@ -571,7 +554,8 @@ int GoPiGo3::get_motor_encoder(uint8_t port, int32_t &value){
   }
   uint32_t Value;
   int res = spi_read_32(msg_type, Value);
-  value = (int)(Value / MOTOR_TICKS_PER_DEGREE);
+  // value = (int)(Value / MOTOR_TICKS_PER_DEGREE);
+  value = (int32_t)(Value) / MOTOR_TICKS_PER_DEGREE;
   return res;
 }
 
@@ -634,7 +618,7 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
   bool Continue = false;
   int error;
   while(!Continue){
-    if(error = grove_i2c_start(port, i2c_struct)){
+    if((error = grove_i2c_start(port, i2c_struct))){
       if(get_time() >= Timeout){
         return error;
       }
@@ -656,7 +640,7 @@ int GoPiGo3::grove_i2c_transfer(uint8_t port, i2c_struct_t *i2c_struct){
   Timeout = get_time() + 0.005;  // timeout after 5ms of failed attempted reads
 
   while(true){
-    if(error = get_grove_value(port, i2c_struct)){
+    if((error = get_grove_value(port, i2c_struct))){
       if(get_time() >= Timeout){
         return error;
       }

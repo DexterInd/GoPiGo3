@@ -13,7 +13,7 @@
  *  Example compile command:
  *    g++ -o motors motors.cpp ../GoPiGo3.cpp -I..
  *  Example run command:
- *    sudo ./motors
+ *    ./motors
  *
  */
 
@@ -31,20 +31,28 @@ int main(){
 
   GPG.detect(); // Make sure that the GoPiGo3 is communicating and that the firmware is compatible with the drivers.
 
-  // Reset the encoders
+
+  printf("GPG.MOTOR_TICKS_PER_DEGREE: %f \n",GPG.MOTOR_TICKS_PER_DEGREE);
+  printf("GPG.ENCODER_TICKS_PER_ROTATION: %d \n",GPG.ENCODER_TICKS_PER_ROTATION);
+
+  // Reset the encoders and leave motors unpowered
   GPG.offset_motor_encoder(MOTOR_LEFT, GPG.get_motor_encoder(MOTOR_LEFT));
   GPG.offset_motor_encoder(MOTOR_RIGHT, GPG.get_motor_encoder(MOTOR_RIGHT));
 
   while(true){
     // Read the encoders
-    int32_t EncoderLeft = GPG.get_motor_encoder(MOTOR_LEFT);
+    int32_t  EncoderLeft = GPG.get_motor_encoder(MOTOR_LEFT);
     int32_t EncoderRight = GPG.get_motor_encoder(MOTOR_RIGHT);
+    // int encoder_left  = (int)EncoderLeft;
+    // int encoder_right = (int)EncoderRight;
+
+    // printf("L %+d R %+d",encoder_right,encoder_left);
 
     // Use the encoder value from the left motor to control the position of the right motor
     GPG.set_motor_position(MOTOR_RIGHT, EncoderLeft);
 
     // Display the encoder values
-    printf("Encoder Left: %6d  Right: %6d\n", EncoderLeft, EncoderRight);
+    printf("Encoder Left: %+6d  Right: %+6d\n", EncoderLeft, EncoderRight);
 
     // Delay for 20ms
     usleep(20000);
