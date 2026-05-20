@@ -571,7 +571,7 @@ int GoPiGo3::get_motor_encoder(uint8_t port, int32_t &value){
   }
   uint32_t Value;
   int res = spi_read_32(msg_type, Value);
-  value = (int)(Value / MOTOR_TICKS_PER_DEGREE);
+  value = (int32_t)(Value) / MOTOR_TICKS_PER_DEGREE;
   return res;
 }
 
