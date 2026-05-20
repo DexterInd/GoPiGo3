@@ -253,7 +253,7 @@ class GoPiGo3{
     float WHEEL_CIRCUMFERENCE      = WHEEL_DIAMETER   * M_PI;  // pi from cmath
     int   MOTOR_GEAR_RATIO         = 120;
     int   ENCODER_TICKS_PER_ROTATION = 6;  // default GoPiGo3 has 6 ticks, 16 ticks if in .list_of_serial_numbers.pkl file
-    int   MOTOR_TICKS_PER_DEGREE     = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0);  // ticks per degree of wheel shaft rotation
+    float MOTOR_TICKS_PER_DEGREE     = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0);  // ticks per degree of wheel shaft rotation
 
   // Confirm that the BrickPi3 is connected and up-to-date
     int     detect(bool critical = true);
