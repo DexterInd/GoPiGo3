@@ -255,18 +255,18 @@ class GoPiGo3{
     int   ENCODER_TICKS_PER_ROTATION = 6;  // default GoPiGo3 has 6 ticks, 16 ticks if in .list_of_serial_numbers.pkl file
     int   MOTOR_TICKS_PER_DEGREE     = ((MOTOR_GEAR_RATIO * ENCODER_TICKS_PER_ROTATION) / 360.0);  // ticks per degree of wheel shaft rotation
 
-  // Confirm that the BrickPi3 is connected and up-to-date
+  // Confirm that the GoPiGo3 is connected and up-to-date
     int     detect(bool critical = true);
 
   // Get the manufacturer (should be "Dexter Industries")
     int     get_manufacturer(char *str);
-  // Get the board name (should be "BrickPi3")
+  // Get the board name (should be "GoPiGo3")
     int     get_board(char *str);
   // Get the hardware version number
     int     get_version_hardware(char *str);
   // Get the firmware version number
     int     get_version_firmware(char *str);
-  // Get the serial number ID that is unique to each BrickPi3
+  // Get the serial number ID that is unique to each GoPiGo3
     int     get_id(char *str);
 
 
